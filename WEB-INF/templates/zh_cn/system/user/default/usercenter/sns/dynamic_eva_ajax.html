@@ -1,0 +1,3 @@
+<div class="edit_img_list_intimg_top_left"><a href="javascript:void(0)" onclick="ajaxPage('$!webPath/buyer/dynamic_eva_ajax.htm','$!{backPage}',this)"><img src="$!webPath/resources/style/system/front/default/images/picScroll_left_hover.png" /></a></div>
+<div class="edit_img_list_intimg_top_right"><a href="javascript:void(0)" onclick="ajaxPage('$!webPath/buyer/dynamic_eva_ajax.htm','$!{goPage}',this)"><img src="$!webPath/resources/style/system/front/default/images/picScroll_right_hover.png" /></a></div>
+ <div class="edit_img_list_intimg_top_c"> #foreach($obj in $eva_objs) <span><a href="javascript:void(0)" onclick="add_img('$!{obj.id}','eva')"><img src="$!imageWebServer/$!obj.path/$!obj.name" /></a></span> #end </div>

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!{obj.title} - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/circle.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script>
+function pay_attention(cid){
+	jQuery.post("$!webPath/circle/pay_attention.htm",
+				{"cid":cid},
+				function(data){
+					if(data=="100"){
+						 showDialog("msg_info","","圈子关注成功！",2,"succeed",2,
+									function(){
+									location.reload();	
+								   });
+						}
+					if(data=="-100"){
+						 showDialog("msg_info","","您已经关注了该圈子！",2,"error",2,
+									function(){
+									location.reload();
+								   });
+						}	
+				},"text");
+	};
+	
+function cancel_attention(cid){
+		showDialog("msg_info0","","确定要取消关注吗？",1,"warning",3,function (){
+						jQuery.post("$!webPath/circle/cancle_attention.htm",
+								{"cid":cid},
+								function(data){
+								if(data=="100"){
+									 showDialog("msg_info","","成功取消关注！",2,"succeed",2,
+										function(){
+										location.reload();
+									   });
+								}
+								if(data=="-100"){
+								 showDialog("msg_info","","您没有关注该圈子！",2,"error",2,
+									function(){
+									location.reload();
+								   });
+								}	
+								},"text");
+						});
+	};	
+	
+function ajaxPage(url,currentPage,obj){
+	var type =jQuery("#type").val();
+	var cid = "$!{obj.id}";
+	jQuery.ajax({type:'POST',url:url,data:{"currentPage":currentPage,"cid":cid,"type":type},
+		  success:function(data){
+			jQuery(".circle_main_left").html(data);
+			jQuery('body,html').animate({scrollTop:0},0);
+		  }
+	})
+ }	
+jQuery(document).ready(function(){
+		var type =jQuery("#type").val("");						
+		jQuery(".circle_main_left").load("$!webPath/circle/circle_invitation_list.htm?cid=$!{obj.id}&type=all");									
+	});
+function load_list(obj){
+		var mark =jQuery(obj).attr("mark");
+		jQuery(".circle_nav_na a").each(function(){
+			jQuery(this).removeClass("this");
+			jQuery("a[mark="+mark+"]").addClass("this");
+			});
+		jQuery("#type").val(mark);
+	    jQuery(".circle_main_left").load("$!webPath/circle/circle_invitation_list.htm?cid=$!{obj.id}&type="+mark);			
+	}
+
+</script>
+<style>
+.circle_main_left{ border-right:none;}
+</style>
+</head>
+<body background="$!webPath/resources/style/circle/images/circle_bg.jpg">
+<!--圈子申请 -->
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/circle/head.htm")
+<div class="circle_main"> $!httpInclude.include("/circle/nav.htm")
+  <div class="circle_main_center">
+    <div class="circle_list"> #set($img=$!circleViewTools.genercircleImage("$!{obj.id}"))
+      <div class="circle_list_left"><img src="$!imageWebServer/$!{img.src}"  width="100px" height="100px"/></div>
+      <div class="circle_list_center">
+        <input id="type" name="type" value="" type="hidden"/>
+        <ul>
+          <li class="name">
+            <h3>$!obj.title</h3>
+            #if($!user)
+            #set($ret=$!circleViewTools.generUserAttention("$!{obj.id}","$!{user.id}"))
+            #if($!ret=="false") <i class="attention"><a href="javascript:void(0);"  onclick="pay_attention('$!{obj.id}');">关 注</a></i> #else <i class="call_off"><a href="javascript:void(0);"  onclick="cancel_attention('$!{obj.id}');">取消关注</a></i> #end   
+            #else <i class="attention"><a href="javascript:void(0);" #if($!user) onclick="pay_attention();" #else dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #end>关 注</a></i> #end <b>帖子：<strong>$!{obj.invitation_count}</strong></b><b>关注：<strong>$!obj.attention_count</strong></b></li>
+          <li class="tipe">圈子说明：$!{obj.content}</li>
+          #if($!owner.photo)
+          #set($owner_photo="$!imageWebServer/$!owner.photo.path/$!owner.photo.name")
+          #else 
+          #set($owner_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          #end
+          <li class="host"><i>圈主：</i><em><a href="$!webPath/sns/other_sns_$!{owner.id}.htm" target="_blank"><img src="$!{owner_photo}" width="15px" height="17px" /></a></em><i><a href="$!webPath/sns/other_sns_$!{owner.id}.htm" target="_blank">$!obj.userName</a></i></li>
+        </ul>
+      </div>
+      <div class="circle_list_right_top"><a style="cursor:pointer" #if($!user) href="$!webPath/circle/invitation_publish.htm?cid=$!obj.id" #else dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #end>我要发帖</a></div>
+      <div class="circle_list_right">所属分类：$!{obj.class_name}</div>
+    </div>
+  </div>
+  <div class="circle_border">
+    <div class="circle_nav_na"> <a class="this" href="javascript:void(0);" mark="all" onclick="load_list(this);">全部</a><a href="javascript:void(0);" mark="jing" onclick="load_list(this);">精品</a> </div>
+    <div class="circle_main_center_m">
+      <div class="circle_main_left"> </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

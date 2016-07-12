@@ -1,0 +1,17 @@
+<div class="circle_main_left_reply_b_top_r_reply_main" style="display:">
+#foreach($obj in $objs)
+<div class="circle_main_left_reply_b_top_r_reply_main_one">
+<div class="circle_main_left_reply_top_l"><a href="$!webPath/sns/other_sns_$!{obj.user_id}.htm" target="_blank"><img src="$!imageWebServer/$!obj.user_photo" /></a></div>
+<div class="reply_main_one_name">
+<span>$!obj.content</span> </div>
+</div> 
+<style>
+.circle_fenye{ width:100%; float:left; height:30px; line-height:30px; margin-top:5px;}
+.circle_fenye a{ padding:2px 8px; border:1px solid #ccc; border-radius:3px; }
+.circle_fenye a.this{ background:#ff2000; color:#fff;border:1px solid #ff2000; }
+</style>
+#end 
+<div mark="reply_others" pid="$!{pid}" class="circle_fenye"> 
+$!gotoPageAjaxHTML 
+</div>      
+</div>

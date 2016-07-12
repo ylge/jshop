@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>积分商品详细</title>
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes" />
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  #if($!obj.ig_limit_type==true)
+    #set($max=$!{obj.ig_limit_count})
+  #else
+    #set($max=$!{obj.ig_goods_count})
+  #end
+  jQuery("#theForm").validate({
+      rules:{
+		   exchange_count:{required:true,digits:true,max:$!{max},min:1}
+		  },
+	  messages:{
+		    exchange_count:{required:"兑换数量不能为空",digits:"只能为整数",max:"最多兑换{0}",min:"最少兑换1件"}
+		  }
+   });
+});
+function saveForm(){
+	jQuery("#theForm").submit();
+	}
+</script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>积分专区</div>
+<div class="phone_main">
+    <!--积分商品详细页-->
+    <form action="$!webPath/wap/integral/exchange1.htm" method="post" id="theForm">
+    <div class="integral_view">
+    	<ul>
+        	<li class="img"><img src="$!imageWebServer/$!obj.ig_goods_img.path/$!obj.ig_goods_img.name" /><span>$!obj.ig_goods_name</span></li>
+            <li><span class="fl">市场价格：</span><span class="fr red">¥ $!obj.ig_goods_price</span></li>
+            <li><span class="fl">消耗积分：</span><span class="fr"><b>$!obj.ig_goods_integral</b></span></li>
+            #if($!user)
+            <li><span class="fl">我的积分：</span><span class="fr orange">$!user.integral 分</span></li>
+            #end
+            <li><span class="fl">要求等级：</span><span class="fr">
+            #if($!obj.ig_user_Level==0)
+            铜牌会员以上
+            #elseif($!obj.ig_user_Level==1)
+            银牌会员以上
+            #elseif($!obj.ig_user_Level==2)
+            金牌会员以上
+            #elseif($!obj.ig_user_Level==3)
+            超级会员以上
+            #end
+            </span></li>
+            
+            <li><span class="fl">兑换数量：</span><span class="fr"><input class="ip50" name="exchange_count" type="text" id="exchange_count" value="1" /></span></li>
+            <li><span class="fl">剩余数量：</span><span class="fr">$!{obj.ig_goods_count}件</span></li>
+            <li class="btn">
+            #if($!user)
+            <a href="javascript:void(0);" onclick="saveForm()">我要兑换</a>
+            #else
+            <a href="$!webPath/wap/login.htm">还未登录，请登录</a>
+            #end
+            </li>
+        </ul>
+    </div>	
+    <input id="id" name="id" type="hidden" value="$!obj.id" />
+    </form>
+    <div class="integral_con">
+    	<h1 class="title">礼品详情</h1>
+        <div class="integral_infro">
+        $!obj.ig_content
+        </div>
+    </div>
+    
+</div>
+</body>
+</html>

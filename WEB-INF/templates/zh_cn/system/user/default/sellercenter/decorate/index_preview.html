@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!store.store_name -$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="#if($!store.store_seo_keywords!="") $!store.store_seo_keywords #else $!config.keywords #end" />
+<meta name="description" content="#if($!store.store_seo_description!="") $!store.store_seo_description #else $!config.description #end" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/shop/css/store_$!{store_theme}.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/decorate/css/decorate.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+	<!--收藏店铺-->
+	jQuery(".collection a").click(function(){
+    #if($!user)
+     #if($!user.id==$!store.user.id)
+	  showDialog("msg_info","","不能收藏自己的店铺！",2,"warning",3,'');
+	 #else
+	   jQuery.post("$!current_webPath/add_store_favorite.htm",{"id":"$!store.id"},function(data){
+		 if(data==0){
+		    showDialog("msg_info","","店铺收藏成功！",2,"warning",3,'');
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","该店铺已经被收藏！",2,"warning",3,'');
+		 }
+	   },"text");
+	 #end
+   #end
+   });
+  //
+  jQuery(".twocoad").css("cursor","pointer").mouseover(function(){
+     jQuery(".shop_botmhbox").fadeIn('fast'); 
+  }).mouseleave(function(){
+     jQuery(".shop_botmhbox").fadeOut('fast'); 
+  });
+	jQuery("i[id^='i_']").click(function(){
+	  var str = jQuery(this).attr("id").substring(2);
+	  var child_show=jQuery(this).attr("child_show");
+	  if(child_show=="true"){
+	    jQuery(this).removeClass("i_cut");
+		jQuery(this).addClass("i_add");
+		jQuery(this).parent().next(".level_second").slideUp('normal');
+	    jQuery(this).attr("child_show","false");
+	  }else{
+	    jQuery(this).removeClass("i_add");
+		jQuery(this).addClass("i_cut");
+	   jQuery(this).parent().next(".level_second").slideDown('normal');
+	    jQuery(this).attr("child_show","true");
+	  }
+	});
+	
+	
+ #if("$!{fun_info}"=="off")
+	jQuery("#store_info").hide();
+	#else
+	jQuery("#store_info").show();
+	#end
+	#if("$!{fun_banner}"=="off")
+	jQuery("#store_banner").hide();
+	#else
+	jQuery("#store_banner").show();
+	#end
+	#if("$!{fun_slide}"=="off")
+	jQuery("#store_slide").hide();
+	#else
+	jQuery("#store_slide").show();
+	#end
+	#if("$!{fun_nav}"=="off")
+	jQuery("#store_nav").hide();
+	#else
+	jQuery("#store_nav").show();
+	#end
+	//页面加载模块
+	jQuery("div[id=content]").each(function (){
+		var url =jQuery(this).attr("url");
+		var mark =jQuery(this).attr("mark");
+		var div =jQuery(this).attr("div");
+		if(url!=""){
+		jQuery(this).load("$!webPath/module_loading.htm?url="+url+"&id=$!{store.id}&mark="+mark+"&div="+div);	
+		}
+		});	
+		 
+    jQuery("#store_head_box").css("cursor","pointer").mouseover(function(){
+		jQuery("#store_level").show();
+	})
+	jQuery("#store_head_box").mouseout(function(){
+		jQuery("#store_level").hide();
+	})
+	//默认幻灯
+	jQuery("#default_fullSlide").slide({ titCell:"#default_hd li", mainCell:"#default_bd ul", effect:"fold",  autoPlay:true, delayTime:700 });
+	
+});<!--end-->
+
+function ugc_goods_list(ugc_id){
+	window.location.href="$!current_webPath/goods_list.htm?store_id="+$!store.id+"&ugc_id="+ugc_id+"&orderBy=goods_salenum&orderType=desc"; 
+}
+</script>
+<style>
+.layout_one{margin-top:0px}
+</style>
+</head>
+<body>
+<!--顶部-->
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/store_head.htm")
+ #set($bg_img="")
+   #if($!bg.bg_img_src)
+         #set($bg_img="$!imageWebServer/$!{bg.bg_img_src}")
+        #end
+  #set($repeat="background-repeat:repeat;")
+   #if($!bg.repeat=="stretch")
+         #set($repeat="background-size: 100% auto;")
+        #end    
+<div class="shop_main" style="#if($!{bg_img}!='')background-image:url('$!{bg_img}'); #end #if($!{bg.bg_color}!='')background-color:$!{bg.bg_color}; #end $!{repeat}">
+  <!--店铺头部-->
+  <div class="store_head" id="store_info" >
+    <div class="store_top">
+      <div class="store_main">
+        <div class="store_head_right">
+          <ul>
+            <li class="head_a"></li>
+            <li class="head_middle">
+              <div class="store_head_box"  id="store_head_box">
+                <div class="store_name">$!store.store_name【$!store.grade.gradeName】</div>
+                <div class="scores"> <i class="smill"></i> <b class="scores_scroll"> #set($pecent=$!{store.point.store_evaluate}/5*100) <span class="scroll_gray"></span><span class="scroll_red" style="width:$!{pecent}%"></span> </b> </div>
+                <div class="store_level" style="display:none" id="store_level">
+                  <ul class="pro_shop_date" style="display:;">
+                    <li><span>评分详细</span><b>与行业相比</b></li>
+                    <li><span>描述相符：<strong>#if(!$!{store.point.description_evaluate})0 #else $!{store.point.description_evaluate} #end分</strong></span><em class="$!{description_css}">$!description_result</em></li>
+                    <li><span>服务态度：<strong>#if(!$!{store.point.service_evaluate})0 #else $!{store.point.service_evaluate} #end分</strong></span><em class="$!{service_css}">$!service_result</em></li>
+                    <li><span>发货速度：<strong>#if(!$!{store.point.ship_evaluate})0 #else $!{store.point.ship_evaluate} #end分</strong></span><em class="$!{ship_css}">$!ship_result</em></li>
+                  </ul>
+                  <div class="store_detail">
+                    <ul>
+                      <li><span class="company_name">店铺名称：</span><span class="red">$!store.store_name</span></li>
+                      <li><span class="company_name">公司名称：</span><span class="company_r">$!store.license_c_name</span></li>
+                      <li><span class="company_name">联系电话：</span><span class="company_r">$!store.store_telephone</span></li>
+                      <li><span class="company_name">店铺地址：</span><span class="company_r">$!areaViewTools.generic_area_info("$!store.area.id")</span></li>
+                      <li><span class="company_name">详细地址：</span><span class="company_r">$!store.store_address</span></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="scroll_scroll">#if(!$!{store.point.store_evaluate}) 0 #else $!{store.point.store_evaluate} #end分</div>
+              #if($!userTools.userOnLine($!store.user.userName)=="true")
+              <div class="service"><a href="javascript:void(0);" #if(!$!user)dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="open_im('','$!webPath','user','store','$!store.id');" #end></a></div>
+              #else
+              <div class="no_service"><a href="javascript:void(0);" #if(!$!user)dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="if(confirm('客服当前不在线，是否继续?'))open_im('','$!webPath','user','store','$!store.id');" #end></a></div>
+              #end </li>
+            <li class="head_b"></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--logo行-->
+  #if($!store.store_banner)
+  #set($banner="$!imageWebServer/$!store.store_banner.path/$!store.store_banner.name")
+  #else
+  #set($banner="$!webPath/resources/style/shop/images/store_default/banner.jpg")
+  #end
+  <div class="store_logo" id="store_banner" style="background:url($!banner) no-repeat top center; "> #set($logo="$!webPath/resources/style/shop/images/store_default/logo.jpg")
+    #if($!config.storeImage)
+    #set($logo="$!imageWebServer/$!config.storeImage.path/$!config.storeImage.name")
+    #end
+    #if($!store.store_logo)
+    #set($logo="$!imageWebServer/$!store.store_logo.path/$!store.store_logo.name")
+    #end
+    <div class="main"><span style="clear:both;"><img src="$!logo" width="210" height="78" /></span></div>
+  </div>
+  <!--导航-->
+  <div class="store_nav_width" id="store_nav">
+    <div class="main">
+      <div class="store_nav">
+        <ul>
+          <li class="this"><a href="javascript:void(0)">店铺首页</a></li>
+          #foreach($nav in $navs)
+          #set($url="$!webPath/store_url_$!{nav.id}.htm")
+          #if($!{nav.url}&&$!{nav.url}!="") 
+          #set($url="$!nav.url")
+          #end
+          <li><a href="$!url"#if($!nav.win_type=="new_win") target="_blank" #end>$!nav.title</a></li>
+          #end
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!--默认幻灯-->
+<div id="store_slide">
+  #if($!default_slides.size()>0)
+<div class="fullSlide" id="default_fullSlide">
+		<div class="bd" id="default_bd">
+			<ul>
+            	#foreach($slide in $default_slides)
+				<li><a style="text-align:center;" #if($!slide.src!='')href="$!{slide.url}" target="_blank" #else href="javascript:void(0)" #end ><img src="$!imageWebServer/$!{slide.acc.path}/$!{slide.acc.name}" height="450" /></a></li>
+                #end
+			</ul>
+		</div>
+		<div class="hd" id="default_hd">
+			<ul>
+            	#foreach($slide in $default_slides)
+				<li #if($!velocityCount==1) class="on" #end>$!{velocityCount}</li>
+                #end 
+			</ul>
+		</div>
+	</div>
+#else    
+    <div class="fullSlide" id="default_fullSlide">
+		<div class="bd" id="default_bd">
+			<ul>
+				<li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides1.jpg" width="1920" height="450" /></a></li>
+               	<li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides2.jpg" width="1920" height="450" /></a></li>
+                <li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides3.jpg" width="1920" height="450" /></a></li>
+			</ul>
+		</div>
+		<div class="hd" id="default_hd">
+			<ul>
+				<li class="on">1</li>
+                <li class="">2</li>
+                <li class="">3</li>
+			</ul>
+		</div>
+	</div>
+#end
+</div>
+    <!--默认幻灯-->
+  
+  
+  
+  <!--主体-->
+  #foreach($obj in $maps)
+  #if($!obj.layout=="layout0")
+  <div class="layout_one">
+    <div id="content" url="$!{obj.url}" mark="$!obj.mark" style="text-align:center"> #if(!$!obj.url)
+      <h3 class="module_wide">
+      </h3>
+      #end </div>
+  </div>
+  #end
+  #end
+  <div class="main" id="main_layout"> #foreach($obj in $maps)
+    #if($!obj.layout=="layout2" || $!obj.layout=="layout3" || $!obj.layout=="layout4")      
+    #if($!obj.layout=="layout2")
+    <div class="layout_two">
+      <div id="content" url="$!{obj.url}" mark="$!obj.mark"> </div>
+    </div>
+    #end 
+    
+    
+    #if($!obj.layout=="layout3")
+    <div class="layout_three"> #if($!obj.div1=="true")
+      <div class="fl">
+        <div class="module">
+          <div id="content" url="$!{obj.div1_url}" mark="$!obj.mark" div="div1"> </div>
+        </div>
+      </div>
+      #end
+      #if($!obj.div2=="true")
+      <div class="fr">
+        <div class="module">
+          <div id="content" url="$!{obj.div2_url}" mark="$!obj.mark" div="div2"> </div>
+        </div>
+      </div>
+      #end </div>
+    #end 
+    #if($!obj.layout=="layout4")
+    <div class="layout_four"> #if($!obj.div2=="true")
+      <div class="fl">
+        <div class="module">
+          <div id="content" url="$!{obj.div2_url}" mark="$!obj.mark" div="div2"> </div>
+        </div>
+      </div>
+      #end    
+      #if($!obj.div1=="true")
+      <div class="fr">
+        <div class="module">
+          <div id="content" url="$!{obj.div1_url}" mark="$!obj.mark" div="div1"> </div>
+        </div>
+      </div>
+      #end </div>
+    #end
+    
+    #end
+    #end </div>
+  #foreach($obj in $maps)
+  #if($!obj.layout=="layout1")
+  <div class="layout_one">
+    <div id="content" url="$!{obj.url}" mark="$!obj.mark" style="text-align:center"> #if(!$!obj.url)
+      <h3 class="module_wide"> </h3>
+      #end </div>
+  </div>
+  #end
+  #end
+  #if(!$!maps || $!maps.size()==0)
+<div class="no_decorate">
+	<table>
+    	<tbody>
+        	<tr>
+            	<td width="48%" align="right"><img src="$!webPath/resources/style/decorate/images/no_decorate.png" width="150" height="150" /></td>
+                <td align="left">没有任何装修信息！</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+#end
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

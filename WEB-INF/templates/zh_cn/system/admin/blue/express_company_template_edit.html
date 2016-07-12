@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.livequery.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(function(){ 
+   jQuery(".express_top :checkbox").click(function(){
+      var ck=jQuery(this).attr("checked");
+	  var data_item_val=jQuery(this).attr("data_item_val"); 
+	  var id=jQuery(this).attr("id");	  
+	  if(ck=="checked"){
+		 var html='<div class="express_center_one" id="'+id+'">'+data_item_val+'</div>';
+	     jQuery(".express_center_bg").append(html);
+	  }else{
+	     jQuery(".express_center_one[id="+id+"]").remove();
+	  }
+   });
+   //
+   jQuery(".express_center_one").livequery(function(){
+	  jQuery(this).draggable({ cursor: "pointer" });
+	  jQuery(this).resizable(); 
+   });
+})
+function saveForm(){
+  var seller_company_width=jQuery("div[id=seller_company]").width();
+  var seller_company_height=jQuery("div[id=seller_company]").height();
+  var seller_company_top="";
+  var seller_company_left="";  
+  if(jQuery("div[id=seller_company]").position()!=null){
+    seller_company_top=jQuery("div[id=seller_company]").position().top;
+    seller_company_left=jQuery("div[id=seller_company]").position().left;
+  }
+  var seller_user_width=jQuery("div[id=seller_user]").width();
+  var seller_user_height=jQuery("div[id=seller_user]").height();
+  var seller_user_top="";
+  var seller_user_left="";  
+  if(jQuery("div[id=seller_user]").position()!=null){
+    var seller_user_top=jQuery("div[id=seller_user]").position().top;
+    var seller_user_left=jQuery("div[id=seller_user]").position().left;
+  }
+  var seller_address_width=jQuery("div[id=seller_address]").width();
+  var seller_address_height=jQuery("div[id=seller_address]").height();
+  var seller_address_top="";
+  var seller_address_left=""
+  if(jQuery("div[id=seller_address]").position()!=null){
+    seller_address_top=jQuery("div[id=seller_address]").position().top;
+    seller_address_left=jQuery("div[id=seller_address]").position().left;
+  }
+  var seller_zone_width=jQuery("div[id=seller_zone]").width();
+  var seller_zone_height=jQuery("div[id=seller_zone]").height();
+  var seller_zone_top="";
+  var seller_zone_left="";  
+  if(jQuery("div[id=seller_zone]").position()!=null){
+    seller_zone_top=jQuery("div[id=seller_zone]").position().top;
+    seller_zone_left=jQuery("div[id=seller_zone]").position().left;
+  }
+  var seller_phone_width=jQuery("div[id=seller_phone]").width();
+  var seller_phone_height=jQuery("div[id=seller_phone]").height();
+  var seller_phone_top="";
+  var seller_phone_left="";
+  if(jQuery("div[id=seller_phone]").position()!=null){
+    seller_phone_top=jQuery("div[id=seller_phone]").position().top;
+    seller_phone_left=jQuery("div[id=seller_phone]").position().left;
+  }
+  var receipt_company_width=jQuery("div[id=receipt_company]").width();
+  var receipt_company_height=jQuery("div[id=receipt_company]").height();
+  var receipt_company_top="";
+  var receipt_company_left="";
+  if(jQuery("div[id=receipt_company]").position()!=null){
+     receipt_company_top=jQuery("div[id=receipt_company]").position().top;
+     receipt_company_left=jQuery("div[id=receipt_company]").position().left;
+  }
+  var receipt_user_width=jQuery("div[id=receipt_user]").width();
+  var receipt_user_height=jQuery("div[id=receipt_user]").height();
+  var receipt_user_top="";
+  var receipt_user_left="";
+  if(jQuery("div[id=receipt_user]").position()!=null){
+    receipt_user_top=jQuery("div[id=receipt_user]").position().top;
+    receipt_user_left=jQuery("div[id=receipt_user]").position().left;
+  }
+  var receipt_address_width=jQuery("div[id=receipt_address]").width();
+  var receipt_address_height=jQuery("div[id=receipt_address]").height();
+  var receipt_address_top="";
+  var receipt_address_left="";
+  if(jQuery("div[id=receipt_address]").position()!=null){
+    receipt_address_top=jQuery("div[id=receipt_address]").position().top;
+    receipt_address_left=jQuery("div[id=receipt_address]").position().left;
+  }
+  var receipt_zone_width=jQuery("div[id=receipt_zone]").width();
+  var receipt_zone_height=jQuery("div[id=receipt_zone]").height();
+  var receipt_zone_top="";
+  var receipt_zone_left="";
+  if(jQuery("div[id=receipt_zone]").position()!=null){
+    receipt_zone_top=jQuery("div[id=receipt_zone]").position().top;
+    receipt_zone_left=jQuery("div[id=receipt_zone]").position().left;
+  }
+  var receipt_phone_width=jQuery("div[id=receipt_phone]").width();
+  var receipt_phone_height=jQuery("div[id=receipt_phone]").height();
+  var receipt_phone_top="";
+  var receipt_phone_left="";
+  if(jQuery("div[id=receipt_phone]").position()!=null){
+    receipt_phone_top=jQuery("div[id=receipt_phone]").position().top;
+    receipt_phone_left=jQuery("div[id=receipt_phone]").position().left;
+  }
+  var data={"seller_company_width":seller_company_width,"seller_company_height":seller_company_height,"seller_company_top":seller_company_top,"seller_company_left":seller_company_left,"seller_user_width":seller_user_width,"seller_user_height":seller_user_height,"seller_user_top":seller_user_top,"seller_user_left":seller_user_left,"seller_address_width":seller_address_width,"seller_address_height":seller_address_height,"seller_address_top":seller_address_top,"seller_address_left":seller_address_left,"seller_zone_width":seller_zone_width,"seller_zone_height":seller_zone_height,"seller_zone_top":seller_zone_top,"seller_zone_left":seller_zone_left,"seller_phone_width":seller_phone_width,"seller_phone_height":seller_phone_height,"seller_phone_top":seller_phone_top,"seller_phone_left":seller_phone_left,"receipt_company_width":receipt_company_width,"receipt_company_height":receipt_company_height,"receipt_company_top":receipt_company_top,"receipt_company_left":receipt_company_left,"receipt_user_width":receipt_user_width,"receipt_user_height":receipt_user_height,"receipt_user_top":receipt_user_top,"receipt_user_left":receipt_user_left,"receipt_address_width":receipt_address_width,"receipt_address_height":receipt_address_height,"receipt_address_top":receipt_address_top,"receipt_address_left":receipt_address_left,"receipt_zone_width":receipt_zone_width,"receipt_zone_height":receipt_zone_height,"receipt_zone_top":receipt_zone_top,"receipt_zone_left":receipt_zone_left,"receipt_phone_width":receipt_phone_width,"receipt_phone_height":receipt_phone_height,"receipt_phone_top":receipt_phone_top,"receipt_phone_left":receipt_phone_left}
+  
+  jQuery.ajax({type:'POST',url:'$!webPath/admin/express_company_template_save.htm?id=$!obj.id',data:data,
+	   success:function(){
+	     window.location.href="$!webPath/admin/express_company_template_success.htm"
+	   }
+  });
+}
+</script>
+<body>
+<div class="cont">
+  <h1 class="seth">运单模板编辑</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/express_company_list.htm"><b>管理</b></a></li>
+      <li> <a href="$!webPath/admin/express_company_add.htm"><b>新增</b></a></li>
+      <li><a href="javascript:void(0);" class="this"><b>模板设计</b></a></li>
+    </ul>
+  </div>
+  <div class="operation">
+    <h3>友情提示</h3>
+    <ul>
+      <li>系统自动将模板毫米尺寸换算为像素单位，可能存在细小偏差，不影响打印</li>
+      <li>勾选打印选项，该选项会自动出现在运单模板图片上，拖拽打印项到模板位置</li>
+      <li>打印选项右下角可以通过鼠标任意拉伸，打印时超出该长度自动隐藏多余内容</li>
+      <li>完成所有打印项位置布局工作，点击底部的“完成设计”按钮提交模板设计</li>
+    </ul>
+  </div>
+  <div class="about_box">
+    <!--快递单打印 start -->
+    <div class="express">
+      <div class="express_top">
+        <dl>
+          <dt>选择打印选项：</dt>
+          <dd>
+            <label> <b>
+              <input name="seller_company" type="checkbox" value="" id="seller_company" data_item_val="发货公司"   #if($!offset_map.get("seller_company_width")!='') checked="checked"#end />
+              </b><span>发货公司</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="seller_user" id="seller_user" type="checkbox" value=""  data_item_val="发货联系人" #if($!offset_map.get("seller_user_width")!='') checked="checked"#end />
+              </b><span>发货联系人</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="seller_address" id="seller_address" type="checkbox" value="" data_item_val="发货地址" #if($!offset_map.get("seller_address_width")!='') checked="checked"#end />
+              </b><span>发货地址</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="seller_zone" id="seller_zone" type="checkbox" value="" data_item_val="发货人区号" #if($!offset_map.get("seller_zone_width")!='') checked="checked"#end />
+              </b><span>发货人区号</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="seller_phone" id="seller_phone" type="checkbox" value="" data_item_val="发货人电话" #if($!offset_map.get("seller_phone_width")!='') checked="checked"#end />
+              </b><span>发货人电话</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="receipt_company" id="receipt_company" type="checkbox" data_item_val="收货公司" value="" #if($!offset_map.get("receipt_company_width")!='') checked="checked"#end />
+              </b><span>收货公司</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="receipt_user" id="receipt_user" type="checkbox" data_item_val="收货联系人" value="" #if($!offset_map.get("receipt_user_width")!='') checked="checked"#end />
+              </b><span>收货联系人</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="receipt_address" id="receipt_address" data_item_val="收货地址" type="checkbox" value="" #if($!offset_map.get("receipt_address_width")!='') checked="checked"#end />
+              </b><span>收货地址</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="receipt_zone" id="receipt_zone" data_item_val="收货区号" type="checkbox" value="" #if($!offset_map.get("receipt_zone_width")!='') checked="checked"#end />
+              </b><span>收货区号</span> </label>
+          </dd>
+          <dd>
+            <label> <b>
+              <input name="receipt_phone" id="receipt_phone" data_item_val="收货人电话" type="checkbox" value="" #if($!offset_map.get("receipt_phone_width")!='') checked="checked"#end />
+              </b><span>收货人电话</span> </label>
+          </dd>
+        </dl>
+      </div>
+      <script type='text/javascript'>
+      function js_getDPI() {
+        var arrDPI = new Array;
+        if (window.screen.deviceXDPI) {
+           arrDPI[0] = window.screen.deviceXDPI;
+           arrDPI[1] = window.screen.deviceYDPI;
+        }else{
+          var tmpNode = document.createElement("DIV");
+          tmpNode.style.cssText = "width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden";
+          document.body.appendChild(tmpNode);
+          arrDPI[0] = parseInt(tmpNode.offsetWidth);
+          arrDPI[1] = parseInt(tmpNode.offsetHeight);
+          tmpNode.parentNode.removeChild(tmpNode);    
+        }
+       return arrDPI;
+     }
+     var list=js_getDPI();
+	 var width=$!{obj.company_template_width}*10*list[0]/254;
+	 var height=$!{obj.company_template_heigh}*10*list[0]/254;
+	 jQuery(function(){
+	   jQuery("#company_template_bg").width(width).height(height);
+	 });
+      </script>
+      <div class="express_center">
+        <div class="express_center_bg" id="company_template_bg"  style="background:url($!webPath/$!obj.company_template) no-repeat; background-size:100% 100%"> #if($!offset_map.get("seller_company_width")!='')
+          <div id="seller_company" class="express_center_one" style='position: absolute; left: $!{offset_map.get("seller_company_left")}px; top: $!{offset_map.get("seller_company_top")}px; width: $!{offset_map.get("seller_company_width")}px; height: $!{offset_map.get("seller_company_height")}px;'>发货公司</div>
+          #end
+          #if($!offset_map.get("seller_user_width")!='')
+          <div id="seller_user" class="express_center_one" style='position: absolute; left: $!{offset_map.get("seller_user_left")}px; top: $!{offset_map.get("seller_user_top")}px; width: $!{offset_map.get("seller_user_width")}px; height: $!{offset_map.get("seller_user_height")}px;'>发货联系人</div>
+          #end
+          #if($!offset_map.get("seller_address_width")!='')
+          <div  id="seller_address" class="express_center_one" style='position: absolute; left: $!{offset_map.get("seller_address_left")}px; top: $!{offset_map.get("seller_address_top")}px; width: $!{offset_map.get("seller_address_width")}px; height: $!{offset_map.get("seller_address_height")}px;'>发货地址</div>
+          #end
+          #if($!offset_map.get("seller_zone_width")!='')
+          <div id="seller_zone" class="express_center_one" style='position: absolute; left: $!{offset_map.get("seller_zone_left")}px; top: $!{offset_map.get("seller_zone_top")}px; width: $!{offset_map.get("seller_zone_width")}px; height: $!{offset_map.get("seller_zone_height")}px;'>发货区号</div>
+          #end
+          #if($!offset_map.get("seller_phone_width")!='')
+          <div  id="seller_phone" class="express_center_one" style='position: absolute; left: $!{offset_map.get("seller_phone_left")}px; top: $!{offset_map.get("seller_phone_top")}px; width: $!{offset_map.get("seller_phone_width")}px; height: $!{offset_map.get("seller_phone_height")}px;'>发货人电话</div>
+          #end
+          #if($!offset_map.get("receipt_company_width")!='')
+          <div  id="receipt_company" class="express_center_one" style='position: absolute; left: $!{offset_map.get("receipt_company_left")}px; top: $!{offset_map.get("receipt_company_top")}px; width: $!{offset_map.get("receipt_company_width")}px; height: $!{offset_map.get("receipt_company_height")}px;'>收货公司</div>
+          #end
+          #if($!offset_map.get("receipt_user_width")!='')
+          <div id="receipt_user" class="express_center_one" style='position: absolute; left: $!{offset_map.get("receipt_user_left")}px; top: $!{offset_map.get("receipt_user_top")}px; width: $!{offset_map.get("receipt_user_width")}px; height: $!{offset_map.get("receipt_user_height")}px;'>收货人</div>
+          #end
+          #if($!offset_map.get("receipt_address_width")!='')
+          <div  id="receipt_address" class="express_center_one" style='position: absolute; left: $!{offset_map.get("receipt_address_left")}px; top: $!{offset_map.get("receipt_address_top")}px; width: $!{offset_map.get("receipt_address_width")}px; height: $!{offset_map.get("receipt_address_height")}px;'>收货地址</div>
+          #end
+          #if($!offset_map.get("receipt_zone_width")!='')
+          <div id="receipt_zone" class="express_center_one" style='position: absolute; left: $!{offset_map.get("receipt_zone_left")}px; top: $!{offset_map.get("receipt_zone_top")}px; width: $!{offset_map.get("receipt_zone_width")}px; height: $!{offset_map.get("receipt_zone_height")}px;'>收货区号</div>
+          #end
+          #if($!offset_map.get("receipt_phone_width")!='')
+          <div id="receipt_phone" class="express_center_one" style='position: absolute; left: $!{offset_map.get("receipt_phone_left")}px; top: $!{offset_map.get("receipt_phone_top")}px; width: $!{offset_map.get("receipt_phone_width")}px; height: $!{offset_map.get("receipt_phone_height")}px;'>收货电话</div>
+          #end </div>
+      </div>
+    </div>
+    <!--快递单打印 end -->
+  </div>
+  <div class="submit">
+    <p class="pad120">
+      <input name="" type="button" value="完成设计" style="cursor:pointer;" onclick="saveForm();"/>
+    </p>
+  </div>
+</div>
+</body>
+</html>

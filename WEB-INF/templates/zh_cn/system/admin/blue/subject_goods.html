@@ -1,0 +1,94 @@
+<script>
+jQuery(document).ready(function(){
+   jQuery("#floor_goods_info").sortable({containment:"#floor_goods_info",opacity:0.9,cursor:"crosshair"});
+   jQuery("#floor_goods_info").disableSelection();   
+   jQuery("#gc_id").load("$!webPath/admin/subject_gc.htm");
+});
+function ajaxPage(url,page,obj){
+ jQuery.ajax({type:'POST',url:url,data:{"currentPage":page},
+			  success:function(data){
+					jQuery("#subject_goods_list").empty().append(data);																											               }																																		    });
+}
+function subject_goods_load(){
+  var gc_id=jQuery("#gc_id").val();
+  var goods_name=jQuery("#goods_name").val();
+  jQuery.ajax({type:'POST',url:'$!webPath/admin/subject_goods_load.htm',data:{"gc_id":gc_id,"goods_name":goods_name},
+			  success:function(data){
+					jQuery("#subject_goods_list").empty().append(data);																											               }																																		    });
+}
+function goods_list_set(obj){
+  var img=jQuery(obj).attr("img_uri");
+  var goods_id=jQuery(obj).attr("goods_id"); 
+  var price=jQuery(obj).attr("price");
+  var goods_name=jQuery(obj).attr("goods_name");
+  var count=jQuery(".floor_box_pls ul").length;
+  var add=0; 
+  if(count>4){
+	  alert("最多只能添加5件商品！");
+	  add=1;
+  }
+  jQuery(".floor_box_pls ul").each(function(){
+     if(jQuery(this).attr("goods_id")==goods_id){
+	   alert("已经存在该商品");
+	   add=2;
+	 }
+  });
+  if(add==0){
+  var s="<ul ondblclick='jQuery(this).remove();' class='floor_pro' goods_id='"+goods_id+"'><li class='floor_pro_img'><img src='"+img+"' width='100' height='100' /></li><li>￥"+price+"</li><li class='floor_pro_name'>"+goods_name+"</li></ul>";
+  jQuery(".floor_box_pls").append(s);
+  }
+}
+function save_form(){
+ var ids="";
+ jQuery(".floor_box_pls ul").each(function(){
+   ids=ids+","+jQuery(this).attr("goods_id"); 
+ });
+ if(ids==""){
+	 alert("请选择商品！");
+	 }else{
+	 jQuery("#ids").val(ids);
+ 	 jQuery("#theForm").submit();	 
+		 }
+}
+</script>
+<form action="$!webPath/admin/subject_goods_save.htm" method="post" id="theForm">
+<div class="box_floor">
+  <div class="box_floor_six">
+    <div class="box_floor_class">
+      <input name="id" type="hidden" id="id" value="$!{id}">
+      <input type="hidden" name="ids" id="ids">
+      <input type="hidden" name="old_ids" id="old_ids" value="$!{goods_ids}">
+    </div>
+    <span class="floor_choose">已选推荐商品：</span>
+    <div class="box_floor_prodel"> <em class="floor_warning">注释：最多选择5件商品，双击删除已选商品信息，按下鼠标拖动商品次序</em>
+      <div class="floor_box_pls" id="floor_goods_info">
+    #foreach($obj in $goods_list)
+  #if($!obj.goods_main_photo)              
+   #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+    #else
+    #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+    #end
+ <ul ondblclick="jQuery(this).remove();" class="floor_pro" goods_id="$!obj.id"><li class="floor_pro_img"><img src="$!{img}" width="100" height="100" /></li><li>￥$!obj.goods_current_price</li><li class="floor_pro_name">$!obj.goods_name</li></ul>
+#end
+        </div>
+    </div>
+    <span class="floor_choose">选择要展示的商品：</span>
+    <div class="floor_choose_box"><span class="floor_search_sp">
+      <input name="goods_name" type="text" id="goods_name" class="gf_goods_name" placeholder="商品名称关键字"/>
+      </span> <span class="floor_search_sp">
+      <select name="gc_id" id="gc_id" class="gf_select">
+      <option value="">请选择商品分类...</option>
+      </select>
+      
+      </span> 
+      <input type="button"  class="floor_sear_btn" value="搜索" onclick="subject_goods_load();" style="" />
+     <div id="subject_goods_list">
+     </div>
+    </div>
+  </div>
+  <!--图片开始-->
+  <div class="submit">
+    <input type="button" value="保存" onclick="save_form();" />
+  </div>
+</div>
+</form>

@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人中心 - $!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+<div class="sns_width">
+  <div class="sns_hd">
+    <div class="sns_top_logo">
+      <div class="sns_top_logo_left"><a href="$!webPath" target="_blank"><img src="$!webPath/resources/style/system/front/default/images/sns_top_logo.png" /></a></div>
+    </div>
+    <div class="sns_main">
+      <div class="sns_main_top_c">
+        <div class="sns_main_top_c_tp">
+          <div class="sns_hd_left">
+          	#if($!otherUser.photo)
+          	#set($user_photo="$!imageWebServer/$!otherUser.photo.path/$!otherUser.photo.name")
+          	#else 
+          	#set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          	#end
+            <dl>
+              <dt><a href="$!webPath/sns/other_sns_$!{otherUser.id}.htm"><img src="$!user_photo" width="130" height="130" /></a></dt>
+              <dd class="name_dd"><span class="name">$!otherUser.userName</span></dd>
+            </dl>
+          </div>
+          <div class="sns_hd_right">
+            <ul>
+              <li><strong>0</strong></li>
+              <li>收藏</li>
+            </ul>
+            <ul>
+              <li><strong>0</strong></li>
+              <li>粉丝</li>
+            </ul>
+            <ul>
+              <li><strong>0</strong></li>
+              <li>关注</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sns_main_top_c_bg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="sns_main">
+    <div class="sns_list_box" style="height:600px">
+    	<div class="sns_list_box_nothing">
+        	主人已设置权限
+        </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>信息列表 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+function stand(id){
+	if(jQuery("#dd_"+id).hasClass("unfold")){
+		jQuery("#dd_"+id).removeClass("unfold");
+	}else{
+		jQuery("#dd_"+id).addClass("unfold");	
+	}
+}
+</script>
+</head>
+
+<body class="user_bg">
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">我的信息</span></div>
+<div class="user_index">
+
+<div class="user_order_w">
+<div class="message_list" style="margin-top:50px;">
+	#if($!objs.size()>0)
+	#foreach($obj in $!objs)
+    <a href="javascript:void(0);" onClick="stand('$!obj.id');">
+        <dl>
+            <dt><span>$!CommUtil.formatShortDate($!obj.addTime)</span><b>我的信息 $!obj.title</b></dt>
+            <dd id="dd_$!obj.id"><p>$!obj.content</p></dd>
+        </dl>
+    </a>
+    #end
+    #else
+    <div class="main">
+          <div class="mt50" style="height:49px;"></div>
+          <div class="error_page1">
+            <span class="error_img"><img src="$!webPath/resources/style/system/front/default/images/nothing.png" /></span>
+            <p>暂无记录！</p>
+          </div>
+        </div>
+    #end
+</div>
+
+
+</div>
+
+
+
+
+</div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+</body>
+</html>

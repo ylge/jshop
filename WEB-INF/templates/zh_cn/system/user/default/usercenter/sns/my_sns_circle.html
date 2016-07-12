@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的圈子 - $!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.masonry.js"></script>
+<script src="$!webPath/resources/js/iskyshop.pubu.js"></script>
+<script>
+jQuery(document).ready(function(){
+jQuery(".sns_atten dl").live("mouseover",function(){
+		jQuery(this).addClass("sns_att_hover"); }).live("mouseout",function(){
+			jQuery(this).removeClass("sns_att_hover");
+			});
+});
+
+function remove_invitation(obj_id){
+	showDialog("msg_info0","","确定删除该帖子吗？",1,"warning",3,function (){
+						window.location.href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=delete&id="+obj_id+"&currentPage=$!{currentPage}&cid=$!{cir.id}";
+						});
+	
+	}
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+<div class="sns_width">
+ $!httpInclude.include("/buyer/my_sns_head.htm")
+  <div class="sns_main">
+    $!httpInclude.include("/buyer/my_sns_nav.htm?op=cir")
+        <div class="sns_border">
+        <div class="sns_nav_na">
+        	<a href="$!webPath/buyer/my_sns_circle.htm">我关注的圈子</a> <a class="this" href="$!webPath/buyer/my_sns_circle.htm?type=my_circle">管理我的圈子</a>
+        </div>
+        #if($!cirs.size()>0)
+        <div class="sns_atten_box">
+        </div>
+        #set($cir=$!cirs.get(0))
+        #foreach($cir in $!cirs)
+        <div class="sns_att_list_c">
+             #set($photo=$!circleViewTools.genercircleImage("$!cir.id"))
+        	<span><img src="$!imageWebServer/$!{photo.src}" /></span>
+            <h3>$!cir.title</h3>
+            <p>分类：$!cir.class_name</p>
+            <b><a href="$!webPath/buyer/my_sns_circle_invitation.htm?cid=$!{cir.id}">进入管理页面>></a></b>
+        </div>
+		#end
+        #else
+        <div class="sns_nothing">
+        	<span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span>
+            <span class="fr">您没有创建任何圈子！</span>
+        </div>
+        #end
+        </div>
+    </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("#integral_status").click(function(){
+	   var integral=jQuery("#integral").val();
+	   if(integral=="true"){
+	      jQuery("#integral_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#integral").val("false");
+	   }else{
+	      jQuery("#integral_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#integral").val("true");
+	   }
+	});
+	
+	  jQuery("#theForm").validate({
+    rules:{
+	  combin_scheme_count:{digits:true,min:1,max:10},	
+	  combin_count:{digits:true,min:1,max:10},
+	  combin_amount:{digits:true,min:1,max:999999},
+	  enoughreduce_max_count:{required:true,digits:true,min:1,max:10},
+	 },
+    messages:{
+	  combin_scheme_count:{digits:"只能为整数",min:"最小为{0}",max:"最大为{0}"},	
+	  combin_count:{digits:"只能为整数",min:"最小为{0}",max:"最大为{0}"},
+	  combin_amount:{digits:"只能输入整数",min:"最小为{0}",max:"最大为{0}"},
+	  enoughreduce_max_count:{required:"请输入最小数量",digits:"只能输入整数",min:"最小为{0}",max:"最大为{0}"},
+	}
+  });
+	//
+	jQuery("#groupBuy_status").click(function(){
+	   var groupBuy=jQuery("#groupBuy").val();
+	   if(groupBuy=="true"){
+	      jQuery("#groupBuy_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#groupBuy").val("false");
+	   }else{
+	      jQuery("#groupBuy_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#groupBuy").val("true");
+	   }
+	});	
+	//
+	jQuery("#buygift_status_pic").click(function(){
+	   var buygift_status=jQuery("#buygift_status").val();
+	   if(buygift_status=="1"){
+	      jQuery("#buygift_status_pic").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#buygift_status").val("0");
+	   }else{
+	      jQuery("#buygift_status_pic").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#buygift_status").val("1");
+	   }
+	});	
+	//
+	jQuery("#enoughreduce_status_pic").click(function(){
+	   var enoughreduce_status=jQuery("#enoughreduce_status").val();
+	   if(enoughreduce_status=="1"){
+	      jQuery("#enoughreduce_status_pic").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#enoughreduce_status").val("0");
+	   }else{
+	      jQuery("#enoughreduce_status_pic").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#enoughreduce_status").val("1");
+	   }
+	});	
+	//
+	jQuery("#integralStore_status").click(function(){
+	   var integralStore=jQuery("#integralStore").val();
+	   if(integralStore=="true"){
+	      jQuery("#integralStore_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#integralStore").val("false");
+	   }else{
+	      jQuery("#integralStore_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#integralStore").val("true");
+	   }
+	});	
+	//
+	jQuery("#deposit_status").click(function(){
+	   var deposit=jQuery("#deposit").val();
+	   if(deposit=="true"){
+	      jQuery("#deposit_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#deposit").val("false");
+	   }else{
+	      jQuery("#deposit_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#deposit").val("true");
+	   }
+	});	
+	//
+	jQuery("#whether_free_status").click(function(){
+	   var deposit=jQuery("#whether_free").val();
+	   if(deposit=="1"){
+	      jQuery("#whether_free_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#whether_free").val("0");
+	   }else{
+	      jQuery("#whether_free_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#whether_free").val("1");
+	   }
+	});	
+	//
+   jQuery("#gold_status").click(function(){
+	   var gold=jQuery("#gold").val();
+	   if(gold=="true"){
+	      jQuery("#gold_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#gold").val("false");
+	   }else{
+	      jQuery("#gold_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#gold").val("true");
+	   }
+	});	
+   
+      jQuery("#combin").click(function(){
+	   var combin_status=jQuery("#combin_status").val();
+	   if(combin_status=="1"){
+	      jQuery("#combin").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#combin_status").val("0");
+	   }else{
+	      jQuery("#combin").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#combin_status").val("1");
+	   }
+	});
+	//
+	#if($!config.groupBuy)
+	jQuery("#groupBuy_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#groupBuy_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!config.whether_free==1)
+	jQuery("#whether_free_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#whether_free_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!config.buygift_status==1)
+	jQuery("#buygift_status_pic").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#buygift_status_pic").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!config.enoughreduce_status==1)
+	jQuery("#enoughreduce_status_pic").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#enoughreduce_status_pic").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!config.integral)
+	jQuery("#integral_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#integral_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!config.integralStore)
+	jQuery("#integralStore_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#integralStore_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!config.deposit)
+	jQuery("#deposit_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#deposit_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end	
+	#if($!config.gold)
+	jQuery("#gold_status").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#gold_status").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!config.combin_status==1)
+	jQuery("#combin").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#combin").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+});
+
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/base_set_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+  <div class="cont">
+    <h1 class="seth">基本设置
+      <input name="id" id="id" type="hidden" value="$!config.id"/>
+      <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/operation_base_set.htm" />
+    </h1>
+    <div class="nav_list">
+      <ul>
+        <li> <a href="javascript:void(0);" class="this"><b>基本设置</b></a></li>
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont">        
+        <ul class="set1">
+          <li class="setcont_bg">是否启用积分</li>
+          <li> <span class="webSwitch">
+            <input name="integral" id="integral" type="hidden" value="$!config.integral" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="integral_status"/></span> <span id="nothis"><strong class="q"></strong><strong class="w">积分启用后，会员注册、登录会获取对应积分，商家商品可以使用积分抵扣，商品购买成功后可以获取积分</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">是否启用积分商城</li>
+          <li > <span class="webSwitch">
+            <input name="integralStore" id="integralStore" type="hidden" value="$!config.integralStore" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="integralStore_status"/></span> <span id="nothis"><strong class="q"></strong><strong class="w">积分商城启用后，商城前台自动出现积分商城链接，同时可以管理积分商城商品</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">是否启用预存款</li>
+          <li > <span class="webSwitch">
+            <input name="deposit" id="deposit" type="hidden" value="$!config.deposit" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer"  id="deposit_status"/></span> <span id="nothis"><strong class="q"></strong><strong class="w">预存款启用后，会员可以给自己帐户充值进行交易</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">是否启用金币</li>
+          <li > <span class="webSwitch">
+            <input name="gold" id="gold" type="hidden" value="$!config.gold" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="gold_status"/></span> <span id="nothis"><strong class="q"></strong><strong class="w">金币功能启用后，店主可通过平台提供的交易方式进行购买，金币可用来购买广告、直通车等</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">金币兑换</li>
+          <li ><span class="size70"> 一元人民币可兑换
+            <input name="goldMarketValue" type="text" id="goldMarketValue" value="$!config.goldMarketValue" />
+            枚金币 </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">是否启用团购</li>
+          <li > <span class="webSwitch">
+            <input name="groupBuy" id="groupBuy" type="hidden" value="$!config.groupBuy" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="groupBuy_status"/> </span> <span id="nothis"><strong class="q"></strong><strong class="w">团购启用后，商城前台自动出现团购链接，同时可以管理团购相关信息</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>团购套餐起价</li>
+          <li><span class="size100">
+            <input name="group_meal_gold" type="text" id="group_meal_gold" value="$!config.group_meal_gold" />
+            </span><span style=" line-height:30px; padding-left:10px;">金币/30天</span><span id="nothis"><strong class="q"></strong><strong class="w">只有购买了团购套餐的用户才可以发布团购，并且团购只能发布团购套餐时间内</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">是否启用0元试用</li>
+          <li> <span class="webSwitch">
+            <input name="whether_free" id="whether_free" type="hidden" value="$!config.whether_free" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="whether_free_status"/></span> <span id="nothis"><strong class="q"></strong><strong class="w">开启后可发布0元试用0元试用功能。</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">是否启用满就送</li>
+          <li > <span class="webSwitch">
+            <input name="buygift_status" id="buygift_status" type="hidden" value="$!config.buygift_status" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="buygift_status_pic"/> </span> <span id="nothis"><strong class="q"></strong><strong class="w">只有开启满就送才可参加满就送促销方式,自营商品不受影响。</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>满就送套餐起价</li>
+          <li><span class="size100">
+            <input name="buygift_meal_gold" type="text" id="buygift_meal_gold" value="$!config.buygift_meal_gold" />
+            </span><span style=" line-height:30px; padding-left:10px;">金币/30天</span><span id="nothis"><strong class="q"></strong><strong class="w">只有购买了满就送套餐的用户才可以发布满就送</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">是否启用满就减</li>
+          <li > <span class="webSwitch">
+            <input name="enoughreduce_status" id="enoughreduce_status" type="hidden" value="$!config.enoughreduce_status" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="enoughreduce_status_pic"/> </span> <span id="nothis"><strong class="q"></strong><strong class="w">只有开启满就减才可参加满就减促销方式,自营商品不受影响。</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>满就减套餐起价</li>
+          <li><span class="size100">
+            <input name="enoughreduce_meal_gold" type="text" id="enoughreduce_meal_gold" value="$!config.enoughreduce_meal_gold" />
+            </span><span style=" line-height:30px; padding-left:10px;">金币/30天</span><span id="nothis"><strong class="q"></strong><strong class="w">只有购买了满就减套餐的用户才可以发布满就减</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>店铺满就减最大数量</li>
+          <li><span class="size100">
+            <input name="enoughreduce_max_count" type="text" id="enoughreduce_max_count" value="$!config.enoughreduce_max_count" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">审核中或进行中的满就减上限</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">是否启用组合销售</li>
+          <li > <span class="webSwitch">
+            <input name="combin_status" id="combin_status" type="hidden" value="$!config.combin_status" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg" width="61" height="23" style="cursor:pointer" id="combin"/> </span> <span id="nothis"><strong class="q"></strong><strong class="w">只有开启组合销售商家才可参加组合销售促销方式,自营商品不受影响。</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred"></strong>组合套餐购买价格</li>
+          <li> <span class="size100">
+            <input name="combin_amount" type="text" id="combin_amount" value="$!config.combin_amount" />
+            金币/30天 </span><span id="nothis"><strong class="q"></strong><strong class="w">商家使用金币购买组合套餐后才可以发布组合销售</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred"></strong>组合方案最大数量</li>
+          <li> <span class="size100">
+            <input name="combin_scheme_count" type="text" id="combin_scheme_count" value="$!config.combin_scheme_count" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">商家组合方案数量不能超过该值，最大为10</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred"></strong>组合商品最大数量</li>
+          <li> <span class="size100">
+            <input name="combin_count" type="text" id="combin_count" value="$!config.combin_count" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">商家组合数量不能超过该数值，最大为10</strong><strong class="c"></strong></span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="提交" onclick="saveForm();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

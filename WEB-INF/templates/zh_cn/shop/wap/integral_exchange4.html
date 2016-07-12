@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>订单支付 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+    jQuery(".pay_style").click(function(){
+		jQuery(".pay_style").removeClass("this");
+		jQuery(this).addClass("this");
+		var index = jQuery(this).index(".pay_style");
+		jQuery(" input[name=payType]").get(index).checked=true;
+	})
+});<!--end-->
+function order_pay(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<div class="phone_hd">确认订单</div>
+<div class="pd5">
+  <div class="payment">
+    <div class="pay_detail">
+      <dl>
+        <dt><img src="$!webPath/resources/style/system/front/wap/images/dun.png" width="62"></dt>
+        <dd>
+          <ul>
+            <li style="font-size:20px;">订单提交成功</li>
+            <li>应付金额：<span class="red">¥$!{obj.igo_trans_fee}</span></li>
+            <li></li>
+          </ul>
+        </dd>
+      </dl>
+    </div>
+    <form id="theForm" method="post" action="$!webPath/wap/integral/order_pay.htm">
+    <input name="integral_order_id" type="hidden" id="integral_order_id" value="$!{obj.id}" />
+    <div class="shopping_payfor_bmbox">
+        #set($alipay_wap_install=$!paymentTools.queryShopPayment("alipay_wap").get("install"))
+        #set($wx_pay_install=$!paymentTools.queryShopPayment("wx_pay").get("install"))
+        #if($!alipay_wap_install==true||$!wx_pay_install==true)
+          <h4>在线支付</h4>
+          <ul>  
+            #if($!alipay_wap_install==true)
+            <li>
+            <label>
+              <input name="payType" type="radio" value="alipay_wap" checked="checked" />
+              <span><img src="$!webPath/resources/style/common/images/payment/alipay.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+            #end
+            #if($!wx_pay_install==true)
+            <li>
+            <label>
+              <input name="payType" type="radio" value="wx_pay" checked="checked" />
+              <span><img src="$!webPath/resources/style/common/images/payment/wx_pay.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+            #end
+          </ul>
+          #end
+          #set($install=$!paymentTools.queryShopPayment("balance").get("install")) 
+          #if($!install==true)           
+          <h4>预存款支付</h4>
+          <ul>
+            <li>
+             <label>
+             <input name="payType" type="radio" value="balance" />
+              <span><img src="$!webPath/resources/style/common/images/payment/balance.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+          </ul>
+          #end
+        </div>
+    </form>  
+    <div class="pay_btn"><a href="javascript:void(0)" onClick="order_pay()">马上支付</a></div>
+  </div>
+  $!httpInclude.include("/wap/footer.htm?op=index") 
+</div>
+</body>
+</html>

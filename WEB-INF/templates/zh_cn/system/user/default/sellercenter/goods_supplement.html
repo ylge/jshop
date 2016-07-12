@@ -1,0 +1,106 @@
+<link href="$!webPath/resources/style/common/css/window.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("#theForm").validate({
+		errorPlacement: function(error, element) {  
+   			 error.appendTo(element.parent());  
+		},
+        rules:{
+	  	  inventory:{number:true}
+	  	 },
+	    messages:{
+	  	  inventory:{number:"只能为数字"}
+	  	},
+		submitHandler:function(){
+			jQuery("#save").attr("disabled","disabled");
+			  var intentory_details="";
+			  jQuery("input[id^=inventory_details_count_]").each(function(){
+				 var id=jQuery(this).attr("name");
+				 var count=jQuery(this).val();
+				 var price=jQuery("#inventory_details_price_"+id).val();
+				 intentory_details=id+","+count+","+price+";"+intentory_details;
+			  });
+			jQuery("#intentory_details").val(intentory_details);
+			var params = jQuery("#theForm").serialize();
+			
+			jQuery.ajax({type:'POST',url:'$!webPath/seller/goods_supplement_save.htm',data:params,
+			success:function(data){	
+		     data =	eval("("+data+")");
+			 jQuery("#goods_supplement").remove();
+				if(data.code==100){
+					showDialog("msg_info","","商品补货成功！",0,"succeed",3,function(){window.location.href="$!webPath/seller/goods.htm";});
+					}else{
+					showDialog("error","","参数错误，补货失败！",0,"error",3);	
+						}
+						jQuery(".seller_save").removeAttr("disabled");
+			   }
+			   
+			   });
+			   
+		}
+     });
+
+	  	   var params = "goods_spec_ids=$!{gsp_ids}&supplement=true"
+	   		jQuery.ajax({async:false,type:'POST',url:'$!webPath/seller/goods_inventory.htm',data:params,
+                success: function(data) { 
+				   jQuery("#inventory_detail_content").prepend(data);
+				},
+                complete: function(data) { 
+				 var inventory_detail='$!obj.goods_inventory_detail';
+				   var goods_inventory_detail=eval("("+inventory_detail+")");
+				 jQuery.each(goods_inventory_detail, function(index,item){
+					jQuery("#inventory_details_count_"+item.id).val(item.count);
+					jQuery("#inventory_details_price_"+item.id).html(item.price);
+					jQuery("#inventory_details_supp_"+item.id).html(item.supp);
+				 });
+				  if(jQuery("#inventory_detail_content>table").height()>=350){
+					jQuery("#inventory_detail_content").css({"width":"98%","height":"350px","overflow":"auto"});
+				  }else{
+					jQuery("#inventory_detail_content").css({"width":"98%","height":"auto","overflow":"auto"});
+				  }
+				}    
+			   });
+	
+ });////
+
+</script>
+<form action="$!webPath/seller/goods_supplement_save.htm" method="post" id="theForm">
+<input name="id" type="hidden" id="id" value="$!obj.id" />
+<input name="intentory_details" type="hidden" id="intentory_details" value="" />
+#if($!obj)
+    #if($!obj.inventory_type=="all")
+  <table style="float:left;" width="390" border="0" cellspacing="0" cellpadding="0" class="box_table">
+
+    <tr>
+      <td width="100" align="right" valign="top">商品库存：
+      </td>
+      <td align="left"><input name="inventory" type="text" id="inventory" value="$!obj.goods_inventory" /></td>
+    </tr>
+   
+    <tr>
+      <td colspan="2" align="center"><span class="inputbtn">
+        <input name="" type="submit" value="提交" style="cursor:pointer;"/>
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+      </span></td>
+    </tr> 
+  </table>
+   #end
+   
+   #if($!obj.inventory_type=="spec")
+   <div id="inventory_detail_content" style="float:left;">
+   </div>
+     <table width="100%" style="float:left;" border="0" cellspacing="0" cellpadding="0" class="box_table">
+     <tr>
+      <td colspan="2" align="center"><span class="inputbtn">
+        <input name="" type="submit" value="提交" style="cursor:pointer;" id="save"/>
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+      </span></td>
+    </tr>
+  </table>
+   #end
+#else
+<b style="font-size:16px">参数错误！</b>
+#end
+</form>

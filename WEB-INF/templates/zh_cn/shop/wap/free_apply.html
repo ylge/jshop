@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+function save_order(){
+  	if(jQuery("#addr_id").val()==""){
+	  alert("收货地址不能为空");
+	}else if(jQuery("#apply_reason").val()==""){
+		 alert("申请留言不能为空");
+		}else{
+		jQuery("#cart_form").submit();   
+		}
+}
+</script>
+</head>
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>0元试用申请<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+    <form  method="post"  name="cart_form" id="cart_form" action="$!webPath/wap/free_apply_save.htm">
+      <input name="apply_session" type="hidden" id="apply_session" value="$!apply_session" />
+      <input name="id" type="hidden" id="id" value="$!{id}" />
+      <input name="addr_id" id="addr_id" type="hidden" value="$!addr_id" />
+      <div class="mt50" style="height:50px;"></div>
+      <div class="pay_box"> #if($!addrs.size()>0)
+        <h3>收货人信息</h3>
+        #foreach($addr in $addrs)
+        <div class="phone_address" onClick="window.location.href='$!webPath/wap/choose_address.htm?addr_id=$!{addr.id}&type=$!webPath/wap/free_apply.htm?id=$!id'">
+          <ul class="order_ul">
+            <li class="tel">$!addr.trueName<span>$!addr.mobile</span></li>
+            <li class="site">$!{addr.area.parent.parent.areaName}$!{addr.area.parent.areaName}$!{addr.area.areaName}$!addr.area_info</li>
+          </ul>
+          <a class="more" href="$!webPath/wap/choose_address.htm?addr_id=$!{addr.id}&type=$!webPath/wap/free_apply.htm?id=$!id"> <img  src="$!webPath/resources/style/system/front/wap/images/order_info_04.png" width="13" height="45" /> </a></div>
+        #end
+        #else
+        <section>
+          <h3 style="border-bottom:0px;"><span class="fl">暂未填写收货地址</span><span class="fr">
+            <input name="" onClick="window.location.href='$!webPath/wap/buyer/address_add.htm?type=$!webPath/wap/free_apply.htm?id=$!id'" type="button" class="head_btn" value="添加">
+            </span></h3>
+        </section>
+        #end
+        
+        <div class="red_submit"><textarea placeholder="请填写申请留言" name="apply_reason" id="apply_reason"></textarea></div>
+        
+        <div class="red_submit"><a href="javascript:void(0);" onClick="save_order();">提交申请</a></div>
+    </form>
+  $!httpInclude.include("/wap/footer.htm") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-满就减-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+function ajax_update(id, obj) {
+    jQuery.ajax({
+        type: 'POST',
+        url: '$!webPath/seller/enoughreduce_goods_ajax.htm',
+        data: {
+            "id": id,
+            "er_id": "$!er_id"
+        },
+        success: function(data) {
+            if (data == "true")
+			jQuery(obj).html("退出活动")
+            else jQuery(obj).html("参加活动");
+        }
+    });
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+<div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=enoughreduce")
+  <div class="seller_right">
+    <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>促销推广</b>><b>满就减</b></span></div>
+    <div class="seller_list">
+    <div class="seller_list_title">
+        <ul class="seller_title_ul">
+          <li ><a href="$!webPath/seller/enoughreduce_list.htm"><i></i>满就减列表</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_add.htm"><i></i>新增满就减</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_meal.htm"><i></i>套餐购买</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_meal_log.htm"><i></i>购买日志</a></li>
+          <li class="this" ><a href="javascript:void(0)"><i></i>活动商品</a></li>
+        </ul>
+      </div>
+      <div class="seller_list_title">
+        <div class="user_ser_warning">
+          <ul>
+            <li>一件商品只能同时参加一个满就减促销活动</li>
+            <li>如果想让已参加其他活动的商品参加本活动，请先在其他活动列表中移除该商品</li>
+          </ul>
+        </div>
+        <form action="$!webPath/seller/enoughreduce_goods.htm" method="post" name="ListForm" id="ListForm">
+          <div  class="seller_title_sp"> <span>商品分类</span> <span>
+            <select name="user_class_id" id="user_class_id">
+              <option value="">请选择商品分类...</option>
+              
+              
+                #foreach($user_class in $goodsViewTools.query_user_class(""))
+                
+              
+              <option value="$!user_class.id">$!user_class.className</option>
+              
+              
+                #foreach($c_user_class in $user_class.childs)
+                
+              
+              <option value="$!c_user_class.id">&nbsp;&nbsp;$!c_user_class.className</option>
+              
+              
+                #end
+                #end
+              
+            
+            </select>
+            </span> <span>商品名称</span> <span class="size150">
+            <input name="searchstr" type="text" id="searchstr" value="$!searchstr"/>
+            </span> <span>
+            <input name="" type="submit"  value="搜索" style="cursor:pointer;"   class="seller_sear_btn"/>
+            </span> </div>
+          <div class="seller_list_box">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table" >
+              <tr id="opertitle">
+                <th width="5%"></th>
+                <th width="40%">商品名称</th>
+                <th width="20%">商品分类</th>
+                <th width="15%">价格</th>
+                <th align="center">操作</th>
+              </tr>
+              #if($objs.size()>0)
+              #foreach($obj in $objs)
+              <tr>
+                <td align="center"><span class="checkpro">
+                  <input name="id" type="checkbox" id="id" value="$!obj.id" />
+                  #if($!obj.goods_main_photo)
+                  #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+                  #else
+                  #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+                  #end 
+                  #set($goods_url="$!webPath/goods_$!{obj.id}.htm")
+                  #if($!config.second_domain_open && $!{obj.goods_store.store_second_domain}!="")
+ 				  #set($goods_url="http://$!{obj.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.id}.htm")
+				  #end
+                  </span></td>
+                <td valign="middle"><dl class="return_goods">
+                    <dt><a href="$!{goods_url}" target="_blank"><img src="$!img" width="60" height="63" /></a></dt>
+                    <dd class="nameproduct" style="padding-top:8px;"><a href="$!{goods_url}" target="_blank">$!obj.goods_name  #if($!obj.warn_inventory_status==-1)<b style="color:#F00">[缺货]</b>#end</a></dd>
+                  </dl>
+                  </td>
+                <td align="center">#if($!obj.gc)$!storeTools.generic_goods_class_info($!obj.gc)#end</td>
+                <td align="center">$!obj.goods_current_price</td>
+                <td class="del_operate" align="center">#if($!obj.enough_reduce==0)<a href="javascript:void(0);" onclick="ajax_update($!obj.id,this)" class="del_a">参加活动</a>#elseif($!obj.order_enough_reduce_id==$!er_id)<a href="javascript:void(0);" onclick="ajax_update($!obj.id,this)" class="del_a">退出活动</a>#else该商品已参加其他活动，请先取消后再参加本活动#end 
+              </tr>
+              #end
+              #else
+              <tr>
+                <td colspan="5" align="center"><div class="seller_center_nothing">
+                    <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                    <div class="seller_center_nothing_right">暂时没有数据</div>
+                  </div></td>
+              </tr>
+              #end
+            </table>
+          </div>
+          <div class="userlist_allop">
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">
+                <input name="er_id" type="hidden" id="er_id" value="$!er_id" />
+                <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+                <input name="mulitId" type="hidden" id="mulitId" />
+                $!gotoPageFormHTML</div>
+              <div class="user_listoper_p"> <i>
+                <input name="all1" type="checkbox" id="all1" onclick="selectAll(this)" value="" />
+                <label for="all">全选</label>
+                </i> <a  href="javascript:void(0);" onclick="cmd('$!webPath/seller/enoughreduce_goods_admin.htm?type=add','')" class="seller_oper_all">添加</a> <a  href="javascript:void(0);" onclick="cmd('$!webPath/seller/enoughreduce_goods_admin.htm?type=del','')" class="seller_oper_all">移除</a></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

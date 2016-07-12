@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery('#beginTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#endTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  
+  #if($!combin_status)
+  jQuery("#combin_status").val($!combin_status);
+  #end
+   #if($!combin_form)
+  jQuery("#combin_form").val($!combin_form);
+  #end
+  jQuery("a[id^=refuse_a_]").click(function(){
+	jQuery(".refuse_pos_tier").hide();										
+	jQuery(this).parent().find(".refuse_pos_tier").show(200);										
+	});
+  //
+});
+
+function submit_refuse(obj,mulitId,currentPage){
+	jQuery(".refuse_pos_tier").hide();
+	var refuse_msg =jQuery(obj).parent().find("textarea").val();
+	window.location.href="$!webPath/admin/combin_goods_refuse.htm?mulitId="+mulitId+"&currentPage="+currentPage+"&refuse_msg="+refuse_msg+"&type=$!{type}";
+	}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">组合销售</h3>
+  <div class="nav_list">
+  	<ul>
+        <li><a href="$!webPath/admin/combin.htm" #if(!$!type) class="this" #end><b>组合套装</b></a></li>
+        <li><a href="$!webPath/admin/combin.htm?type=1" #if($!type==1) class="this" #end><b>组合配件</b></a></li>
+    </ul>
+  </div>
+  <form method="post" id="ListForm" action="$!webPath/admin/combin.htm">
+    <div class="search">
+     <span>商品名称</span> <span class="size150">
+          <input name="goods_name" type="text" id="goods_name" value="$!goods_name" /></span>
+         <span><select name="combin_status" id="combin_status">
+            <option value="">组合销售状态</option>
+            <option value="1">审核通过</option>
+            <option value="0">等待审核</option>
+            <option value="-1">审核拒绝</option>
+             <option value="-2">已经过期</option>
+          </select>
+          </span>
+          <span><select name="combin_form" id="combin_form">
+            <option value="">所属店铺</option>
+            <option value="0">平台自营</option>
+            <option value="1">商家店铺</option>
+          </select>
+          </span>
+          <span>有效期</span> <span class="size100">
+        <input name="beginTime" type="text" id="beginTime"  value="$!beginTime"/>
+        </span><span>—</span><span class="size100">
+        <input name="endTime" type="text" id="endTime"  value="$!endTime"/>
+        </span>
+          <span class="btn_search">
+          <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+          </span> 
+    </div>
+    <div class="operation">
+    <h3>友情提示</h3>
+    <ul>
+      <li>用户购买组合套装时，只能购买整个套装，该套装价格为商家设定的组合价格</li>
+      <li>用户购买组合配件时，可以任意勾选组合中的商品，且最后所有商品价格均为商品原价</li>
+    </ul>
+  </div>
+    
+    <div class="fshoptb">
+    #set($t_text="套装")
+    #if($!type==1)
+    #set($t_text="配件")
+    #end
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="30"></th>
+          <th width="18%"><span class="form_btna">主体商品</span></th>
+          <th width="30%"><span class="form_btna">$!{t_text}内容</span></th>
+          <th width="15%" align="center"><span class="form_btna">商家</span></th>
+          <th width="8%" align="center"><span class="form_btna">开始时间</span></th>
+          <th align="center" width="8%"><span class="form_btna">结束时间</span></th>
+          <th align="center" width="8%"><span class="form_btna">状态</span></th>
+          <th align="center"><b class="form_btnb">操作</b></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+          <td class="check_position"><input name="checkbox" type="checkbox" id="checkbox" value="$!obj.id" /></td>
+          #set($main_map =$!combinTools.getMainGoodsMap("$!{obj.id}"))
+          <td align="center"><a href="$!main_map.get('url')" target="_blank" title="$!main_map.get('name')">$!main_map.get('name')</a></td>
+          <td>
+          	<div class="combin_div"> #foreach($map in $combinTools.getCombinGoodsMaps("$!{obj.id}"))
+              <ul class="combin_td_ul">
+                #foreach($goods in $combinTools.getCombinGoodsInfo($!map))
+                <li>$!velocityCount 、<a href="$!goods.get('url')" target="_blank" title="$!goods.get('name')">$!goods.get('name')</a></li>
+                #end
+                <li class="price">$!{t_text}方案$!velocityCount：#if($!type==1) <span>配件总体价格：<b>¥$!{map.get('all_goods_price')}</b></span> #else<span>组合价格：<b>¥$!{map.get('plan_goods_price')}</b></span> 商品总价：<s>¥$!{map.get('all_goods_price')}</s>#end</li>
+              </ul>
+              #end 
+           </div>
+          </td>
+          <td align="center">$!combinTools.getStoreName("$!obj.id")</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.beginTime)</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.endTime)</td>
+          #set($status="等待审核")
+          #if($!obj.combin_status==1)
+          #set($status="审核通过")
+          #end
+          #if($!obj.combin_status==-1)
+          #set($status="审核拒绝")
+          #end
+           #if($!obj.combin_status==-2)
+          #set($status="已过期")
+          #end
+          <td align="center">$!status</td>
+          <td  align="center" class="hui oprate_con"> 
+              #if($!obj.combin_status==0||$!obj.combin_status==-1)
+              <a href="javascript:void(0);" onclick="if(confirm('确定审核通过该组合销售商品？'))window.location.href='$!webPath/admin/combin_goods_audit.htm?mulitId=$!obj.id&currentPage=$!currentPage&type=$!{type}'" class="blue">通过</a>
+              #end
+              #if($!obj.combin_status!=-1)
+              <span class="refuse_pos">
+                  <a href="javascript:void(0);" id="refuse_a_$!obj.id">拒绝</a>
+                  <span class="refuse_pos_tier" style="display:none">
+                          <textarea placeholder="请填写拒绝理由"></textarea>
+                          <input type="button" value="确定" onclick="submit_refuse(this,$!obj.id,$!currentPage)" />
+                      </span>
+                  </span>
+              #end
+          </td>
+        </tr>
+        #end
+        <tr>
+        <td colspan="8">
+        <div class="operate_bar">
+    	<div class="fenye">
+            <input type="hidden" name="mulitId" id="mulitId" />
+            <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+            $!gotoPageFormHTML
+        </div> 
+    	<div class="oper_sp">
+        	<span class="oper_check"><label><input type="checkbox" name="all" id="all" value="" onclick="selectAll(this)"/>全部</label></span>
+    	    <span class="oper_del"><input type="button" value="通过" onclick="cmd('$!webPath/admin/combin_goods_audit.htm?currentPage=$!currentPage&type=$!{type}');" style="cursor:pointer;" /></span>
+        	<span class="oper_del"><input type="button" value="拒绝" onclick="cmd('$!webPath/admin/combin_goods_refuse.htm?currentPage=$!currentPage&type=$!{type}');" style="cursor:pointer;" /></span>
+        </div>
+ </div>
+        </td>
+        </tr>
+      </table>
+    </div>
+    
+ 
+</form>
+</div>
+</body>
+</html>

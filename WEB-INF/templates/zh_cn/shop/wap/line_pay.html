@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>在线支付 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="index_bg">
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>支付<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="main">
+  <div class="mt50" style="height:49px;"></div>
+  <div class="error_page1">
+    <span class="error_img"><img src="$!webPath/resources/style/system/front/wap/images/loading_b.gif"></span>
+    <p>正在跳转，请稍候...</p>
+  </div>
+</div>
+$!httpInclude.include("/wap/footer.htm")
+</body>
+</html>
+#if($!type=="goods")
+  #set($id="$!order_id")
+#end
+#if($!type=="cash")
+  #set($id="$!cash_id")
+#end
+#if($!type=="gold")
+  #set($id="$!gold_id")
+#end
+#if($!type=="integral")
+  #set($id="$!integral_order_id")
+#end
+#if($!type=="group")
+  #set($id="$!{order_id}")
+#end
+#if($!{payType}=="alipay_wap")
+ $!payTools.genericAlipayWap("$!url","$!payment_id","$!type","$!id")
+#end
+#if($!{payType}=="bill")
+$!payTools.generic99BillWap("$!url","$!payment_id","$!type","$!id")
+#end
+
+#if($!{payType}=="tenpay")
+<script>
+  window.location.href='$!webPath/wap/wap_tenpay.htm?type=$!type&payment_id=$!payment_id&id=$!id';
+</script>
+#end
+#if($!{payType}=="chinabank")
+$!payTools.genericChinaBankWap("$!url","$!payment_id","$!type","$!id")
+#end
+#if($!{payType}=="paypal")
+$!payTools.genericPaypalWap("$!url","$!payment_id","$!type","$!id")
+#end

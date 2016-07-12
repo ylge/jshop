@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+jQuery("#erstatus").change(function(){
+		if(jQuery(this).val()==-10){
+			jQuery("#reason").show();
+			}else{
+				jQuery("#reason").hide();
+				}							 						 
+										 });
+ });
+//load
+//
+	
+function saveForm(){
+		jQuery("#ListForm").attr("action","$!webPath/admin/enoughreduce_verify.htm");
+		jQuery("#ListForm").submit();
+	}
+</script>
+</head>
+<body scroll="yes">
+<div class="cont">
+  <h3 class="seth">满就减详情</h3>
+  <div class="nav_list">
+    <ul>
+      <li> <a href="$!webPath/admin/enoughreduce_list.htm"><b>所有满就减</b></a></li>
+      <li><a href="javascript:void(0);" class="this"><b>满就减详情</b></a></li>
+    </ul>
+  </div>
+  <form name="ListForm" id="ListForm" action="$!webPath/admin/enoughreduce_goods_list.htm" method="post">
+    <div class="editul setcont" id="base">
+      <div class="orderul">
+        <ul>
+          <li><span class="ordertitle">满就减标题:</span><span>$!er.ertitle</span></li>
+          <li><span class="ordertitle">申请店铺:</span><span>#if($!er.er_type==0)自营#else$!er.store_name#end</span></li>
+          <li><span class="ordertitle">满减金额:</span><span>$!er.ertag</span></li>
+          <li><span class="ordertitle">开始时间:</span><span>$!CommUtil.formatShortDate($!er.erbegin_time)</span></li>
+          <li><span class="ordertitle">结束时间:</span><span>$!CommUtil.formatShortDate($!er.erend_time)</span></li>
+          <li><span class="ordertitle">活动说明:</span><span>$!er.ercontent</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="3%">&nbsp;
+            </td>
+          <th width="25%"><span class="form_btna">商品名称</span></th>
+          <th width="15%"><span class="form_btna">商品分类</span></th>
+          <th width="10%"><span class="form_btna">发布人</span></th>
+          <th width="15%"><span class="form_btna">品牌</span></th>
+          <th width="15%"><span class="form_btna">商品价格</span></th>
+          <th align="center"><b class="form_btnb">操作</b></th>
+        </tr>
+        #foreach($obj in $objs)
+        #set($small="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+        #if($!obj.goods_main_photo)
+        #set($bigimg="$!imageWebServer/$!obj.goods_main_photo.path/$!obj.goods_main_photo.name")
+        #set($small="$!{bigimg}_small.$!{obj.goods_main_photo.ext}")
+        #end
+        <tr>
+          <td class="check_position"></td>
+          <td><div class="shop_manage"> <span style=" display:block; float:left; margin-right:10px;"> <a href="$!webPath/goods_$!{obj.id}.htm" target="_blank"> <img src="$!small" width="55px" height="55px"/> </a> </span>
+              <label> $!obj.goods_name </label>
+            </div></td>
+          <td align="center">#if($!obj.gc.parent.parent)$!obj.gc.parent.parent.className >#end #if($!obj.gc.parent)$!obj.gc.parent.className >#end $!obj.gc.className</td>
+          <td align="center">$!obj.user_admin.userName</td>
+          <td align="center">$!obj.goods_brand.name</td>
+          <td align="center">$!obj.goods_current_price</td>
+          <td class="hui oprate_con" align="center" style="white-space:nowrap"><a href="$!webPath/goods_$!{obj.id}.htm" target="_blank" class="blue">查看</a></td>
+        </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye"> <span id="queryCondition" style="display:none"> #foreach($sm in $sms)
+        <input name="$!sm.key" id="$!sm.key" type="hidden" value="$!sm.value"/>
+        #end </span>
+        <input name="mulitId" type="hidden" id="mulitId" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        <input name="er_id" type="hidden" id="er_id" value="$!er.id" />
+        <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/enoughreduce_list.htm" />
+        $!gotoPageFormHTML </div>
+    </div>
+    #if($!er.er_type==1)
+    <div class="editul setcont" >
+      <ul class="set1">
+        <li class="setcont_bg">审核状态：</li>
+        #if($!er.erstatus==5)
+        <li> <span class="webname">
+          <select name="erstatus" id="erstatus">
+            <option value="10" #if($!er.erstatus==10) selected="selected"#end>审核通过</option>
+            <option value="-10" #if($!er.erstatus==-10) selected="selected"#end>审核未通过</option>
+          </select>
+          </span></li>
+      </ul>
+      <ul class="set1" id="reason" #if($!er.erstatus!=-10)style="display:none"#end>
+        <li class="setcont_bg">审核失败原因:</li>
+        <li> <span class="webname">
+          <textarea rows="6" cols="40" name="failed_reason">$!er.failed_reason</textarea>
+          </span></li>
+      </ul>
+      <div class="submit"><span class="pad120">
+        <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/>
+        </span> </div>
+      #else
+      <li> <span class="webname">#if($!er.erstatus==10)已通过#elseif($!er.erstatus==20)已结束#elseif($!er.erstatus==0)未审核#elseif($!er.erstatus==-10)审核未通过#end</span></li>
+      </ul>
+      #end </div>
+    #end
+  </form>
+</div>
+</body>
+</html>

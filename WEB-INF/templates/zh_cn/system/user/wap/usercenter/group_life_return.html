@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>退货列表</title>
+<link href="../../../../../../resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	var currentPage = 2;
+	var  ret = 1;
+	var totalPage = "$!totalPage";
+	
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&ret==1) {
+		if(currentPage<=totalPage){
+		jQuery("#loading").hide();
+		jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/buyer/group_life_return.htm',
+				  data:{"currentPage":currentPage,"beginTime":"$!{beginTime}","endTime":"$!endTime","order_id":"$!order_id"},
+				beforeSend:function(){
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  ret = 2;
+				},
+			   success:function(data){
+				   currentPage = currentPage+1;
+				 
+				 ret = 1;
+	             if(data){ 
+				  jQuery(".goods_resturn").append(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	 }else{
+		jQuery("#loading_none").show();
+	}
+	});
+	
+});<!--end-->
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/service_center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">商品退货</span></div>
+<div class="phone_main">
+	
+    <div class="order_return_list">
+    	<ul class="resturn_tab">
+        	<li><a href="$!webPath/wap/buyer/order_return_list.htm">商品退货</a></li>
+            <li class="this"><a href="#">生活购退款</a></li>
+            <li><a href="$!webPath/wap/buyer/order_return_listlog.htm">查看返修/退换货记录</a></li>	
+        </ul>
+        <!--商品退货-->
+        #if($!objs.size()>0)
+        <div class="goods_resturn">
+        #foreach($obj in $objs)
+            <dl>
+            	<dt>团购消费码：$!obj.group_sn</dt>
+                <dd><span class="fl"><p>$!{obj.lifeGoods.gg_name}</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span>
+                #if($!obj.status==0)
+                <span class="fr"><a href="$!webPath/wap/buyer/group_life_return_apply.htm?id=$!obj.id">退款</a></span>
+                #end
+                #if($!obj.status==1)
+                <span class="fr gray"><a href="javascript:void(0);">已使用</a></span>
+                #end
+                #if($!obj.status==3)
+                <a href="$!webPath/wap/buyer/group_life_return_apply.htm?id=$!obj.id">申请中</a>
+                #end
+                #if($!obj.status==5)
+                <span class="fr gray"><a href="javascript:void(0);">等待退款</a></span>
+                #end
+                #if($!obj.status==7)
+                <span class="fr gray"><a href="javascript:void(0);">退款完成</a></span>
+                #end
+                </dd>
+            </dl>
+            
+            
+        #end       
+        </div>
+        #else
+        <div class="main">
+  <div class="mt50" style="height:49px;"></div>
+  <div class="error_page1">
+  	<span class="error_img"><img src="$!webPath/resources/style/system/front/default/images/nothing.png" /></span>
+    <p>暂无记录！</p>
+  </div>
+
+	</div>
+        #end
+        
+        <!--查看返修/退换货记录-->
+<div class="loading" id="loading" style="display:none">
+<ul>
+  <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16" /></li>
+  <li>正在加载....</li>
+</ul>
+</div>
+<div class="loading" id="loading_none" style="display:none">
+<ul>
+  <li>没有更多了....</li>
+</ul>
+</div>        
+    </div>
+    
+    
+    
+    $!httpInclude.include("/wap/footer.htm?op=center")
+        $!httpInclude.include("/wap/layer.htm")
+</div>
+</body>
+</html>

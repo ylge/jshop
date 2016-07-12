@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+//
+jQuery.validator.addMethod("prefix", function(value, element) {
+    return /^[0-9a-zA-Z]{0,6}$/.test(value);
+}, "前缀必须是6字之内字母数字的组合");
+//
+  jQuery("#theForm").validate({
+    rules:{
+	  rc_sns:{required:true},
+	  rc_count:{required:true,digits:true,min:1},
+	  rc_prefix:{required :true,maxlength:6,prefix:true},
+	  rc_amount:{required :true,min:0.01},
+	  card_txt:{required:true,accept:"txt"},
+	  rc_mark:{maxlength:8}
+	 },
+	messages:{
+	   rc_sns:{required:"充值卡号不能为空"},
+	   rc_count:{required:"数量不能为空",digits:"只能输入整数",min:"数量最小为1张"},
+	   rc_prefix:{required:"充值卡前缀不能为空",maxlength:"前缀最多6位"},
+	   rc_amount:{required :"充值卡金额不能为空",min:"充值卡金额最小为0.01"},
+	   card_txt:{required:"请选择纯文本文件",accept:"只接受txt纯文本文件"},
+	   rc_mark:{maxlength:"批次标识最长为8位"}
+	}
+  }); 	  
+  //
+  jQuery(":radio[id='type']").click(function(){
+      var val=jQuery(":radio[id='type'][checked=true]").val();
+	  if(val=="auto"){
+		  jQuery("#hand_list").hide();
+		  jQuery("#import_card_txt").hide();
+		  jQuery("#auto_count").show();
+		  jQuery("#auto_prefix").show();
+	  }
+	  if(val=="hand"){
+	     jQuery("#hand_list").show();
+		 jQuery("#import_card_txt").hide();
+		 jQuery("#auto_count").hide();
+		 jQuery("#auto_prefix").hide();
+	  }
+	  if(val=="import"){
+		 jQuery("#import_card_txt").show();		  
+	     jQuery("#hand_list").hide();
+		 jQuery("#auto_count").hide();
+		 jQuery("#auto_prefix").hide();
+	  }
+  });
+  //
+    jQuery("#card_txt").change(function(){
+	 jQuery("#textfield1").val(jQuery("#card_txt").val());
+   })
+});
+function saveForm(){
+ jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<div class="cont">
+  <h1 class="seth">平台充值卡</h1>
+  <div class="nav_list">
+  	 <ul>
+      <li><a href="$!webPath/admin/recharge_card_list.htm"><b>充值卡列表</b></a></li>
+      <li><a href="$!webPath/admin/recharge_card_add.htm"  class="this"><b>新增充值卡</b></a></li>
+     </ul>   
+  </div>
+  <div class="operation">
+    <h3>友情提示</h3>
+    <ul>
+      <li>商城用户在用户中心可以使用预存款进行充值，充值成功后充值卡作废，用户可用预存款增加</li>
+      <li>自动生成充值卡时候，需要录入充值卡数量、前缀、面值，提交后自动生成充值卡</li>
+      <li>手动录入充值卡时候，在充值卡号文本框中输入充值卡号，每行表示一个卡号</li>
+      <li>导入充值卡时候，请用文本文件记录卡号，每行表示一个卡号，保证读取速度，文件大小不要超过1M</li>
+      <li>充值卡出现重复，系统自动忽略后增的充值卡信息</li>
+    </ul>
+  </div>
+  <br />
+  <form action="$!webPath/admin/recharge_card_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+    <div class="setcont">
+      <ul class="set1">
+        <li>充值卡发布方式</li>
+        <li>
+          <label> <span class="use_code"><strong>
+            <input name="type" type="radio" id="type"  value="auto" checked="checked"/>
+            </strong><strong class="usecode"> 自动生成充值卡</strong></span> </label>
+        </li>
+        <li>
+          <label> <span class="use_code"><strong>
+            <input name="type" id="type" type="radio" value="hand" />
+            </strong><strong class="usecode"> 手动录入充值卡</strong></span> </label>
+        </li>
+        <li>
+          <label> <span class="use_code"><strong>
+            <input name="type" id="type" type="radio" value="import" />
+            </strong><strong class="usecode"> 导入充值卡</strong></span> </label>
+        </li>
+      </ul>
+      <ul class="set1"  id="hand_list" style="display:none;">
+        <li  class="setcont_bg"><strong class="sred">*</strong>充值卡号列表</li>
+        <li><span class="webname">
+          <textarea name="rc_sns" cols="40" rows="6" id="rc_sns"></textarea>
+          </span></li>
+      </ul>
+      <ul class="set1" id="auto_count">
+        <li  class="setcont_bg"><strong class="sred">*</strong>充值卡数量</li>
+        <li><span class="size100">
+          <input name="rc_count" type="text" id="rc_count" value="" size="15" />
+          </span></li>
+      </ul>
+      <ul class="set1" id="auto_prefix">
+        <li  class="setcont_bg"><strong class="sred">*</strong>充值卡前缀</li>
+        <li><span class="size100">
+          <input name="rc_prefix" type="text" id="rc_prefix" value="" size="15" />
+          </span></li>
+      </ul>
+      <ul style="display:none;" class="set1" id="import_card_txt">
+          <li class="setcont_bg"><strong class="sred">*</strong>充值卡文件</li>
+          <li> <span class="size13" >
+            <input name="textfield1" type="text" id="textfield1" />
+            </span> <span class="filebtn">
+            <input name="button" type="button" id="button1" value=""/>
+            </span> <span style="float:left;" class="file">
+            <input name="card_txt" type="file" id="card_txt" class="file-text" size="30"/>
+            </span>  
+          </li>
+        </ul>
+      <ul class="set1">
+        <li  class="setcont_bg"><strong class="sred">*</strong>充值卡面值（元）</li>
+        <li><span class="size100">
+          <input name="rc_amount" type="text" id="rc_amount" value="" size="40" />
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li  class="setcont_bg">批次标识</li>
+        <li><span class="webname">
+          <input name="rc_mark" type="text" id="rc_mark" value="" size="40" />
+          </span></li>
+      </ul>
+    </div>
+  </form>
+  <div class="submit"> <span class="pad80">
+    <input name="save" type="button" value="提交" onclick="saveForm()" />
+    </span> </div>
+</div>
+</body>
+</html>

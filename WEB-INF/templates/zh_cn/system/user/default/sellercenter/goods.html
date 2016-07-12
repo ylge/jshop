@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-在售商品管理 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(function(){ 
+   jQuery("span[id^=qr_img_]").mouseenter(function(){
+      jQuery(this).find(".goods_edit_popup").show();
+   }).mouseleave(function(){
+      jQuery(this).find(".goods_edit_popup").hide();
+   });
+})
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> 
+  $!httpInclude.include("/seller/nav.htm?op=goods")
+    <div class="seller_right">
+      <div class="seller_position"> <span> <b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>商品管理</b> > <b>出售中的商品</b></span> </div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+         <form action="$!webPath/seller/goods.htm" method="post">
+          <div  class="seller_title_sp"> <span>商品分类</span> <span>
+            <select name="user_class_id" id="user_class_id">
+              <option value="">请选择商品分类...</option>
+              
+                #foreach($user_class in $goodsViewTools.query_user_class(""))
+                    
+              <option value="$!user_class.id">$!user_class.className</option>
+              
+                      #foreach($c_user_class in $user_class.childs)
+                      
+              <option value="$!c_user_class.id">&nbsp;&nbsp;$!c_user_class.className</option>
+              
+                      #end
+                #end
+                
+            </select>
+            </span> <span>商品名称</span> <span class="size150">
+            <input name="goods_name" type="text" id="goods_name" value="$!goods_name" />
+            </span> <span>
+            <input name="" type="submit"  value="搜索" style="cursor:pointer;"  class="seller_sear_btn"/>
+            </span> </div>
+          </form>
+          #if($!objs.size()>0)
+          <div class="alldel_l"><label><span class="check_input">
+            <input name="all" type="checkbox" id="all" value="" onclick="selectAll(this)" />
+            </span> <span>
+            全选
+            </span></label> 
+            <span><a href="javascript:void(0);" onclick="cmd('$!webPath/seller/goods_sale.htm','')" class="user_down_shop">下架</a></span>
+            <span><a href="javascript:void(0);" onclick="cmd('$!webPath/seller/goods_qr.htm','')" class="user_down_shop">生成二维码</a></span>
+            <span><a href="javascript:void(0);" ck_dialog_uri="$!webPath/seller/goods_format.htm?currentPage=$!currentPage" ck_dialog_title="关联版式" ck_dialog_width="400" ck_dialog_height="100" ck_dialog_id="link_goods_format" class="user_down_shop">关联版式</a></span>
+            </div>
+          #end
+        </div>
+        <form action="$!webPath/seller/goods.htm" method="post" name="ListForm" id="ListForm">
+          <div class="seller_list_box">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table" >
+              <tr id="opertitle">
+                <th width="5%"></th>
+                <th width="33%">商品名称</th>
+                <th width="20%">商品分类</th>
+                <th width="10%">价格</th>
+                <th width="5%">推荐</th>
+                <th align="center">操作</th>
+              </tr>
+             #if($!objs.size()>0) 
+              #foreach($obj in $objs)
+              <tr>
+                <td align="center"><span class="checkpro">
+                  <input name="id" type="checkbox" id="id" value="$!obj.id" />
+                  #if($!obj.goods_main_photo)
+                  #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+                  #else
+                  #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+                  #end 
+                  #set($goods_url="$!webPath/goods_$!{obj.id}.htm")
+                  #if($!config.second_domain_open && $!{obj.goods_store.store_second_domain}!="")
+ 				  #set($goods_url="http://$!{obj.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.id}.htm")
+				  #end
+                  </span></td>
+                <td valign="middle"><dl class="return_goods">
+                    <dt><a href="$!{goods_url}" target="_blank"><img src="$!img" width="60" height="63" /></a></dt>
+                    <dd class="nameproduct" style="padding-top:8px;"><a href="$!{goods_url}" target="_blank">$!obj.goods_name #if($!obj.warn_inventory_status==-1)<b style="color:#F00">[缺货]</b>#end</a></dd>
+                  </dl>
+                  
+                    <div class="goods_edit">
+                       #set($goods_prefer=$!goodsViewTools.query_goods_single_preferential("$!obj.id","$!webPath"))
+                        #if($!obj.f_sale_type==1)
+                    	<span><em><img src="$!{goods_prefer}" title="F码商品" /></em></span>
+                         <span><em><a href="$!webPath/seller/goods_self_f_code_download.htm?id=$!obj.id" target="_blank" goods_id="$!obj.id" id="goods_f_code_download_$!{obj.id}"><img title="下载F码Excel表格" src="$!webPath/resources/style/system/front/default/images/d.png" /></a></em></span>
+                        #end
+                       #if($!goods_prefer!="" && $!obj.f_sale_type!=1)
+                        <span style="display:;"><em><img src="$!{goods_prefer}" /></em></span>
+                       #end
+                        #if($!obj.qr_img_path) 
+                        <span id="qr_img_$!obj.id"><em><img src="$!webPath/resources/style/system/front/default/images/e.png" title="查看二维码" /></em>
+                        	<div class="goods_edit_a"><i class="goods_edit_popup"  style="display:none;"><img src="$!obj.qr_img_path"/><b></b></i></div>
+                        </span>
+                        #end                  
+                    </div>
+                  </td>
+                <td align="center">#if($!obj.gc)$!storeTools.generic_goods_class_info($!obj.gc)#end</td>
+                <td align="center">¥$!obj.goods_current_price</td>                 
+                <td align="center"><img src="$!webPath/resources/style/system/front/default/images/usercenter/$!{obj.goods_recommend}.jpg" width="16" height="16" /></td>
+                <td class="del_operate" align="center"><a href="$!webPath/seller/goods_edit.htm?id=$!obj.id&currentPage=$!currentPage" target="_blank" class="del_a">编辑</a><a href="$!webPath/seller/goods_sale.htm?mulitId=$!obj.id" class="del_a">下架</a>
+                <a href="javascript:void(0);" class="del_a" onclick="showDialog('msg_info','','确认删除该条数据吗？',1,'question',3,function(){window.location.href='$!webPath/seller/goods_del.htm?mulitId=$!obj.id&currentPage=$!currentPage'});">删除</a>
+                #if(!$!obj.qr_img_path)
+                <a href="javascript:void(0);" class="del_a" onclick="showDialog('msg_info','','确定生成二维码?',1,'question',3,function(){window.location.href='$!webPath/seller/goods_qr.htm?mulitId=$!obj.id&currentPage=$!currentPage'});">二维码</a>
+                #end
+                  #if($!obj.warn_inventory_status==-1) 
+                <a href="javascript:void(0);" class="del_a" dialog_uri="$!webPath/seller/goods_supplement.htm?id=$!{obj.id}" dialog_title="商品补货" dialog_top="300" dialog_width="550" dialog_height="500" dialog_id="goods_supplement">补货</a>
+                #end
+                </td>
+              </tr>
+              #end
+             #else
+              <tr>
+                <td colspan="6" align="center"><div class="seller_center_nothing">
+                    <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                    <div class="seller_center_nothing_right">暂时没有数据</div>
+                  </div></td>
+              </tr>
+              #end
+            </table>
+          </div>
+           #if($!objs.size()>0)
+          <div class="userlist_allop">
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">
+                <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+                <input name="mulitId" type="hidden" id="mulitId" />
+                <input name="goods_name" type="hidden" id="goods_name" value="$!goods_name" />
+                <input name="user_class_id" type="hidden" id="user_class_id" value="$!user_class_id" />
+                $!gotoPageFormHTML</div>
+              <div class="user_listoper_p"> <i>
+                 <label><input name="all1" type="checkbox" id="all1" onclick="selectAll(this)" value="" />
+               全选</label>
+                </i> <a href="javascript:void(0);" onclick="cmd('$!webPath/seller/goods_sale.htm','')" class="seller_oper_all">下架</a> <a  href="javascript:void(0);" onclick="cmd('$!webPath/seller/goods_qr.htm','')" class="seller_oper_all">生成二维码</a><a href="javascript:void(0);" ck_dialog_uri="$!webPath/seller/goods_format.htm?currentPage=$!currentPage" ck_dialog_title="关联版式" ck_dialog_width="400" ck_dialog_height="100" ck_dialog_id="link_goods_format" class="seller_oper_all">关联版式</a></div>
+            </div>
+          </div>
+          #end
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

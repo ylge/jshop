@@ -1,0 +1,81 @@
+
+        #foreach($obj in $objs)
+        	#foreach($map in $!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+            #set($goods_id = "$!{map.get('goods_id')}")	
+            #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+            #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+            #set($goods_return_status="$!{map.get('goods_return_status')}")
+            #set($goods_choice_type="$!{map.get('goods_choice_type')}")
+            #set($goods_gsp_ids="$!{map.get('goods_gsp_ids')}")
+            #if($!goods_choice_type=="1")
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">退货</a></span></dd>
+            </dl>
+            #else
+            	#if($!goods_return_status=="" || $!goods_return_status==5)
+                <dl>
+                    <dt>订单编号：$!obj.order_id</dt>
+                    <dd><span class="fl"><img src="$!img" width="60" height="60" /><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr"><a dialog_id="order_cancel" dialog_height="100" dialog_width="530" dialog_title="申请退货" dialog_uri="$!webPath/wap/buyer/order_return_apply.htm?id=$!goods_id&oid=$!obj.id&order_id=$!obj.order_id&currentPage=$!currentPage&goods_gsp_ids=$!goods_gsp_ids" href="javascript:void(0);">#if($!goods_return_status==5)退货中#else退货#end</a></span></dd>
+            	</dl>
+                #else
+                	#if($!goods_return_status==6 || $!goods_return_status==7 || $!goods_return_status==8)
+                    #set($return_mark="退货中")
+                        #if($!goods_return_status==8)
+                        	#set($return_mark="退货完成")
+                        #end
+                    #else
+                    	#set($return_mark="退货")
+                    #end
+                    <dl>
+                    	<dt>订单编号：$!obj.order_id</dt>
+                    	<dd><span class="fl"><img src="$!img" width="60" height="60" /><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">$!{return_mark}</a></span></dd>
+            		</dl>
+                #end
+            #end
+            #if($!obj.child_order_detail)
+            #foreach($child_map in $!orderFormTools.queryGoodsInfo("$!obj.child_order_detail"))
+            #set($child_order=$!orderFormTools.query_order("$!child_map.get('order_id')"))
+            #set($order_total_price=$order_total_price+$child_order.totalPrice)
+            #set($order_total_ship_price=$order_total_ship_price+$child_order.ship_price)
+            #set($order_id=$!child_map.get('order_id'))
+            #foreach($map in $!orderFormTools.queryGoodsInfo("$!child_map.get('order_goods_info')"))
+            #set($goods_id = "$!{map.get('goods_id')}")	
+            #set($goods_name = "$!{map.get('goods_name')}")
+            #set($goods_count = $!{map.get('goods_count')})
+            #set($goods_price = $!{map.get('goods_price')})
+            #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+            #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+            #set($goods_return_status="$!{map.get('goods_return_status')}")
+            #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+            #set($goods_choice_type="$!{map.get('goods_choice_type')}")
+            #set($goods_gsp_ids="$!{map.get('goods_gsp_ids')}")
+            #if($!goods_choice_type=="1")
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">退货</a></span></dd>
+            </dl>
+            #else
+            	#if($!goods_return_status=="" || $!goods_return_status==5)
+                <dl>
+                    <dt>订单编号：$!obj.order_id</dt>
+                    <dd><span class="fl"><img src="$!img" width="60" height="60" /><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr"><a href="$!webPath/wap/buyer/order_return_apply.htm?id=$!goods_id&oid=$!obj.id&order_id=$!obj.order_id&currentPage=$!currentPage&goods_gsp_ids=$!goods_gsp_ids">#if($!goods_return_status==5)退货中#else退货#end</a></span></dd>
+            	</dl>
+                #else
+                	#if($!goods_return_status==6 || $!goods_return_status==7 || $!goods_return_status==8)
+                    #set($return_mark="退货中")
+                        #if($!goods_return_status==8)
+                        	#set($return_mark="退货完成")
+                        #end
+                    #else
+                    	#set($return_mark="退货")
+                    #end
+                    <dl>
+                    	<dt>订单编号：$!obj.order_id</dt>
+                    	<dd><span class="fl"><img src="$!img" width="60" height="60" /><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">$!{return_mark}</a></span></dd>
+            		</dl>
+                #end
+            #end
+        #end
+
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的购物车 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" ></meta>
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+jQuery(document).ready(function(){
+jQuery.ajaxSetup ({
+    cache: false //关闭AJAX相应的缓存
+});									
+ lazyload();
+			
+ //添加到购物车
+   jQuery("a[id^=goods_cart_]").live("click",function(e){
+	  var goods_id=jQuery(this).attr("goods_id");
+	  var goods_type=jQuery(this).attr("goods_type");
+	  var user_id=jQuery(this).attr("user_id");
+	  var buy=true;
+	  if(goods_type=="0"){
+	    if("$!user.userRole"=="ADMIN"){
+			buy=false;
+	    }
+	  }
+	  if(goods_type=="1"){
+	    if("$!user.id"==user_id){
+		   buy=false;
+		}
+	  }
+	  if(!buy){
+	     showDialog("msg_info","","不可以购买自己的商品！",2,"warning",3,'');
+	  }else{
+	     jQuery.post("$!current_webPath/add_goods_cart.htm",{"id":goods_id,"count":1,"price":"","gsp":""},
+				function(data){
+				    if(data.code==0){
+						lazyload("carts_list");
+					}
+					 if(data.code==-1){
+					   showDialog("error","","购物车中已存在该商品！",2,"error",3,'');
+					}
+					 if(data.code==-3){
+					   showDialog("error","","商品库存不足，添加失败！",2,"error",3,'');
+					}
+				 },"json");
+	  }
+   });			
+			
+   //F码购买
+   jQuery("a[id^=f_goods_cart_]").live("click",function(){
+	  var goods_id=jQuery(this).attr("goods_id");
+	  var user_id=jQuery(this).attr("user_id");
+	  var goods_type=parseInt(jQuery(this).attr("goods_type"));
+	  if("$!{user.id}"==user_id){
+         showDialog("msg_info","","不能购买自己的商品！",2,"warning",3,'');
+	  }else{
+          window.location.href="$!webPath/f_code_cart.htm?goods_id="+goods_id;
+	  }								  
+   })
+     
+});////
+
+	var lazyload=function(){
+			var load_class=arguments[0];
+			  if(load_class==undefined||load_class==""){
+				jQuery("#shoppingcart").load("$!webPath/goods_cart1_load.htm",fun_clear);
+			  }else{
+				jQuery("#"+load_class).load("$!webPath/goods_cart1_load.htm",{load_class:load_class},fun_clear); 
+				  }
+			};
+						
+	var fun_clear=function(){
+			jQuery("#shoppingcart").removeClass("empty_box");
+			jQuery(".loading_div").removeClass("loading_div");
+			}
+</script>
+<style type="text/css">
+.goodscar { display:none; }
+.top_user { position:absolute; right:0px }
+.head_search { width:610px; }
+.head_seartxt .h_sear_txt { width:500px; }
+</style>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="shopping_cart">
+    <div class="shopping_step" style="float:none;">
+      <ul>
+        <li class="shopping_step_athis"><span></span><i></i><strong>1.我的购物车</strong></li>
+        <li class="shopping_step_b"><span></span><i></i><strong>2.填写核对订单信息</strong></li>
+        <li class="shopping_step_c"><span></span><i></i><strong>3.成功提交订单</strong></li>
+      </ul>
+    </div>
+    <div class="loading_div">
+    <div id="shoppingcart" class="empty_box">
+	<span><img src="$!webPath/resources/style/system/front/default/images/wait.gif" width="32" height="32" /></span>
+    <span class="word">正在努力加载请稍后...<br />若页面长时间不显示信息，<a href="javascript:lazyload();">点此刷新</a></span>
+    </div>
+    </div>
+    </div>
+  $!httpInclude.include("/footer.htm") 
+ </div> 
+</body>
+</html>

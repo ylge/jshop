@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	#if($!gift_status)
+	jQuery("#gift_status").val($!gift_status);
+	#end
+  jQuery('#beginTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#endTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  //
+});
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">自营满就送管理</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/buygift_self_list.htm"  class="this"><b>自营满就送管理</b></a></li>
+      <li><a href="$!webPath/admin/buygift_self_add.htm"><b>自营满就送添加</b></a></li>
+    </ul>
+  </div>
+  <FORM name="ListForm" id="ListForm"  action="$!webPath/admin/buygift_self_list.htm" method="post">
+  <div class="search">
+    <ul>
+      <li> <span>满就送状态</span><span>
+        <select name="gift_status" id="gift_status">
+          <option value="">所有状态</option>
+          <option value="10">进行中</option>
+          <option value="20">已结束</option>
+        </select>
+      </span> <span>时间区间</span><span class="size100">
+        <input name="beginTime" type="text" id="beginTime"  readonly="readonly" value="$!beginTime"/>
+        </span><span>—</span><span class="size100">
+        <input name="endTime" type="text" id="endTime" readonly="readonly" value="$!endTime" />
+        </span><span >
+        <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+      </span> </li>
+    </ul>
+  </div>
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="20%"><span class="form_btna">满足条件金额</span></th>
+          <th width="20%"><span class="form_btna">促销状态</span></th>
+          <th width="20%"><span class="form_btna">开始时间</span></th>
+          <th width="20%"><span class="form_btna">结束时间</span></th>
+          <th ><b class="form_btnb">操作</b></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+          <td align="center">$!obj.condition_amount</td>
+          <td align="center">#if($!obj.gift_status==10) 进行中 #elseif($!obj.gift_status==20) 已结束 #elseif($!obj.gift_status==-10) 审核未通过 #end</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.beginTime)</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.endTime)</td>
+          <td class="hui oprate_con" align="center"><a href="$!webPath/admin/buygift_self_info.htm?id=$!obj.id&currentPage=$!currentPage" class="blue">详情</a> #if($!obj.gift_status==10)
+                    |
+                    <a href="javascript:void(0);" onclick="if(confirm('活动停止后无法在次开启，是否确认停止？'))window.location.href='$!webPath/admin/buygift_stop.htm?id=$!obj.id&currentPage=$!currentPage'" class="blue">停止</a>
+                    #end</td>
+        </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input type="hidden" name="currentPage" id="currentPage" value="$!currentPage" />
+        <input name="mulitId" type="hidden" id="mulitId" />
+        $!gotoPageFormHTML </div>
+    </div>
+  </FORM>
+</div>
+</body>
+</html>
+

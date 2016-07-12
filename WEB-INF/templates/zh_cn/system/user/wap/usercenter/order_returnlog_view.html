@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>服务单详情</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){
+	timeCount("time_down_info");	
+	jQuery("#theForm").validate({
+	ignore: "",
+    rules:{
+	  express_code:{
+	    required :true
+	  }
+	 },
+	messages:{
+	  express_code:{required:"退货快递单号不能为空！"}
+	}
+  });
+	
+	jQuery("#info_click").toggle(
+			function(){
+			jQuery("#return_info").slideUp();	
+			jQuery(this).html("展开");
+			},
+			function(){
+			jQuery("#return_info").slideDown();	
+			jQuery(this).html("收起");
+			});	
+});
+function timeCount(remain_id){
+   function _fresh(){
+      var nowDate = new Date(),                                    //当前时间
+      endDate = new Date($('#'+remain_id).attr('endtime')),    //截止时间
+      totalS  = parseInt((endDate.getTime() - 0 - nowDate.getTime() - 0) / 1000-0);     //总秒数
+      _day    = parseInt(totalS / 3600 / 24);
+      _hour   = parseInt((totalS / 3600) % 24);
+      _minute = parseInt((totalS / 60) % 60);
+      _second = parseInt(totalS % 60);
+     jQuery('#'+remain_id).html('您还有<span class="time" ><b>' + _day +'</b>天<b>' + _hour + '</b>小时<b>' + _minute + '</b>分<b>' + _second + '</b>秒</span>超过该时间系统将判定该退货失败');
+     if( totalS <= 0){
+       jQuery('#'+remain_id).html('退货失败');
+	   jQuery("tr[id^=tr_]").hide();
+       clearInterval(sh);
+     }
+  }
+  _fresh();
+  var sh = setInterval(_fresh,1000);
+}
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href=""><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">服务单详情</span></div>
+<div class="phone_main">
+	
+    <div class="order_return_list">
+    	<ul class="returnlog_ul">
+        	<li class="bg_white"><span class="gray">服务单号：</span>：$!obj.return_service_id</li>
+            <li class="bg_white"><span class="gray">商品信息：</span>$!obj.goods_name</li>
+            <li>本次退货服务由<b class="orange">#if($!obj.goods_type==0) 平台商 #else 经销商 #end</b>为您提供</li>
+            <li  id="time_down_info" endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{of.return_shipTime})">您还有<span class="time" ><b>01</b>天<b>01</b>小时<b>01</b>分<b>01</b>秒</span>超过该时间系统将判定该退货失败</li>
+        </ul>
+        <div class="returnlog_box">
+        	<h2>服务单收货详情</h2>
+            <ul>
+            	<li>商家收货信息:</li>
+                <li>$!obj.self_address</li>
+            </ul>
+            <ul>
+            	<li>退货问题描述:</li>
+                <li>$!obj.return_content</li>
+            </ul>
+            #if($!obj.goods_return_status=="6")
+        	<form id="theForm" name="theForm" action="$!webPath/wap/buyer/order_return_ship_save.htm" method="post">
+            <input type="hidden" value="$!obj.id" id="id" name="id" />
+            <ul class="ems">
+            	<li>物流公司：
+                <select name="express_id" id="express_id" class="select">
+                   #foreach($expressCompany in $expressCompanys)
+      				<option value="$!expressCompany.id">$!expressCompany.company_name</option>
+      			   #end
+                </select>
+                </li>
+                <li>物流单号：<input name="express_code" type="text" id="express_code" value="" class="ip" /></li>
+            </ul>
+            </form>
+     		#elseif($!obj.goods_return_status=="7")
+            <div class="order_log">
+                <h1><a href="javascript:void(0);" id="info_click" style=" outline:none">收起</a><span>物流信息</span></h1>
+                <div class="order_log_list" id="return_info">
+                <h4><span>物流公司：$!express_company_name</span><span>物流单号：$!obj.express_code</span></h4>
+                #if($!transInfo.status==1)
+        		#foreach($info in $transInfo.data)
+                    <dl>
+                        <dt><img src="$!webPath/resources/style/system/front/wap/images/order_info_06.png" width="20" height="20" /></dt>
+                        <dd>
+                            <ul>
+                                <li>$!info.context</li>
+                                <li class="gray">$!info.time</li>
+                            </ul>
+                        </dd>
+                    </dl>
+                #end
+                #if($!transInfo.status==0)
+                	<dl>
+                        <dt><img src="$!webPath/resources/style/system/front/wap/images/order_info_06.png" width="20" height="20" /></dt>
+                        <dd>
+                            <ul>
+                                <li>$!transInfo.message</li>
+                            </ul>
+                        </dd>
+                    </dl>
+                #end
+                #if($!transInfo.status==2)
+                	<dl>
+                        <dt><img src="$!webPath/resources/style/system/front/wap/images/order_info_06.png" width="20" height="20" /></dt>
+                        <dd>
+                            <ul>
+                                <li>$!transInfo.message</li>
+                            </ul>
+                        </dd>
+                    </dl>
+                #end
+                #end 
+                </div>
+            </div>
+            #end
+        </div>
+        #if($!obj.goods_return_status=="6")
+        <div class="red_submit"><a href="javascript:void(0);" onclick="saveForm();">保存</a></div>
+        #end
+    </div>
+    
+    
+    
+    
+</div>
+</body>
+</html>

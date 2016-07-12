@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-运费模板打印配置-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+
+jQuery(function(){ 
+   //
+   jQuery("#theForm").validate({
+	 ignore: "",							   
+     rules: {
+			 left_offset:{required:true,number:true},
+			 top_offset:{required:true,number:true}
+			},
+     messages: {
+			left_offset:{required:"左偏移量不能为空",number:"左偏移量只能为数字"},
+			top_offset:{required:"上偏移量不能为空",number:"上偏移量只能为数字"}
+		  },
+  submitHandler:function(){
+	  var params = jQuery("#theForm").serialize();
+	  jQuery(".seller_save").attr("disabled","disabled");
+	  jQuery.ajax({type:'POST',url:'$!webPath/seller/ecc_print_set_save.htm',data:params,
+				   success:function(data){
+				       if(data=="true"){
+			                  jQuery("#theForm")[0].reset();
+			                  showDialog("msg_info","","打印模板配置成功！",0,"succeed",3,function(){
+								 
+				                 window.location.href="$!webPath/seller/ecc_list.htm";jQuery(".seller_save").removeAttr("disabled");
+		                      });
+		                 }
+				   }
+	  }); 
+	  
+	}		  
+  }); 
+
+})
+
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=store_express")
+    <div class="seller_right">
+     <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b>><b>运费模板打印配置</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+             <li><a href="$!webPath/seller/ecc_list.htm"><i></i>常用物流配置</a></li>
+            <li><a href="$!webPath/seller/ecc_list.htm"><i></i>常用物流列表</a></li>
+            <li class="this"><a href='$!webPath/seller/ecc_print_set.htm?id=$!obj.id' ><i></i>运费模板打印配置</a></li>
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/ec_print_set_save.htm" method="post" id="theForm" >
+            <input name="id" type="hidden" id="id"  value="$!obj.id"/>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td align="right">快递名称：</td>
+                <td colspan="2" >$!{obj.ecc_name}</td>
+              </tr>
+              <tr>
+                <td align="right">快递模板：</td>
+                #set($hight=100*$!{obj.ecc_template_heigh}/$!{obj.ecc_template_width})
+                <td width="8%" ><img src="$!imageWebServer/$!obj.ecc_template" width="100" height="$!{hight}" /></td>
+                <td width="75%" valign="bottom">&nbsp;</td>
+              </tr>
+              <tr>
+                <td width="17%" align="right"><strong class="redstr">*</strong>左偏移量：</td>
+                <td colspan="2" ><input name="left_offset" type="text" class="base_txt" id="left_offset"  value="$!left_offset"/>
+                  毫米</td>
+              </tr>
+              <tr>
+                <td align="right"><strong class="redstr">*</strong>上偏移量：</td>
+                <td colspan="2"><input name="top_offset" type="text" id="top_offset"  value="$!top_offset" class="base_txt"/>
+                  毫米</td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td colspan="2" ><input name="" type="submit"  value="提交"  style="cursor:pointer;" class="seller_save"/></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

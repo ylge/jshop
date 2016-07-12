@@ -1,0 +1,158 @@
+#macro ( genericTree $somelist ) 
+#foreach ( $some in $somelist )
+<option value="$!some.id">
+#if($!some.level>0)
+#foreach($count in [0..$!some.level])&nbsp;&nbsp;#end #end $!some.className</option>
+#genericTree($some.childs) 
+#end 
+#end
+<script>
+jQuery(document).ready(function(){
+  jQuery(":radio").click(function(){
+     var val=jQuery(this).val();
+	 jQuery("li[id^=goods_adv_]").hide();
+	 jQuery("li[id^=user_adv_]").hide();
+	 jQuery("li[id^=system_adv_]").hide();
+	 if(val=="goods"){
+	  jQuery("li[id^=goods_adv_]").show();
+	 }
+	 if(val=="img"){
+	  jQuery("li[id^=user_adv_]").show();
+	 }
+	 if(val=="adv"){
+	  jQuery("li[id^=system_adv_]").show();
+	 }
+  });
+  
+  #if($!obj_map)
+  var val="$!obj_map.type";
+  jQuery("input[id='type'][value='"+val+"']").attr("checked","checked");
+   jQuery("li[id^=goods_adv_]").hide();
+	 jQuery("li[id^=user_adv_]").hide();
+	 jQuery("li[id^=system_adv_]").hide();
+	 if(val=="goods"){
+	  jQuery("li[id^=goods_adv_]").show();
+	 }
+	 if(val=="img"){
+	  jQuery("li[id^=user_adv_]").show();
+	 }
+	 if(val=="adv"){
+	  jQuery("li[id^=system_adv_]").show();
+	 }
+  #end
+  //
+  jQuery("#img").change(function(){
+     jQuery("#file_val").val(jQuery(this).val());
+  });
+  //
+   jQuery("#theForm").validate({		
+	 ignore: "",						   
+     rules:{
+	   img:{
+	    accept:"$!config.imageSuffix"
+	   }
+	 },
+	messages:{
+	  img:{accept:'图片格式不正确'}
+	}
+  });
+jQuery("#logoShow").hover(function(){
+		jQuery("#logoImg").show();							   
+	},function(){
+		jQuery("#logoImg").hide();	
+		});
+});
+function goods_floor_list_goods_load(){
+  var gc_id=jQuery("#gc_id").val();
+  var goods_name=jQuery("#goods_name").val();
+  jQuery.ajax({type:'POST',
+			   url:'$!webPath/admin/goods_floor_list_goods_load.htm?page=goods_floor_style2_goods_load',
+			   data:{"gc_id":gc_id,"goods_name":goods_name,"module_id":"$!module_id"},
+			   success:function(data){
+					jQuery("#floor_goods_list").empty().append(data);																											               }
+			});
+}
+function ajaxPage(url,page,obj){
+ jQuery.ajax({type:'POST',url:url,data:{"currentPage":page,"page":"goods_floor_style2_goods_load","module_id":"$!module_id"},
+			  success:function(data){
+					jQuery("#floor_goods_list").empty().append(data);																											               }																																		    });
+}
+function goods_list_set(obj){
+  var img=jQuery(obj).attr("img_uri");
+  var goods_id=jQuery(obj).attr("goods_id"); 
+  var goods_name=jQuery(obj).attr("goods_name");
+  var moudle_id=jQuery(obj).attr("moudle_id");
+  jQuery(obj).parent().parent().find("a").removeClass("this");
+  jQuery(obj).addClass("this");
+  jQuery("#goods_id").val(goods_id);
+}
+</script>
+<form action="$!webPath/admin/goods_floor_style2_save.htm" method="post" enctype="multipart/form-data" id="theForm" name="theForm">
+<div class="box_floor">
+  <div class="floor_advertisment">
+   <em class="floor_warning">注释：可以选择商城商品、上传广告图片或者使用商城广告</em>
+    <ul class="floor_adv">
+      <li>
+       <b>
+       <input name="id" type="hidden" id="id" value="$!obj.id">
+       <input name="module_id" type="hidden" id="module_id" value="$!module_id" />
+       选择类型：</b> 
+      <span class="floor_adv_sp">
+      <i>
+      <label><input name="type" type="radio" id="type" value="goods" checked="checked" />商城商品
+        
+      </label>
+      </i>
+      <i><label><input name="type" type="radio" id="type" value="img" />图片上传</label></i>
+      <i><label><input name="type" type="radio" id="type" value="adv" />商城广告</label><input type="hidden" name="goods_id" id="goods_id" /></i>
+      </span> 
+      </li>
+      <li id="goods_adv_img"> 
+      <em class="floor_warning">注释：点击选中商品，点击提交后保存信息</em>
+      <div class="box_floor_six">
+      <div class="floor_choose_box"> <span class="floor_search_sp">
+      <input name="goods_name" type="text" id="goods_name" placeholder="商品名称关键字" class="gf_goods_name"/> 
+      <select name="gc_id" id="gc_id" class="gf_select">
+        <option value="">请选择商品分类...</option>
+        #genericTree($!gcs) 
+      </select>
+      </span>
+      <input type="button"  class="floor_sear_btn" value="搜索" onclick="goods_floor_list_goods_load();" style="cursor:pointer;" />
+
+     <div id="floor_goods_list">
+     </div>
+    </div>
+    </div>
+      </li>
+      <li id="user_adv_img" style="display:none;"> 
+      <b>广告图片上传：</b> 
+      <span class="floor_adv_sp">
+        <input name="file_val"  type="text" class="floor_file_txt" id="file_val" />
+        <input name="button" type="button" class="floor_file_btn" value=""/>
+        <input  type="file"  size="33" class="flooor_file" id="img" name="img"/>
+       <span class="preview"> <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="20" height="20"  id="logoShow" style="cursor:help"/> </span> </span>
+        <i class="floor_adv_node">&nbsp;&nbsp;建议上传$!{width}×$!{height}像素图片</i> 
+        <div class="bigimgpre" id="logoImg" style="display:none;"><img src="$!imageWebServer/$!obj_map.img_url" width="200" height="80" /> </div>
+      </li>
+      <li id="user_adv_url" style="display:none;"> <b>广告链接：</b>
+       <span class="floor_adv_sp">
+        <input name="adv_url" type="text"class="floor_file_txt2" id="adv_url" value="$!obj_map.href_url" />
+        </span> <i class="floor_adv_node">格式为:http://www.xxx.com</i>
+      </li>
+       <li id="system_adv_info" style="display:none;"> <b>广告选择：</b>
+       <span class="floor_adv_sp">
+       <select name="adv_id" id="adv_id">
+       #foreach($ap in $aps)
+       <option value="$!ap.id">$!{ap.ap_title}</option>
+       #end
+       </select>
+        </span>
+        <i class="floor_adv_i">仅支持$!{width}×$!{height}图片广告位</i> 
+      </li>
+    </ul>
+  </div>
+  <div class="submit">
+    <input name="" type="submit" value="提交" />
+  </div>
+</div>
+</form>

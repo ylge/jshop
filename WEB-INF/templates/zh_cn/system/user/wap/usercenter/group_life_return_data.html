@@ -1,0 +1,28 @@
+        #foreach($obj in $objs)
+            <dl>
+            	<dt>团购消费码：$!obj.group_sn</dt>
+                <dd><span class="fl"><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">退货</a></span></dd>
+            </dl>
+            
+            <dl>
+                <dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><img src="$!img" width="60" height="60" /><p>$!{obj.lifeGoods.gg_name}</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span>
+                #if($!obj.status==0)
+                <span class="fr"><a dialog_id="grouplife_return" dialog_height="100" dialog_top="200" dialog_width="500" dialog_title="申请退款" dialog_uri="$!webPath/buyer/group_life_return_apply.htm?id=$!obj.id" href="javascript:void(0);">退款</a></span>
+                #end
+                #if($!obj.status==1)
+                <span class="fr gray"><a href="javascript:void(0);">已使用</a></span>
+                #end
+                #if($!obj.status==3)
+                <a dialog_id="grouplife_return" dialog_height="100" dialog_top="200" dialog_width="500" dialog_title="申请退款" dialog_uri="$!webPath/buyer/group_life_return_apply.htm?id=$!obj.id" href="javascript:void(0);">申请中</a>
+                #end
+                #if($!obj.status==5)
+                <span class="fr gray"><a href="javascript:void(0);">等待退款</a></span>
+                #end
+                #if($!obj.status==7)
+                <span class="fr gray"><a href="javascript:void(0);">退款完成</a></span>
+                #end
+                </dd>
+            </dl>
+        #end       
+

@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>0元试用列表</title>
+<link href="../../../../../../resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+   var apply_status = "$!apply_status";
+   jQuery(" li[id^=apply_status]").each(function(index, element) {
+    jQuery(element).removeClass("this");
+	});
+	if(apply_status==""){
+		jQuery("#apply_status_1").addClass("this");
+	}
+	if(apply_status=="1"){
+		jQuery("#apply_status_2").addClass("this");
+	}
+	if(apply_status=="5"){
+		jQuery("#apply_status_3").addClass("this");
+	}
+	if(apply_status=="-1"){
+		jQuery("#apply_status_4").addClass("this");
+	}
+   var begin_count =12;
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()) {
+		 jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/buyer/freegoods_data.htm',
+				  data:{"begin_count":begin_count,"evaluate_status":"$!{evaluate_status}","apply_status":"$!{apply_status}"},
+				beforeSend:function(){
+				  begin_count = begin_count +6;
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				},
+			   success:function(data){
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".user_free_list").append(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		  
+});<!--end-->
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">我的0元试用</span></div>
+<div class="phone_main">
+	<!--0元试用-->
+    <div class="user_free">
+    	<div class="user_free_tab">
+        	<ul>
+            	<li class="this" id="apply_status_1"><a href="$!webPath/wap/buyer/freeapply_list.htm">全部</a></li>
+                <li id="apply_status_2"><a href="$!webPath/wap/buyer/freeapply_list.htm?apply_status=0">待审核</a></li>
+                <li id="apply_status_3"><a href="$!webPath/wap/buyer/freeapply_list.htm?apply_status=5">审核通过</a></li>
+                <li id="apply_status_4"><a href="$!webPath/wap/buyer/freeapply_list.htm?apply_status=-5">审核未通过</a></li>
+            </ul>
+        </div>
+    	
+        <div class="user_free_list">
+        #foreach($applyLog in $applyLogs)
+        #set($obj = $!this.queryFreeGoods("$!applyLog.freegoods_id"))
+        #set($img = "$!imageWebServer/$!obj.free_acc.path/obj.free_acc.name")
+        	<dl>
+            	<dt><img src="$!img" width="150" height="62" /></dt>
+                <dd>
+                    <p class="name">$!obj.free_name</p>
+                    <p>申请时间：$!CommUtil.formatShortDate("$!applyLog.addTime")</p>
+                    <p><a class="see" href="$!webPath/wap/buyer/freeapply_detail.htm?id=$!applyLog.id">查看详情</a></p>
+                </dd>
+                <dd class="bt"><span>审核状态：
+                #if($!applyLog.apply_status==0)
+                <b>待审核</b></span>
+                #elseif($!applyLog.apply_status==5)
+                <b class="green">通过</b></span>
+                #elseif($!applyLog.apply_status==-5)
+                <b class="red">审核失败</b></span>
+                #end
+                <span>评价状态：
+                #if($!applyLog.evaluate_status==1)
+                <b class="green">已评价</b>
+                #else
+                <b class="red">未评价</b>
+                #end
+                </span></dd>
+            </dl>
+        </div>
+        #end
+
+    </div>
+    
+    
+    
+</div>
+<div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16"></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+  <div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+  </div>  
+</div>
+        $!httpInclude.include("/wap/footer.htm?op=center")
+</body>
+</html>

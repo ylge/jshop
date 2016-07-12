@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人信息修改 - $!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+ jQuery(document).ready(function(){
+     jQuery('#birthday').datepicker({
+		    dateFormat:"yy-mm-dd",
+			yearRange:"1950:2020",
+			changeMonth: true,
+			changeYear: true
+		});
+	jQuery(":radio[value=$!user.sex]").attr("checked",true);
+	jQuery("#theForm").validate({
+			ignore: "",
+		   rules:{
+	  	      email:{email:true},
+		      mobile:{digits:true}
+		   },		 
+		  messages:{
+		     email:{email:"邮箱格式不正确"},
+		     mobile:{digits:"必须为数字格式"}		 
+	     },
+		 submitHandler:function(){
+	       var params = jQuery("#theForm").serialize();
+		   jQuery.ajax({type:'POST',url:'$!webPath/buyer/account_save.htm',data:params,
+					  success:function(ret){
+						showDialog("msg_info","","个人信息保存成功！",2,"succeed",300,function(){
+						   window.location.href="$!webPath/buyer/account.htm";
+						});			
+		  }});
+	  }
+ });
+ jQuery("select").change(function(){
+     var level=jQuery(this).attr("level");
+	 var id=jQuery(this).val();
+	 jQuery("#area_id").val("");
+	 for(var i=4;i>level;i--){
+	  jQuery("#area"+i).empty();
+	  jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 }
+	 if(id!=""){
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	     jQuery("#area"+level).empty();
+		  jQuery("#area"+level).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+level).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }else{
+	   for(var i=level;i<=4;i++){
+	    jQuery("#area"+i).empty();
+	   }
+	 }
+  });
+ //
+ jQuery("#area3").change(function(){
+   var id=jQuery(this).val();
+   jQuery("#area_id").val(id);
+ });
+	  #if($!user.area)
+	  jQuery("#area_id").val("$!user.area.id"); 
+	  jQuery("#area1").val("$!user.area.parent.parent.id")
+	  jQuery("#area2").html("<option>$!user.area.parent.areaName</option>");
+	  jQuery("#area3").html("<option>$!user.area.areaName</option>");
+	  #end
+	  #if($!user.month_income)
+	    jQuery("#month_income").val("$!user.month_income"); 
+	  #end
+ });
+function saveForm(){
+    jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="usercenter">
+     $!httpInclude.include("/buyer/nav.htm?op=account")
+    <div class="usercenter_right">
+      <div class="myorder">
+        <h4><strong>账户信息</strong></h4>
+      </div>
+      <div class="user_list">
+        <div class="user_list_title">
+          <ul class="user_title_ul">
+            <li class="this"><i></i><a href="$!webPath/buyer/account.htm">基本信息</a></li>
+            <li><i></i><a href="$!webPath/buyer/account_password.htm">修改密码</a></li>
+            <li><i></i><a href="$!webPath/buyer/account_email.htm">修改电子邮箱</a></li>
+            <li><i></i><a href="$!webPath/buyer/account_mobile.htm">修改手机号码</a></li>
+            <li><i></i><a href="$!webPath/buyer/account_avatar.htm">修改头像</a></li>
+          </ul>
+        </div>
+       
+        <div class="add_usercenter">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" class="user_base_table">
+            <tr>
+              <td width="170" align="right" valign="top">用户头像：</td>
+              #set($img="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+              #if($!config.memberIcon)
+               #set($img="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+              #end
+               #if($!user.photo)
+               #set($img="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+              #end
+              <td><span class="base_img"><img src="$!{img}" width="110" height="110" id="touxiang" /></span></td>
+            </tr>
+          </table>         
+             <form action="$!webPath/buyer/account_save.htm" id="theForm" name="theForm" method="post">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" class="user_base_table">
+            <tr>
+              <td width="170" align="right"><strong class="redstr"></strong>真实姓名：</td>
+              <td><input name="trueName" type="text" id="trueName" value="$!user.trueName" class="base_txt" /></td>
+            </tr>
+            <tr>
+              <td align="right"><strong class="redstr"></strong>用户性别：</td>
+              <td><span class="base_sex">
+              <label>
+               <input type="radio" name="sex" id="radio" value="1" />
+                男</label></span><span class="base_sex">
+                <label>
+                <input type="radio" name="sex" id="radio" value="0" />
+                女</label></span><span class="base_sex">
+                <label>
+                <input type="radio" name="sex" id="radio" value="-1" />
+                保密</label></span></td>
+            </tr>
+            <tr>
+              <td align="right">联系邮箱：</td>
+              <td>#if($!user.email!='')$!user.email<span style="color:#FF0000">[已绑定]</span><span style="color:#0000FF"><a href="$!webPath/buyer/account_email.htm">[修改]</a></span>#else<b class="base_ba"><a href="$!webPath/buyer/account_email.htm">现在绑定</a></b>#end</td>
+            </tr>
+            <tr>
+              <td align="right">联系手机：</td>
+              <td>#if($!user.mobile!='')$!user.mobile<span style="color:#FF0000">[已绑定]</span><span style="color:#0000FF"><a href="$!webPath/buyer/account_mobile.htm">[修改]</a></span>#else<b class="base_ba"><a href="$!webPath/buyer/account_mobile.htm">现在绑定</a></b>#end</td>
+            </tr>
+            <tr>
+              <td align="right">身份证号：</td>
+              <td><input name="card" type="text" class="base_txt" value="$!user.card" id="card" />
+                </td>
+            </tr>
+            <tr>
+              <td align="right">出生年月：</td>
+              <td>   <input name="birthday" type="text" id="birthday" value="$!CommUtil.formatShortDate($!user.birthday)" readonly="true" class="base_txt"/></td>
+            </tr>
+            <tr>
+              <td  align="right" ><strong class="redstr"></strong>月收入：</td>
+              <td><select name="month_income" id="month_income" class="base_select_check">
+                  <option value="0">无收入</option>
+                  <option value="1">2000元以下</option>
+                  <option value="2">2000-3999</option>
+                  <option value="3">4000-5999</option>
+                  <option value="4">6000-7999</option>
+                  <option value="5">8000以上</option>
+                </select></td>
+            </tr>
+            <tr>
+              <td align="right"><strong class="redstr"></strong>居住地址：</td>
+              <td><span class="base_select">
+                <select id="area1" name="area1" level="2" class="base_select_check">
+                       <option>请选择...</option>
+                       #foreach($area in $areas)
+                       <option value="$!area.id">$!area.areaName</option>
+                       #end
+                       </select>
+                         <select id="area2" name="area1" level="3" class="base_select_check">
+                       <option value="">请选择...</option>
+                       </select>
+                       
+                        <select id="area3" name="area3" level="4" class="base_select_check"> 
+                       <option value="">请选择...</option>
+                       </select>
+                       <input id="area_id" name="area_id" type="hidden" value="$!user.area.id"/>
+                </span></td>
+            </tr>
+            <tr>
+               <td align="right"><strong class="redstr"></strong>详细地址：</td>
+              <td><input name="address" type="text" id="address" class="base_txt" placeholder="请填写详细地址"  value="$!user.address"/></td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td><input name="button" type="button" value="保存" class="save" onclick="saveForm()" /></td>
+            </tr> 
+          </table>
+            </form>
+        </div> 
+      </div>
+    </div>
+  </div>
+  $!httpInclude.include("/footer.htm")
+</div>
+</body>
+</html>

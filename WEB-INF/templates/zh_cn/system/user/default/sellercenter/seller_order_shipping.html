@@ -1,0 +1,86 @@
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/window.css" type="text/css" rel="stylesheet" />
+<script>
+jQuery(document).ready(function(){
+jQuery.validator.addMethod("verify",function(value,element){
+var re = /^[0-9a-zA-Z]*$/;
+        if(re.test(jQuery("#shipCode").val())){			
+			return true;
+		  } 
+		  else {
+		    return false;
+			  }
+});	
+  jQuery("#theForm").validate({
+	   rules:{
+		   shipCode:{required:true,verify:true},
+		   sa_id:{required:true},
+		   ecc_id:{required:true}
+		   },
+	   messages:{
+	       shipCode:{required:"单号不能为空",verify:"请正确填写单号"},
+		   sa_id:{required:"发货地址不能为空"},
+		   ecc_id:{required:"不能为空"}
+	   }
+	});
+});
+</script>
+<form action="$!webPath/seller/order_shipping_save.htm" method="post" id="theForm">
+  <table style="float:left;" width="100%" border="0" cellspacing="0" cellpadding="0" class="box_table">
+    <tr>
+      <td colspan="2" align="left" valign="top" >请输入您的物流信息</td>
+    </tr>
+    <tr>
+      <td width="100" align="right" valign="top">订单号：
+        <input name="id" type="hidden" id="id" value="$!obj.id" />
+      </td>
+      <td align="left">$!obj.order_id</td>
+    </tr>
+	#if($!physicalGoods=="true")
+    <tr>
+      <td align="right">物流公司：</td>
+      <td align="left">
+      <select name="ecc_id" id="ecc_id">
+      #foreach($ecc in $eccs)
+      <option value="$!ecc.id" #if($!ecc.ecc_default==1) selected="selected" #end>$!ecc.ecc_name</option>
+      #end
+      </select></td>
+    </tr>
+    <tr>
+      <td align="right">发货地址：</td>
+      <td align="left"><select name="sa_id" id="sa_id">    
+        #foreach($shipAddr in $shipAddrs)
+        <option value="$!shipAddr.id">$!shipAddr.sa_name</option>        
+        #end
+      </select></td>
+    </tr>
+    <tr>
+      <td align="right">物流单号：</td>
+      <td align="left"><input name="shipCode" type="text" id="shipCode" size="30" /></td>
+    </tr>
+	#end
+	#foreach($dg in $deliveryGoods)<!--订单里面的虚拟商品-->
+	<tr>
+      <td align="right">虚拟商品$!{velocityCount}：</td>
+      <td align="left">$!CommUtil.substring("$!dg.goods_name",15) 数量：$!orderFormTools.queryOfGoodsCount("$!obj.id","$!dg.id")</td>
+    </tr>
+     <tr>
+      <td align="right">虚拟商品说明：</td>
+      <td align="left"><textarea name="order_seller_intro" id="order_seller_intro" cols="35" rows="2"></textarea></td>
+      <input type="hidden" name="goods_name" value="$!dg.goods_name"><input type="hidden" name="goods_id" value="$!dg.id">
+            <input type="hidden" name="goods_count" value="$!orderFormTools.queryOfGoodsCount("$!obj.id","$!dg.id")">
+    </tr>
+	#end
+    <tr>
+      <td align="right" valign="top">操作说明：</td>
+      <td align="left"><textarea name="state_info" id="state_info" cols="35" rows="5"></textarea></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><span class="inputbtn">
+        <input name="" type="submit" value="提交" style="cursor:pointer;" class="white_btn"/>
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        <input name="page_status" type="hidden" id="page_status" value="$!page_status" />
+      </span></td>
+    </tr>
+  </table>
+</form>

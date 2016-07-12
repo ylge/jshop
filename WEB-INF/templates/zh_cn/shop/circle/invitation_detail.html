@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!{obj.title} - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/circle.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+//options为编辑配置属性
+var options = {
+        cssPath : '$!webPath/resources/editor/plugins/code/prettify.css',
+        filterMode : true,
+		uploadJson:'$!webPath/upload.htm',
+		width : '890px',
+		height:'216px',
+		resizeType : 1,
+		allowImageUpload : true,
+		allowFlashUpload : false,
+		allowMediaUpload : false,
+		allowFileManager : false,
+		syncType:"form",
+		afterCreate : function() {
+							var self = this;
+							self.sync();
+						},
+		afterChange : function() {
+							var self = this;
+							self.sync();
+						},
+		afterBlur : function() {
+							var self = this;
+							self.sync();
+						},
+		items:['media','image','flash','emoticons', 'about']
+}; 
+jQuery(document).ready(function(){
+	jQuery("#owner_id").val("");							
+	jQuery("#reply_content").html("");							
+	jQuery(window).scroll(function () {
+		if(jQuery(document).scrollTop() + jQuery(window).height()>=jQuery(document).height()){
+			jQuery(".circle_nav").hide();		     
+		}else{
+			jQuery(".circle_nav").show();		   
+		}
+	});
+	jQuery("#toBottom").click(function(){
+		var sTop = jQuery(document).height()
+       jQuery('body,html').animate({scrollTop:sTop},1000);
+       return false;
+    });
+	editor = KindEditor.create('#reply_content',options);
+	reply_load();
+ });////
+
+
+function praise(obj_id,obj){
+	jQuery.post("$!webPath/circle/invitation_parise.htm",{"id":obj_id},
+				function(data){
+				if(data.code==100){
+					jQuery(obj).parent().find("em").addClass("this").parent().find("i").html(data.count);
+					}																
+				},"json");
+	}
+#if($!code==100)
+function pay_attention(cid){
+	jQuery.post("$!webPath/circle/pay_attention.htm",
+				{"cid":cid},
+				function(data){
+					if(data=="100"){
+						 showDialog("msg_info","","圈子关注成功！",2,"succeed",2,function(){
+																				   location.reload();
+																				   });
+						}
+					if(data=="-100"){
+						 showDialog("msg_info","","您已经关注了该圈子！",2,"error",2);
+						}	
+				},"text");
+	}
+#end
+//回复帖子
+function reply_save(obj){
+	var status =jQuery(obj).attr("status");
+	if(status==""){
+		jQuery(obj).attr("status","sending");
+		var content = jQuery("#reply_content").val();
+		var id ="$!{obj.id}";
+		if(content==""){
+			 showDialog("msg_info","","请填写回复内容！",2,"error",2);
+		 }else{
+			 jQuery.post("$!webPath/circle/invitation_reply_save.htm",
+						{"id":id,"reply_content":content},
+						function(data){
+						if(data.code==100){
+							  jQuery(obj).attr("status","");
+							  jQuery("#reply_content").val("");
+							  editor.html("");
+							  showDialog("msg_info","","回复成功！",2,"succeed",2,function(){
+								reply_load();
+							  });
+							}
+						if(data.code==-100){
+							 jQuery(obj).attr("status","");
+							 showDialog("msg_info","","参数错误，请刷新页面后重试！",2,"succeed",2);
+							}	
+						},
+						"json");
+			
+			}
+		
+		}
+	}
+function reply_load(){
+		var id ="$!{obj.id}";
+		var owner_id = jQuery("#owner_id").val();
+		jQuery.post("$!webPath/circle/invitation_reply.htm?owner_id="+owner_id,
+			{"id":id},
+			function(data){
+				jQuery("#reply_list").html(data);
+				},
+				"text");
+	}
+	
+function ajaxPage(url,currentPage,obj){
+var mark =jQuery(obj).parent().attr("mark");
+if(mark=="reply_others"){
+	var pid =jQuery(obj).parent().attr("pid");
+	jQuery.ajax({type:'POST',url:url,data:{"currentPage":currentPage,"pid":pid},
+			  success:function(data){
+				jQuery("#reply_others_list_"+pid).html(data);																                
+			  }
+		})	
+}else{
+	var owner_id =	jQuery("#owner_id").val();
+	var id ="$!{obj.id}";
+	jQuery.ajax({type:'POST',url:url,data:{"currentPage":currentPage,"id":id,"owner_id":owner_id},
+		  success:function(data){
+			jQuery('body,html').animate({scrollTop:0},0);  
+			jQuery("#reply_list").html(data);																					                
+		  }
+	})		
+}
+  }	
+  
+ function only_owner(obj_id,obj){
+	 var owner_id =	jQuery("#owner_id").val();
+	 if(owner_id==""){
+		 jQuery("#owner_id").val(obj_id);
+		 jQuery(obj).html("查看全部");
+		 reply_load();
+		 }else{
+			 jQuery("#owner_id").val("");
+			 jQuery(obj).html("只看楼主");
+			  reply_load();
+			 }
+	 } 
+function invitation_del(id){
+   showDialog('invitation_remove','删除确认','确定删除该帖子？',1,'warning',3,function(){
+	  jQuery.post("$!webPath/circle/invitation_delete.htm",{"id":id},function(data){
+	     if(data=="true"){
+	       window.location.href='$!webPath/circle/detail_$!{obj.circle_id}.htm';
+		 }else{
+		   showDialog("msg_info","","删除失败，请尝试再次操作！",2,"succeed",2);
+		 }
+	  },"text");																	   
+   })
+}
+</script>
+</head>
+<body>
+<!--圈子申请 -->
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/circle/head.htm")
+<div class="circle_main"> $!httpInclude.include("/circle/nav.htm")
+  <div class="circle_main_center">
+    <div class="circle_list_x"> #set($img=$!circleViewTools.genercircleImage("$!{obj.circle_id}"))
+      <div class="circle_list_left_x"><img src="$!imageWebServer/$!{img.src}" /></div>
+      <div class="circle_list_center_x">
+        <ul>
+          #set($circle=$!circleViewTools.genercircleInfo("$!obj.circle_id"))
+          <li class="name">
+            <h3><a href="$!webPath/circle/detail_$!{obj.circle_id}.htm">$!obj.circle_name</a></h3>
+            <b>帖子：<strong>$!circle.invitation_count</strong></b><b>关注：<strong>$!circle.attention_count</strong></b></li>
+          <li class="host"><i>$!circle.content</i></li>
+        </ul>
+      </div>
+      <div class="circle_list_button_x"> #if($!code==100) <a href="javascript:void(0);" #if($!user) onclick="pay_attention('$!obj.circle_id');" #else dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #end>关注</a> #else <a href="javascript:void(0);">已关注</a> #end </div>
+    </div>
+  </div>
+  <div class="circle_main_center_m">
+    <div class="circle_main_left">
+      <div class="circle_main_left_top"> #set($src=$!circleViewTools.generUserIcon("$!obj.user_id"))
+        <div class="circle_main_left_top_left"><a href="$!webPath/sns/other_sns_$!{obj.user_id}.htm" target="_blank"><img src="$!imageWebServer/$!{src}" /></a></div>
+        <div class="circle_main_left_top_center">
+          <h3>$!obj.title</h3>
+          <span><strong><a href="$!webPath/sns/other_sns_$!{obj.user_id}.htm" target="_blank">$!obj.userName</a></strong><i><a href="javascript:void(0);" onclick="only_owner('$!{obj.user_id}',this);">只看楼主</a></i></span> #if($!obj.user_id==$!user.id) <span><strong></strong><i><a href="javascript:void(0);"  onclick="invitation_del('$!obj.id');">删除</a></i></span> #end </div>
+        <input id="owner_id" name="owner_id" type="hidden" value="">
+      </div>
+      <div class="circle_main_left_center">
+        <div class="circle_main_left_center_eidt">
+          <div class="circle_main_left_center_eidt_t">$!obj.content</div>
+          <!--插入的图片 -->
+          <div class="circle_main_left_center_eidt_img">
+            <ul>
+              #foreach($item in $items)
+              #if($!item.get("item_type")=="goods_url" ||$!item.get("item_type")=="goods_fav" )
+              <li><a href='$!item.get("item_url")' target="_blank"><img src='$!item.get("item_img")' /></a></li>
+              #else
+              <li class="circle_logo"><a href='$!item.get("item_url")' target="_blank"><img src='$!item.get("item_img")' /></a></li>
+              #end
+              #end
+            </ul>
+          </div>
+          <div class="circle_main_left_center_eidt_b">
+            <div class="circle_left_main_one_left_bottom">
+              <!--已经赞 em 里加 this -->
+              #set($class="")
+              #set($ret=$!circleViewTools.generInvitationParise("$!obj.id","$!user.id"))
+              #if($!ret=="true")
+              #set($class="this")
+              #end
+              #if($!user) <span><a href="javascript:void(0);" #if($!ret=="false") onclick="praise('$!obj.id',this);" #end><em class="up $!{class}"></em><i>$!obj.praise_count</i></a></span> </div>
+            #else <span><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" ><em class="up $!{class}"></em><i>$!obj.praise_count</i></a></span> </div>
+          #end </div>
+      </div>
+      <div class="circle_main_left_reply">
+        <!--楼层开始-->
+        <div id="reply_list"> </div>
+        <!--楼层结束-->
+        <div class="circle_nav" style="display:none">
+          <div class="circle_nav_center">
+            <div class="circle_nav_center_m">
+              <h3>$!obj.title</h3>
+              <div class="circle_main_left_top_right" style=" margin-top:12px;"><a class="r" href="javascript:void(0);" id="toBottom"></a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="circle_main_left_reply_top">
+        <div class="circle_main_left_reply_top_r">
+          <div>
+            <textarea name="reply_content" id="reply_content" cols="" rows=""></textarea>
+          </div>
+          <span><a href="javascript:void(0);" status="" #if($!user) onclick="reply_save(this);" #else dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #end>回复</a></span> </div>
+      </div>
+    </div>
+  </div>
+  <div class="circle_main_center_right_b">
+    <h3>热门讨论帖子</h3>
+    <div class="circle_main_center_right_b_list">
+      <ul>
+        #foreach($obj in $hots)
+        <li><a href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+  <div class="circle_main_center_right_b">
+    <h3>大家都关注的圈子</h3>
+    #foreach($obj in $recommends)
+    #set($img=$!circleViewTools.genercircleImage("$!obj.id"))
+    <div class="circle_main_center_right_b_one">
+      <dl>
+        <dt><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank"><img src="$!imageWebServer/$!img.src" /></a></dt>
+        <dd class="headline"><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></dd>
+        <dd class="headpel"> <span> <em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_host.png" /></em> <i>$!obj.attention_count</i> </span> <span> <em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_rp.png" /></em> <i>$!obj.invitation_count</i> </span> </dd>
+        <dd class="headworld">$!obj.content</dd>
+      </dl>
+    </div>
+    #end </div>
+</div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

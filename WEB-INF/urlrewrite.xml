@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+        "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+<urlrewrite>
+	<!-- 二级域名处理，排除了www及顶级域名 -->
+	<!-- 
+	<rule>
+		<note>二级域名</note>
+		<condition type="server-name" operator="equal">
+			^(?!www)^([A-Za-z0-9])+\.iskyshop\.net
+		</condition>
+		<from>^/index.htm$</from>
+		<to type="forward">/store.htm</to>
+	</rule>
+	 -->
+	<rule>
+		<note>id参数文章管理</note>
+		<from>^/article_([0-9]+).htm$</from>
+		<to type="forward">/article.htm?param=$1</to>
+	</rule>
+	<rule>
+		<note>mark参数文章管理</note>
+		<from>^/article_([A-Za-z]+).htm$</from>
+		<to type="forward">/article.htm?param=$1</to>
+	</rule>
+	<rule>
+		<note>id参数文章列表管理</note>
+		<from>^/articlelist_help_([0-9]+).htm$</from>
+		<to type="forward">/articlelist_help.htm?param=$1</to>
+	</rule>
+	<rule>
+		<note>mark参数文章列表管理</note>
+		<from>^/articlelist_help_([A-Za-z]+).htm$</from>
+		<to type="forward">/articlelist_help.htm?param=$1</to>
+	</rule>
+	<rule>
+		<note>文章分页</note>
+		<from>^/article_list_([0-9]+)_([0-9]+).htm$</from>
+		<to type="forward">
+			/article_list.htm?param=$1&amp;currentPage=$2
+		</to>
+	</rule>
+	<rule>
+		<note>mark参数系统文章</note>
+		<from>^/doc_([A-Za-z]+).htm$</from>
+		<to type="forward">/doc.htm?mark=$1</to>
+	</rule>
+	<rule>
+		<note>商品查看</note>
+		<from>^/goods_([0-9]+).htm$</from>
+		<to type="forward">/goods.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>wap商品查看</note>
+		<from>^/wap/goods_([0-9]+).htm$</from>
+		<to type="forward">/wap/goods.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>商品查看</note>
+		<from>^/goods_([0-9]+)_([a-z]+).htm$</from>
+		<to type="forward">/goods.htm?id=$1&amp;from=$2</to>
+	</rule>
+	<rule>
+		<note>商品商城分类查看</note>
+		<from>^/store_goods_list_?([0-9]+).htm$</from>
+		<to type="forward">/store_goods_list.htm?gc_id=$1</to>
+	</rule>
+	<rule>
+		<note>店铺查看</note>
+		<from>^/store_([0-9]+).htm$</from>
+		<to type="forward">/store.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>店铺导航</note>
+		<from>^/store_url_([0-9]+).htm$</from>
+		<to type="forward">/store_url.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>积分商城礼品查看</note>
+		<from>^/integral/view_([0-9]+).htm$</from>
+		<to type="forward">/integral/view.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>品牌查看商品</note>
+		<from>^/brand_goods_([0-9]+).htm$</from>
+		<to type="forward">/brand_goods.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>店铺分类</note>
+		<from>^/store_list_([0-9]+).htm$</from>
+		<to type="forward">/store_list.htm?sc_id=$1</to>
+	</rule>
+	<rule>
+		<note>商城活动</note>
+		<from>^/activity/index_([0-9]+).htm$</from>
+		<to type="forward">/activity/index.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>商品类团购信息查看</note>
+		<from>^/group/view_goods_([0-9]+).htm$</from>
+		<to type="forward">/group/view.htm?id=$1&amp;type=goods</to>
+	</rule>
+	<rule>
+		<note>生活类团购信息查看</note>
+		<from>^/grouplife/view_([0-9]+).htm$</from>
+		<to type="forward">/grouplife/view.htm?id=$1&amp;type=life</to>
+	</rule>
+	<rule>
+		<note>满就送活动</note>
+		<from>^/buygift/index_([0-9]+).htm$</from>
+		<to type="forward">/buygift/index.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>福利</note>
+		<from>^/free/view_([0-9]+).htm$</from>
+		<to type="forward">/free/view.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>专题</note>
+		<from>^/subject/view_([0-9]+).htm$</from>
+		<to type="forward">/subject/view.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>跳转他人sns</note>
+		<from>^/sns/other_sns_([0-9]+).htm$</from>
+		<to type="forward">/sns/other_sns.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>满就减</note>
+		<from>^/enoughreduce/index_([0-9]+).htm$</from>
+		<to type="forward">/enoughreduce/index.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>圈子详情</note>
+		<from>^/circle/detail_([0-9]+).htm$</from>
+		<to type="forward">/circle/detail.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>帖子详情</note>
+		<from>^/circle/invitation_detail_([0-9]+).htm$</from>
+		<to type="forward">/circle/invitation_detail.htm?id=$1</to>
+	</rule>
+	<rule>
+		<note>资讯分类</note>
+		<from>^/cms/index_([0-9]+).htm$</from>
+		<to type="forward">/cms/index.htm?classid=$1</to>
+	</rule>
+	<rule>
+		<note>资讯文章</note>
+		<from>^/cms/detail_([0-9]+).htm$</from>
+		<to type="forward">/cms/detail.htm?id=$1</to>
+	</rule>
+</urlrewrite>
+

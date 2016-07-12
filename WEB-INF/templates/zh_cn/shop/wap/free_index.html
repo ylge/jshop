@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+function timeCount(remain_id){
+   function _fresh(){
+      var nowDate = new Date(),                                    //当前时间
+      endDate = new Date($('#'+remain_id).attr('endtime')),    //截止时间
+      totalS  = parseInt((endDate.getTime() - nowDate.getTime()) / 1000);     //总秒数
+      _day    = parseInt(totalS / 3600 / 24);
+      _hour   = parseInt((totalS / 3600) % 24);
+      _minute = parseInt((totalS / 60) % 60);
+      _second = parseInt(totalS % 60);
+     jQuery('#'+remain_id).html('<b>' + _day +'</b>天<b>' + _hour + '</b>小时<b>' + _minute + '</b>分<b>' + _second + '</b>秒');
+     if( totalS <= 0){
+       jQuery('#'+remain_id).html('该0元试用已结束');
+       clearInterval(sh);
+	   jQuery('#'+remain_id).parents("li").addClass("over");
+     }
+  }
+  _fresh();
+  var sh = setInterval(_fresh,1000);
+}
+jQuery(document).ready(function(){
+  jQuery("span[id^=time_]").each(function(index){
+	var val = jQuery(this).attr("mark");
+	timeCount(val);					   
+						   });
+  jQuery("#menu").click(function(){
+		var show = jQuery("#menu_overly").is(":hidden");
+		if(show){
+			jQuery("#menu_overly").show();
+			}else{
+			jQuery("#menu_overly").hide();	
+				}
+								});
+  var begin_count =12;
+  var ret = 1;
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&ret==1) {
+		 jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/free/data.htm',
+				  data:{"begin_count":begin_count,
+		  				"cls":"$!{cls_id}",
+						},
+				beforeSend:function(){
+				  begin_count = begin_count +6;
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  ret=2;
+				},
+			   success:function(data){
+				 jQuery("#loading").hide();
+				 ret=1;
+	             if(data){ 
+				  jQuery(".group_list").find("a").last().after(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});	
+});
+</script>
+</head>
+<body>
+<div class="phone_hd"> <a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a> 0元试用列表 <a class="menu" href="javascript:void(0);" id="menu"><img src="$!webPath/resources/style/system/front/wap/images/menu.png" width="30" height="30" /></a>
+  <div class="menu_overly" style="display:none;" id="menu_overly">
+    <ul class="menu_ul">
+      <li #if(!$!cls_id) class="this" #end><a href="$!webPath/wap/free/index.htm">全部</a></li>
+      #foreach($fc in $fcls)
+      <li #if($!fc.id==$!cls_id) class="this" #end><a href="$!webPath/wap/free/index.htm?cls=$!fc.id">$!fc.className</a></li>
+      #end
+    </ul>
+    <div class="menu_bg"></div>
+  </div>
+</div>
+<div class="phone_main">
+  <!--0元试用列表页-->
+  <div class="free_box">
+    <ul>
+      #foreach($obj in $objs)
+      #set($goods = $!freeTools.queryGoods("$!{obj.goods_id}"))
+      #set($users = $!freeTools.queryUser("$!{obj.id}"))
+      <li><a href="$!webPath/wap/free/view.htm?id=$!obj.id">
+        <p class="img"><img src="$!imageWebServer/$!obj.free_acc.path/$!obj.free_acc.name" /><span class="time"><i><img src="$!webPath/resources/style/system/front/wap/images/clock.png" width="24" height="24" /></i><span endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{obj.endTime})"  id="time_$!obj.id" mark="time_$!obj.id"><b>3443</b>天<b>44</b>小时<b>32</b>分<b>44</b>秒</span></span><span class="purson"><b>$!obj.apply_count</b>人申请</span></p>
+        <p class="name">$!obj.free_name</p>
+        <p class="price"><span class="fl">价值：<s>¥#if($!goods) $!goods.store_price #end</s></span> #if($!obj.freeStatus==5) <span class="fr">免费试用</span> #else <span class="fr">已结束</span> #end </p>
+        </a></li>
+      #end
+    </ul>
+  </div>
+  <div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16"></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+  <div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+  </div>
+  $!httpInclude.include("/wap/footer.htm?op=index") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

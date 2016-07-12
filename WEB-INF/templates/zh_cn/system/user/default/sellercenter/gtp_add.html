@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台 - 商家属性新增-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+function saveForm(){
+	var i=0;
+	jQuery("tr[id=goods_type_property_]").each(function(){
+		i=2;
+		var name=jQuery(this).find("input[id^=gtp_name_]").val();
+		var value=jQuery(this).find("input[id^=gtp_value]").val();
+		if(name=="" || value==""){
+		   i=1;
+		   return false;
+		}
+	});
+	if(i==1 ||i==0){
+	   showDialog('msg_info','','属性值，属性名不能为空！',1,'question',3);
+	}else{
+	jQuery("#count").val(count);
+	jQuery("#theForm").submit();
+	}
+}
+
+var count=1;
+ function remove_gtp(obj,id){
+	 if(id==""){
+	   jQuery(obj).remove();
+        count--;
+	 }else{
+	   jQuery.post("$!webPath/seller/gtp_delete.htm",{"id":id},function(data){
+            if(data=="true"){
+	          jQuery(obj).remove();
+              count--;
+	        }else alert("规格值删除失败！");
+          },"text");
+	   }}
+function add_goods_type_property(){
+count++;
+
+  var goods_spec_property_text="<tr id='goods_type_property_'><td width='100'><span class='size70'><input name='gtp_sequence_count' id='gtp_sequence_count' value='' type='text'></span></td><td width='271'><span class='size200'><input name='gtp_name_count' id='gtp_name_count' value='' type='text' style='width:125px; margin-left:10px;'></span></td><td width='271'><span class='size200'><input name='gtp_value_count' id='gtp_value_count' value='' type='text' style='width:590px; margin-left:10px;'></span></td><td class='hui oprate_con' align='center' width='116'><a href='javascript:void(0);' onclick='remove_gtp(this.parentNode.parentNode,\"\")'>删除</a></td></tr>";
+    jQuery(".fshop_table2 tr[id^=goods_type_property_]").last().after(goods_spec_property_text.replace(/count/g,count));
+
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=goods_type_list")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>商品管理</b> > <b>新增属性</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/gtp_list.htm"><i></i>属性列表</a></li>
+            <li class="this"><a href="$!webPath/seller/gtp_add.htm"><i></i>新增属性</a></li>
+          </ul>
+        </div>
+        <div class="operation_n">
+    <h3>友情提示</h3>
+    <ul>
+      <li>商品属性值填写时，各个值之间使用半角逗号分隔，如：红色,白色,蓝色,粉色，发布商品时可以选择属性值，只用于商品详情页显示，不用于列表筛选。</li>
+    </ul>
+  </div>
+        
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/gtp_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+            <input name="id" type="hidden" id="id"  value="$!obj.id"/>
+            <input name="count" type="hidden" id="count" />
+            <div class="specification" style="padding-top:0">
+              <h2>新增属性值</h2>
+              <div class="fshoptb2 ">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table2">
+                  <tr id="goods_type_property_">
+                    <th width="10%"><span class="form_btna"><strong>排序</strong></span></th>
+                    <th width="15%"><span class="form_btna"><strong>属性名</strong></span></th>
+                    <th width="65%"><span class="form_btna"><strong>属性值</strong></span></th>
+                    <th  align="center">操作</th>
+                  </tr>
+          #if($!objs)
+          #foreach($gtp in $objs)
+    
+          <tr id="goods_type_property_">
+            <td><span class="size70">
+              <input name="gtp_sequence_$!velocityCount" type="text" id="gtp_sequence_$!velocityCount" value="$!gtp.sequence"/>
+              <input name="gtp_id_$!velocityCount" type="hidden" id="gtp_id_$!velocityCount" value="$!gtp.id" />
+              </span></td>
+            <td><span class="size200">
+              <input name="gtp_name_$!velocityCount" type="text" id="gtp_name_$!velocityCount" value="$!gtp.name" style="width:125px; margin-left:10px;"/>
+              </span></td>
+              <td><span class="size250">
+              <input name="gtp_value_$!velocityCount" type="text" id="gtp_value_$!velocityCount" value="$!gtp.value" style="width:590px; margin-left:10px;"/>
+              </span></td>
+            <td class="hui oprate_con" align="center"><a href="javascript:void(0);" onclick="remove_gtp(this.parentNode.parentNode,'$!gtp.id')" class="blue">删除</a></td>
+          </tr>
+          #end
+          #else
+                  
+                <tr id="goods_type_property_">
+                    <td><span class="size70">
+                      <input name="gtp_sequence_1" type="text" id="gtp_sequence_1" />
+                      </span></td>
+                    <td><span class="size200">
+                      <input name="gtp_name_1" type="text" id="gtp_name_1" style="width:125px; margin-left:10px;" />
+                      </span></td>
+                    <td><span class="size200">
+                      <input name="gtp_value_1" type="text" id="gtp_value_1" style="width:590px; margin-left:10px;"/>
+                      </span></td>  
+                    
+                    <td align="center" class="hui oprate_con"><a href="javascript:void(0);" onclick="remove_gtp(this.parentNode.parentNode,'')" class="blue">删除</a></td>
+                  </tr>
+                 #end
+                  <tr>
+                  	<td>&nbsp;</td>
+                    <td colspan="2"><span class="newclass"><a href="javascript:void(0);" onclick="add_goods_type_property();">新增属性</a></span></td>
+                    <td>&nbsp;</td>
+                  </tr>
+                  <tr>
+                  	<td colspan="2">&nbsp;</td>
+                    <td><input name="" type="button" value="提交" onclick="saveForm();" style="cursor:pointer;" class="seller_save"/></td>
+                    <td>&nbsp;</td>
+                  </tr>
+                 
+                </table>
+                
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

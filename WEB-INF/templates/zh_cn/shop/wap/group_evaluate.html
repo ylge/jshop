@@ -1,0 +1,44 @@
+#set($well_evaluate = $!CommUtil.null2Double($!{goods.well_evaluate})*100)
+#set($well="$!{well_evaluate}%")
+#set($middle_evaluate = $!CommUtil.null2Double($!{goods.middle_evaluate})*100)
+#set($middle="$!{middle_evaluate}%")
+#set($bad_evaluate = $!CommUtil.null2Double($!{goods.bad_evaluate})*100)
+#set($bad="$!{bad_evaluate}%")
+#if($!objs.size()!=0&&!$!currentPage)
+<dl class="hd">
+<dt>
+<p class="score">$!{well}</p>
+<p>好评度</p>
+</dt>
+<dd>
+<ul>
+<li><span class="num">好评<b>($!{well})</b></span><span class="fl"><i style="width:$!{well}"></i></span></li>
+<li><span class="num">中评<b>($!{middle})</b></span><span class="fl"><i style="width:$!{middle}"></i></span></li>
+<li><span class="num">差评<b>($!{bad})</b></span><span class="fl"><i style="width:$!{bad}"></i></span></li>
+</ul>
+</dd>
+</dl>
+#end
+<div class="phone_eva">
+#if($!objs.size()!=0)
+#foreach($obj in $objs)
+#set($img="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+#if($!obj.evaluate_user.photo)
+#set($img="$!imageWebServer/$!obj.evaluate_user.photo.path/$!obj.evaluate_user.photo.name")
+#end
+<dl>
+<dt><img src="$!img" width="50" height="50" /></dt>
+<dd>
+<p><span class="fl">$!{obj.evaluate_user.userName}</span><span class="fr">$!CommUtil.formatShortDate($!obj.addTime)</span></p>
+<p>$!{obj.evaluate_info}</p>
+</dd>
+</dl>
+#end
+#else
+<div class="loading">
+<ul>
+<li>暂时没有评价</li>
+</ul>
+</div>
+#end
+</div>

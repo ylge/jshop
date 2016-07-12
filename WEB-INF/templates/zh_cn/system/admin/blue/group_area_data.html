@@ -1,0 +1,18 @@
+#foreach($ga in $gas)
+	#if($!ga.ga_level==1)
+	   #set($child="child_$!ga.parent.id")
+	 #end
+
+<tr id="$!ga.id" parent="$!ga.parent.id" level="$child">
+ <td align="center"><input name="ids" id="ids" type="checkbox" value="$!ga.id" /></td>
+    <td colspan="2" align="center">
+  
+ <ul class="addclass">
+   <li class="acc1">&nbsp;</li>
+   <li class="ac2"><span class="num"><input type="text" name="$!ga.ga_sequence" id="$!ga.ga_sequence"  value="$!ga.ga_sequence" onblur="ajax_update('$!ga.id','ga_sequence',this)" title="可编辑"/></span></li>
+   <li class="acc3"><span class="classies"><input type="text" name="$!ga.ga_name" id="$!ga.ga_name" value="$!ga.ga_name"  onblur="ajax_update('$!ga.id','ga_name',this)" title="可编辑"/></span>
+   </li>
+       </ul>    </td>
+    <td align="center"  class="hui oprate_con"><a href="$!webPath/admin/group_area_edit.htm?id=$!ga.id&currentPage=$!currentPage" class="blue">编辑</a>|<a href="javascript:void(0);" onclick="if(confirm('删除分类会同时删除该分类的所有下级，是否继续?'))window.location.href='$!webPath/admin/group_area_del.htm?mulitId=$!ga.id&currentPage=$!currentPage'"  class="blue">删除</a></td>
+</tr>
+#end

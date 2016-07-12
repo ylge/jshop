@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!obj.free_name - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script type="text/javascript">
+function timeCount(remain_id){
+   function _fresh(){
+      var nowDate = new Date(),                                    //当前时间
+      endDate = new Date($('#'+remain_id).attr('endtime')),    //截止时间
+      totalS  = parseInt((endDate.getTime() - nowDate.getTime()) / 1000);     //总秒数
+      _day    = parseInt(totalS / 3600 / 24);
+      _hour   = parseInt((totalS / 3600) % 24);
+      _minute = parseInt((totalS / 60) % 60);
+      _second = parseInt(totalS % 60);
+     jQuery('#'+remain_id).html('<strong>' + _day +'</strong>天<strong>' + _hour + '</strong>小时<strong>' + _minute + '</strong>分<strong>' + _second + '</strong>秒');
+     if( totalS <= 0){
+       jQuery('#'+remain_id).html('该0元试用已结束');
+       clearInterval(sh);
+     }
+  }
+  _fresh();
+  var sh = setInterval(_fresh,1000);
+}
+jQuery(document).ready(function(){
+  jQuery("b[id^=time_]").each(function(index){
+	var val = jQuery(this).attr("mark");
+	timeCount(val);					   
+						   });
+  jQuery("b[id^=htime_]").each(function(index){
+	var val = jQuery(this).attr("mark");
+	timeCount(val);					   
+						   });
+  jQuery(".free_list_right_pending dl").mouseover(function(){
+			jQuery(this).find("dt").attr("style","margin-top:-93px;")										   
+													   }).mouseout(function(){
+													jQuery(this).find("dt").attr("style","margin-top:93px;")	   
+														   });
+ 
+  jQuery("#free_list_left_discuss").load("$!webPath/free/logs.htm?id=$!obj.id");
+});
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm?op=free")
+  <!--页面背景  -->
+<div class="main_bg" style=" width:100%; height:auto; float:left; background:#f3f3f3; padding-bottom:30px; border-bottom:1px solid #ccc;">
+<div class="main">
+
+<!--0元试用 start -->
+
+<div class="free_list">
+ 	<!--左侧  start-->
+	<div class="free_list_left">
+        <!--list  start-->
+        #set($goods = $!freeTools.queryGoods("$!{obj.goods_id}"))
+        #set($users = $!freeTools.queryUser("$!{obj.id}"))
+        <div class="free_list_left_list" style="margin-top:0px;">
+        	<div class="free_list_left_list_left"><img src="$!imageWebServer/$!obj.free_acc.path/$!obj.free_acc.name" /></div>
+            <div class="free_list_left_list_right">
+            	<div class="free_list_left_list_right_name"><a href="$!webPath/free/view_$!{obj.id}.htm">$!obj.free_name</a></div>
+                <div class="free_list_left_list_right_price"><strong>$!obj.current_count/$!obj.default_count</strong><span>价值：<strong>￥<b>#if($!goods) $!goods.store_price #end</b></strong></span></div>
+                <div class="free_list_left_list_right_time"><b endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{obj.endTime})"  id="time_$!obj.id" mark="time_$!obj.id">剩余时间：<strong>30</strong>天<strong>30</strong>时<strong>30</strong>分<strong>30</strong>秒</b></div>
+                #if($!obj.freeStatus==5)
+                <div class="free_list_left_list_right_yes"><a #if(!$!user) href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else href="$!webPath/free_apply.htm?id=$!{obj.id}"  #end>免费试用</a></div>
+                #else
+                 <div class="free_list_left_list_right_none"><a href="javascript:void(0);">已结束</a></div>
+                 #end
+                <div class="free_list_left_list_right_people"><strong>$!obj.apply_count</strong>人申请</div>
+                <div class="free_list_left_list_right_people_c">
+                	<ul>#foreach($us in $users)
+                    #if($!us.photo)
+          			#set($user_photo="$!imageWebServer/$!us.photo.path/$!us.photo.name")
+          			#else 
+          			#set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          			#end
+                    	<li><a href="$!webPath/sns/other_sns_$!{us.id}.htm"><img src="$!user_photo" /></a></li>
+                        #end
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--list  end-->
+        <input type="hidden" value="$!obj.id" id="id" />
+        <div class="free_list_left_introduce">
+        	<h3>产品介绍</h3>
+            <div class="free_list_left_introduce_word">
+				$!obj.free_details
+            </div>
+        </div>
+        <div id="free_list_left_discuss">
+        
+        	
+        </div>
+        
+    </div>
+     <!--左侧  start-->
+    
+    <!--右侧  start-->
+    <div class="free_list_right">
+    	<div class="free_list_right_pending">
+        	<h3>热门0元试用</h3>
+            #foreach($hot in $hots)
+        	<dl>
+ 				<dd><img src="$!imageWebServer/$!hot.free_acc.path/$!hot.free_acc.name" /></dd>
+                <!--鼠标经过 dd时 dt从下向上滑动 -->
+                <dt>
+                	<span class="free_list_right_pending_name"><a href="$!webPath/free/view_$!{hot.id}.htm">$!hot.free_name</a></span>
+                    <span class="free_list_right_pending_time"><b endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{hot.endTime})"  id="htime_$!hot.id" mark="htime_$!hot.id">剩余时间：<strong>1</strong>天<strong>30</strong>时<strong>30</strong>分<strong>30</strong>秒</b></span>
+                    <span class="free_list_right_pending_yes"><a href="$!webPath/free/view_$!{hot.id}.htm">免费试用</a></span>
+                    
+                </dt>
+            </dl>
+            #end
+        </div>
+        <div class="free_list_right_statement">
+        	<h3>免责声明</h3>
+        	<span>1.0元试用仅是为提供试用的渠道，不对试用产品效果及质量提供保障。若试用过程中有任何不适，请即时停用并联系相关商家 。
+2.申请时请填写真实有效的收件信息，如信息错误快递无法送达，会被视为放弃该0元试用哦。</span>
+        </div>
+    </div>
+    <!--右侧 end -->
+</div>
+
+<!--0元试用 end -->
+        
+</div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

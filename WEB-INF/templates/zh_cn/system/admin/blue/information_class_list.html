@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+function ajax_update(id,fieldName,obj){
+	
+   var val=jQuery(obj).val();
+   jQuery.ajax({type:'POST',
+	              url:'$!webPath/admin/information_class_ajax.htm',
+				  data:{"id":id,"fieldName":fieldName,"value":val},
+				beforeSend:function(){
+				  
+				},
+			   success:function(data){
+	             if(val==""){
+				   jQuery(obj).attr("src","$!webPath/resources/style/system/manage/blue/images/"+data+".png");
+				 }else{
+				   jQuery(obj).val(val);
+				 }      
+              }
+	    });
+}
+jQuery(document).ready(function(){
+   jQuery("tr[id^=childs_]").hide();
+});
+function show_childs_class(id){
+  jQuery("tr[id^=childs_"+id+"]").toggle();
+  var item_status=jQuery("img[id=jian_"+id+"]").attr("item_status");
+  if(item_status=="0"){
+    jQuery("img[id=jian_"+id+"]").attr("src","$!webPath/resources/style/system/manage/blue/images/add.jpg");
+    jQuery("img[id=jian_"+id+"]").attr("item_status","1");
+  }
+  if(item_status=="1"){
+    jQuery("img[id=jian_"+id+"]").attr("src","$!webPath/resources/style/system/manage/blue/images/jian.jpg");
+    jQuery("img[id=jian_"+id+"]").attr("item_status","0");
+  }
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">资讯分类</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/information_class_list.htm" class="this"><b>所有分类</b></a></li>
+      <li><a href="$!webPath/admin/information_class_add.htm"><b>新增分类</b></a></li>
+    </ul>
+  </div>
+  <div class="operation">
+      <h3>友情提示</h3>
+      <ul>
+        <li>资讯分类建议不超过8个，超出部分在页面可能无法显示。</li>
+      </ul>
+    </div>
+  <form method="post" id="ListForm" action="$!webPath/admin/information_class_list.htm">
+    <div class="fshoptb2">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table2">
+        <tr>
+          <th width="5%"></th>
+          <th width="8%"><span class="form_btna">排序</span></th>
+          <th width="55%"><span class="form_btna">标题</span></th>
+          <th align="center"><span class="form_btna">操作</span></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr id="column_$!{obj.id}">
+          <td class="check_position"><input name="checkbox" type="checkbox" id="checkbox" value="$!obj.id" /></td>
+          <td colspan="2" >
+          <ul class="addclass">
+          <li class="ac1">
+            <img src="$!webPath/resources/style/system/manage/blue/images/jian.jpg" item_status="0" cls="jian" level="0_$!obj.id" width="14" height="14" id="jian_$!obj.id" onclick="show_childs_class('$!obj.id');" style="cursor:pointer;"/> </li>
+          <li class="ac2"><span class="num">
+            <input type="text" name="$!obj.ic_sequence" id="$!obj.ic_sequence"  value="$!obj.ic_sequence"  onblur="ajax_update('$!obj.id','ic_sequence',this)" title="可编辑"/>
+          </span></li>
+          <li class="ac3"><span class="classies">
+            <input type="text" name="$!obj.ic_name" id="$!obj.ic_name" value="$!obj.ic_name" onblur="ajax_update('$!obj.id','ic_name',this)" title="可编辑"/>
+          </span> <span class="newclass"><a href="$!webPath/admin/information_class_add.htm?id=$!obj.id">新增下级</a></span></li>
+          </ul>
+          </td>
+          
+          <td  align="center" class="hui oprate_con"><a href="$!webPath/admin/information_class_edit.htm?id=$!obj.id" class="blue">编辑</a>|<a href="javascript:void(0);" onclick="if(confirm('删除后不可恢复，是否继续？'))window.location.href='$!webPath/admin/information_class_del.htm?mulitId=$!obj.id&currentPage=$!currentPage'" class="blue">删除</a></td>
+        </tr>
+        #foreach($childs_class in $cmsTools.queryChildClass("$!obj.id"))
+        <tr id="childs_$!obj.id">
+ 			<td class="check_position" ><input name="checkbox" type="checkbox" id="checkbox" value="$!childs_class.id" /></td>
+    		<td colspan="2" align="center">
+ 			<ul class="addclass">
+   				<li class="accc1" style="margin-left:30px;"><img src="$!webPath/resources/style/system/manage/blue/images/expandtable.gif" cls="jian"/></li>
+   				<li class="ac2"><span class="num"><input type="text" name="$!childs_class.ic_sequence" id="$!childs_class.ic_sequence"  value="$!childs_class.ic_sequence"  onblur="ajax_update('$!childs_class.id','ic_sequence',this)" title="可编辑"/></span></li>
+   				<li class="ac3"><span class="classies"><input type="text" name="$!childs_class.ic_name" id="$!childs_class.ic_name" value="$!childs_class.ic_name" onblur="ajax_update('$!childs_class.id','ic_name',this)" title="可编辑"/></span></li>
+       		</ul>    
+       		</td>
+    		<td align="center" class="hui oprate_con"><a href="$!webPath/admin/information_class_edit.htm?id=$!childs_class.id&currentPage=$!currentPage" class="blue">编辑</a>|<a href="javascript:void(0);" onclick="if(confirm('删除分类会同时删除该分类的所有下级，是否继续?'))window.location.href='$!webPath/admin/information_class_del.htm?mulitId=$!childs_class.id&currentPage=$!currentPage'" class="blue">删除</a></td>
+		</tr>
+        #end
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input type="hidden" name="mulitId" id="mulitId" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        $!gotoPageFormHTML </div>
+      <div class="shopbtn shopfx"><span class="oper_check" >
+        <label onclick="selectAll(jQuery('#all'))">
+          <input type="checkbox" name="all" id="all" value="" />
+          全部</label>
+        </span></div>
+      <div class="shop_btn_del shopbtn"><span class="oper_del">
+        <input name="" type="button" value="删除" onclick="cmd('$!webPath/admin/information_class_del.htm');"/>
+        </span></div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

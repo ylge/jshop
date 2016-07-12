@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-商家版式添加-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+var options = {
+        cssPath : '$!webPath/resources/editor/plugins/code/prettify.css',
+        filterMode : true,
+		uploadJson:'$!webPath/upload.htm',
+		width : '860px',
+		height:'400px',
+		resizeType : 1,
+		allowImageUpload : false,
+		allowFlashUpload : false,
+		allowMediaUpload : false,
+		allowFileManager : false,
+		syncType:"form",
+		afterCreate : function() {
+							var self = this;
+							self.sync();
+						},
+		afterChange : function() {
+							var self = this;
+							self.sync();
+						},
+		afterBlur : function() {
+							var self = this;
+							self.sync();
+						},
+		items:['source', '|', 'fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste',
+			'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+			'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+			'superscript', '|', 'selectall', 'clearhtml','quickformat','|',
+			'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+			'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image','flash', 'media', 'table', 'hr', 'emoticons', 'link', 'unlink', '|', 'about']
+};
+jQuery(function(){ 
+   //
+   editor = KindEditor.create('#gf_content',options);
+   //
+   jQuery("#theForm").validate({
+	 ignore: "",							   
+     rules: {
+			 gf_name:{required:true},
+			 gf_type:{required:true},
+			 gf_content:{required:true}
+			},
+     messages: {
+			gf_name:{required:"版式名称不能为空"},
+			gf_type:{required:"版式位置不能为空"},
+			gf_content:{required:"版式内容不能为空"}
+		  },
+  submitHandler:function(){
+	  var params = jQuery("#theForm").serialize();
+	  jQuery(".seller_save").attr("disabled","disabled");
+	  jQuery.ajax({type:'POST',url:'$!webPath/seller/goods_format_save.htm',data:params,
+				   success:function(data){
+				       if(data=="true"){
+			                  jQuery("#theForm")[0].reset();
+			                  showDialog("msg_info","","商品版式添加成功！",0,"succeed",3,function(){
+				                 window.location.href="$!webPath/seller/goods_format_list.htm";
+								 jQuery(".seller_save").removeAttr("disabled");
+		                      });
+		                 }
+				   }
+	  }); 
+	  
+	}		  
+  }); 
+  //初始化数据
+  jQuery("#gf_type").val("$!obj.gf_type");
+})
+function ajaxPage(url,currentPage,obj){
+  var ajax_page=jQuery(obj).parent().attr("ajax_page");
+  if(ajax_page=="goods_img"){
+     var ajax_type=jQuery(obj).parent().attr("ajax_type");
+     var type=jQuery(obj).parent().attr("type");
+	 var album_id=jQuery(obj).parent().attr("album_id");
+     jQuery.post("$!webPath/seller/goods_img.htm",{"currentPage":currentPage,"type":type,"album_id":album_id},function(text){
+       jQuery(ajax_type).empty();
+	   jQuery(ajax_type).append(text);
+     },"text");
+
+  }else if(ajax_page=="goods_album"){
+	  var ajax_type=jQuery(obj).parent().attr("ajax_type");
+	  var album_name=jQuery("#id_"+ajax_type.substring(1)).val();
+     jQuery.post("$!webPath/seller/goods_album.htm",{"currentPage":currentPage,"ajax_type":ajax_type,"album_name":album_name},function(text){
+       jQuery(ajax_type).empty();
+	   jQuery(ajax_type).append(text);
+     },"text");
+  }
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=goods_format")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>商品管理</b> ><b>新增商品版式</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li ><a href='$!webPath/seller/goods_format_list.htm' ><i></i>版式列表</a></li>
+            <li class="this"><a href='$!webPath/seller/goods_format_add.htm' ><i></i>新增版式</a></li>
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/goods_format_save.htm" method="post" id="theForm" >
+            <input name="id" type="hidden" id="id"  value="$!obj.id"/>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td align="right"><strong class="redstr">*</strong>版式名称：</td>
+                <td ><input name="gf_name" type="text" id="gf_name"  value="$!obj.gf_name" class="base_txt"/>
+                </td>
+              </tr>
+              <tr>
+                <td align="right"><strong class="redstr">*</strong>版式位置：</td>
+                <td><select name="gf_type" id="gf_type">
+                    <option value="">版式位置</option>
+                    <option value="0">顶部版式</option>
+                    <option value="1">底部版式</option>
+                  </select></td>
+              </tr>
+              <tr>
+                <td align="right" ><strong class="redstr">*</strong>版式内容：</td>
+                <td ><textarea name="gf_content" cols="40" rows="6" id="gf_content" class="base_text">$!obj.gf_content</textarea></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td  style="border-right:none;">
+				<script>
+                 function switch_editor_photo(obj){
+			         var album_id = jQuery(obj).attr("album_id");
+				     jQuery.post("$!webPath/seller/goods_img.htm",{"type":"goods_detail_album","album_id":album_id},function(text){
+				         jQuery(".editor_photo_detail").empty();																					  
+			  	         jQuery(".editor_photo_detail").append(text);
+			         },"text"); 
+				     jQuery(".editor_photo_detail").show();
+		         }
+		   
+		   		function switch_editor_album(mark){
+					jQuery("#id_editor_photo_detail").val("");
+				  var dis=jQuery(".editor_photo_detail").css("display");
+				  if(dis=="none" || mark=="album_list" || mark=="all"){
+					  var name=jQuery("input[m='.editor_photo_detail']").val();
+					 if(mark=="all"){name="";} 
+					  if(name!=""){
+	                   jQuery("#id_editor_photo_detail").val(name);
+					 }
+					  jQuery.post("$!webPath/seller/goods_album.htm",{"type":"goods_detail_album","ajax_type":".editor_photo_detail","album_name":name},function(text){
+					       jQuery(".editor_photo_detail").empty();																					  
+					       jQuery(".editor_photo_detail").append(text).show();
+						   jQuery("#album_switch").text("关闭相册图片");
+					  },"text"); 
+				   }else{
+					  jQuery(".editor_photo_detail").hide();
+					  jQuery("#album_switch").text("打开相册图片");
+				   }		
+			    }
+              </script>
+              <input id="id_editor_photo_detail" type="hidden" />
+                  <div class="photoimg">
+                    <div class="addphoto"><a id="album_switch" href="javascript:void(0);" onclick="switch_editor_album('');">打开相册图片</a></div>
+                    <div class="editor_photo_detail" style="display:none;"> </div>
+                  </div></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td ><input name="" type="submit"  value="提交"  style="cursor:pointer;" class="seller_save"/></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

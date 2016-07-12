@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-短信邮件- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+function buy(obj_id,currentPage){
+	showDialog("question","","您确认要进行支付吗？",1,"question",2,	
+							function(){
+								jQuery.ajax({type:'POST',url:'$!webPath/seller/sms_email_buy_save.htm',data:"id="+obj_id,
+									  success:function(data){
+											if(data==100){
+											showDialog("succeed","","购买成功，账户金币已经扣除！",2,"succeed",3,function(){window.location.href="$!webPath/seller/sms_email.htm";});
+											}
+											if(data==-100){
+											showDialog("error","","参数错误，请重新支付！",2,"error",3,function(){window.location.href="$!webPath/seller/sms_email_log.htm?currentPage="+currentPage;});
+											}
+											if(data==-300){
+											showDialog("warning","","金币不足，赶快去充值吧！",1,"warning",2,function(){window.location.href="$!webPath/seller/gold_record.htm";});
+											}
+									  }
+								 });
+								}
+			   );		
+}
+function dele(obj_id,currentPage){	
+	    showDialog("question","","删除后不可恢复，确认删除吗？",1,"question",2,function(){window.location.href="$!webPath/seller/sms_email_log_dele.htm?id="+obj_id+"&currentPage="+currentPage;}
+		);
+	}
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+  $!httpInclude.include("/seller/nav.htm?op=sms")  
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>其他管理</b> ><b>短信邮件</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href='$!webPath/seller/sms_email.htm'><i></i>邮件短信</a></li>
+            <li class="this"><a href='$!webPath/seller/sms_email_log.htm'><i></i>购买记录</a></li>
+            <li><a href='$!webPath/seller/sms_email_set.htm'><i></i>功能设置</a></li>
+          </ul>
+        </div>
+        <div class="seller_list_box">
+          <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/sms_email_log.htm">
+            <div class="operation">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+                <tr id="opertitle">
+                  <th width="10%">名称</th>
+                  <th width="17%">购买时间</th>
+                  <th width="10%">单价</th>
+                  <th width="7%">数量</th>
+                  <th width="18%">包含内容</th>
+                  <th width="10%">支付状态</th>
+                  <th width="10%">支付金币</th>
+                  <th align="center">操作</th>
+                </tr>
+                #if($objs.size()>0)
+                #foreach($obj in $objs)
+                #if($!obj.log_status==0)
+                #set($status = "待支付")
+                #end
+                #if($!obj.log_status==5)
+                #set($status = "已支付")
+                #end
+                #if($!obj.log_status==-5)
+                #set($status = "已取消")
+                #end
+                <tr >
+                  <td align="center">$!obj.title</td>
+                  <td align="center">$!CommUtil.formatLongDate($!obj.addTime)</td>
+                  <td align="center">$!obj.gold</td>
+                  <td align="center">$!obj.count</td>
+                   #set($all = 100*$!{obj.count})
+                    #if($!obj.log_type=="sms")
+                    <td align="center">$!{all}条短信</td>
+                    #else
+                    <td align="center">$!{all}封邮件</td>
+                    #end
+                  <td align="center">$!status</td>
+                  <td align="center">$!obj.all_gold</td> 
+                  <td align="center" class="del_operate">
+                   #if($!obj.log_status==0)
+                  <a href="javascript:void(0);" onclick="buy('$!{obj.id}','$!{currentPage}');" class="del_a">支付</a>|<a href="javascript:void(0);" onclick="dele('$!{obj.id}','$!{currentPage}');" class="del_a">取消</a>
+                   #end
+                  </td>
+                </tr>
+                #end
+                #else
+                <tr>
+                  <td colspan="7" align="center"><div class="seller_center_nothing">
+                      <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                      <div class="seller_center_nothing_right">暂时没有数据</div>
+                    </div></td>
+                </tr>
+                #end
+              </table>
+            </div>
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+            <div class="seller_list_page">
+              <div  class="seller_page_sp"> $!gotoPageFormHTML</div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+ $!httpInclude.include("/footer.htm")
+</body>
+</html>

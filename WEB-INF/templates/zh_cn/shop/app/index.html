@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/app/css/style.css">
+<title></title>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/TouchSlide.1.1.js"></script>
+<script>
+function iosFun(cmd,para)
+{ 
+    document.location="objc://"+cmd+":/"+para;  //cmd代表objective-c中的的方法名，parameter1自然就是参数了
+}
+</script>
+</head>
+<body>
+<script src="$!webPath/advert_invoke.htm?id=4"></script>
+#set($jp="$!webPath/resources/style/app/images/jp.png")
+#set($hot="$!webPath/resources/style/app/images/hot.png")
+#set($cx="$!webPath/resources/style/app/images/cx.png")
+#set($tg="$!webPath/resources/style/app/images/t.png")
+#set($jf="$!webPath/resources/style/app/images/jf.png")
+#set($mf="$!webPath/resources/style/app/images/mf.png")
+#set($lm="$!webPath/resources/style/app/images/lm.png")
+#set($pp="$!webPath/resources/style/app/images/pp.png")
+<div class="main_nav">
+  <ul>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoGoods_list('goods_click')"#else onClick="iosFun('gotoGoods_list','goods_click')" #end> <img src="$!{jp}"></a><span>精品</span></li>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoGoods_list('goods_salenum')"#else onClick="iosFun('gotoGoods_list','goods_salenum')" #end> <img src="$!{hot}"></a><span>热卖</span></li>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoActivity()"#else onClick="iosFun('gotoActivity')" #end> <img src="$!{cx}"></a><span>促销</span></li>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoGroup()"#else onClick="iosFun('gotoGroup')" #end> <img src="$!{tg}"></a><span>团购</span></li>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoIntegral()"#else onClick="iosFun('gotoIntegral')" #end> <img src="$!{jf}"></a><span>积分</span></li>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoFree()"#else onClick="iosFun('gotoFree')" #end> <img src="$!{mf}"></a><span>试用</span></li>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoGoodsClass()"#else onClick="iosFun('gotoGoodsClass')" #end> <img src="$!{lm}"></a><span>类目</span></li>
+    <li><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.gotoGoodsBrand()"#else onClick="iosFun('gotoGoodsBrand')" #end> <img src="$!{pp}"></a><span>品牌</span></li>
+  </ul>
+</div>
+<!--main -->
+<div class="main">
+  <div class="main_hot">
+    <div class="main_til"><span>热卖商品</span></div>
+    #if($!hots && $!hots.size()>=3)
+    <div class="main_hot_left"><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.gotoGoods('$!{hots.get(0).get('id')}')"#else onClick="iosFun('gotoGoods','$!{hots.get(0).get('id')}')" #end><img src="$!{hots.get(0).get('img')}"></a><span><a href="javascript:void(0);">$!{hots.get(0).get('name')}</a></span></div>
+    <div class="main_hot_right">
+      <div class="main_hot_right_top"><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.gotoGoods('$!{hots.get(1).get('id')}')"#else onClick="iosFun('gotoGoods','$!{hots.get(1).get('id')}')" #end><img src="$!{hots.get(1).get('img')}"></a></div>
+      <div class="main_hot_right_top"><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.gotoGoods('$!{hots.get(2).get('id')}')"#else onClick="iosFun('gotoGoods','$!{hots.get(2).get('id')}')" #end><img src="$!{hots.get(2).get('img')}"></a></div>
+    </div>
+    #end
+  </div>
+  <div class="main_hot">
+    <div class="main_til"><span>推荐商品</span></div>
+    #if($!recommends && $!recommends.size()>=3)
+    <div class="main_hot_left_r"><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.gotoGoods('$!{recommends.get(0).get('id')}')"#else onClick="iosFun('gotoGoods','$!{recommends.get(0).get('id')}')" #end><img src="$!{recommends.get(0).get('img')}"></a><span><a href="javascript:void(0);">$!{recommends.get(0).get('name')}</a></span></div>
+    <div class="main_hot_right_l">
+      <div class="main_hot_right_l_top"><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.gotoGoods('$!{recommends.get(1).get('id')}')"#else onClick="iosFun('gotoGoods','$!{recommends.get(1).get('id')}')" #end><img src="$!{recommends.get(1).get('img')}"></a></div>
+      <div class="main_hot_right_l_top"><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.gotoGoods('$!{recommends.get(2).get('id')}')"#else onClick="iosFun('gotoGoods','$!{recommends.get(2).get('id')}')" #end><img src="$!{recommends.get(2).get('img')}"></a></div>
+      #end
+    </div>
+  </div>
+  <div class="main_hot">
+    <div class="main_til"><span>促销商品</span></div>
+    #foreach($obj in $activitys)
+    <div class="main_four_left"><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.gotoGoods('$!{obj.id}')"#else onClick="iosFun('gotoGoods','$!{obj.id}')" #end><img src="$!{obj.img}" width="147" height="147"></a></div>
+    #end </div>
+  <div class="main_hot">
+    <div class="main_til"><span>商品团购</span></div>
+    <div class="main_free_list">
+      <ul>
+        #foreach($obj in $groupsgoods)
+        <li> <b><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.go_group_goods('$!{obj.id}','goods')"#else onClick="iosFun('go_group_goods','$!{obj.id}/goods')" #end><img src="$!obj.img"></a></b> <span> <i>$!obj.name</i> <b>已售出$!{obj.sale}份</b> <strong><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.go_group_goods('$!{obj.id}','goods')"#else onClick="iosFun('go_group_goods','$!{obj.id}/goods')" #end>马上去团</a></strong> </span> </li>
+        #end
+      </ul>
+    </div>
+  </div>
+  
+  <div class="main_hot">
+    <div class="main_til"><span>生活团购</span></div>
+    <div class="main_free_list">
+      <ul>
+        #foreach($obj in $grouplifes)
+        <li> <b><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.go_group_goods('$!{obj.id}','life')"#else onClick="iosFun('go_group_goods','$!{obj.id}/life')" #end><img src="$!obj.img"></a></b> <span> <i>$!obj.name</i> <b>已售出$!{obj.sale}份</b> <strong><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.go_group_goods('$!{obj.id}','life')"#else onClick="iosFun('go_group_goods','$!{obj.id}/life')" #end>马上去团</a></strong> </span> </li>
+        #end
+      </ul>
+    </div>
+  </div>
+  
+  
+  
+  <div class="main_hot">
+    <div class="main_til"><span>积分商品</span></div>
+    <div class="main_hot_list">
+      <ul>
+        #foreach($obj in $integrals)
+        <li><a href="javascript:void(0);"#if($!type=="android")onClick="window.jsInterface.go_integral_goods('$!{obj.id}')"#else onClick="iosFun('go_integral_goods','$!{obj.id}')" #end><img src="$!obj.img"></a><span>$!obj.name</span></li>
+        #end
+      </ul>
+    </div>
+  </div>
+  <div class="main_hot">
+    <div class="main_til"><span>免费试用</span></div>
+    <div class="main_free_list">
+      <ul>
+        #foreach($obj in $fress)
+        <li> <b><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.go_free_goods('$!{obj.id}')"#else onClick="iosFun('go_free_goods','$!{obj.id}')" #end><img src="$!obj.img"></a></b> <span> <i>$!obj.name</i> <b>$!{obj.apply_count}人已申请</b> <strong><a href="javascript:void(0);" #if($!type=="android")onClick="window.jsInterface.go_free_goods('$!{obj.id}')"#else onClick="iosFun('go_free_goods','$!{obj.id}')" #end>免费试用</a></strong> </span> </li>
+        #end
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>

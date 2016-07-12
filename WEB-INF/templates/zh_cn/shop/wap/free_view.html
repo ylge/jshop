@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/wap/jquery.shop.common.js"></script>
+<script type="text/javascript">
+function timeCount(remain_id){
+   function _fresh(){
+      var nowDate = new Date(),                                    //当前时间
+      endDate = new Date($('#'+remain_id).attr('endtime')),    //截止时间
+      totalS  = parseInt((endDate.getTime() - nowDate.getTime()) / 1000);     //总秒数
+      _day    = parseInt(totalS / 3600 / 24);
+      _hour   = parseInt((totalS / 3600) % 24);
+      _minute = parseInt((totalS / 60) % 60);
+      _second = parseInt(totalS % 60);
+     jQuery('#'+remain_id).html('<b>' + _day +'</b>天<b>' + _hour + '</b>小时<b>' + _minute + '</b>分<b>' + _second + '</b>秒');
+     if( totalS <= 0){
+       jQuery('#'+remain_id).html('该0元试用已结束');
+       clearInterval(sh);
+	   jQuery(".free_box ul li").addClass("over");
+     }
+  }
+  _fresh();
+  var sh = setInterval(_fresh,1000);
+}
+jQuery(document).ready(function(){
+  jQuery("span[id^=time_]").each(function(index){
+	var val = jQuery(this).attr("mark");
+	timeCount(val);					   
+						   });
+ 
+  jQuery("#free_list_left_discuss").load("$!webPath/free/logs.htm?id=$!obj.id");
+});
+</script>
+</head>
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>0元试用详细页<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="phone_main">
+  <!--0元试用详细页-->
+  <div class="free_box"> #set($goods = $!freeTools.queryGoods("$!{obj.goods_id}"))
+    #set($users = $!freeTools.queryUser("$!{obj.id}"))
+    <ul>
+      <li>
+        <p class="img"><img src="$!imageWebServer/$!obj.free_acc.path/$!obj.free_acc.name" /></p>
+        <p class="time"><i><img src="$!webPath/resources/style/system/front/wap/images/clock_black.png" width="25" height="25" /></i><span class="fl" endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{obj.endTime})"  id="time_$!obj.id" mark="time_$!obj.id"><b>121</b>天<b>121</b>小时<b>121</b>分<b>121</b>秒</span></p>
+        <p class="name">$!obj.free_name</p>
+        <p class="price"><span class="fl">价值：<s>¥#if($!goods) $!goods.store_price #end</s></span>#if($!obj.freeStatus==5) <span class="fr" onClick="window.location.href='$!webPath/wap/free_apply.htm?id=$!obj.id'">免费试用</span> #else <span class="fr">已结束</span> #end</p>
+        <p class="num"><span class="fl"><b>$!obj.apply_count</b>人申请：</span><span class="fr"> #foreach($us in $users)
+          #if($!us.photo)
+          #set($user_photo="$!imageWebServer/$!us.photo.path/$!us.photo.name")
+          #else 
+          #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          #end <a href="javascript:void(0);"><img src="$!user_photo" width="40" height="40" /></a> #end </span></p>
+      </li>
+    </ul>
+  </div>
+  <div class="free_con">
+    <h1 class="title">商品详细</h1>
+    <div class="integral_infro">$!obj.free_details</div>
+  </div>
+  $!httpInclude.include("/wap/footer.htm") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

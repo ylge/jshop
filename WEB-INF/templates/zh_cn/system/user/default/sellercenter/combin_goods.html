@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-组合销售-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("img[id^=msg_]").hover(function(){
+	   jQuery(this).parent().find(".msg_word").show();
+	},function(){
+	   jQuery(this).parent().find(".msg_word").hide();	
+		});
+	#if($!combin_status)
+	jQuery("#combin_status").val("$!combin_status");
+	#end
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=combin") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>促销推广</b>><b>组合销售</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li #if(!$!type) class="this" #end><a href="$!webPath/seller/combin.htm"><i></i>组合套装</a></li>
+            <li #if($!type==1)class="this"#end ><a href="$!webPath/seller/combin.htm?type=1"><i></i>组合配件</a></li>
+            <li><a href='$!webPath/seller/combin_add.htm'><i></i>添加组合</a></li>
+            <li><a href='$!webPath/seller/combin_meal.htm'><i></i>套餐购买</a></li>
+            <li><a href='$!webPath/seller/combin_meal_log.htm'><i></i>购买日志</a></li>
+          </ul>
+        </div>
+          <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/combin.htm">
+          #if($objs.size()>0)
+        <div class="user_sp_right"> <span>
+            <input name="goods_name" type="text" class="user_title_txt" id="goods_name" placeholder="主体商品名称" value="$!goods_name"/>
+            <input name="type" type="hidden" id="type"  value="$!type"/>
+            <input name="beginTime" type="text" class="user_title_txt" id="beginTime" placeholder="开始时间(起始)" value="$!beginTime" readonly="readonly"/>
+            <input name="endTime" type="text" class="user_title_txt" id="endTime" placeholder="到期时间(结束)" value="$!endTime" readonly="readonly"/>
+           <select id="combin_status" name="combin_status">
+           <option value="">组合状态</option>
+           <option value="0">待审核</option>
+           <option value="1">已通过</option>
+           <option value="-1">未通过</option>
+           <option value="-2">已过期</option>
+           </select>
+            <input name="" type="submit" class="seller_sear_btn" value="查询"/>
+            </span> </div>
+            #end
+        <div class="seller_list_box">
+            <div class="operation">
+                #set($t_text="套装")
+                #if($!type==1)
+                #set($t_text="配件")
+                #end
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+              #if($objs.size()>0)
+                <tr id="opertitle">
+                  <th width="25%">主体商品</th>
+                  <th width="40%">$!{t_text}内容</th>
+                  <th width="12%">状态</th>
+                  <th align="center">操作</th>
+                </tr>
+              #end 
+                #if($objs.size()>0)
+                #foreach($obj in $objs)
+                #if($!obj.combin_status==-2)
+                #set($status = "已过期")
+                #end
+                #if($!obj.combin_status==-1)
+                #set($status = "未通过")
+                #end
+                #if($!obj.combin_status==0)
+                #set($status = "待审核")
+                #end
+                #if($!obj.combin_status==1)
+                #set($status = "审核通过")
+                #end
+                #if($!obj.combin_status==-5)
+                #set($status = "已手动下架")
+                #end
+                
+                <tr > #set($main_map =$!combinTools.getMainGoodsMap("$!{obj.id}"))
+                  <td align="center"><a href="$!main_map.get('url')" target="_blank" title="$!main_map.get('name')">$!main_map.get('name')</a><br />
+                    （$!CommUtil.formatShortDate($!obj.beginTime)——$!CommUtil.formatShortDate($!obj.endTime)）</td>
+                  <td align="left"><div class="combin_div"> #foreach($map in $combinTools.getCombinGoodsMaps("$!{obj.id}"))
+                      <ul class="combin_td_ul">
+                        #foreach($goods in $combinTools.getCombinGoodsInfo($!map))
+                        <li>$!velocityCount、<a href="$!goods.get('url')" target="_blank" title="$!goods.get('name')">$!goods.get('name')</a></li>
+                        #end
+                        <li class="price">$!{t_text}方案$!velocityCount：#if($!type==1) <span>配件总体价格：<b>¥$!{map.get('all_goods_price')}</b></span> #else<span>组合价格：<b>¥$!{map.get('plan_goods_price')}</b></span> 商品总价：<s>¥$!{map.get('all_goods_price')}</s>#end</li>
+                      </ul>
+                      #end </div></td>
+                  <td align="center">
+                  	<div class="msg_div">
+                    	<span>$!status</span>
+                         #if($!obj.combin_status==-1 && $!obj.combin_refuse_msg)
+                        <span><img id="msg_$!obj.id" src="$!webPath/resources/style/system/front/default/images/msg.png" width="14px" height="13px"/>
+                        <div class="msg_word" style="display:none" >$!obj.combin_refuse_msg</div></span>
+                        #end
+                    </div>
+
+                  </td>
+                  <td align="center" class="del_operate">
+                  #if($!obj.combin_status==-1 || $!obj.combin_status==-2)
+                  <a href="$!webPath/seller/combin_plan_edit.htm?id=$!obj.id" class="del_a">编辑</a>
+                  #end
+                  
+                   #if($!obj.combin_status==1 || $!obj.combin_status==-5)
+                    #set($text="下架")
+                    		 #if($!obj.combin_status==-5)
+                             #set($text="上架")
+                             #end
+                   <a href="$!webPath/seller/combin_plan_switch.htm?id=$!obj.id" class="del_a">$!{text}</a>  
+                  #end<a href="javascript:void(0);"  onclick="showDialog('msg_info','','确认删除该条数据吗?',1,'question',3,function(){window.location.href='$!webPath/seller/combin_plan_delete.htm?id=$!obj.id&currentPage=$!currentPage&type=$!{type}'});" class="del_a">删除</a>
+                  </td>
+                </tr>
+                #end
+                #else
+                <tr>
+                  <td colspan="4" align="center"><div class="seller_center_nothing">
+                      <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                      <div class="seller_center_nothing_right">暂时没有数据</div>
+                    </div></td>
+                </tr>
+                #end
+              </table>
+            </div>
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+            <div class="seller_list_page">
+              <div  class="seller_page_sp"> $!gotoPageFormHTML</div>
+            </div>
+        </div>
+            </form>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

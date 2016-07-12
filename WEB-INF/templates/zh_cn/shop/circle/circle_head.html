@@ -1,0 +1,61 @@
+<script>
+function search_list(){
+	jQuery("#search_form").submit();
+	}
+jQuery(document).ready(function(){
+  jQuery("#search_ul li").mouseover(function(){
+      jQuery("#search_ul>li").show();
+  }).mouseleave(function(){
+       jQuery("#search_ul>li").last().hide();
+  }).click(function(){
+	 var index=jQuery(this).index();
+	 if(index==1){
+	   var f_text=jQuery("#search_ul li").find("a").first().text();
+	   var f_type=jQuery("#search_ul li").first().attr("type");
+	   jQuery("#search_ul li").attr("type",jQuery(this).attr("type"));
+       jQuery("#search_ul li").find("a").first().html(jQuery(this).find("a").text());
+	   jQuery("#search_ul li").find("a").last().text(f_text);
+	   jQuery("#search_ul li").last().attr("type",f_type);
+	   jQuery("#type").val(jQuery("#search_ul li").first().attr("type"));
+	   jQuery("#search_ul>li").last().hide();
+	 }
+  });
+  #if($!type)
+  	jQuery("#type").val("$!{type}");
+  #end
+  jQuery("#go_top").click(function(){
+		var sTop = jQuery(document).height()
+       jQuery('body,html').animate({scrollTop:0},1000);
+    });
+});
+</script>
+<div class="circle_head">
+  <div class="circle_head_main">
+    <div class="circle_head_main_c"> #if($!config.websiteLogo)
+      #set($img="$!imageWebServer/$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+      #else
+      #set($img="$!webPath/resources/style/system/front/default/images/logo.jpg")
+      #end
+      <div class="circle_head_main_c_left"><span><a href="$!webPath/index.htm"><img src="$!img" /></a></span><b><img src="$!webPath/resources/style/system/front/default/images/circle/circle_logo.png" /></b></div>
+      <form id="search_form" name="search_form" method="post" action="$!webPath/circle/search_list.htm">
+        <div class="circle_head_main_c_search">
+            	<ul id="search_ul">
+                    <li class="this" type="circle"><a href="javascript:void(0);">搜圈子</a></li>
+                    <li style="display:none" type="invitation"><a href="javascript:void(0);">搜帖子</a></li>
+               </ul>
+          <input id="keyword" name="keyword" type="text" placeholder="搜索喜欢的...">
+          <span><a href="javascript:void(0);" onclick="search_list();">搜索</a></span> </div>
+          <input id="type" name="type" type="hidden" value="circle">
+      </form>
+      #if(!$!user)
+      <div class="circle_head_right">
+        <div class="circle_head_right_log" style=""> <span><a href="$!webPath/user/login.htm">登 录</a></span> <i><a href="$!webPath/register.htm">没有帐号？立即注册</a></i> </div>
+      </div>
+      #else
+        <div class="circle_head_right">
+        <div class="circle_head_right_log" style=""> <span><a href="$!webPath/buyer/index.htm">个人中心</a></span> </div>
+      </div>
+      #end
+    </div>
+  </div>
+</div>

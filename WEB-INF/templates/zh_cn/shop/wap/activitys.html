@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>活动列表 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function() {
+	jQuery(".pd5 ul").click(function(){
+		var act_id = jQuery(this).attr("act_id");
+		window.location.href="$!webPath/wap/activitys_goods.htm?act_id="+act_id;
+	})
+	var begin_count =12;
+    jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()) {
+		 jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/activitys_ajax.htm',
+				  data:{"begin_count":begin_count},
+				  beforeSend:function(){
+				  begin_count = begin_count +6;
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				},
+			   success:function(data){
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".pd5").find("ul").last().after(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		
+});
+</script>
+</head>
+
+<body class="index_bg">
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>活动列表<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="main">
+  <div class="main_index">
+  <div class="mt50"></div>
+    <div class="sell">
+      <div class="activity">
+        <div class="pd5">
+        #foreach($obj in $activitys)
+          <ul act_id="$!{obj.id}">
+            <li><img src="$!imageWebServer/$!obj.ac_acc.path/$!obj.ac_acc.name"></li>
+            <li class="li_center">$!obj.ac_title</li>
+            <li class="li_time">活动截止时间：$!CommUtil.formatShortDate($!obj.ac_end_time)</li>
+          </ul>
+        #end
+        </div>
+      </div>
+    </div>
+  </div>
+   <div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16"></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+  <div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+  </div>
+</div>
+ $!httpInclude.include("/wap/footer.htm") 
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

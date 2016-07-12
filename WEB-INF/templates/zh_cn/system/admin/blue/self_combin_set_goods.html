@@ -1,0 +1,85 @@
+<script>
+jQuery(document).ready(function(){
+//加载赋值
+	#if("$!{type}"=="main")
+	var src =jQuery("#main_goods_").find("#img").attr("src");
+	var name =jQuery("#main_goods_").find("#name").html();
+	jQuery("#main_show").find("li").find("#img").attr("src",src);
+	jQuery("#main_show").find("li").find("#name").html(name);
+	if(src=="$!webPath/resources/style/common/images/good.jpg"){
+	jQuery("#main_show").attr("status","none");	
+	}else{
+	jQuery("#main_show").attr("status","goods");			
+	}
+	#end
+	#if("$!{type}"=="other")
+	  jQuery("#plan_"+$!{plan_count}).find("table td").each(function(){
+			var src =jQuery(this).find("#img").attr("src");
+			var count =jQuery(this).attr("count");
+			var id =jQuery(this).attr("id");
+			var name =jQuery(this).find("#name").html();
+			jQuery("ul[count="+count+"]").find("#img").attr("src",src);
+			jQuery("ul[count="+count+"]").find("#name").html(name);
+			jQuery("ul[count="+count+"]").attr("id",id);
+			if(src=="$!webPath/resources/style/common/images/good.jpg"){
+			jQuery("ul[count="+count+"]").attr("status","none");	
+			}else{
+			jQuery("ul[count="+count+"]").attr("status","goods");			
+			}
+		 });
+	#end
+});
+
+function search_goods(){
+	var goods_name =jQuery("#goods_name").val();
+	jQuery.post("$!webPath/admin/self_combin_set_goods_load.htm",
+				{"goods_name":goods_name,
+				"type":"$!{type}",
+				"plan_count":"$!{plan_count}"
+					},function(data){
+						jQuery("#goods_load_mark").show();	
+						jQuery(".combin_storey").show().html(data);
+						},"text");
+	};
+function ajaxPage(url,currentPage,obj){
+  jQuery.post("$!webPath/admin/self_combin_set_goods_load.htm?type=$!{type}",{"currentPage":currentPage},
+			      function(data){
+					  		 jQuery("#goods_load_mark").show();	
+							 jQuery(".combin_storey").show().html(data);
+							 },"text");
+}
+
+</script>
+#if("$!{type}"=="main")
+<div class="combin_storey_main">
+  <h2>主体商品:<span class="red" style="font-size:12px;">（双击可删除已选商品）</span></h2>
+  <ul id="main_show" price="0.00">
+    <li><img id="img" src="$!webPath/resources/style/common/images/good.jpg"/>
+      <p id="name">主体商品信息</p>
+    </li>
+  </ul>
+</div>
+#end
+#if("$!{type}"=="other")
+<div class="combin_storey_main" plan_count='$!{plan_count}'>
+  <h2>组合商品:<span class="red" style="font-size:12px;">（双击可删除已选商品）</span></h2>
+  #foreach($count in [1..$!{config.combin_count}])
+  <ul count='$!velocityCount' status='none' price="0.00">
+    <li><img id="img" src="$!webPath/resources/style/common/images/good.jpg"/>
+      <p id="name">组合商品信息</p>
+    </li>
+  </ul>
+  #end
+</div>
+#end
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table" style="margin-bottom:10px;">
+    <tr>
+      <td width="141" align="right">搜索商品：</td>
+      <td width="651" class="px10"><span class="setinput">
+        <input name="goods_name" type="text" id="goods_name" class="base_txt"/>
+        <input name="search" type="button" class="search_btn_01" style="cursor:pointer;width:60px;"  value="搜索" onclick="search_goods(this);" />
+        <img src="$!webPath/resources/style/common/images/wait.gif" style="display:none;" > </span></td>
+    </tr>
+  </table>
+<h3 id="goods_load_mark" class="red" style="text-align:left; font-weight:normal; font-size:12px; padding-left:15px;display:none">（单击可选择商品）</h3>
+<div class="combin_storey" style="display:none"> </div>

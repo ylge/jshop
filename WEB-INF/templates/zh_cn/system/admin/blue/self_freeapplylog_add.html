@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+  
+  #if($!obj.apply_status==0)   
+	jQuery("#status").change(function(){
+		var val = jQuery(this).val();						  
+		if(val=="yes"){
+			jQuery("tr[id^=ships_]").show();
+			}else{
+				jQuery("tr[id^=ships_]").hide();
+				}							  
+									  });
+	#end
+  
+  jQuery.validator.addMethod("verify",function(value,element){
+	var re = /^[0-9a-zA-Z]*$/;
+        if(re.test(jQuery("#shipCode").val())){			
+			return true;
+		  } 
+		  else {
+		    return false;
+			  }
+	});	
+	jQuery("#theForm").validate({
+       rules:{
+		   shipCode:{required:true,verify:true},
+		   ecc_id:{required:true},
+		   sa_id:{required:true}
+		   },
+	   messages:{
+	       shipCode:{required:"单号不能为空",verify:"请正确填写单号"},
+		   ecc_id:{required:"不能为空"},
+		    sa_id:{required:"不能为空"}
+	   }
+  });
+
+});
+
+//保存
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<form action="$!webPath/admin/self_apply_log_save.htm" method="post" name="theForm" id="theForm" enctype="multipart/form-data">
+ <input name="id" type="hidden" id="id" value="$!obj.id"/>
+  <div class="cont">
+    <h1 class="seth">0元试用商品</h1>
+    <div class="nav_list">
+      <ul>
+      <li><a href="$!webPath/admin/self_freegoods_list.htm"><b>管理</b></a></li>
+        <li><a href="$!webPath/admin/self_freegoods_add.htm"><b>新增</b></a></li>
+        <li><a href="javascript:void(0);" class="this"><b>详情</b></a></li>
+      </ul>
+    </div>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="addnavtable">
+    			<tr>
+                    <td width="10%" align="right"> 申请者：</td>
+                    <td class="px10">$!obj.user_name</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 申请时间：</td>
+                    <td class="px10">$!CommUtil.formatShortDate($!obj.addTime)</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 审核状态：</td>
+                    <td class="px10">#if($!obj.apply_status==0) 待审核 #end #if($!obj.apply_status==5) 审核通过 #end  #if($!obj.apply_status==-5) 审核未通过 #end</td>
+                  </tr> 
+                  <tr>
+                    <td align="right"> 收货人：</td>
+                    <td class="px10">$!obj.receiver_Name</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 收货地区：</td>
+                    <td class="px10">$!obj.receiver_area</td>
+                  </tr>  
+                  <tr>
+                    <td align="right"> 收货人详细地址：</td>
+                    <td class="px10">$!obj.receiver_area_info</td>
+                  </tr> 
+                  <tr>
+                    <td align="right"> 收货人邮政编码：</td>
+                    <td class="px10">$!obj.receiver_zip</td>
+                  </tr>  
+                   <tr>
+                    <td align="right"> 收货人电话：</td>
+                    <td class="px10">$!obj.receiver_telephone</td>
+                  </tr> 
+                   <tr>
+                    <td align="right"> 收货人手机：</td>
+                    <td class="px10">$!obj.receiver_mobile</td>
+                  </tr>        
+                  #if($!obj.evaluate_status==1)   
+                  <tr>
+                    <td align="right"> 使用体验：</td>
+                    <td class="px10">$!obj.use_experience
+                    </td>
+                  </tr>
+                  #end
+                  #if($!obj.apply_status==0)   
+                  <tr>
+                    <td align="right">审核状态：</td>
+                    <td class="px10 message">
+                    <select name="status" id="status">
+                    <option value="yes">审核通过</option>
+                    <option value="no">审核未通过</option>
+                    </select>
+                    </td>
+                  </tr>
+                  <tr id="ships_1" class="sfala">
+                    <td align="right">物流公司：</td>
+                    <td class="px10 message">
+                    <select name="ec_id" id="ec_id">
+      				#foreach($expressCompany in $expressCompanys)
+     				 <option value="$!expressCompany.id" #if($!default_ec_id==$!expressCompany.id) selected="selected" #end>$!expressCompany.company_name</option>
+      				#end
+      				</select>
+                    </td>
+                  </tr>
+                  <tr id="ships_2" class="sfala">
+                    <td align="right">发货地址：</td>
+                    <td class="px10 message">
+                    <select name="sa_id" id="sa_id">    
+        			#foreach($shipAddr in $shipAddrs)
+        			<option value="$!shipAddr.id">$!shipAddr.sa_name</option>        
+        			#end
+     				</select>
+                    </td>
+                  </tr>
+                  <tr id="ships_3" class="sfala">
+                    <td align="right">物流单号：</td>
+                    <td class="px10 message">
+                    <input name="shipCode" type="text" id="shipCode" size="30" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td class="px10"><span class="setsub">
+                      <input name="提交" type="submit"  value="保存"  style="cursor:pointer;" class="seller_save"/>
+                      </span></td>
+                  </tr>
+                  #end
+                </table>
+  </div>
+</form>
+</body>
+</html>

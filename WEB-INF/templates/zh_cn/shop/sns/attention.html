@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人中心 - $!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.masonry.js"></script>
+<script src="$!webPath/resources/js/iskyshop.pubu.js"></script>
+<script>
+jQuery(document).ready(function(){
+jQuery(".sns_atten dl").live("mouseover",function(){
+		jQuery(this).addClass("sns_att_hover"); }).live("mouseout",function(){
+			jQuery(this).removeClass("sns_att_hover");
+			});
+});
+function attention_save(ids){
+	var id = ids;
+	jQuery.post("$!webPath/sns/attention_save.htm",{"id":id},function(data){
+		 if(data==0){
+			 showDialog("msg_info","","关注成功！",2,"succeed",3,function(){location.reload()}); 
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","关注失败！",2,"warning",3,function(){location.reload()});
+		 }
+	  },"text");
+	}
+function attention_cancel(ids){
+	var id = ids;
+	jQuery.post("$!webPath/sns/attention_cancel.htm",{"id":id},function(data){
+		 if(data==0){
+			 showDialog("msg_info","","取消关注成功！",2,"succeed",3,function(){location.reload()});
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","取消关注失败！",2,"warning",3,function(){location.reload()});
+		 }
+	  },"text");
+	}
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+<div class="sns_width">
+$!httpInclude.include("/sns/nav.htm?user_id=$!user_id")
+    
+    <div class="sns_main">
+    	<div class="sns_nav">
+        	<a href="$!webPath/sns/view_$!{user_id}.htm">收藏</a>
+           <a  href="$!webPath/sns/evas.htm?id=$!user_id">评价</a>
+            <a href="$!webPath/sns/evaps.htm?id=$!user_id">晒单</a>
+            <a href="$!webPath/sns/cons.htm?id=$!user_id">咨询</a>
+             <a #if($!type=="fans") class="this"  #end href="$!webPath/sns/attention.htm?type=fans&id=$!user_id">粉丝</a>
+            <a   #if($!type=="atts") class="this"  #end  href="$!webPath/sns/attention.htm?type=atts&id=$!user_id">关注</a>
+        </div>
+        <form id="ListForm" name="ListForm" method="post" action="$!webPath/sns/attention.htm?type=$!type&id=$!user_id"> 
+        #if($!objs.size()>0)
+        <div class="sns_atten_box">
+            <div class="sns_atten">
+            #foreach($obj in $objs)
+            #if($!type=="fans") 
+            #set($fans = $!obj.fromUser)
+            #if($!fans.photo)
+          			#set($user_photo="$!imageWebServer/$!fans.photo.path/$!fans.photo.name")
+         			 #else 
+         			 #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          			#end
+                <dl class="sns_att_list">
+                    <dt><a href="$!webPath/sns/view_$!fans.id.htm"><img src="$!user_photo" width="70" height="70" /></a></dt>
+                    <dd class="mid">
+                        <h2><a href="$!webPath/sns/view_$!fans.id.htm">$!fans.userName</a></h2>
+                        <span><a href="$!webPath/sns/user_fans.htm?id=$!fans.id">粉丝：<b>$!snsTools.queryFans("$!{fans.id}")</b></a></span>
+                        <span><a href="$!webPath/sns/user_atts.htm?id=$!fans.id">关注：<b>$!snsTools.queryAtts("$!{fans.id}")</b></a></span>
+                        <span><a href="$!webPath/sns/view_$!fans.id.htm">收藏： <b>$!fans.favs.size();</b></a></span>
+                    </dd>
+                    #if($!currentUser)
+                     #if($!snsTools.whetherAttention("$!{currentUser.id}","$!fans.id")==false)
+                    <dd class="rt"><a #if(!$!currentUser) href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="attention_save('$!{fans.id}');" href="javascript:void(0);"  #end>+关注</a></dd>
+                    #else
+                    <dd class="rt"><a #if(!$!currentUser) href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="attention_cancel('$!{fans.id}')" href="javascript:void(0);" #end>取消关注</a></dd>
+                    #end
+                    #else
+                     <dd class="rt"><a #if(!$!currentUser) href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="attention_save('$!{fans.id}');" href="javascript:void(0);"  #end>+关注</a></dd>
+                    #end
+                   
+                </dl>
+             #else
+             #set($fans = $!obj.toUser)
+                    #if($!fans.photo)
+          			#set($user_photo="$!imageWebServer/$!fans.photo.path/$!fans.photo.name")
+         			 #else 
+         			 #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          			#end
+                <dl class="sns_att_list">
+                    <dt><a href="$!webPath/sns/view_$!fans.id.htm"><img src="$!user_photo" width="70" height="70" /></a></dt>
+                    <dd class="mid">
+                        <h2><a href="$!webPath/sns/view_$!fans.id.htm">$!fans.userName</a></h2>
+                        <span><a href="$!webPath/sns/user_fans.htm?id=$!fans.id">粉丝：<b>$!snsTools.queryFans("$!{fans.id}")</b></a></span>
+                        <span><a href="$!webPath/sns/user_atts.htm?id=$!fans.id">关注：<b>$!snsTools.queryAtts("$!{fans.id}")</b></a></span>
+                        <span><a href="$!webPath/sns/view_$!fans.id.htm">收藏： <b>$!fans.favs.size();</b></a></span>
+                    </dd>
+                   #if($!currentUser)
+                     #if($!snsTools.whetherAttention("$!{currentUser.id}","$!fans.id")==false)
+                    <dd class="rt"><a #if(!$!currentUser) href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="attention_save('$!{fans.id}');" href="javascript:void(0);"  #end>+关注</a></dd>
+                    #else
+                    <dd class="rt"><a #if(!$!currentUser) href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="attention_cancel('$!{fans.id}')" href="javascript:void(0);" #end>取消关注</a></dd>
+                    #end
+                    #else
+                     <dd class="rt"><a #if(!$!currentUser) href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #else onclick="attention_save('$!{fans.id}');" href="javascript:void(0);"  #end>+关注</a></dd>
+                    #end
+                </dl>
+             #end
+             #end
+            </div>
+            
+            <div class="sns_pages">
+            	$!gotoPageFormHTML
+            </div>
+        </div>
+        #else
+        <div class="sns_nothing">
+        	<span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span>
+            <span class="fr">没有您想要的信息！</span>
+        </div>
+        #end
+        <input type="hidden" name="currentPage" id="currentPage" value="$!currentPage">
+        
+        </form>
+    </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

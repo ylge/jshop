@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-团购管理-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+  $!httpInclude.include("/seller/nav.htm?op=group_code")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b> ><b>团购码管理</b></span></div>
+      <div class="seller_list">
+          <div class="seller_list_title">
+          <ul class="seller_title_ul">
+             <li><a href='$!webPath/seller/group_code.htm'><i></i>团购码验证</a></li>
+            <li class="this"><a href='$!webPath/seller/grouplife_selfinfo.htm'><i></i>团购消费码列表</a></li>
+          </ul>
+        </div>
+        <div class="seller_list_box">
+          <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/grouplife_selfinfo.htm">
+            <div class="operation">
+                #if($objs.size()>0)
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+                <tr id="opertitle">
+                 <th width="25%"><span class="">团购名称</span></th>
+                <th width="20%"><span class="">团购消费码</span></th>
+         		 <th width="10%"><span class="">团购单价</span></th>
+         		 <th width="10%"><span class="">使用状态</span></th>
+          		<th width="18%"><span class="">到期时间</span></th>
+                <th ><span>操作</span></th>
+                </tr>
+            
+                #foreach($obj in $objs)
+                <tr > 
+                <td align="center">$!obj.lifeGoods.gg_name</td>
+                   <td align="center">$!CommUtil.generic_star("$!obj.group_sn",2,12)</td>
+              <td align="center">$!obj.lifeGoods.group_price</td>
+              <td align="center">#if($!obj.status==0)未使用#end #if($!obj.status==1) 已使用 #end #if($!obj.status==-1) 已过期 #end #if($!obj.status==3)申请退款#end #if($!obj.status==5)退款中#end #if($!obj.status==7)退款完成#end</td>
+              <td align="center">$!CommUtil.formatLongDate($!obj.lifeGoods.endTime)</td>
+              <td align="center">#if($!obj.status==3)<a dialog_id="grouplife_return" dialog_height="100" dialog_top="300" dialog_width="420" 
+dialog_title="确认退款" dialog_uri="$!webPath/seller/grouplife_return_confirm.htm?id=$!obj.id" href="javascript:void(0);" 
+style="color:#06F">确认退款</a>#end  #if($!obj.status==5)平台退款中#end #if($!obj.status==7)退款完成#end</td>
+         		 </td>
+                </tr>
+                #end
+              </table>
+                 #else
+                 <table>
+                <tr>
+                  <td colspan="6" align="center"><div class="seller_center_nothing">
+                      <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                      <div class="seller_center_nothing_right">暂时没有数据</div>
+                    </div></td>
+                </tr>
+                </table>
+                #end
+            </div>
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">$!gotoPageFormHTML</div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

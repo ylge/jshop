@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+#macro ( genericTree $somelist ) 
+#foreach ( $some in $somelist )
+<option value="$!some.id">#if($!some.level>0)
+#foreach($count in [0..$!some.level])&nbsp;&nbsp;#end #end $!some.className</option>
+#genericTree($some.childs) 
+#end 
+#end
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+jQuery(document).ready(function(){
+//
+  jQuery("#theForm").validate({
+	ignore: "",						  
+    rules:{
+	  ecc_template_acc:{accept:".jpg|.jpeg|.bmp|.png|.gif"},
+	  ecc_template_width:{required :true,digits:true},
+	  ecc_template_heigh:{required :true,digits:true}
+	 },
+	messages:{
+      ecc_template_acc:{accept:"不允许的图片格式"},	
+	  ecc_template_width:{required :"宽度不能为空",digits:"宽度只能为整数"},
+	  ecc_template_heigh:{required :"长度不能为空",digits:"长度只能为整数"}
+	}
+  });
+  // 
+  jQuery("#ecc_template_acc").change(function(){
+	jQuery("#textfield1").val(jQuery("#ecc_template_acc").val());
+  })
+  //
+  jQuery("#company_template_show").mouseover(function(){
+	jQuery("#company_template_img").show();
+  }).mouseout(function(){
+	jQuery("#company_template_img").hide();
+  })
+  //
+  jQuery("#company_type[value=$!{obj.company_type}]").attr("checked",true);
+});
+
+function saveForm(method){
+   jQuery("#theForm").submit();
+}
+</script>
+</head><body>
+<div class="cont">
+  <h1 class="seth">常用物流</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/ecc_set.htm"><b>常用物流配置</b></a> </li>
+      <li><a href="$!webPath/admin/ecc_list.htm"><b>常用物流列表</b></a></li>
+      <li><a href="$!webPath/admin/ecc_create.htm?id=$!obj.id" class="this"><b>自建物流模板</b></a></li>
+    </ul>
+  </div>
+  <form action="$!webPath/admin/ecc_template_save.htm" method=post enctype="multipart/form-data" name="theForm" id="theForm">
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+    <div class="edit">
+      <div class="editul setcont">
+        <ul class="set1">
+          <li class="setcont_bg">快递名称</li>
+          <li>$!obj.ecc_name</li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">快递代码</li>
+          <li><span class="webname"> $!obj.ecc_code </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>快递模板宽度</li>
+          <li><span class="webname">
+            <input name="ecc_template_width" type="text" id="ecc_template_width" value="$!obj.ecc_template_width" size="40" />
+            </span>毫米</li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>快递模板高度</li>
+          <li><span class="webname">
+            <input name="ecc_template_heigh" type="text" id="ecc_template_heigh" value="$!obj.ecc_template_heigh" size="40" />
+            </span>毫米</li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">快递模板</li>
+          <li> <span class="size13" >
+            <input name="textfield1" type="text" id="textfield1" />
+            </span> <span class="filebtn">
+            <input name="button" type="button" id="button1" value=""/>
+            </span> <span style="float:left;" class="file" >
+            <input name="ecc_template_acc" type="file" id="ecc_template_acc" size="30"/>
+            </span> <span class="preview"> #if($!obj.ecc_template) <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="25" height="25" id="company_template_show"/> #end </span> <span id="nothis"><strong class="q"></strong><strong class="w">支持格式gif,jpg,jpeg,png</strong><strong class="c"></strong></span>
+            <div class="bigimgpre" id="company_template_img" style="display:none;"><img src="$!imageWebServer/$!obj.ecc_template" width="150" height="120" /> </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <div class="submit"> <span class="pad120">
+    <input name="save" type="button" value="提交" onclick="saveForm()" />
+    </span> </div>
+</div>
+</body>
+</html>

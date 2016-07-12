@@ -1,0 +1,59 @@
+<script>
+function set_delivery(obj){
+	var obj_id = jQuery(obj).attr("obj_id");
+	jQuery("#delivery_id").val(obj_id);
+	jQuery(".deliver_address_center_select_c").each(function(){
+			jQuery(this).removeClass("this");												 
+			});
+	 jQuery(obj).parent().addClass("this");
+	};
+</script>
+
+<form id="ListForm" name="ListForm" action="" method="post">
+  #if($!deliver_area_id)
+      #if($!objs.size()>0)	
+          #foreach($obj in $objs)
+          <label>
+          <div class="deliver_address_center_select_c">
+            <input name="delivery" type="radio" value="$!obj.id" class="select_this" obj_id="$!{obj.id}" onclick="set_delivery(this);"/>
+            <h4>$!{obj.da_name}#if($!obj.da_content)（$!obj.da_content）#end</h4>
+            <i>地址：$!obj.da_address $!obj.da_tel</i> </div>
+          </label>
+          #end
+          <div class="deliver_address_center_select_next">$!gotoPageAjaxHTML</div>
+      #else
+     	 <div class="deliver_address_center_select_next">该区域没有自提点信息</div>
+      #end    
+  #else
+      <div class="deliver_address_center_select">
+        <div class="deliver_address_center_select_top">
+          <h3>全部自提点：</h3>
+          <span>
+          <select name="deliver_area_id" id="deliver_area_id">
+            <option value="">$!{area.areaName}所有区</option>
+            
+              #foreach($ch in $area.childs)
+              
+            <option value="$!ch.id">$!ch.areaName</option>
+            
+              #end
+            
+          </select>
+          </span> </div>
+      </div>
+      #if($!objs.size()>0)
+          <div id="delivery_area_list"> #foreach($obj in $objs)
+            <label>
+            <div class="deliver_address_center_select_c">
+              <input name="delivery" type="radio" value="$!obj.id" class="select_this" obj_id="$!{obj.id}" onclick="set_delivery(this);"/>
+              <h4>$!{obj.da_name}#if($!obj.da_content)（$!obj.da_content）#end</h4>
+              <i>地址：$!obj.da_address $!obj.da_tel</i> </div>
+            </label>
+            #end
+            <div class="deliver_address_center_select_next">$!gotoPageAjaxHTML</div>
+          </div>
+      #else
+     	 <div class="deliver_address_center_select_next">该区域没有自提点信息</div>
+      #end
+  #end
+</form>

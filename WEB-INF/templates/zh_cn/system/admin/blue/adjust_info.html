@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/blue/template.css"  rel="stylesheet" type="text/css"/>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">调整申请</h3>
+  <form action="$!webPath/admin/adjust_info.htm" method="post" name="ListForm" id="ListForm">
+  <div class="fshoptb">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+      <tr>
+        <th>&nbsp;</td>
+        <th width="10%" ><span class="form_btna">序号</span></th>
+        <th width="25%" ><span class="form_btna">店铺名称</span></th>
+        <th width="15%" ><span class="form_btna">申请时间</span></th>
+        <th width="15%"><span class="form_btna">调整类型</span></th>
+        <th width="15%"><span class="form_btna">状态</span></th>
+        <th><b class="form_btnb">操作</b></th>
+      </tr>
+	  #foreach($obj in $objs)
+      <tr>
+        <td class="check_position"></td>
+        <td align="center">$!{velocityCount}</td>
+        <td align="center">$!obj.store_name</td>
+        <td align="center">$!{obj.addTime}</td>
+        #if($!obj.adjust_type=="gc")
+        #set($type="类目调整")
+        #end
+        <td align="center">$!type</td>
+        #if($!obj.apply_status==0)
+        #set($status="待处理")
+        #end
+        #if($!obj.apply_status==5)
+        #set($status="申请被拒绝")
+        #end
+        <td align="center">$!status</td>
+        <td class="hui oprate_con" align="center">
+        	#if($!obj.apply_status!=0)
+            已审核
+            #else
+            <a href="$!webPath/admin/adjust_info_view.htm?id=$!obj.id&&currentPage=$!{currentPage}" class="blue">审核</a> 
+            #end
+        </td>
+      </tr>
+      #end
+    </table>
+  </div>
+  <div class="operate_bar">
+    <div class="fenye">
+    	<input type="hidden" name="mulitId" id="mulitId" />
+   		<input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+  		$!gotoPageFormHTML
+    </div>        
+ </div>
+  </form>
+</div>
+</body>
+</html>

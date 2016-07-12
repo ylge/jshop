@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){								
+	 jQuery('#sendtime_date').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  minDate :"new Date()",
+	  changeMonth: true,
+	  changeYear: true
+  });
+jQuery("#theForm").validate({
+    rules:{
+		title:{maxlength:20},
+		userscope_textarea:{required:true},
+		userscope_input:{required:true},
+	  description:{required :true,maxlength:40}
+	 },
+	messages:{
+		title:{maxlength:"最多可输入20个字符"},
+		userscope_textarea:{required:"用户名称不能为空"},
+		userscope_input:{required:"用户名称不能为空"},
+	  description:{required:"消息内容不能为空",maxlength:"最多可输入40个字符"},
+	}
+  });
+	jQuery("#userscope").change(function(){
+		var val =jQuery(this).val();
+		jQuery("#userscope_textarea,#userscope_input").hide();
+		if(val==1){//向多人
+			jQuery("#userscope_textarea").show();
+			}
+		if(val==2){//向单人
+			jQuery("#userscope_input").show();
+			}	
+	});
+	jQuery("input[type='radio']").click(function(){				
+			var val =jQuery(this).val();
+				if(val==0){
+					jQuery("#sendtime_date").parent().hide();
+					}else{
+					jQuery("#sendtime_date").parent().show();	
+					}
+			});
+});////
+//保存
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+<style type="text/css">
+.sendtime_type_input{background: none repeat scroll 0% 0% #FFF; margin-left:5px;width: 70px;height: 22px;border: 1px solid #CCC;line-height: 22px;padding-left: 5px; float:left;}
+.sendtime_type_input_select{ margin-top:6px; margin-left:5px; float:left;}
+.userscope_textarea{clear:both; float:left; margin-top:10px;width: 250px;height: 95px;border: 1px solid #CCC;background: none repeat scroll 0% 0% #FFF;padding: 5px; display:none}
+.userscope_input{background: none repeat scroll 0% 0% #FFF; float:left; clear:both; margin-top:10px;width: 130px;height: 22px;border: 1px solid #CCC;line-height: 22px;padding-left: 5px;display:none}
+</style>
+</head>
+<body>
+<form action="$!webPath/admin/mobile_push_save.htm" method="post" name="theForm" id="theForm">
+  <div class="cont">
+    <h1 class="seth">手机端推送</h1>
+    <div class="nav_list">
+      <ul>
+      <li> <a href="$!webPath/admin/mobile_push.htm"><b>消息推送列表</b></a></li>
+      <li> <a href="$!webPath/admin/mobile_push_add.htm" class="this"><b>新增消息推送</b></a></li>
+      <li><a href="$!webPath/admin/mobile_push_set.htm"><b>推送设置</b></a></li>
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" id="base">
+        <ul class="set1">
+          <li class="setcont_bg">标题（可选）：</li>
+          <li><span class="webname">
+            <input name="title" id="title" type="text" placeholder="最多可输入20个字" value="$!obj.title"  />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>消息内容：</li>
+          <li><span class="webtj">
+            <textarea class="valid" name="description" id="description" placeholder="最多可输入40个字"></textarea>
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">设备范围：</li>
+          <li class="radiosp">
+            <label><span>
+              <input id="device_android" name="device" type="checkbox" value="1" checked="checked"/>
+              </span><span><img src="$!webPath/resources/style/system/manage/blue/images/android.png"/> 安卓</span> </label>
+            <label><span>
+              <input id="device_ios" name="device" type="checkbox" value="2" checked="checked"/>
+              </span><span><img src="$!webPath/resources/style/system/manage/blue/images/ios.png" /> 苹果</span> </label>
+          </li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">发送时间：</li>
+          <li class="radiosp">
+            <label><span style="clear:both">
+              <input id="sendtime_type" name="sendtime_type" checked="checked" type="radio" value="0"/>
+              </span><span>及时发送</span></label>
+              
+            <label><span style="clear:both">
+              <input id="sendtime_type" name="sendtime_type" type="radio" value="1"/>
+              </span><span>定时发送<i style="margin-top:-5px; float:right; display:none">
+              </label> <input id="sendtime_date" name="sendtime_date" class="sendtime_type_input" type="text" value="$!{date}" />
+              <select id="sendtime_hour" name="sendtime_hour" class="sendtime_type_input_select">
+                <option value="0">0时</option>
+                <option value="1">1时</option>
+                <option value="2">2时</option>
+                <option value="3">3时</option>
+                <option value="4">4时</option>
+                <option value="5">5时</option>
+                <option value="6">6时</option>
+                <option value="7">7时</option>
+                <option value="8">8时</option>
+                <option value="9">9时</option>
+                <option value="10">10时</option>
+                <option value="11">11时</option>
+                <option value="12">12时</option>
+                <option value="13">13时</option>
+                <option value="14">14时</option>
+                <option value="15">15时</option>
+                <option value="16">16时</option>
+                <option value="17">17时</option>
+                <option value="18">18时</option>
+                <option value="19">19时</option>
+                <option value="20">20时</option>
+                <option value="21">21时</option>
+                <option value="22">22时</option>
+                <option value="23">23时</option>
+              </select>
+              <select class="sendtime_type_input_select" id="sendtime_min" name="sendtime_min">
+              <option value="0">0分</option>
+              <option value="30">30分</option>
+              </select>
+              </i></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="submit"> <span class="pad120">
+    <input name="" type="button" value="提交" onclick="saveForm();"/>
+    </span> </div>
+</form>
+</body>
+</html>

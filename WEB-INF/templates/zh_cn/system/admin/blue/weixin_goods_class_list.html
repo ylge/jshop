@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script>
+jQuery("input[type='file']").live("change",function(){
+	var id=jQuery(this).attr("id");
+	id=id.replace("upload_img","");
+			jQuery.ajaxFileUpload({
+                 url:'$!webPath/admin/weixin_class_img_upload.htm',
+                 fileElementId:['upload_img'+id], 
+				 data:{"id":id},   
+                dataType: 'json',              
+                 success: function (data){
+					 var src=data.src+"?t="+Math.random(); 
+					 jQuery("#wx_icon_"+id).show().attr("src",src);
+				}
+			});
+	  });
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">商品分类</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/weixin_class_img.htm"  class="this"><b>管理</b></a></li>
+    </ul>
+  </div>
+  <div class="operation">
+    <h3>友情提示</h3>
+    <ul>
+      <li>微商城商城分类图标只在一级分类旁显示，最佳尺寸为：50px*50px</li>
+      <li>微商城图标未设置时，系统默认将会使用pc端的图标。</li>
+      <li>微信端分类图片没有实时更改是由于微信浏览器缓存造成，稍后会自动更新。</li>
+    </ul>
+  </div>
+  <FORM name="ListForm" id="ListForm"  action="$!webPath/admin/weixin_class_img.htm" method="post">
+    <div class="fshoptb2">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0"  class="fshop_table2">
+        <tr>
+          <th width="10%" align="center"><span class="form_btna">排序</span></th>
+          <th width="30%" align="center"><span class="form_btna">分类名称</span></th>
+          <th width="30%" align="center"><span class="form_btna">分类图片</span></th>
+          <th align="center"><b class="form_btna">操作</b></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr id="$!obj.id">
+          <td align="center">$!obj.sequence</td>
+          <td align="center">$!obj.className</td>
+          <td align="center" id="imgtd_$!obj.id">#if($!obj.wx_icon)
+            #set($wx_img=$!imageTools.queryImg($!obj.wx_icon)) <img src="$!imageWebServer/$!wx_img.path/$!wx_img.name"  width="50" height="50" id="wx_icon_$!obj.id"/> #else <img src=""  width="100" height="100" id="wx_icon_$!obj.id" style="display:none"/> #end</td>
+          <td align="center" class="hui oprate_con"><span class="operation_up_img" style="position:relative; width:80px; height:30px; color:#333; border:1px solid #ccc; padding:2px 5px; border-radius:3px;">上传图片
+            <input type="file" id="upload_img$!obj.id" style="opacity: 0;left:1px;position:absolute; z-index:100;width:60px; " name="upload_img$!obj.id" />
+            </span></td>
+        </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input type="hidden" name="currentPage" id="currentPage" value="$!currentPage" />
+        $!gotoPageHTML </div>
+    </div>
+  </FORM>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台 - 发货地址列表-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+   $!httpInclude.include("/seller/nav.htm?op=ship_address") 
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b> > <b>发货地址</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href="$!webPath/seller/ship_address.htm"><i></i>发货地址</a></li>
+            <li ><a href="$!webPath/seller/ship_address_add.htm"><i></i>新增地址</a></li>
+          </ul>
+        </div>
+        <div class="seller_list_box">
+          <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/ship_address.htm">
+            <div class="operation">
+              #if($objs.size()>0)
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+                <tr id="opertitle">
+                  <th width="15%">地址名称</th>
+                  <th width="15%">地址序号</th>
+                  <th width="15%">默认地址</th>
+                  <th width="35%">详细地址</th>
+                  <th  align="center">操作</th>
+                </tr>
+                #foreach($obj in $objs)
+                <tr >
+                  <td align="center">$!obj.sa_name</td>
+                  <td align="center">$!obj.sa_sequence</td>
+                  <td align="center">#if($!obj.sa_default==1)是#else 否#end</td>
+                  <td align="center">$!obj.sa_addr</td>
+                  <td align="center" class="del_operate"><a href="$!webPath/seller/ship_address_edit.htm?id=$!obj.id" class="del_a">编辑</a><a href="javascript:void();" onclick="showDialog('msg_info','','确定设置为默认发货地址吗?',1,'question',3,function(){window.location.href='$!webPath/seller/ship_address_default.htm?id=$!obj.id&amp;currentPage=$!currentPage'});"  class="del_a">设为默认</a><a href="javascript:void();" onclick="showDialog('msg_info','','确认删除该条数据吗？',1,'question',3,function(){window.location.href='$!webPath/seller/ship_address_del.htm?mulitId=$!obj.id&currentPage=$!currentPage'});"  class="del_a">删除</a></td>
+                </tr>
+                #end
+              </table>
+                   #else
+                   <table>
+                <tr>
+                <td colspan="5" align="center"><div class="seller_center_nothing">
+                    <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                    <div class="seller_center_nothing_right">暂时没有数据</div>
+                  </div></td>
+              </tr>
+              </table>
+                #end
+            </div>
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+            <div class="seller_list_page">
+              <div  class="seller_page_sp"> $!gotoPageFormHTML</div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+ $!httpInclude.include("/footer.htm")
+</body>
+</html>

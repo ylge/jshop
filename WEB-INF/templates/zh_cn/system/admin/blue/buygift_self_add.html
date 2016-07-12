@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery.validator.methods.endTime = function(value, element, param) {
+   var startDate = jQuery(param).val();
+   var date1=new Date(Date.parse(startDate));
+   var date2=new Date(Date.parse(value));
+   if(jQuery.browser.msie==true){
+      date1 = new Date(Date.parse(startDate.replace("-", "/")));
+      date2 = new Date(Date.parse(value.replace("-", "/")));
+   }
+   return date1 < date2;
+ };
+ jQuery.validator.methods.beginTime = function(value, element, param) {
+   var endDate = jQuery(param).val();
+   var date1=new Date(Date.parse(endDate));
+   var date2=new Date(Date.parse(value));
+   if(jQuery.browser.msie==true){
+      date1 = new Date(Date.parse(endDate.replace("-", "/")));
+      date2 = new Date(Date.parse(value.replace("-", "/")));
+   }
+   return date1 > date2;
+ };
+  jQuery("#theForm").validate({
+	errorPlacement: function(error, element) {  
+       error.appendTo(element.parent());  
+    },						  
+    rules:{
+	   beginTime:{required:true},
+	   endTime:{required:true,endTime:"#beginTime"},
+	   condition_amount:{required:true,min:0}
+	 },
+    messages:{	
+	 beginTime:{required:"开始时间不能为空"},
+	 endTime:{required:"结束时间不能为空",endTime:"结束日期必须大于开始日期"},
+	 condition_amount:{required:"金额不能为空",min:"金额必须大于0"}
+	}
+  });
+ 	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+  //
+  jQuery('#beginTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#endTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  //
+    jQuery("input[type=file]").change(function(){
+	   var id=jQuery(this).attr("id");
+	   jQuery("#"+id+"_text").val(jQuery(this).val());
+   })
+  //
+  jQuery("input[id^=gift_]").live("keyup",function(){
+	var gid=jQuery(this).attr("gid");	
+	var count=jQuery("#gift_"+gid).val().replace(/\D/g,'');
+	if(count==""){
+       count=1;
+	}	
+	if(count>0){
+	   gift_count_adjust(gid,count);
+	}
+	if(count==0){
+		var count=jQuery("#gift_"+gid).val(1);
+		gift_count_adjust(gid,1);
+	}
+  });
+});
+
+function saveForm(){
+	var goods_ids = jQuery("#goods_ids").val();
+	var gift_ids = jQuery("#gift_ids").val();
+	if(goods_ids!=""&&gift_ids!=""){
+		jQuery("#theForm").submit();
+		}else{
+		alert("请选择活动商品与赠送商品");
+			}
+}
+function gift_count_adjust(gid,count){
+   	  jQuery.post("$!webPath/gift_count_adjust.htm",{"gid":gid,"count":count},function(data){
+		 if(data.code=="100"){																										
+	       jQuery("#gift_"+gid).val(data.count);
+		 }
+		 if(data.code=="200"){
+			alert("赠品数与库存数同步"); 
+		   jQuery("#gift_"+gid).val(data.count);
+		 }
+	   },"json");
+  }
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/buygift_self_save.htm" method="post" name="theForm" id="theForm">
+  <div class="cont">
+    <h1 class="seth">自营满就送添加</h1>
+    <div class="nav_list">
+      <ul>
+        <li><a href="$!webPath/admin/buygift_self_list.htm" ><b>自营满就送管理</b></a></li>
+        <li><a href="$!webPath/admin/buygift_self_add.htm" class="this"><b>自营满就送添加</b></a></li>
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" id="base">
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>选择满就送活动商品
+            <input name="id" type="hidden" id="id" value="$!obj.id" />
+          </li>
+          <li>
+            <input style="cursor:pointer;" class="choose_btn" type="button" dialog_uri="$!webPath/admin/buy_goods_self.htm" dialog_title="选择满就送活动商品" dialog_width="750" dialog_height="300" dialog_id="buy_goods" value="选择"/>
+            <input name="goods_ids" type="hidden" id="goods_ids" value="" />
+          </li>
+          <li class="choose_li">
+            	<table class="choose_tb" cellpadding="0" cellspacing="0" border="0">
+                	<tbody id="tgoods">
+                    </tbody>
+                </table>
+          </li>
+        </ul>
+        <ul class="set1" style="display:none" id="gifts">
+          <li class="setcont_bg"><strong class="sred">*</strong>选择满就送赠送赠品
+          </li>
+          <li>
+            <input style="cursor:pointer;" type="button" class="choose_btn" dialog_uri="$!webPath/admin/buy_gift_self.htm" dialog_title="选择满就送活动赠品" dialog_width="750" dialog_height="200" dialog_id="buy_gifts" value="选择"/>
+            <input name="gift_ids" type="hidden" id="gift_ids" value="" />
+            </li>
+            <li class="choose_li">
+            	<div class="red_word">*若赠送数等于库存数，则赠送数与库存数同步，如：库存100时，正常售出1个 赠送数与库存 均变为99；若赠送数小于库存 则库存数会减少 如：库存100 赠送数50 则商品当前库存变为50。</div>
+            	<table class="choose_tb" cellpadding="0" cellspacing="0" border="0">
+                	<tbody id="tgift">
+                    </tbody>
+                </table>
+          </li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>开始时间</li>
+          <li> <span class="webname">
+            <input name="beginTime" type="text" id="beginTime" value="$!obj.beginTime" size="25" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>结束时间</li>
+          <li> <span class="webname">
+            <input name="endTime" type="text" id="endTime" value="$!obj.endTime" size="25" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>满足金额</li>
+          <li> <span class="webname">
+            <input name="condition_amount" type="text" id="condition_amount" value="$!obj.condition_amount" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">达到此金额才可送赠品</strong><strong class="c"></strong></span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

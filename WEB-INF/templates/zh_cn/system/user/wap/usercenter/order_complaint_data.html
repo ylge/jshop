@@ -1,0 +1,60 @@
+        #foreach($obj in $objs)
+        	#foreach($map in $!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+            #set($goods_id = "$!{map.get('goods_id')}")	
+            #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+            #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+            #set($goods_return_status="$!{map.get('goods_return_status')}")
+            #set($goods_choice_type="$!{map.get('goods_choice_type')}")
+            #set($goods_gsp_ids="$!{map.get('goods_gsp_ids')}")
+            #set($goods_complaint_status="$!{map.get('goods_complaint_status')}") 
+            #if($!{goods_complaint_status}==1||$!{obj.order_form}==1)
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">投诉</a></span></dd>
+            </dl>
+            #else
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr"><a href="$!webPath/wap/buyer/complaint_handle.htm?order_id=$!obj.id&currentPage=$!currentPage&goods_id=$!goods_id">投诉</a></span></dd>
+            </dl>
+            #end
+            
+            #if($!obj.child_order_detail)
+            #foreach($child_map in $!orderFormTools.queryGoodsInfo("$!obj.child_order_detail"))
+                 #set($child_order=$!orderFormTools.query_order("$!child_map.get('order_id')"))
+                 #set($order_total_price=$order_total_price+$child_order.totalPrice)
+                 #set($order_total_ship_price=$order_total_ship_price+$child_order.ship_price)
+                 #set($order_id=$!child_map.get('order_id'))
+                 #foreach($map in $!orderFormTools.queryGoodsInfo("$!child_order.goods_info"))
+                     #set($goods_id = "$!{map.get('goods_id')}")	
+                     #set($goods_name = "$!{map.get('goods_name')}")
+                     #set($goods_count = $!{map.get('goods_count')})
+                     #set($goods_price = $!{map.get('goods_price')})
+                     #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+                     #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+                     #set($store=$!orderFormTools.goods_second_domain("$!{goods_id}","goods"))
+                     #set($goods_domainPath="$!webPath/goods_$!{goods_id}.htm")
+                     #if($!store&&$!config.second_domain_open && $!store.store_second_domain!="")
+                     #set($goods_domainPath="http://$!{store.store_second_domain}.$!{domainPath}/goods_$!{goods_id}.htm")
+                     #end
+                     #set($goods_return_status="$!{map.get('goods_return_status')}")
+                     #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+                     #set($goods_choice_type="$!{map.get('goods_choice_type')}")
+                      #set($goods_complaint_status="$!{map.get('goods_complaint_status')}") 
+            #if($!{goods_complaint_status}==1||$!{child_order.order_form}==1)
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">投诉</a></span></dd>
+            </dl>
+            #else
+                <dl>
+                    <dt>订单编号：$!obj.order_id</dt>
+                    <dd><span class="fl"><img src="$!img" width="60" height="60" /><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr"><a href="$!webPath/wap/buyer/complaint_handle.htm?order_id=$!order_id&currentPage=$!currentPage&goods_id=$!goods_id">投诉</a></span></dd>
+            	</dl>
+
+            #end
+            #end
+            #end
+            #end
+            #end
+        #end

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>组合套装商品清单 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}" />
+<meta name="copyright" content="$!{config.copyRight}" />
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+var suit_price = 0;
+var save_price =0;
+jQuery(document).ready(function(){
+  jQuery(window).scroll(function(){
+        var holder = jQuery("#buy_bottom"),
+            elHeight = holder.height(),
+            elWidth = holder.width(),
+            oTop = holder.offset().top;
+        function scrollBar() {
+    		var dTop = jQuery(document).scrollTop(),
+    			wHeight = jQuery(window).height();
+    		if (dTop < (oTop - wHeight + elHeight)) {
+    			holder.css({
+    				height: elHeight,
+    				width: elWidth
+    			}).addClass('group_center_b_fixed');
+    		} else {
+    			holder.removeClass('group_center_b_fixed');
+    		}
+    	}
+        scrollBar();
+    	jQuery(window).unbind('scroll').bind('scroll', scrollBar);   
+	});
+});////
+
+function buy_goods(){
+  var add=true
+  var suit_gsp="";
+  var store_price="";
+    if(jQuery(".product_choose li").length==0){
+    add=true;
+  }else{
+	jQuery("input[id^=gsp_]").each(function(){
+		var val= jQuery(this).val();
+		suit_gsp = suit_gsp+"gsp"+val;
+	  });
+  }
+	jQuery("i[id^=goods_inventory_]").each(function(){
+	var val = jQuery(this).html();
+	if(val=="0"){
+	    var id =jQuery(this).attr("mark");
+		jQuery("#inv_"+id).css("font-size","17px");
+		add=false;
+		}
+	});
+  if(add){
+	jQuery.post("$!current_webPath/add_goods_cart.htm",{"id":"$!{id}","count":1,"price":store_price,"gsp":"","suit_gsp":suit_gsp,"buy_type":"$!{type}","combin_ids":"$!{combin_ids}","combin_version":"$!{combin_version}"},function(data){																																								  		if(data.code==-1 || data.code==-3){
+			window.location.href="$!webPath/add_cart_error.htm";
+			}else{
+			 window.location.href="$!webPath/goods_cart1.htm";	
+				}
+	},"json");
+  }
+}
+
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="group_center">
+  #set($save=$!CommUtil.subtract($!{plan_map.get('all_goods_price')},$!{plan_map.get('plan_goods_price')}))
+    <div class="group_center_right"><span>¥$!{save}</span></div>
+    <div class="group_center_top">
+      <div class="group_center_top_left"> <span>优惠组合套装：</span> <i>未组合之前价格：<del>¥$!{plan_map.get('all_goods_price')}</del></i> <em>套装价：</em> <strong>¥$!{plan_map.get('plan_goods_price')}</strong> </div>
+      <div class="group_center_top_right"><span>说明：</span>1、组合商品规格均为默认规格，如需要其他规格，请联系商家；
+      2、组合套装优惠和商城其他优惠不可同时享用。
+      </div>
+    </div>
+    <div class="group_center_main">
+      <div class="group_center_main_top">组合套装详细：</div>
+      <div class="group_center_center_top_m">
+      #foreach($map in $maps)
+      <input id="gsp_$!{map.get('id')}" name="gsp_$!{map.get('id')}" type="hidden"/>
+        <dl>
+          <dt><a href="$!{map.get('url')}" target="_blank"><img src="$!imageWebServer/$!{map.get('img')}" /></a></dt>
+          <dd>
+            <div class="group_center_center_top_m_right_name"><span>[套装商品$!velocityCount]</span><i><a href="$!{map.get('url')}" target="_blank">$!{map.get('name')}</a></i></div>
+            <div class="group_center_center_top_m_right_price">参考价格：<del>¥$!{map.get('store_price')}</del></div>
+            <div class="group_center_center_top_m_right_price">商城价格：<i id="store_price_$!{map.get('id')}">¥$!{map.get('price')}</i></div>
+            <div class="group_center_center_top_m_right_repertory">库　　存：<i id="goods_inventory_$!{map.get('id')}" mark="$!{map.get('id')}">$!{map.get('inventory')}</i><b id="inv_$!{map.get('id')}" style="color:#F00; #if($!{map.get('inventory')}!=0)display:none #end">（该商品暂时售完，请等待商家补给！）</b></div>
+          </dd>
+        </dl>
+	  #end
+      </div>
+    </div>
+    <div class="group_center_b" id="buy_bottom">
+      <div class="group_center_b_left"> <span>优惠组合套装：</span> <i>未组合之前价格：<del>¥$!{plan_map.get('all_goods_price')}</del></i> <em>套装价：</em> <strong id="suit_price">¥$!{plan_map.get('plan_goods_price')}</strong> <i>立省：¥$!{save}</i> </div>
+      <div class="group_center_b_botton"><a href="javascript:void(0);" onclick="buy_goods()">马上购买</a></div>
+    </div>
+  </div>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

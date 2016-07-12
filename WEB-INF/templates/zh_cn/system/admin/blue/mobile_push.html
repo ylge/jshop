@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" rel="stylesheet" type="text/css">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<body>
+<div class="cont">
+  <h3 class="seth">手机端推送</h3>
+  <div class="nav_list">
+    <ul>
+      <li> <a href="$!webPath/admin/mobile_push.htm" class="this"><b>消息推送列表</b></a></li>
+      <li> <a href="$!webPath/admin/mobile_push_add.htm"><b>新增消息推送</b></a></li>
+      <li><a href="$!webPath/admin/mobile_push_set.htm"><b>推送设置</b></a></li> 
+    </ul>
+  </div>
+  <form name="ListForm" id="ListForm" action="$!webPath/admin/mobile_push.htm" method="post">
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="3%">&nbsp;</th>
+          <th width="15%"><span class="form_btna">标题</span></th>
+          <th width="35%"><span class="form_btna">内容</span></th>
+          <th width="10%"><span class="form_btna">发送时间</span></th>
+          <th width="8%"><span class="form_btna">发送状态</span></th>
+          <th width="8%"><span class="form_btna">接收设备</span></th>
+          <th align="center"><b class="form_btnb">操作</b></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+          <td  class="check_position"><input name="checkbox" type="checkbox" id="checkbox" value="$!obj.id" /></td>
+          <td align="center">$!obj.title</td>
+          <td align="center">$!obj.description</td>
+          <td align="center">$!CommUtil.formatLongDate($!obj.sendtime)</td>
+          #set($status="未发送")
+          #if($!obj.status==1)
+          #set($status="已发送")
+          #end
+          <td align="center">$!status</td>
+          #set($device="全部")
+          #if($!obj.device==1)
+          #set($device="<img src='$!webPath/resources/style/system/manage/blue/images/android.png' title='Android'/>")
+          #end
+          #if($!obj.device==2)
+          #set($device="<img src='$!webPath/resources/style/system/manage/blue/images/ios.png' title='IOS'/>")
+          #end
+          <td align="center">$!device</td>
+          <td class="hui oprate_con" align="center">
+          #if($!obj.status==1)
+          <a href="javascript:void(0);" onclick="if(confirm('确定要重新推送消息吗？'))window.location.href='$!webPath/admin/mobile_repush.htm?id=$!{obj.id}&currentPage=$!{currentPage}';" class="blue"> 重新发送</a>#else
+          <a href="javascript:void(0);" onclick="if(confirm('点击确认后开始推送？'))window.location.href='$!webPath/admin/mobile_repush.htm?id=$!{obj.id}&currentPage=$!{currentPage}';" class="blue"> 发送</a>
+          #end
+          |<a href="javascript:void(0);" onclick="if(confirm('删除后不可恢复，是否确认'))window.location.href='$!webPath/admin/mobile_push_delete.htm?mulitId=$!{obj.id}';" class="blue">删除</a>
+          </td>
+        </tr>
+        #end
+      </table>
+      <div class="operate_bar">
+        <div class="fenye" id="queryCondition">
+          <input name="mulitId" type="hidden" id="mulitId" />
+          <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+          $!gotoPageFormHTML </div>
+        <div class="oper_sp"> <span class="oper_check">
+          <label>
+            <input type="checkbox" name="all" id="all" value="" onclick="selectAll(this)"/>
+            全部</label>
+          </span> <span class="oper_del">
+          <input name="" type="button" style="cursor:pointer;" value="删除" onclick="cmd('$!webPath/admin/mobile_push_delete.htm');"/>
+          </span> </div>
+      </div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

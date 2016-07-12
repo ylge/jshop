@@ -1,0 +1,56 @@
+<script>
+jQuery(document).ready(function(){	
+#if($!{cart.goods.goods_specs_info})
+	 var goods_specs_info=eval($!{cart.goods.goods_specs_info});
+	jQuery.each(goods_specs_info,function(index,item){
+        var a=jQuery("a[gsp="+item.id+"]");
+		a.attr("sname",item.name);
+		a.text(item.name);
+    });
+	#end						
+	#foreach($gps_temp in $cart.gsps)
+	jQuery("a[gsp=$!{gps_temp.id}]").addClass("this");
+	#end
+	});
+function goods_spec_set(obj){
+		var spec = jQuery(obj).attr("spec");
+		jQuery(".pro_choose_li_standard a[spec="+spec+"]").removeClass("this");
+		jQuery(obj).addClass("this");
+		var gsp="";
+		jQuery(obj).parent().parent().parent().find("li").each(function(){
+				 jQuery.each(jQuery(this).find("a[class='choose_notype_standard this']"),function(){								 
+					 gsp=jQuery(this).attr("gsp")+","+gsp; 
+				 });
+				  jQuery.each(jQuery(this).find("a[class='choose_one_standard this']"),function(){								 
+					 gsp=jQuery(this).attr("gsp")+","+gsp; 
+				 });
+		});
+		jQuery.post("$!webPath/load_goods_gsp.htm",{"id":"$!{cart.goods.id}","gsp":gsp},function(data){
+				   var inventory=data.count;
+				   if(inventory==0){
+					   jQuery("#confirm_btu").removeAttr("onclick").addClass("hui");
+					   jQuery("#can_not_sub").show();
+					   }else{
+						 jQuery("#confirm_btu").attr("onclick","confirm_change_spec(this);").removeClass("hui"); 
+						  jQuery("#can_not_sub").hide();
+						   }
+					},"json");	
+	}
+</script>
+
+<ul class="product_choose_standard">
+  #foreach($spec in $goodsViewTools.generic_spec("$!{cart.goods.id}"))
+  <li class="pro_choose_li_standard"  id="pro_choose_li_standard_$!{cart.id}"> <span class="choose_left_standard">$!{spec.name}：</span>
+   <span class="choose_right_standard">
+   #foreach($gsp in $cart.goods.goods_specs)
+    #if($!{gsp.spec.id}==$!spec.id)
+        #if($!spec.type=="img") <a href="javascript:void(0);" onclick="goods_spec_set(this);" sname="$!gsp.value" spec="$!gsp.spec.id" gsp="$!gsp.id" class="choose_one_standard"><img src="$!imageWebServer/$!gsp.specImage.path/$!gsp.specImage.name" width="20" height="20" /><i></i></a> #end
+        #if($!spec.type=="text") <a href="javascript:void(0);" onclick="goods_spec_set(this);" sname="$!gsp.value" spec="$!gsp.spec.id" gsp="$!gsp.id" class="choose_notype_standard">$!gsp.value<i></i></a> #end
+    #end
+    #end 
+    </span> 
+    </li>
+  #end
+  <li class="pro_choose_button"> <span><i id="can_not_sub" style="display:none">当前规格的库存为 0</i></span>
+  <a href="javascript:void(0);" id="confirm_btu" cart_id="$!{cart.id}" onclick="confirm_change_spec(this);"class="this">确定</a> <a href="javascript:void(0);" onclick="cancle_change();">取消</a> </li>
+</ul>

@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery(document).ready(function(){	
+//
+  jQuery("#theForm").validate({
+	ignore: "",						  
+    rules:{
+	  sa_name:{ required :true},
+	  sa_sequence:{digits:true},
+	  sa_telephone:{digits:true},
+	  sa_zip:{digits:true},
+	  sa_area_id:{required:true},
+	  sa_addr:{required:true}
+	 },
+	messages:{
+	  sa_name:{required:"名称不能为空"},
+	  sa_sequence:{digits:"必须为正整数"},
+	  sa_telephone:{digits:"只能为数字"},
+	  sa_zip:{digits:"只能为数字"},
+	  sa_area_id:{required:"发货区域不能为空"},
+	  sa_addr:{required:"街道地址不能为空"}
+	 }
+  });
+  //
+  jQuery("select").change(function(){
+     var level=jQuery(this).attr("level");
+	 var id=jQuery(this).val();
+	 jQuery("#sa_area_id").val("");
+	 for(var i=4;i>level;i--){
+	  jQuery("#area"+i).empty();
+	  jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 }
+	 if(id!=""){
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	     jQuery("#area"+level).empty();
+		  jQuery("#area"+level).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+level).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }else{
+	   for(var i=level;i<=4;i++){
+	    jQuery("#area"+i).empty();
+	   }
+	 }
+  });
+ //
+ jQuery("#area3").change(function(){
+   var id=jQuery(this).val();
+   jQuery("#sa_area_id").val(id);
+ });
+ 
+});
+
+function saveForm(method){
+   jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">发货地址</h1>
+  <div class="nav_list">
+ <ul>
+  <li><a href="$!webPath/admin/ship_address_list.htm"><b>管理</b></a> </li>
+ <li> <a href="$!webPath/admin/ship_address_add.htm" #if(!$!edit) class="this" #end><b>新增</b></a> </li>
+  #if($!edit)<li> <a href="javascript:void(0);" class="this"><b>编辑</b></a></li> #end 
+  </span> 
+  </ul>
+  </div>
+  <form name="theForm" id="theForm" action="$!webPath/admin/ship_address_save.htm" method=post>
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+   <div class="edit">
+    <div class="editul setcont">
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>地址名称</li>
+        <li><span class="webname">
+          <input name="sa_name" type="text" id="sa_name" value="$!obj.sa_name" size="40" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>地址序号</li>
+        <li><span class="webname">
+          <input name="sa_sequence" type="text" id="sa_sequence" value="$!obj.sa_sequence" size="40" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">联系人</li>
+        <li><span class="webname">
+          <input name="sa_user" type="text" id="sa_user" value="$!obj.sa_user" size="40" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">联系电话</li>
+        <li><span class="webname">
+          <input name="sa_telephone" type="text" id="sa_telephone" value="$!obj.sa_telephone" size="40" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">发货公司</li>
+        <li><span class="webname">
+          <input name="sa_company" type="text" id="sa_company" value="$!obj.sa_company" size="40" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">发货区号</li>
+        <li><span class="webname">
+          <input name="sa_zip" type="text" id="sa_zip" value="$!obj.sa_zip" size="40" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>所在城市</li>
+        <li><span class="webnamesec sizese">
+          <select name="area1" id="area1" level="2">
+          <option value="">省份/自治区</option>
+          #foreach($area in $areas)           
+          <option value="$!area.id" #if($!area.id==$!sa_area.parent.parent.id) selected="true" #end>$!area.areaName</option>
+           #end          
+        </select>
+        <select name="area2" id="area2" level="3">
+        <option value="">市/区</option>
+         #foreach($area in $sa_area.parent.parent.childs)                     
+          <option value="$!area.id" #if($!area.id==$!sa_area.parent.id) selected="true"#end>$!area.areaName</option>
+         #end                    
+        </select>
+        <select name="area3" id="area3" level="4">
+        <option value="">县/区</option>
+         #foreach($area in $$sa_area.parent.childs)                     
+          <option value="$!area.id" #if($!area.id==$!sa_area.id) selected="true"#end>$!area.areaName</option>
+         #end                    
+        </select>
+        <input id="sa_area_id" name="sa_area_id" type="hidden" value="$!obj.sa_area_id" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>街道地址</li>
+        <li><span class="webname">
+          <textarea name="sa_addr" cols="40" id="sa_addr">$!obj.sa_addr</textarea>
+          </span></li>
+      </ul>
+    </div>
+    </div>
+  </form>
+  <div class="submit">
+   <span class="pad120"><input name="save" type="button" value="提交" onclick="saveForm()" /></span>
+  </div>
+</div>
+</body>
+</html>

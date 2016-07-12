@@ -1,0 +1,82 @@
+<script>
+function sns_lock_off(){
+	jQuery.post("$!webPath/buyer/sns_lock_off.htm",function(data){
+		 if(data==0){
+			 showDialog("msg_info","","操作成功！",2,"succeed",3,function(){location.reload()});
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","操作失败！",2,"warning",3,function(){location.reload()});
+		 }
+	  },"text");
+}
+function sns_lock_on(){
+	jQuery.post("$!webPath/buyer/sns_lock_on.htm",function(data){
+		 if(data==0){
+			 showDialog("msg_info","","操作成功！",2,"succeed",3,function(){location.reload()});
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","操作失败！",2,"warning",3,function(){location.reload()});
+		 }
+	  },"text");
+}
+</script>
+<div class="sns_hd">
+  	<div class="sns_top_logo">
+        #if($!config.websiteLogo)
+        #set($img="$!imageWebServer/$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+        #else
+        #set($img="$!webPath/resources/style/system/front/default/images/logo.jpg")
+        #end
+    	<div class="sns_top_logo_left">
+      		<a href="$!webPath" target="_blank"><span><img src="$!img" /></span></a>
+            <a href="$!webPath/buyer/my_sns_index.htm" target="_blank"><b><img src="$!webPath/resources/style/system/front/default/images/logo_right.png" /></b></a>
+      </div>
+    </div>
+    <div class="sns_main">
+      <div class="sns_main_top_c">
+        <div class="sns_main_top_c_tp">
+          <div class="sns_hd_left">
+          #if($!user.photo)
+          #set($user_photo="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+          #else 
+          #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          #end
+            <dl>
+              <dt><a href="$!webPath/buyer/my_sns_index.htm"><img src="$!user_photo" width="130" height="130" /></a></dt>
+              <dd class="name_dd">
+              	<span class="name">$!user.userName</span>
+              	#if($!user.whether_attention==1)
+                <a href="javascript:void(0)" onclick="sns_lock_on()"><span class="lock"><em><img src="$!webPath/resources/style/system/front/default/images/unlocked.png" /></em><i>可正常访问</i></span></a>
+                #else
+                <a href="javascript:void(0)" onclick="sns_lock_off()"><span class="lock"><em><img src="$!webPath/resources/style/system/front/default/images/lock.png" /></em><i>他人禁止访问</i></span></a>
+                #end
+              </dd>
+          #if($!user.sex==1)
+          #set($user_sex="sns_boy.png")
+          #end 
+          #if($!user.sex==0)
+          #set($user_sex="sns_girl.png")
+          #end 
+              <dd>#if($!user.area)$!user.area.parent.parent.areaName $!user.area.parent.areaName #else 暂未填写居住地 #end
+              #if($!user_sex)<i><img src="$!webPath/resources/style/system/front/default/images/$!user_sex" width="12" height="12" /></i>#end</dd>
+            </dl>
+          </div>
+          <div class="sns_hd_right">
+            <ul style="cursor:pointer" onclick="window.location.href='$!webPath/buyer/my_sns_atts.htm'">
+              <li><strong>$!attsCount</strong></li>
+              <li>关注</li>
+            </ul>
+            <ul style="cursor:pointer" onclick="window.location.href='$!webPath/buyer/my_sns_fans.htm'">
+              <li><strong>$!fansCount</strong></li>
+              <li>粉丝</li>
+            </ul>
+            <ul style="cursor:pointer" onclick="window.location.href='$!webPath/buyer/my_sns_fav.htm'">
+              <li><strong>$!favsCount</strong></li>
+              <li>收藏</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sns_main_top_c_bg"> </div>
+      </div>
+    </div>
+  </div>

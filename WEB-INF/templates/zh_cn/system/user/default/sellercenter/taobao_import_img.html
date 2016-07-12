@@ -1,0 +1,438 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-淘宝导入-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/swfupload.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script>
+if(navigator.appName=="Microsoft Internet Explorer"){
+	<!--ajax上传start-->
+	jQuery(document).ready(function(e) {
+		jQuery(".step1:last").after("<div class='step1 this'><h1>为获得更好的用户体验，请使用支持HTML5的浏览器，例如谷歌、火狐等。</h1></div>");
+		jQuery("#HTML5UplaodDiv").remove();
+		jQuery(".cover").click(function(){
+			jQuery(".cover_updown").slideToggle();
+		});
+		#if($!albums.size() < 5)
+			var ulHeight = $!albums.size() *38;
+			jQuery(".cover_updown ul").height(ulHeight);
+		#end
+		jQuery("#fileSubmit").click(function(){
+			window.location.href="$!webPath/seller/taobao_import_finish.htm";
+		});
+	})<!--end-->
+	var upload_img_show = function(){
+		jQuery(".album_white_content").fadeIn();
+		jQuery(".album_black_overlay").fadeIn();
+	}
+	var upload_goods_img_mark = false;
+	var upload_album_img = function(){
+		upload_goods_img_mark = true;
+		var album_id = jQuery("#album_id").val();
+		jQuery.ajaxFileUpload({url:'$!webPath/seller/taobao_img_upload.htm',	
+								  dataType:'json',
+								  fileElementId:['imgFile'],
+								  data:{ajaxUploadMark:true,album_id:album_id},
+								  fileFilter:".tbi",
+								  success:function(data){
+									 if(data){
+										jQuery(".empty").html("").hide();
+										jQuery(".pic_upload_list .add_pic").remove();
+									 	jQuery(".pic_upload_list").show().append("<dl style='height:140px;'><dt><img src='$!{imageWebServer}/"+data.url+"' /></dt></dl>");
+										jQuery(".pic_upload_list").append("<dl class='add_pic' style='height:140px;'><dd><div class='file_01' style='height:140px;'><input style='font-size:100px;' class='ip_file' type='file'  id='imgFile'  name='imgFile'  onchange='upload_album_img()'  style='cursor:pointer' /><input class='ip_btn' type='button'/></div></dd></dl>");						
+									 }else{
+										alert("上传失败！");
+									 }
+									 jQuery(".load").hide();
+									jQuery(".pic_upload_bottom ul").show();	 					
+								  },
+		});
+		upload_goods_img_mark = false;	
+	}
+	var upload_img_cancel = function(){;
+		jQuery(".album_white_content").fadeOut();
+		jQuery(".album_black_overlay").fadeOut();
+		jQuery(".pic_upload_list").html("").hide();
+		jQuery(".empty").show();
+		jQuery(".empty").html("<div class='file_01'><input style='font-size:100px;' class='ip_file' type='file' id='fileImage'  name='fileImage'  onchange='upload_album_img()' /><input class='ip_btn' type='button'/></div><span></span>");
+	}
+	jQuery(document).ajaxStart(function() {
+		if(upload_goods_img_mark){
+        	jQuery(".pic_upload_bottom ul").hide();
+			jQuery(".load").show();
+		}
+    });
+	<!--ajax上传start-->
+}else{
+	<!--HTML5上传start-->
+	var fileInput ;
+	var upButton ;
+	var fileFilter = [];//文件数组
+	var dragDrop ;
+	var fileProgressBar ;//上传进度条
+	var fileUploadFailureCount = 0; 
+	jQuery(document).ready(function(e) {
+		jQuery("#ajaxUplaodDiv").remove();
+		fileInput = jQuery("#fileImage").get(0);
+		upButton = jQuery("#fileSubmit").get(0);
+		dragDrop = jQuery(".pic_upload_bd").get(0);
+		jQuery(".cover").click(function(){
+			jQuery(".cover_updown").slideToggle();
+		});	
+		#if($!albums.size() < 5)
+			var ulHeight = $!albums.size() *38;
+			jQuery(".cover_updown ul").height(ulHeight);
+		#end
+		init();
+	});<!--end-->
+	//文件上传
+	function funUploadFile() {
+		if(!fileFilter.length>0){
+			return;
+		}
+		jQuery(".pic_upload_bottom ul").hide();
+		jQuery(".load").html("<div class='load_word' id='load_word'>图片上传中，请不要关闭浏览器...<span style='width:0px;background-color:#F60; height:2px; top:0px;'></span></div>").show();
+		fileProgressBar = Math.floor( 990 /(fileFilter.length) );
+		for (var i = 0, file; file = fileFilter[i]; i++) {
+			(function(file) {
+				var xhr = new XMLHttpRequest();
+				if (xhr.upload) {
+					// 上传中
+					xhr.upload.addEventListener("progress",function(e){funProgress(file, e.loaded, e.total)},false);
+					// 文件上传成功或是失败
+					xhr.onreadystatechange = function(e) {
+						if (xhr.readyState == 4) {
+							if (xhr.status == 200) {
+								if(xhr.responseText!='true'){
+									funUploadFailure(file);
+								}else{
+									funDeleteFile(file);
+
+								}
+								jQuery("#load_word span").width(jQuery("#load_word span").width()+fileProgressBar);
+								if (!fileFilter.length) {
+									setTimeout(function(){funUploadComplete()},1000);
+								}
+							}
+						}
+					};
+					// 开始上传
+					xhr.open("POST","$!webPath/seller/taobao_img_upload.htm", true);
+					var formData = new FormData();
+					formData.append('imgFile',file);
+					formData.append("album_id",jQuery("#album_id").val());
+					xhr.send(formData);
+				}	
+			})(file);	
+		}	
+	}
+	function funUploadFailure(fileTarget){
+		jQuery("#uploadImageList_"+fileTarget.index).find("dd:last").html("<span class='bar_gray'><i style='width:100%;'></i><strong class='bg_red'>上传失败！</strong></span>");
+		fileUploadFailureCount += 1;
+		var arrFile = [];
+		for (var i = 0, file; file = fileFilter[i]; i++) {
+			if (file != fileTarget) {
+				arrFile.push(file);
+			}
+		}
+		fileFilter = arrFile;
+	}
+	function funUploadComplete() {
+		if(fileUploadFailureCount==0){
+			jQuery("#load_word").html("<b style='color:#F60;'>已完成上传</b>");
+		}else{
+			jQuery("#load_word").html("<b style='color:#F60;'>有"+fileUploadFailureCount+"张图片上传失败！</b>");
+			fileUploadFailureCount = 0;
+		}
+		jQuery(".load").fadeOut(3000);
+		window.location.href="$!webPath/seller/taobao_import_finish.htm";
+	}
+	//进度
+	function funProgress(file, loaded, total){
+		var eleProgress = jQuery("#uploadImageList_" + file.index).find("dd:last");
+		var percent = (loaded / total * 100).toFixed(2);
+		eleProgress.html("<span class='bar_gray'><i style='width:"+percent+"%;'></i><strong>"+percent+"%</strong></span>");
+	}
+	//删除对应的文件
+	function funDeleteFile(fileDelete) {
+		var arrFile = [];
+		for (var i = 0, file; file = fileFilter[i]; i++) {
+			if (file != fileDelete) {
+				arrFile.push(file);
+			} else {
+				jQuery("#uploadImageList_" + file.index).fadeOut();	
+			}
+		}
+		fileFilter = arrFile;
+		if(fileFilter.length==0){
+			jQuery(".empty").show();
+			jQuery(".pic_upload_list").hide();
+		}
+		return this;
+	};
+	
+	//获取选择文件，file控件或拖放
+	function funGetFiles(e) {
+		// 取消鼠标经过样式
+		funDragHover(e);		
+		// 获取文件列表对象
+		var files = e.target.files || e.dataTransfer.files;
+		//继续添加文件
+		var arrFiles = [];
+		var configFilesize = ("$!{config.imageFilesize}" - 0 )*1024;
+		for (var i = 0, file; file = files[i]; i++) {			
+			arrFiles.push(file);	
+		}
+		fileFilter = fileFilter.concat(arrFiles);
+		if(fileFilter.length==0){
+			return;
+		}
+		funDealFiles();
+	};
+	//选中文件的处理与回调
+	function funDealFiles() {
+		for (var i = 0, file; file = fileFilter[i]; i++) {
+			//增加唯一索引值
+			file.index = i;
+		}
+		//执行选择回调
+		funAllDrawing(fileFilter);
+	};
+	function funAllDrawing(files) {//绘制图片预览图
+		var html = '', i=0;
+		jQuery(".empty").hide();
+		jQuery(".pic_upload_list").show().html("");
+		var funAppendDrawing = function(){
+			file = files[i];
+			if(file){
+				var reader = new FileReader();				
+				reader.readAsDataURL(file);
+				reader.onload = function(e) {					
+				html = '<dl id="uploadImageList_'+i+'"><dt><img src="'+e.target.result+'" /></dt><dd>'+file.name+'</dd><dd class="edit"><a class="del" href="javascript:void(0);" mark="'+i+'"></a></dd><dd class="bar"></dd></dl>';						
+				jQuery(".pic_upload_list").append(html);
+				i++;
+				funAppendDrawing();		
+				};
+			}else{
+				html = '<dl class="add_pic"><dd><div class="file_01"><input class="ip_btn" type="button" onclick="funOpenBrowse()"/></div></dd></dl>';
+				jQuery(".pic_upload_list").append(html);
+				jQuery(".del").click(function() {
+						funDeleteFile(files[parseInt($(this).attr("mark"))]);
+						return false;	
+				});
+			}		
+		};		
+		funAppendDrawing();	
+	};
+	//文件拖放
+	function funDragHover(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		this[e.type === "dragover"? "onDragOver": "onDragLeave"].call(e.target);
+		return this;
+	};
+	function onDragOver() { 
+		jQuery(this).addClass("bg_drag");
+	};
+	function onDragLeave() {
+		jQuery(this).removeClass("bg_drag");
+	};
+	function init() {		
+			dragDrop.addEventListener("dragover", function(e) { funDragHover(e); }, false);
+			dragDrop.addEventListener("dragleave", function(e) { funDragHover(e); }, false);
+			dragDrop.addEventListener("drop", function(e) {funGetFiles(e); }, false);
+			fileInput.addEventListener("change", function(e) {funGetFiles(e);}, false);	
+			upButton.addEventListener("click", function(e) {funUploadFile(e); }, false);	
+	};
+	var funOpenBrowse = function(){
+		var ie=navigator.appName=="Microsoft Internet Explorer" ? true : false; 
+		if(ie){ 
+			document.getElementById("fileImage").click(); 
+			document.getElementById("fileImage").value=document.getElementById("fileImage").value;
+		}else{
+			var a=document.createEvent("MouseEvents");//FF的处理 
+			a.initEvent("click", true, true);  
+			document.getElementById("fileImage").dispatchEvent(a); 
+		} 
+		
+	}
+	var upload_img_show = function(){
+		jQuery(".album_white_content").fadeIn();
+		jQuery(".album_black_overlay").fadeIn();
+	}
+	var upload_img_cancel = function(){;
+		jQuery(".album_white_content").fadeOut();
+		jQuery(".album_black_overlay").fadeOut();
+		jQuery(".pic_upload_list").hide();
+		jQuery(".empty").show();
+		jQuery("#imageInfo").html("");
+		fileFilter = [];
+	}
+	<!--切换相册-->
+	function album_select(album_id,obj){
+		jQuery("#album_id").val(album_id);
+		jQuery(".cover_updown").slideToggle();
+		jQuery(".cover img").attr("src",jQuery(obj).find("img").attr("src"));
+		jQuery(".cover strong").html(jQuery(obj).find("strong").text());
+	}
+	<!--HTML5上传end-->	
+} 
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=taobao") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>商品管理</b>><b>淘宝导入</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href="$!webPath/seller/taobao.htm"><i></i>淘宝导入</a></li>
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/taobao_import_csv.htm" method="post" name="theForm" id="theForm" enctype="multipart/form-data">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td width="195" align="left"><div class="productmain">
+                    <div class="step">
+                      <div class="step1">
+                        <h1><span class="add"></span>第一步：导入CSV文件成功,已成功导入$!{already_import_count}件商品，$!{no_import_count}件导入失败。</h1>
+                      </div>
+                      <div class="step1 this">
+                        <h1>第二步：导入图片文件,请上传与csv文件同级的images目录(或与csv文件同名的目录)内的tbi文件。</h1>
+                      </div>
+                      <div class="step1">
+                        <h1>第三步：整理数据</h1>
+                      </div>
+                      <div class="pic_upload" id="HTML5UplaodDiv">
+                        <div class="hd" style="background:none;">
+                          <div class="hd_fl">
+                            <input name="album_id" type="hidden" id="album_id" value="$!albums.get(0).id"/>
+                            <span class="fl">上传到：</span>
+                            <div class="album_select"> #if($!albums.get(0).album_cover)
+                              #set($cover_img="$!imageWebServer/$!albums.get(0).album_cover.path/$!{albums.get(0).album_cover.name}_small.$!{albums.get(0).album_cover.ext}")
+                              #else
+                              #set($cover_img="$!webPath/resources/style/system/front/default/images/user_photo/phone.jpg")
+                              #end
+                              <div class="cover"><span><img src="$!cover_img" width="33" height="33" /></span><strong>$!albums.get(0).album_name</strong><i></i></div>
+                              <!--下拉-->
+                              <div class="cover_updown" style="display:none">
+                                <ul>
+                                  #foreach($album in $albums)
+                                  #if($!album.album_cover)
+                                  #set($cover_img="$!imageWebServer/$!album.album_cover.path/$!{album.album_cover.name}_small.$!{album.album_cover.ext}")
+                                  #else
+                                  #set($cover_img="$!webPath/resources/style/system/front/default/images/user_photo/phone.jpg")
+                                  #end
+                                  <li onclick="album_select($!{album.id},this)"><a href="javascript:void(0)"><span><img src="$!cover_img" width="33" height="33" /></span><strong>$!album.album_name</strong></a></li>
+                                  #end
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="pic_upload_bd" style=" width:988px;border:1px solid #ddd; border-top:0px; height:auto;"> 
+                          <!--无图片div-->
+                          <div class="empty">
+                            <div class="file_01">
+                              <input class="ip_file" type="file" id="fileImage"  name="fileImage[]" multiple />
+                              <input class="ip_btn" type="button" onclick="funOpenBrowse()"  style="cursor:pointer"/>
+                            </div>
+                            <p>或将图片拖拽到此区域</p>
+                            <span></span></div>
+                          <!--图片列表div-->
+                          <div class="pic_upload_list"  style="display:none"> </div>
+                          <!--上传div-->
+                          <div class="pic_upload_bottom" style="width:988px;">
+                            <ul style="margin-left:400px;">
+                              <li>
+                                <input class="blue_btn" type="button" id="fileSubmit" name="fileSubmit" style="background-position:0px -329px;"/>
+                              </li>
+                            </ul>
+                            <!--加载层最大宽度990px-->
+                            <div class="load"  style="display:none">
+                              <div class="load_word" id="load_word">图片上传中，请不要关闭浏览器...</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="pic_upload" id="ajaxUplaodDiv">
+                        <div class="hd" style="background:none;">
+                          <div class="hd_fl">
+                            <input name="album_id" type="hidden" id="album_id" value="$!albums.get(0).id"/>
+                            <span class="fl">上传到：</span>
+                            <div class="album_select"> #if($!albums.get(0).album_cover)
+                              #set($cover_img="$!imageWebServer/$!albums.get(0).album_cover.path/$!{albums.get(0).album_cover.name}_small.$!{albums.get(0).album_cover.ext}")
+                              #else
+                              #set($cover_img="$!webPath/resources/style/system/front/default/images/user_photo/phone.jpg")
+                              #end
+                              <div class="cover"><span><img src="$!cover_img" width="33" height="33" /></span><strong>$!albums.get(0).album_name</strong><i></i></div>
+                              <!--下拉-->
+                              <div class="cover_updown" style="display:none">
+                                <ul>
+                                  #foreach($album in $albums)
+                                  #if($!album.album_cover)
+                                  #set($cover_img="$!imageWebServer/$!album.album_cover.path/$!{album.album_cover.name}_small.$!{album.album_cover.ext}")
+                                  #else
+                                  #set($cover_img="$!webPath/resources/style/system/front/default/images/user_photo/phone.jpg")
+                                  #end
+                                  <li onclick="album_select($!{album.id},this)"><a href="javascript:void(0)"><span><img src="$!cover_img" width="33" height="33" /></span><strong>$!album.album_name</strong></a></li>
+                                  #end
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="pic_upload_bd" style=" width:988px;border:1px solid #ddd; border-top:0px; height:auto;"> 
+                          <!--无图片div-->
+                          <div class="empty" >
+                            <div class="file_01">
+                              <input style="font-size:100px;cursor:pointer" class="ip_file" type="file" id="imgFile"  name="imgFile"  onchange="upload_album_img()" />
+                              <input class="ip_btn" type="button"/>
+                            </div>
+                            <span></span> </div>
+                          <!--图片列表div-->
+                          <div class="pic_upload_list" style="display:none"> </div>
+                          <!--上传div-->
+                          <div class="pic_upload_bottom" style="width:988px;">
+                            <ul style="margin-left:400px;">
+                              <li>
+                                <input class="blue_btn" type="button" id="fileSubmit" name="fileSubmit" style="background-position:0px -329px;"/>
+                              </li>
+                            </ul>
+                            <!--加载层最大宽度990px-->
+                            <div class="load" style="display:none">
+                              <div class="load_word" id="load_word">图片上传中，请不要关闭浏览器...</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

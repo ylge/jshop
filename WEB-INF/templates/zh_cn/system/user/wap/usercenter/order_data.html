@@ -1,0 +1,72 @@
+#foreach($order in $orders)
+#if($!order.order_status==0)
+#set($status="已取消")
+#end
+#if($!order.order_status==10)
+#set($status="待付款")
+#end
+#if($!order.order_status==16)
+#set($status="待发货")
+#end
+#if($!order.order_status==20)
+#set($status="已付款")
+#end
+#if($!order.order_status==30)
+#set($status="已发货")        
+#end                
+#if($!order.order_status==40)
+#set($status="已收货")
+#end
+#if($!order.order_status==50)
+#set($status="已完成")                                              
+#end
+#if($!order.order_status==65)
+#set($status="已结束")                                              
+#end
+<div class="order_page_box">
+<h1><span class="fl">订单号：$!order.order_id</span><span class="fr">$!status</span></h1>
+#set($price = $!orderFormTools.query_order_price("$!order.id"))
+#foreach($map in $!orderFormTools.queryGoodsInfo("$!order.goods_info"))
+#set($count = $!CommUtil.add($!{count}, $!{map.get("goods_count")}))
+#end
+#if($!orderFormTools.queryGoodsInfo("$!order.goods_info").size()>1)
+<div class="order_goods_much">
+<ul>
+#foreach($map in $!orderFormTools.queryGoodsInfo("$!order.goods_info"))
+#set($goods_name = "$!{map.get('goods_name')}")
+#set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+#set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+#if($!velocityCount < 6)
+<li><a href="javascript:void(0);"><img src="$!img" width="50" height="50" /></a></li>
+#end    
+#end
+</ul>
+</div>
+#else
+<div class="order_goods">
+#foreach($map in $!orderFormTools.queryGoodsInfo("$!order.goods_info"))
+#set($goods_name = "$!{map.get('goods_name')}")
+#set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+#set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+<div class="dt"><a href="javascript:void(0);"><img src="$!img" width="50" height="50" /></a></div>
+<ul>
+<li><b>¥ $!map.get("goods_price")</b></li>
+<li>X $!{map.get("goods_count")}</li>
+</ul>
+<div class="dd"><a href="javascript:void(0);">$!goods_name</a></div>
+#end    
+</div>
+#end
+<div class="order_total">共 $!orderFormTools.query_goods_count("$!order.id") 件商品 实付：<b>¥ $!{price}</b></div>
+<div class="order_box_bt">
+<a href="javascript:void(0);" onClick="url('$!webPath/wap/buyer/order_view.htm?id=$!{order.id}')">查看订单</a>
+<a href="javascript:void(0);" onClick="url('$!webPath/wap/buyer/ship_detail1.htm?order_id=$!{order.id}')">查看物流</a>
+#if($!order.order_status==30 || $!order.order_status==35)
+<a class="bg_orange" href="javascript:void(0);" onClick="order_cofirm($!{order.id})">确认收货</a>
+#elseif($!order.order_status < 11)
+<a class="bg_orange" href="javascript:void(0);" onClick="order_pay($!{order.id})">付款</a>
+
+#end
+</div>
+</div>
+#end

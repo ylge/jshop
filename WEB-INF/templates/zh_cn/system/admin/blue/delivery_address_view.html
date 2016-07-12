@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+function go_back(){
+	window.location.href="$!{url}";
+}
+function go_refuse(id){
+	window.location.href="$!webPath/admin/delivery_apply_refuse.htm?id="+id+"&&currentPage=$!{currentPage}";
+}
+function go_pass(id){
+	window.location.href="$!webPath/admin/delivery_apply_pass.htm?id="+id+"&&currentPage=$!{currentPage}";
+} 
+ 
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/delivery_address_save.htm" method="post" name="theForm" id="theForm">
+  <div class="cont">
+    <h1 class="seth">自提点管理</h1>
+    <div class="nav_list">
+      <ul>
+        <li><a href="$!webPath/admin/delivery_address_list.htm"><b>自提点列表</b></a></li>
+        <li><a href="$!webPath/admin/delivery_address_add.htm"><b>新增自提点</b></a></li>
+        <li><a href="$!webPath/admin/delivery_apply_list.htm" ><b>自提点申请列表</b></a></li>
+        #if($!audit)
+        <li><a href="javascript:void(0)" class="this"><b>自提点审核</b></a></li>
+        #else
+        <li><a href="javascript:void(0)" class="this"><b>自提点详情</b></a></li>
+        #end
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" id="base"> 
+        <ul class="set1">
+          <li  class="setcont_bg">自提点类型：</li>
+          <li><span class="webname">
+          #if($!obj.da_type=='0')商城自提点#end
+          #if($!obj.da_type=='1')第三方自提点#end
+          </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">自提点名称：</li>
+          <li><span class="webname">
+            $!{obj.da_name}
+            </span></li>
+        </ul>
+        #if($!obj.da_type=='1')
+        <ul class="set1">
+          <li class="setcont_bg">申请用户：</li>
+          <li><span class="webname">
+            $!{obj.da_user_name}
+            </span></li>
+        </ul>
+        #end
+         <ul class="set1">
+          <li class="setcont_bg">联系人姓名：</li>
+          <li><span class="webname">
+            $!{obj.da_contact_user}
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">联系人电话：</li>
+          <li><span class="webname">
+            $!{obj.da_tel}
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">自提点说明：</li>
+          <li><span class="webname">
+          	#if($!obj.da_content!="")$!obj.da_content
+            #else 暂未填写 #end
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">自提点地址：</li>
+          <li><span class="webname">
+            $!areaManageTools.generic_area_info($!obj.da_area) $!obj.da_address
+            </span> </li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">自提点状态：</li>
+          <li><span class="webname">
+          	#if($!obj.da_status=='0')待审核#end
+            #if($!obj.da_status=='5')待审核#end
+            #if($!obj.da_status=='4')审核拒绝#end
+            #if($!obj.da_status=='10')待审核#end
+            </span> </li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">自提点服务时间：</li>
+          <li><span class="webname">
+            $!{service_day}
+          </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">具体时间：</li>
+          <li><span class="webname">
+          	#if($!obj.da_service_type=="0") 全天 #else 上午$!{obj.da_begin_time}点 至 下午$!{obj.da_end_time}点#end
+            </span> </li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      #if($!audit)
+      <input type="button" value="审核通过" onclick="go_pass('$!obj.id');"/>
+      <input type="button" value="审核拒绝" onclick="go_refuse('$!obj.id');"/>
+      #end
+      <input type="button" value="返回列表" onclick="go_back();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

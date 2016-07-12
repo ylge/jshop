@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人主页 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!obj.seo_keywords" />
+<meta name="description" content="$!obj.seo_description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/user.css"/>
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/public.css"/>
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+function change_snsUser(obj,type){
+	jQuery(".sns_main_box_right_top span").removeClass("this");
+	jQuery(obj).parent().addClass("this");
+	jQuery(".sns_main_box_right_center").hide();
+	jQuery(".sns_main_box_right_b").hide();
+	jQuery("div[class^='sns_main_box_right_center_nothing']").hide();
+	jQuery(".sns_main_box_right_center_nothing_"+type).show();
+	jQuery("div[type='"+type+"']").slideDown("slow");	
+}
+function attention_cancel(id){
+	jQuery.post("$!webPath/sns/attention_cancel.htm",{"id":id},function(data){
+		 if(data==0){
+			 showDialog("msg_info","","取消成功",2,"succeed",3,function(){location.reload()});
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","取消失败",2,"warning",3,function(){location.reload()});
+		 }
+	  },"text");
+}
+function attention_save(id){
+	jQuery.post("$!webPath/sns/attention_save.htm",{"id":id},function(data){
+		 if(data==0){
+			 showDialog("msg_info","","关注成功",2,"succeed",3,function(){location.reload()});
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","关注失败",2,"warning",3,function(){location.reload()});
+		 }
+	  },"text");
+}
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+<div class="sns_width"> $!httpInclude.include("/buyer/my_sns_head.htm")
+  <div class="sns_main"> $!httpInclude.include("/buyer/my_sns_nav.htm?op=index")
+    <div class="sns_list_box">
+      <div class="sns_main_box">
+        <div class="sns_main_box_left"> 
+          <!--评价 -->
+          <div class="sns_main_box_left_share">
+            <div class="sns_main_box_left_evaluate_a_top">
+              <h3>宝贝评价</h3>
+            </div>
+            #if($!evas.size()>0)
+            #foreach($eva in $evas)
+            #if($!eva.evaluate_goods.goods_main_photo)
+            #set($img="$!imageWebServer/$!{eva.evaluate_goods.goods_main_photo.path}/$!{eva.evaluate_goods.goods_main_photo.name}_middle.$!{eva.evaluate_goods.goods_main_photo.ext}")
+            #else
+            #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            #end
+            <div class="sns_main_box_left_evaluate_eva" type="eva">
+              <div class="sns_main_box_left_evaluate_eva_left"><a href="$!webPath/goods_$!{eva.evaluate_goods.id}.htm" target="_blank"><img src="$!img" /></a><span>$!eva.evaluate_goods.goods_name</span></div>
+              <div class="sns_main_box_left_evaluate_eva_right">$!{eva.evaluate_info}</div>
+            </div>
+            #end
+            #end            
+          </div>
+          <!--分享 -->
+          <div class="sns_main_box_left_collect">
+            <div class="sns_main_box_left_evaluate_a_top_ask">
+              <h3>我的分享</h3>
+              <i><a href="$!webPath/buyer/my_sns_share.htm">更多 >></a></i> </div>
+            #if($!userShare)
+            <div class="sns_main_box_left_evaluate_ev">
+              <div class="sns_main_box_left_evaluate_ev_left"> <a href="$!webPath/goods_$!{userShare.share_goods_id}.htm" target="_blank"><img src="$!imageWebServer/$!userShare.share_goods_photo" /></a><span>$!userShare.share_content</span> </div>
+            </div>
+            #end
+          </div>
+          <!--晒单 -->
+          <div class="sns_main_box_left_share">
+            <div class="sns_main_box_left_evaluate_a_top">
+              <h3>购物晒单</h3>
+            </div>            
+            #if($!evaPhotos.size()>0)
+            #foreach($evaPhoto in $evaPhotos)
+            #if($!evaPhoto.evaluate_goods.goods_main_photo)
+            #set($img="$!imageWebServer/$!{evaPhoto.evaluate_goods.goods_main_photo.path}/$!{evaPhoto.evaluate_goods.goods_main_photo.name}_middle.$!{evaPhoto.evaluate_goods.goods_main_photo.ext}")
+            #else
+            #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            #end
+            <div class="sns_main_box_left_evaluate_eva" type="evap">
+              <div class="sns_main_box_left_evaluate_eva_left"><a href="$!webPath/goods_$!{evaPhoto.evaluate_goods.id}.htm" target="_blank"><img src="$!img" /></a><span>$!evaPhoto.evaluate_goods.goods_name</span></div>
+              <div class="sns_main_box_left_evaluate_eva_right">$!{evaPhoto.evaluate_info}</div>
+            </div>
+            #end
+            #end
+          </div>
+          <!--收藏 -->
+          <div class="sns_main_box_left_collect_sh">
+            <div class="sns_main_box_left_evaluate_a_top_ask">
+              <h3>我的收藏</h3>
+              <i><a href="$!webPath/buyer/my_sns_fav.htm">更多 >></a></i> </div>
+            #if($!fav)
+            <div class="sns_main_box_left_evaluate_ev">
+              <div class="sns_main_box_left_evaluate_ev_left"><a href="$!webPath/goods_$!{fav.goods_id}.htm" target="_blank"><img src="$!imageWebServer/$!fav.goods_photo" /></a> <span>$!fav.goods_name</span></div>
+            </div>
+            #end </div>
+          <!--圈子 -->
+          <div class="sns_main_box_left_c">
+            <div class="sns_main_box_left_evaluate_a_top">
+              <h3>我的帖子</h3>
+              <i><a href="$!webPath/buyer/my_sns_invitation.htm">更多 >></a></i> </div>
+            <div class="sns_circle" style=" height:223px;">
+              #if($!invi && $!circles)
+                  #if($!invi)
+                  <div class="sns_circle_bg">
+                    <div class="sns_circle_top">
+                      <h3><a href="$!webPath/circle/invitation_detail_$!{invi.id}.htm" target="_blank">$!invi.title</a></h3>
+                      <span>$!invi.content</span>
+                      <div class="sns_circle_top_list"> <a href="javascript:void(0);"><em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_up.png" /></em><i>$!{invi.praise_count}</i></a> <a href="javascript:void(0);"><em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_message.png" /></em><i>$!{invi.reply_count}</i></a> </div>
+                    </div>
+                    <div class="sns_circle_bottom">
+                  	#foreach($obj in $circles)
+                    #set($img=$!circleViewTools.genercircleImage("$!obj.id"))
+                    <dl>
+                      <dt><a href="$!webPth/circle/detail_$!{obj.id}.htm" target="_blank"><img src="$!imageWebServer/$!img.src" /></a></dt>
+                      <dd>
+                        <h3><a href="$!webPth/circle/detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></h3>
+                        <span>所属分类：$!obj.class_name</span> <i>$!obj.content</i> </dd>
+                    </dl>
+                    #end
+                  </div>
+                  </div>                 
+                  #end                  
+              #end              
+            </div>
+          </div>
+          
+          <!--动态-->
+          <div class="sns_main_box_left_c">
+            <div class="sns_main_box_left_evaluate_a_top">
+              <h3>我的动态</h3>
+              <i><a href="$!webPath/buyer/my_sns_dynamic.htm">更多 >></a></i>
+              </div>
+              <div class="sns_circle">
+              	#if($!{userDynamics})
+              	<div class="sns_circle_bg">
+                <div class="sns_circle_top" style="border-bottom:none">
+                	<div class="sns_s_center">
+                    	<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$!{userDynamics.dynamic_content}</span>                    	
+                    </div>
+                    <div class="sns_s_b">
+                    		#foreach($info in $!snsTools.getDynamic_img_info($!userDynamics.img_info))	
+                         	<span><a href="$!imageWebServer/$!info.img" target="_blank"><img src="$!imageWebServer/$!info.img" /></a></span>
+             				#end
+                    </div>
+                </div>
+                </div>
+                #end
+              </div>
+          </div>
+        </div>
+        <div class="sns_main_box_right">
+          <div class="sns_main_box_right_top"> <span class="this"><a href="javascript:void(0)" onclick="change_snsUser(this,'att')">我关注的</a></span> <span><a href="javascript:void(0)" onclick="change_snsUser(this,'fan')">关注我的</a></span> </div>
+          #if($!userAttsList.size()>0)
+          <div class="sns_main_box_right_center" type="att"> #foreach($userAtt in $userAttsList)
+            #if($!userAtt.user_photo)
+            #set($userAtt_photo="$!imageWebServer/$!userAtt.user_photo")
+            #else 
+            #set($userAtt_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+            #end
+            <dl>
+              <dt><a href="$!webPath/sns/other_sns_$!{userAtt.user_id}.htm" target="_blank"><img src="$!userAtt_photo" /></a></dt>
+              <dd>
+                <h3><b><a href="$!webPath/sns/other_sns_$!{userAtt.user_id}.htm" target="_blank">$!userAtt.user_name</a></b><i><a href="javascript:void(0)" onclick="attention_cancel($!{userAtt.user_id})">取消关注</a></i></h3>
+                <span> <i>粉丝 <a href="$!webPath/sns/other_sns_fans.htm?other_id=$!{userAtt.user_id}" target="_blank">$!snsTools.queryFans("$!{userAtt.user_id}")</a></i> <i>关注 <a href="$!webPath/sns/other_sns_atts.htm?other_id=$!{userAtt.user_id}" target="_blank">$!snsTools.queryAtts("$!{userAtt.user_id}")</a></i> </span> </dd>
+            </dl>
+            #end </div>
+          <div class="sns_main_box_right_b" type="att">
+            <div class="sns_main_box_right_b_c"><a href="$!webPath/buyer/my_sns_atts.htm">关注了<b>$!snsTools.queryAtts("$!{user.id}")</b>人，点击查看全部  >></a></div>
+          </div>
+          #else
+          <div class="sns_main_box_right_center_nothing_att"></div>
+          #end  
+          #if($!userFansList.size()>0)
+          <div class="sns_main_box_right_center" style="display:none" type="fan"> #foreach($userFan in $userFansList)
+            #if($!userFan.user_photo)
+            #set($userFan_photo="$!imageWebServer/$!userFan.user_photo")
+            #else 
+            #set($userFan_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+            #end
+            <dl>
+              <dt><a href="$!webPath/sns/other_sns_$!{userFan.user_id}.htm" target="_blank"><img src="$!userFan_photo" /></a></dt>
+              <dd>
+                <h3><b><a href="$!webPath/sns/other_sns_$!{userFan.user_id}.htm" target="_blank">$!userFan.user_name</a></b> #if($!snsTools.whetherAttentionId("$!{user.id}","$!{userFan.user_id}")=="true") <i><a href="javascript:void(0)" onclick="attention_cancel($!{userFan.user_id})">取消关注</a></i> #else <i class="attention"><a href="javascript:void(0)" onclick="attention_save($!{userFan.user_id})">关注</a></i> #end </h3>
+                <span> <i>粉丝 <a href="$!webPath/sns/other_sns_fans.htm?other_id=$!{userFan.user_id}" target="_blank">$!snsTools.queryFans("$!{userFan.user_id}")</a></i> <i>关注 <a href="$!webPath/sns/other_sns_atts.htm?other_id=$!{userFan.user_id}" target="_blank">$!snsTools.queryAtts("$!{userFan.user_id}")</a></i> </span> </dd>
+            </dl>
+            #end </div>
+          <div class="sns_main_box_right_b" style="display:none" type="fan">
+            <div class="sns_main_box_right_b_c"><a href="$!webPath/buyer/my_sns_fans.htm">共有<b>$!snsTools.queryFans("$!{user.id}")</b>位粉丝，点击查看全部  >></a></div>
+          </div>
+          #else
+          <div class="sns_main_box_right_center_nothing_fan" style="display:none"></div>
+          #end </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

@@ -1,0 +1,10 @@
+#foreach($obj in $activitygoods)
+<a href="$!webPath/wap/goods.htm?id=$!{obj.ag_goods.id}">
+<dl>
+  <dt><img width="90" height="90" src="$!imageWebServer/$!obj.ag_goods.goods_main_photo.path/$!{obj.ag_goods.goods_main_photo.name}_small.$!{obj.ag_goods.goods_main_photo.ext}"></dt>
+  <dd>
+    <h3><b>$!obj.ag_goods.goods_name</b></h3>
+    <span><strong>¥$!obj.ag_goods.store_price</strong></span> <em>$!obj.ag_goods.evaluate_count人评价，$!{obj.ag_goods.goods_salenum}人已购买</em> </dd>
+</dl>
+</a>
+#end

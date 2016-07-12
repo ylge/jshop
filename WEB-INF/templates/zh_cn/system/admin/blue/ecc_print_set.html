@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery.validator.addMethod("compare_auto_order_confirm",function(value,element){
+  var auto_order_confirm=parseInt(jQuery("#auto_order_confirm").val());
+  var auto_order_notice=parseInt(jQuery("#auto_order_notice").val());
+  if(auto_order_confirm<auto_order_notice){
+     return false;
+	 
+  }else return true;
+});
+jQuery(document).ready(function(){
+jQuery("#theForm").validate({
+	ignore: "",						  
+   rules: {
+			 left_offset:{required:true,number:true},
+			 top_offset:{required:true,number:true}
+			},
+     messages: {
+			left_offset:{required:"左偏移量不能为空",number:"左偏移量只能为数字"},
+			top_offset:{required:"上偏移量不能为空",number:"上偏移量只能为数字"}
+		  }
+  });	
+});
+
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/ecc_print_set_save.htm" method="post"  name="theForm" id="theForm">
+  <div class="cont">
+    <h1 class="seth">常用物流
+      <input name="id" id="id" type="hidden" value="$!obj.id"/>
+    </h1>
+    <div class="nav_list">
+      <ul>
+        <li><a href="$!webPath/admin/ecc_set.htm"><b>常用物流配置</b></a> </li>
+        <li><a href="$!webPath/admin/ecc_list.htm"><b>常用物流列表</b></a></li>
+        <li><a href="$!webPath/admin/ecc_print_set.htm?id=$!obj.id" class="this"><b>运费模板打印配置</b></a></li>
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont">
+        <ul class="set1">
+          <li class="setcont_bg">快递名称：</li>
+          <li>$!{obj.ecc_name}</li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">快递模板：</li>
+          #set($hight=100*$!{obj.ecc_template_heigh}/$!{obj.ecc_template_width})
+          <li><img src="$!imageWebServer/$!obj.ecc_template" alt="运费模板" width="100" height="$!{hight}" /></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>左偏移量：</li>
+          <li>
+            <input name="left_offset" type="text" class="base_txt" id="left_offset"  value="$!left_offset"/>
+            毫米</li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>上偏移量：</li>
+          <li>
+            <input name="top_offset" type="text" id="top_offset"  value="$!top_offset" class="base_txt"/>
+            毫米</li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="提交" onclick="saveForm();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

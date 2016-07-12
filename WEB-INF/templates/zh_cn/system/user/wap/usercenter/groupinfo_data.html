@@ -1,0 +1,36 @@
+#foreach($obj in $objs)
+#if($!obj.status==0)
+#set($class=1)
+#set($status="未使用")
+#end
+#if($!obj.status==1)
+#set($class=2)
+#set($status="已使用")
+#end
+#if($!obj.status==-1)
+#set($class=2)
+#set($status="已到期")
+#end
+#if($!obj.status==3)
+#set($class=3)
+#set($status="申请退款")
+#end
+#if($!obj.status==5)
+#set($class=3)
+#set($status="退款中")
+#end
+#if($!obj.status==7)
+#set($class=3)
+#set($status="退款完成")
+#end
+<dl #if($!class==2) class="gray_bg" #elseif($!class==3) #end>
+<dt>
+<ul>
+<li><span class="fl">消费码：</span><span class="fr">$!obj.group_sn</span></li>
+<li><span class="fl">团购名称：</span><span class="fr">$!obj.lifeGoods.gg_name</span></li>
+<li><span class="fl">到期时间：</span><span class="fr">$!obj.lifeGoods.endTime</span></li>
+</ul>
+</dt>
+<dd><p class="price">¥ $!{obj.lifeGoods.group_price}</p><p>$!status</p></dd>
+</dl>
+#end    

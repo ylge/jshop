@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-评价管理- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+</head>
+
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+<div class="seller_center">
+<div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=evaluate") </div>
+<div class="seller_right">
+  <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>客户服务</b>><b>评价管理</b></span></div>
+  <div class="seller_list">
+    <div class="seller_list_title">
+      <ul class="seller_title_ul">
+        <li #if(!$!status) class="this" #end><a href="$!webPath/seller/evaluate_list.htm"><i></i>所有评价</a></li>
+        <li #if($!status=="no") class="this" #end><a href="$!webPath/seller/evaluate_list.htm?status=no"><i></i>未回复评价</a></li>
+         <li #if($!status=="yes") class="this" #end><a href="$!webPath/seller/evaluate_list.htm?status=yes"><i></i>已回复评价</a></li>
+      </ul>
+    </div>
+    <div  class="user_sp_right">
+      <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/evaluate_list.htm">
+      <input type="hidden" name="status" id="status" value="$!status" />
+        <div class="operation"> #if($objs.size()>0)
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+            <tr id="opertitle">
+              <th align="center" width="10%">订单号</th>
+              <th width="15%" align="center">商品</th>
+              <th width="5%" align="center">评价类型</th>
+              <th width="12%" align="center">描述相符评价</th>
+              <th width="12%" align="center">服务态度评价</th>
+              <th width="12%" align="center">发货速度评价</th>
+              <th width="5%" align="center">评价人</th>
+              <th width="5%" align="center">回复状态</th>
+              <th align="center">操作</th>
+            </tr>
+            #end
+            #if($objs.size()>0)
+            #foreach($obj in $objs)
+            <tr >
+              <td align="center">$!obj.of.order_id</td>
+              <td align="center"><a href="$!webPath/goods_$!{obj.evaluate_goods.id}.htm" target="_blank">$!obj.evaluate_goods.goods_name</a></td>
+              #if($!obj.evaluate_buyer_val==1)
+              #set($vals="好评")
+              #end
+              #if($!obj.evaluate_buyer_val==0)
+              #set($vals="中评")
+              #end
+              #if($!obj.evaluate_buyer_val==-1)
+              #set($vals="差评")
+              #end
+              <td align="center">$!vals</td>
+              <td align="center"><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star$!{obj.description_evaluate.intValue()}.png" width="90" height="18" /></td>
+              <td align="center"><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star$!{obj.service_evaluate.intValue()}.png" width="90" height="18" /></td>
+              <td align="center"><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star$!{obj.ship_evaluate.intValue()}.png" width="90" height="18" /></td>
+              <td align="center">$!obj.evaluate_user.userName</td>
+              #if($!obj.reply_status==1)
+              #set($reply="已回复")
+              #end
+              #if($!obj.reply_status==0)
+              #set($reply="未回复")
+              #end
+              <td align="center">$!reply</td>
+              <td align="center" class="del_operate"><a href="javascript:void(0);" dialog_uri="$!webPath/seller/evaluate_info.htm?id=$!obj.id" dialog_title="评价内容" dialog_width="410" dialog_height="100" dialog_id="evaluate_info" class="del_a">评价内容</a>#if($!obj.reply_status==1)<a href="javascript:void(0);" dialog_uri="$!webPath/seller/evaluate_reply.htm?id=$!obj.id" dialog_title="回复内容" dialog_width="410" dialog_height="100" dialog_id="evaluate_info" class="del_a">回复内容</a> #else <a href="javascript:void(0);" dialog_uri="$!webPath/seller/evaluate_reply.htm?id=$!obj.id" dialog_title="回复" dialog_width="410" dialog_height="100" dialog_id="evaluate_info" class="del_a">回复</a>#end</td>
+            </tr>
+            #end
+            #else
+            <tr>
+              <td colspan="6" align="center"><div class="seller_center_nothing">
+                  <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                  <div class="seller_center_nothing_right">暂时没有数据</div>
+                </div></td>
+            </tr>
+            #end
+          </table>
+        </div>
+        #if($objs.size()>0)
+        <div class="userlist_allop">
+          <div class="seller_list_page">
+            <div  class="seller_page_sp">
+              <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+              $!gotoPageFormHTML</div>
+          </div>
+        </div>
+        #end
+      </form>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

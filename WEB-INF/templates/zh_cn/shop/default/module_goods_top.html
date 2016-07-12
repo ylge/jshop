@@ -1,0 +1,23 @@
+<div class="recommend" style="background-color:$!{obj.back_color};">
+      <h1 #if("$!{obj.font_img_src}"!="") style="color:$!{obj.font_color};background:url($!imageWebServer/$!{obj.font_img_src});" #else style="color:$!{obj.font_color};" #end>$!{obj.title}</h1>
+      <div class="recomm_list"> #foreach($goods_c in $objs)
+        #if($!goods_c.goods_main_photo)
+        #set($goods_c_photo="$!imageWebServer/$!goods_c.goods_main_photo.path/$!goods_c.goods_main_photo.name")
+        #else
+        #set($goods_c_photo="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+        #end
+        
+        #set($goods_url="$!webPath/goods_$!{goods_c.id}.htm")
+        #if($!config.second_domain_open && $!goods_c.goods_store.store_second_domain!="")
+        #set($goods_url="$!current_webPath/goods_$!{goods_c.id}.htm")
+        #end
+        <ul class="recomm_ul">
+          <li class="recomm_pic"><a href="$!goods_url" target="_blank"><img src="$!goods_c_photo" width="300" height="300" /></a></li>
+          <li class="recomm_name"><a href="$!goods_url" target="_blank">$!goods_c.goods_name</a></li>
+          <li class="recomm_bgred">
+            <div class="recomm_price"><span>价格：<b>¥$!goods_c.store_price</b></span></div>
+            <div class="recomm_btn"><a href="$!goods_url" target="_blank">立即抢购</a></div>
+          </li>
+        </ul>
+        #end </div>
+    </div>

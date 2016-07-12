@@ -1,0 +1,50 @@
+﻿<script>
+jQuery(function(){ 
+   jQuery(".consultation_top_nav li").css("cursor","pointer");
+   jQuery(".consultation_top_nav li").removeClass("this");
+   jQuery(".consultation_top_nav li[consult_type=$!consult_type]").addClass("this");
+})
+</script>
+
+<div class="consultation_top_nav">
+  <ul>
+    <li class="this" consult_type="">全部咨询<i>（$!consultViewTools.queryByType("","$!goods_id").size()）</i></li>
+    <li consult_type="产品咨询">产品咨询<i>（$!consultViewTools.queryByType("产品咨询","$!goods_id").size()）</i></li>
+    <li consult_type="库存及配送">库存及配送<i>（$!consultViewTools.queryByType("库存及配送","$!goods_id").size()）</i></li>
+    <li consult_type="支付及发票">支付及发票<i>（$!consultViewTools.queryByType("支付及发票","$!goods_id").size()）</i></li>
+    <li consult_type="售后咨询">售后咨询<i>（$!consultViewTools.queryByType("售后咨询","$!goods_id").size()）</i></li>
+    <li consult_type="促销活动">促销活动<i>（$!consultViewTools.queryByType("促销活动","$!goods_id").size()）</i></li>
+  </ul>
+</div>
+<div class="consultation_top"  >
+  <div class="pro_prompt">
+    <div class="pro_prompt_word">因厂家更改商品包装、场地、附配件等不做提前通知，且每位咨询者购买、提问时间等不同。为此，客服给到的回复仅对提问者3天内有效，其他网友仅供参考！给您带来的不变还请谅解，谢谢 </div>
+    <div class="consultation_top_t"><span>如有购买问题，请向卖家咨询！</span><i> #if($!config.visitorConsult) <a class="inte_login_btn" href="javascript:void(0)" dialog_uri="$!webPath/goods_consult_win.htm?goods_id=$!goods_id" dialog_title="产品咨询" dialog_width="430" dialog_height="100" dialog_id="goods_cousult_win"> 我要咨询</a> #else
+      #if(!$!user) <a class="inte_login_btn" href="javascript:void(0)" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="goods_cousult_win"> 我要咨询</a> #else <a class="inte_login_btn" href="javascript:void(0)" dialog_uri="$!webPath/goods_consult_win.htm?goods_id=$!goods_id" dialog_title="产品咨询" dialog_width="430" dialog_height="100" dialog_id="goods_cousult_win"> 我要咨询</a> #end 
+      #end </i></div>
+  </div>
+  #if($!consult_objs.size()==0)
+  <div class="novalue"> 还没有咨询内容 </div>
+  #else
+  <div class="consultation_top_center"> #foreach($obj in $consult_objs)
+    <div class="consultation_top_center_one">
+      <div class="consultation_top_center_one_ask">
+        <div class="consultation_top_center_one_ask_user">$!obj.consult_user_name</div>
+        <div class="consultation_top_center_one_ask_word">$!obj.consult_content</div>
+        <div class="consultation_top_center_one_ask_time">$!CommUtil.formatLongDate($!obj.addTime)</div>
+      </div>
+      #if($!obj.consult_reply)
+      <div class="consultation_top_center_one_answer">
+        <div class="consultation_top_center_one_answer_user">$!obj.reply_user_name</div>
+        <div class="consultation_top_center_one_answer_word">$!obj.consult_reply</div>
+      </div>
+      #end
+      <div class="consultation_top_center_one_bottom">
+        <div class="consultation_top_center_one_bottom_yes"><a href="javascript:void(0);" onclick="satisfy('$!obj.id',this)">满意 ($!obj.satisfy)</a></div>
+        <div class="consultation_top_center_one_bottom_no"><a href="javascript:void(0);" onclick="unsatisfy('$!obj.id',this)">不满意 ($!obj.unsatisfy)</a></div>
+      </div>
+    </div>
+    #end
+    <div class="details_discus_page"> <span target_id="goods_consult_list">$!consult_gotoPageAjaxHTML</span> </div>
+  </div>
+  #end </div>

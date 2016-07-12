@@ -1,0 +1,42 @@
+﻿#if($!decorate_view!="true")
+<script>
+	jQuery(document).ready(function(){
+	jQuery("#fullSlide_$!{obj.mark}").slide({ titCell:"#hd_$!{obj.mark} li", mainCell:"#bd_$!{obj.mark} ul", effect:"$!{obj.effect}",autoPlay:$!{obj.autoPlay}, delayTime:$!{obj.delayTime} });
+	});
+</script>
+#end
+#if($!slides.size()>0)
+<div class="fullSlide" style="height:$!{obj.height}px;" id="fullSlide_$!{obj.mark}">
+		<div class="bd" id="bd_$!{obj.mark}">
+			<ul>
+            	#foreach($slide in $slides)
+				<li style="height:$!{obj.height}px;"><a style="text-align:center;" #if($!slide.src!='')href="$!{slide.url}" target="_blank" #else href="javascript:void(0)" #end ><img src="$!imageWebServer/$!slide.src" height="$!{obj.height}px"/></a></li>
+                #end
+			</ul>
+		</div>
+		<div class="hd" id="hd_$!{obj.mark}">
+			<ul>
+            	#foreach($slide in $slides)
+				<li #if($!decorate_view=="true") #if($!velocityCount==1) class="on" #end #end>$!{velocityCount}</li>
+                #end 
+			</ul>
+		</div>
+	</div>
+#else    
+    <div class="fullSlide" id="fullSlide_$!{obj.mark}">
+		<div class="bd" id="bd_$!{obj.mark}">
+			<ul>
+				<li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides1.jpg" width="1920" height="450" /></a></li>
+               	<li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides2.jpg" width="1920" height="450" /></a></li>
+                <li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides3.jpg" width="1920" height="450" /></a></li>
+			</ul>
+		</div>
+		<div class="hd" id="hd_$!{obj.mark}">
+			<ul>
+				<li class="on">1</li>
+                <li class="">2</li>
+                <li class="">3</li>
+			</ul>
+		</div>
+	</div>
+#end

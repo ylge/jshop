@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<body>
+<div class="cont">
+  <h3 class="seth">评价管理</h3>
+  <div class="nav_list">
+  		<ul>
+        <li><a #if(!$!status) class="this" #end href="$!webPath/admin/self_evaluate_list.htm"><b>所有评价</b></a></li>
+        <li><a #if($!status=="no") class="this" #end href="$!webPath/admin/self_evaluate_list.htm?status=no"><b>未回复评价</b></a></li>
+        <li><a #if($!status=="yes") class="this" #end href="$!webPath/admin/self_evaluate_list.htm?status=yes"><b>已回复评价</b></a></li>
+        </ul>
+  </div>
+  <form name="ListForm" id="ListForm" action="$!webPath/admin/self_evaluate_list.htm" method="post">
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+         <th align="center" width="10%"><span class="form_btna">订单号</span></th>
+              <th width="15%" align="center"><span class="form_btna">商品</span></th>
+              <th width="10%" align="center"><span class="form_btna">评价类型</span></th>
+              <th width="12%" align="center"><span class="form_btna">描述相符评价</span></th>
+              <th width="12%" align="center"><span class="form_btna">服务态度评价</span></th>
+              <th width="12%" align="center"><span class="form_btna">发货速度评价</span></th>
+              <th width="5%" align="center"><span class="form_btna">评价人</span></th>
+              <th width="5%" align="center"><span class="form_btna">回复状态</span></th>
+              <th align="center"><span class="form_btna">操作</span></th>
+        </tr>
+        #foreach($obj in $objs)
+       <tr >
+              <td align="center">$!obj.of.order_id</td>
+              <td align="center"><a href="$!webPath/goods_$!{obj.evaluate_goods.id}.htm" target="_blank">$!obj.evaluate_goods.goods_name</a></td>
+              #if($!obj.evaluate_buyer_val==1)
+              #set($vals="好评")
+              #end
+              #if($!obj.evaluate_buyer_val==0)
+              #set($vals="中评")
+              #end
+              #if($!obj.evaluate_buyer_val==-1)
+              #set($vals="差评")
+              #end
+              <td align="center">$!vals</td>
+              <td align="center"><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star$!{obj.description_evaluate.intValue()}.png" width="90" height="18" /></td>
+              <td align="center"><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star$!{obj.service_evaluate.intValue()}.png" width="90" height="18" /></td>
+              <td align="center"><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star$!{obj.ship_evaluate.intValue()}.png" width="90" height="18" /></td>
+              <td align="center">$!obj.evaluate_user.userName</td>
+              #if($!obj.reply_status==1)
+              #set($reply="已回复")
+              #end
+              #if($!obj.reply_status==0)
+              #set($reply="未回复")
+              #end
+              <td align="center">$!reply</td>
+              <td align="center"  class="hui oprate_con"><a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_evaluate_info.htm?id=$!obj.id" dialog_title="评价内容" dialog_width="410" dialog_height="100" dialog_id="evaluate_info" class="blue">评价内容</a>|#if($!obj.reply_status==1)<a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_evaluate_reply.htm?id=$!obj.id" dialog_title="回复内容" dialog_width="410" dialog_height="100" dialog_id="evaluate_info" class="blue">  回复内容</a> #else <a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_evaluate_reply.htm?id=$!obj.id" dialog_title="回复" dialog_width="410" dialog_height="100" dialog_id="evaluate_info" class="blue">  回复</a>#end</td>
+            </tr>
+        #end
+    </table>
+    
+    <div class="operate_bar">
+        <div class="fenye" id="queryCondition">
+            <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+           $!gotoPageFormHTML
+        </div>       
+ 	</div>
+  </div>
+  </form>
+</div>
+</body>
+</html>

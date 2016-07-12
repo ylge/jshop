@@ -1,0 +1,21 @@
+<div class="store_left_box">
+  <h1 style="color:$!{obj.font_color}; background-color:$!{obj.font_back_color}">店铺信息</h1>
+  <div class="store_infor" style="background-color:$!{obj.board_back_color}"> <span class="full_name">$!store.store_name</span>
+    <ul class="pro_shop_date_c" style="display:;">
+      <li><span>评分详细</span><i>与行业相比</i></li>
+      <li><span>描述相符：</span><b>#if(!$!{store.point.description_evaluate})0 #else $!{store.point.description_evaluate} #end分</b><i class="$!{description_css}">$!description_result</i></li>
+      <li><span>服务态度：</span><b>#if(!$!{store.point.service_evaluate})0 #else $!{store.point.service_evaluate} #end分</b><i class="$!{service_css}">$!service_result</i></li>
+      <li><span>发货速度：</span><b>#if(!$!{store.point.ship_evaluate})0 #else $!{store.point.ship_evaluate} #end分</b><i class="$!{ship_css}">$!ship_result</i></li>
+    </ul>
+    <ul class="information">
+      <li><span>公司名称：</span><b>$!store.license_c_name</b></li>
+      <li><span>所在地：</span><b>$!areaViewTools.generic_area_info("$!store.license_area.id")$!store.license_c_address</b></li>
+      <li><span>联系电话：</span><b>$!store.license_c_telephone</b></li>
+    </ul>
+    <div class="shop_botm_hid">
+      <ul class="shopboh">
+        <li class="collection"  style="border-right:0px;"> <a href="javascript:void(0);" id="store_fav" #if(!$!user)dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="450" dialog_height="100" dialog_id="user_login"#end><span>收藏店铺</span></a> </li>
+      </ul>
+    </div>
+  </div>
+</div>

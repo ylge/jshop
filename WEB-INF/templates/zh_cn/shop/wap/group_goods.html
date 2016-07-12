@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(function(){
+	jQuery(" dl[id^=dl2_]").each(function(index, element) {
+        jQuery(element).hide();
+    });
+	jQuery(" dl[id^=dl1_]").click(function(e) {
+        var ret = jQuery(e).attr("ret");
+		jQuery(e).hide();
+		jQuery("#dl2_"+ret).show();
+    });
+	jQuery(" dl[id^=dl2_]").click(function(e) {
+        var ret = jQuery(e).attr("ret");
+		jQuery(e).hide();
+		jQuery("#dl1_"+ret).show();
+    });
+})
+function buy_goods(){
+  var add=true
+  var suit_gsp="";
+  var store_price="";
+    if(jQuery(".product_choose li").length==0){
+    add=true;
+  }else{
+	jQuery("input[id^=gsp_]").each(function(){
+		var val= jQuery(this).val();
+		suit_gsp = suit_gsp+"gsp"+val;
+	  });
+  }
+	jQuery("i[id^=goods_inventory_]").each(function(){
+	var val = jQuery(this).html();
+	if(val=="0"){
+	    var id =jQuery(this).attr("mark");
+		jQuery("#inv_"+id).css("font-size","17px");
+		add=false;
+		}
+	});
+  if(add){
+	jQuery.post("$!current_webPath/add_goods_cart.htm",{"id":"$!{id}","count":1,"price":store_price,"gsp":"","suit_gsp":suit_gsp,"buy_type":"$!{type}","combin_ids":"$!{combin_ids}"},function(data){																																								  		if(data.code==-1 || data.code==-3){
+			window.location.href="$!webPath/add_cart_error.htm";
+			}else{
+			 window.location.href="$!webPath/goods_cart1.htm";	
+				}
+	},"json");
+  }
+}
+function buy_goods(){
+  var add=true
+  var suit_gsp="";
+  var store_price="";
+	jQuery("input[id^=goods_inventory_]").each(function(){
+	var val = jQuery(this).val();
+	if(val=="0"){
+	    var id =jQuery(this).attr("mark");
+		jQuery("#inv_"+id).css("font-size","17px");
+		add=false;
+		}
+	});
+  if(add){
+	  var combin_id = "";
+	  jQuery(" input[id^=combin_ids_]").each(function(index, element) {
+        combin_ids = combin_ids + "," + jQuery(element).val();
+    });
+	jQuery.post("$!current_webPath/add_goods_cart.htm",{"id":"$!{id}","count":1,"price":store_price,"gsp":"","suit_gsp":suit_gsp,"buy_type":"suit","combin_ids":combin_ids},function(data){																																								  		if(data.code==-1 || data.code==-3){
+			alert("加入购物车出错！");
+			}else{
+			 window.location.href="$!webPath/wap/goods_cart1.htm";	
+				}
+	},"json");
+  }
+}
+</script>
+</head>
+
+<body>
+<div class="phone_hd">
+	<a class="back" href="$!webPath/wap/goods.htm?id=$!{id}"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>
+    组合销售  
+</div>
+
+<div class="combination">
+#foreach($plan in $goodsViewTools.getCombinPlans("$!obj.id","suit"))
+	<dl id="dl1_$!{obj.id}" ret="$!obj.id">
+    	<dt><span class="fl">组合$!{velocityCount}<b>¥$!{plan.get('plan_goods_price')}</b></span><span class="fr">
+        <img src="$!webPath/resources/style/system/front/wap/images/other_arrow.png" width="30" height="30" /></span></dt>
+        <dd class="shrink">
+        	<ul>
+            #if($!obj.goods_main_photo)
+            #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_middle.$!{obj.goods_main_photo.ext}")
+            #else
+            #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            #end
+            	<li><img src="$!img" width="63" height="63" /></li>
+                #foreach($map in $goodsViewTools.getCombinPlanGoods($!{plan})) 
+                #if($!{velocityCount} < 4 )
+                <li><img src="$!imageWebServer/$!{map.get('img')}" width="63" height="63" /></li>
+                #end
+                #end
+            </ul>
+        </dd>
+    </dl>
+	<dl id="dl2_$!{obj.id}" ret="$!obj.id">
+    	<dt><span class="fl">组合$!{velocityCount}<b>¥$!{plan.get('plan_goods_price')}</b></span><span class="fr">
+        <img src="$!webPath/resources/style/system/front/wap/images/arrow_up.png" width="30" height="30" /></span></dt>
+        <dd class="unfold">
+        	<ul>
+            #if($!obj.goods_main_photo)
+            #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_middle.$!{obj.goods_main_photo.ext}")
+            #else
+            #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            #end
+            	<li><span class="fl"><img src="$!{img}" width="63" height="63" /></span><span class="name">$!obj.goods_name</span>
+                	<input id="goods_inventory_$!obj.id" mark="$!obj.id" value="$!{obj.goods_inventory}" type="hidden" />
+                </li>
+            #foreach($map in $goodsViewTools.getCombinPlanGoods($!{plan}))    
+                <li><span class="fl"><img src="$!imageWebServer/$!{map.get('img')}" width="63" height="63" /></span><span class="name">$!{map.get('name')}</span>
+                <input id="goods_inventory_$!{map.get('id')}" mark="$!{map.get('id')}" value="$!{map.get('inventory')}" type="hidden" />
+                <input id="combin_ids_$!{map.get('id')}" name="combin_ids_$!{map.get('id')}" value="$!{map.get('id')}" type="hidden" />
+                </li>
+            #end
+            </ul>
+            <div class="price"><span class="fl">套装价：<b>¥$!{plan.get('plan_goods_price')}</b></span><span class="fr">参考价：<s>¥$!{plan.get('all_goods_price')}</s></span>
+            #set($last = $!CommUtil.subtract($!{plan.get('all_goods_price')},$!{plan.get('plan_goods_price')}))
+            <p><span>立即省：¥$!{last}</span></p></div>
+            <div class="red_submit"><a href="javascript:void(0);" onclick="buy_goods();">加入购物车</a></div>
+        </dd>
+    </dl>
+#end    
+	
+</div>
+
+
+
+    
+</body>
+</html>

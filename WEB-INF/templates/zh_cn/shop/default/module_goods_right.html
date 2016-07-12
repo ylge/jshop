@@ -1,0 +1,29 @@
+<script>
+jQuery(document).ready(function(){
+	jQuery(".store_goods_list[mark=$!{obj.mark}] .goods_box").hover(function(){
+				jQuery(this).css("border-color","$!{obj.hover_color}");															 
+			},function(){
+				jQuery(this).css("border-color","");			
+				});							
+	});
+</script>
+
+<div class="store_goods_list" mark="$!{obj.mark}" style="background-color:$!{obj.back_color}"> 
+#foreach($obj in $objs)
+  #if($!obj.goods_main_photo)
+  #set($goods_main_photo="$!imageWebServer/$!obj.goods_main_photo.path/$!obj.goods_main_photo.name")
+  #else
+  #set($goods_main_photo="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+  #end
+  
+  #set($goods_url="$!webPath/goods_$!{obj.id}.htm")
+  #if($!config.second_domain_open && $!obj.goods_store.store_second_domain!="")
+  #set($goods_url="$!current_webPath/goods_$!{obj.id}.htm")
+  #end
+  <ul class="goods_box">
+    <li><a href="$!goods_url" target="_blank"><img src="$!goods_main_photo" width="229" height="229" /></a></li>
+    <li class="goods_name"><a href="$!goods_url" target="_blank">$!obj.goods_name</a></li>
+    <li class="goods_price"><b>¥$!obj.goods_current_price</b><span>$!obj.evaluates.size()条评价</span></li>
+  </ul>
+  #end 
+</div>

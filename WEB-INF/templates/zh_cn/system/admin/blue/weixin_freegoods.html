@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+function ajax_update(id,fieldName,obj,value){
+		jQuery.post("$!webPath/admin/weixin_freegoods_ajax.htm",{
+					"id":id,
+					"fieldName":fieldName
+					},function(data){
+					jQuery(obj).attr("src","$!webPath/resources/style/system/manage/blue/images/"+data+".png");	
+						},"text");
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">微商城0元试用</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="javascript:void(0);" class="this"><b>微商城0元试用</b></a></li>
+    </ul>
+  </div>
+  <form method="post" id="ListForm" name="ListForm" action="">
+    <div class="search">
+      <ul>
+        <li><span>0元试用名称</span> <span class="size150">
+          <input name="freegoods_name" type="text" id="freegoods_name"  value="$!freegoods_name" />
+          </span> <span>
+          <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+          </span> </li>
+      </ul>
+    </div>
+
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+         <th width="15%"><span class="form_btna">名称</span></th>
+          <th width="15%"><span class="form_btna">商品名称</span></th>
+          <th width="10%"><span class="form_btna">所属分类</span></th>
+          <th width="8%"><span class="form_btna">开始时间</span></th>
+          <th width="8%"><span class="form_btna">结束时间</span></th>
+          <th width="7%"><span class="form_btna">状态</span></th>
+          <th width="7%"><span class="form_btna">发布数量</span></th>
+          <th width="7%"><span class="form_btna">当前数量</span></th>
+          <th width="7%"><span class="form_btna">申请人数</span></th>
+          <th align="center"><span class="form_btna">推荐</span></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+         <td align="center"><span class="size90"> $!obj.free_name</span></td>
+           <td align="center">$!obj.goods_name</td>
+          #set($freeClass = $!freeTools.queyFreeClass("$!obj.class_id"))
+          <td align="center">#if($!freeClass) $!freeClass.className #else 无 #end</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.beginTime)</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.endTime)</td>
+          <td align="center">#if($!obj.freeStatus==0) 待审核 #end #if($!obj.freeStatus==5) 进行中 #end #if($!obj.freeStatus==10) 已结束 #end #if($!obj.freeStatus==-5) 审核未通过 #end</td>
+          <td align="center">$!obj.default_count</td>
+          <td align="center">$!obj.current_count</td>
+          <td align="center">$!obj.apply_count</td>
+          #set($weixin_recommend="false")
+          #if($!obj.weixin_recommend==1)
+          #set($weixin_recommend="true")
+          #end
+          <td align="center"><img onclick="ajax_update('$!obj.id','weixin_recommend',this,'$!obj.weixin_recommend')" src="$!webPath/resources/style/system/manage/blue/images/$!{weixin_recommend}.png" width="25" height="21" border="0" style="cursor:pointer;" title="设置后在微商城端首页商城活动位置显示"/></td>
+        </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input type="hidden" name="mulitId" id="mulitId" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        $!gotoPageFormHTML</div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

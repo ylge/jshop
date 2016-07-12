@@ -1,0 +1,9 @@
+#foreach($obj in $objs)
+#set($goods = $!freeTools.queryGoods("$!{obj.goods_id}"))
+#set($users = $!freeTools.queryUser("$!{obj.id}"))
+<li #if($!obj.freeStatus!=5) class="over" #end><a href="$!webPath/wap/free/view.htm?id=$!obj.id">
+<p class="img"><img src="$!imageWebServer/$!obj.free_acc.path/$!obj.free_acc.name" /><span class="time"><i><img src="$!webPath/resources/style/system/front/wap/images/clock.png" width="24" height="24" /></i><span endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{obj.endTime})"  id="time_$!obj.id" mark="time_$!obj.id"><b>3443</b>天<b>44</b>小时<b>32</b>分<b>44</b>秒</span></span><span class="purson"><b>$!obj.apply_count</b>人申请</span></p>
+<p class="name">$!obj.free_name</p>
+<p class="price"><span class="fl">价值：<s>¥#if($!goods) $!goods.store_price #end</s></span> #if($!obj.freeStatus==5) <span class="fr">免费试用</span> #else <span class="fr">已结束</span> #end </p>
+</a></li>
+#end

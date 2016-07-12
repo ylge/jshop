@@ -1,0 +1,12 @@
+<ul class="floor_sear_pro">
+#foreach($obj in $objs)
+#set($img=$!circleViewTools.genercircleImage("$!obj.id"))
+  <li> <a href="javascript:void(0);" onclick="goods_list_set(this);" img_uri="$!imageWebServer/$!img.src" goods_name="$!obj.title" goods_id="$!obj.id" class="floor_sear_a"> <span  class="floor_sear_img"> 
+ <img src="$!imageWebServer/$!img.src" width="70" height="70" /> </span> <span class="floor_sear_name">$!obj.title</span> </a> 
+  </li>
+#end  
+</ul>
+<div class="floor_page">
+<span>$!gotoPageAjaxHTML</span>
+</div>
+

@@ -1,0 +1,101 @@
+注意：批量修改支持加法（“+”）、减法（“-”）操作，例如在批量管理输入框内输入“+20”，确认后该列所有数值全部增加20。
+#if($!supplement)
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tabledetail" >
+  <tr style="background:#CCC"> 
+  #foreach($spec in $specs)
+    <td width="15%">$!spec.name</td>
+    #end
+    <td width="15%">价格</td>
+     <td width="15%">预警
+     </td>
+      <td width="15%"><b style="float:left;">库存</b>
+       <span class="select_all" id="select_all_count" mark="count"><img src="$!webPath/resources/style/system/front/default/images/batch.png" style="cursor:pointer"/></span>
+    <span class="select_all_input" mark="count" style="display:none;"><b><input name="" type="text" mark="all_count" /></b><i><a href="javascript:void(0);" mark="count" id="sure_count">确定</a></i></span></td>
+  </tr>
+ #foreach($gsp in $gsps) 
+  <tr>
+    #set($id="")
+    #foreach($c_gsp in $gsp)
+    #set($id=$id+$!{c_gsp.id}+"_")
+    <td>$!c_gsp.value</td>
+    #end
+     <td id="inventory_details_price_$!id"></td>
+     <td id="inventory_details_supp_$!id"></td>
+    <td><input name="$!{id}" type="text" id="inventory_details_count_$!id" style="border:1px solid #A7A6AA; height:20px; line-height:20px; padding-left:5px;margin-bottom:5px;" value="0"></td>
+  </tr>
+ #end
+</table>
+#else
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tabledetail" >
+  <tr style="background:#CCC"> #foreach($spec in $specs)
+    <td width="15%">$!spec.name</td>
+    #end
+    <td width="15%">
+       <b style="float:left;">库存</b>
+       <span class="select_all" id="select_all_count" mark="count"><img src="$!webPath/resources/style/system/front/default/images/batch.png" style="cursor:pointer"/></span>
+    <span class="select_all_input" mark="count" style="display:none;"><b><input name="" type="text" mark="all_count" /></b><i><a href="javascript:void(0);" mark="count" id="sure_count">确定</a></i></span>
+    </td>
+     <td width="15%">
+        <b style="float:left;">预警</b>
+         <span class="select_all" id="select_all_supplement" mark="supplement"><img src="$!webPath/resources/style/system/front/default/images/batch.png" style="cursor:pointer"/></span>
+    <span class="select_all_input" mark="supplement" style="display:none;"><b><input name="" type="text" mark="all_supplement" /></b><i><a href="javascript:void(0);" mark="supplement" id="sure_supplement">确定</a></i></span>
+     </td>
+    <td width="15%" >
+    <b style="float:left;">价格</b>
+    <span class="select_all" id="select_all_price" mark="price"><img src="$!webPath/resources/style/system/front/default/images/batch.png" style="cursor:pointer"/></span>
+    <span class="select_all_input" mark="price" style="display:none;"><b><input name="" type="text" mark="all_price" /></b><i><a href="javascript:void(0);" mark="price" id="sure_price">确定</a></i></span>
+    </td>
+  </tr>
+ #foreach($gsp in $gsps) 
+  <tr>
+    #set($id="")
+    #foreach($c_gsp in $gsp)
+    #set($id=$id+$!{c_gsp.id}+"_")
+    <td>$!c_gsp.value</td>
+    #end
+    <td><input name="$!{id}" type="text" id="inventory_details_count_$!id" style="border:1px solid #A7A6AA; height:20px; width:70px; line-height:20px; padding-left:5px;margin-bottom:5px;" value="0"></td>
+      <td><input name="$!{id}" type="text" id="inventory_details_supplement_$!id" style="border:1px solid #A7A6AA; height:20px; width:70px; line-height:20px; padding-left:5px;margin-bottom:5px;" value="0"></td>
+    <td><input name="$!{id}" type="text" id="inventory_details_price_$!id" style="border:1px solid #A7A6AA; height:20px; width:70px; line-height:20px; padding-left:5px;margin-bottom:5px;" value="0"></td>
+  </tr>
+ #end
+</table>
+#end
+<script>
+jQuery(document).ready(function(){
+	jQuery("span[id^=select_all_]").click(function(){
+		var mark =	jQuery(this).attr("mark");
+		jQuery("span.select_all_input[mark='"+mark+"']").show();
+		jQuery(this).hide();
+	});	
+	jQuery("a[id^=sure_]").click(function(){
+		var mark =jQuery(this).attr("mark");
+		var val = jQuery("input[mark=all_"+mark+"]").val();
+		jQuery("#select_all_"+mark).show();
+		jQuery("span.select_all_input[mark='"+mark+"']").hide();
+		jQuery("input[id^=inventory_details_"+mark+"_]").each(function(){
+					if(val!=""){
+							var reg = new RegExp("^[0-9]*$");							
+							var reg2 = new RegExp("^[\+]{1}[0-9]*$");
+							var reg3 = new RegExp("^[\-]{1}[0-9]*$");
+							if(!reg.test(val)){
+								if(reg2.test(val)){
+									var num=parseInt(jQuery(this).val())+parseInt(val.replace("+",""));
+									if(num>=0)
+									jQuery(this).val(num);	
+								}else if(reg3.test(val)){
+									var num=parseInt(jQuery(this).val())-parseInt(val.replace("-",""));
+									if(num>=0)
+									jQuery(this).val(num);	
+								}
+							}else{
+								jQuery(this).val(val);	
+								}
+						}												   
+												   
+		 });	
+	});
+	
+				
+});////
+
+</script>

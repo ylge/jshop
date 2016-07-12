@@ -1,0 +1,132 @@
+<script>
+jQuery(document).ready(function(){
+			//ajax上传图片
+		  jQuery("input[id^=img_file_]").live("change",function(){
+			var count=jQuery(this).attr("count");	
+			var name=jQuery(this).attr("name");	
+			var val =jQuery(this).val();
+			jQuery("#"+name+"_show").val(val);							 
+			var img_id =jQuery("#slide_img_"+count+" img").attr("id");	
+			jQuery("#slide_img_"+count+" img").show();
+			var slide_id =jQuery(".fiit_side_tab li[class='this']").attr("slide_id");
+			jQuery.ajaxFileUpload({
+                 url:'$!webPath/seller/decorate_module_slide_upload.htm?img_id='+img_id+"&count="+count,
+                 fileElementId:['img_file_'+count],      
+                 dataType: 'json',                
+                 success: function (data){
+				     jQuery("#slide_img_"+count+" img").removeAttr("style").attr("src","$!webPath/"+data.src).attr("id",data.id);
+				}
+			});
+	 	 });
+		  //切换
+		  jQuery(".fiit_side_tab li").live("click",function(){
+				var count =jQuery(this).attr("count");
+				jQuery(".fiit_side_tab li").removeClass("this");
+				jQuery(this).addClass("this");
+				jQuery(".fiit_banner dl").hide();
+				jQuery(".fiit_banner dl[count="+count+"]").show();
+				});
+	});////
+//添加幻灯
+function add_slide(){
+	var count =jQuery(".fiit_side_tab ul li").length;
+	count++;
+	if(count<=6){
+		var slide_tab = '<li count="'+count+'"><a href="javascript:void(0);">幻灯'+count+'</a></li>';
+		var slide_text ='<dl count="'+count+'"  style="display:none"><dt><span class="fl">幻灯'+count+'：</span><span class="fr"><a href="javascript:void(0);" onclick="dele_slide()"><i></i>删除</a></span></dt> <dd><span class="fl">上传图片：</span><span class="fr"><div class="file_box"><input class="ip180" type="text"  id="img_file_'+count+'_show" /><input type="button" class="btn" value="浏览..." /><input type="file" class="file" id="img_file_'+count+'" name="img_file_'+count+'" count="'+count+'"/> </div> </span></dd><dd><span class="fl">图片：</span><span class="fr img" id="slide_img_'+count+'"><img src="$!webPath/resources/style/common/images/ajax_loader.gif"  style="display:none" id=""/></span></dd> <dd><span class="fl">图片url：</span><span class="fr"><input class="ip300" id="url_'+count+'" name="url_'+count+'" type="text" /></span></dd></dl>';
+		jQuery(".fiit_side_tab ul").append(slide_tab);	
+		jQuery(".fiit_banner").append(slide_text);	
+		}else{
+			alert("最多可添加6个幻灯");
+			}
+	}
+	
+function dele_slide(){
+		 jQuery(".fiit_banner dl:last").remove();
+		  jQuery(".fiit_side_tab li:last").remove();
+		  jQuery(".fiit_side_tab li").removeClass("this");
+		  jQuery(".fiit_banner dl").hide();
+		  jQuery("dl[count=1]").show();
+		  jQuery(".fiit_side_tab li[count=1]").addClass("this").show();
+	}
+	
+function save_defined() {
+	var params = jQuery("#theForm").serialize();
+	var mark = jQuery("#mark").val();
+	var div = jQuery("#div").val();
+	var img_ids = "";
+	jQuery("dl img").each(function(){
+		img_ids = img_ids+","+jQuery(this).attr("id");
+	   });
+	   jQuery("#save").attr("disabled","disabled");
+    jQuery.ajax({type:'POST',url:'$!webPath/seller/decorate_module_save.htm?img_ids='+img_ids,data:params,
+					  success:function(data){
+						jQuery('#module_edit').remove();
+						 if(div!=""){
+						var html='<a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark='+mark+'&div='+div+'" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>';	
+						jQuery("div[option="+mark+"][div=div2]").find("a:first").before(html);	
+						jQuery("div[mark="+mark+"][div=div2][id='content']").html(data);		
+						}else{
+						var html='<a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark='+mark+'" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>';	
+						jQuery("div[option="+mark+"]").find("a:first").before(html);
+						jQuery("div[mark="+mark+"][id='content']").html(data);	
+							}jQuery("#save").removeAttr("disabled");
+		 }});
+		 
+}	
+</script>
+<form id="theForm" name="theForm"  action="" method="post">
+  <div class="fiit_side_box">
+    <!--幻灯编辑-->
+    <div class="fiit_side_tab">
+      <ul>
+        #if($!$slides.size()>0)
+        #foreach($obj in $slides)
+        <li #if($!velocityCount==1) class="this" #end count="$!{velocityCount}"><a href="javascript:void(0);">幻灯$!{velocityCount}</a></li>
+        #end 
+        #else
+        <li class="this" count="1"><a href="javascript:void(0);">幻灯$!{velocityCount}</a></li>
+        #end
+      </ul>
+      <a class="fiit_add_side" href="javascript:void(0);" onclick="add_slide();"><b>+</b> 添加幻灯</a> </div>
+    <div class="fiit_banner"> #if($!$slides.size()>0)
+      #foreach($obj in $slides)
+      <dl count="$!{velocityCount}" #if($!{velocityCount}!=1) style="display:none" #end>
+        <dt><span class="fl">幻灯$!{velocityCount}：</span><span class="fr">#if($!velocityCount>=2)<a href="javascript:void(0);" onclick="dele_slide()"><i></i>删除</a> #end</span></dt>
+        <dd> <span class="fl">上传图片：</span> <span class="fr">
+          <div class="file_box">
+            <input class="ip180" type='text'  id="img_file_$!{velocityCount}_show" />
+            <input type='button' class='btn' value='浏览...' />
+            <input type="file" class="file" id="img_file_$!{velocityCount}" name="img_file_$!{velocityCount}" count="$!{velocityCount}"/>
+          </div>
+          </span> </dd>
+        <dd><span class="fl">图片 ：</span><span class="fr img" id="slide_img_$!{velocityCount}"><img src="$!imageWebServer/$!obj.src" id="$!{obj.id}"/></span></dd>
+        <dd><span class="fl">图片url：</span><span class="fr">
+          <input class="ip300" id="url_$!{velocityCount}" name="url_$!{velocityCount}" value="$!obj.url" mark="url" type="text" />
+          </span></dd>
+      </dl>
+      #end
+      #else
+      <dl count="1">
+        <dt><span class="fl">幻灯1：</span><span class="fr"></span></dt>
+        <dd> <span class="fl">上传图片：</span> <span class="fr">
+          <div class="file_box">
+            <input class="ip180" type='text'  id="img_file_1_show" />
+            <input type='button' class='btn' value='浏览...' />
+            <input type="file" class="file" id="img_file_1" name="img_file_1" count="1"/>
+          </div>
+          </span> </dd>
+        <dd><span class="fl">图片：</span><span class="fr img" id="slide_img_1"><img src="$!webPath/resources/style/common/images/ajax_loader.gif"  style="display:none;margin-top:40px" id=""/></span></dd>
+        <dd><span class="fl">图片url：</span><span class="fr">
+          <input class="ip300" id="url_1" name="url_1" mark="url" value="" type="text" />
+          </span></dd>
+      </dl>
+      #end </div>
+  </div>
+  <div class="fiit_save_box">
+    <input id="type" name="type" value="defined_slide" type="hidden"/>
+    <input id="mark" name="mark" value="$!{mark}" type="hidden"/>
+    <input id="div" name="div" value="$!{div}" type="hidden"/>
+    <input type="button" value="保存" onclick="save_defined();" id="save" />
+  </div>
+</form>

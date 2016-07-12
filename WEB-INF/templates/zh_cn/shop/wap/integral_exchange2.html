@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes" />
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent" />
+<title>积分商城确认订单</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+    jQuery(function(){
+		var addr_id = "$!addrs_default_val.id"
+		if(addr_id==""){
+			jQuery(" a[id^=onclick_]:first").click();
+		}else{
+			jQuery("#onclick_"+addr_id).click();
+		}
+		});
+	function change_addr(id){
+		jQuery(" img[id^=img_]").each(function(index, element) {
+            jQuery("#img_"+id).attr("src","$!webPath/resources/style/system/front/wap/images/tick_no.png");
+        });
+		jQuery("#img_"+id).attr("src","$!webPath/resources/style/system/front/wap/images/tick.png");
+		jQuery("#addr_id").val(id);
+		}
+	function saveForm(){
+		jQuery("#theForm").submit();
+		}		
+    </script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="$!webPath/wap/integral/integral_cart.htm"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>已选择兑换的礼品</div>
+
+	<div class="integral_order">
+    	<ul>
+        #foreach($obj in $igcs)
+        	<li>
+            #if($!obj.goods.ig_goods_img)
+            #set($img="$!imageWebServer/$!{obj.goods.ig_goods_img.path}/$!{obj.goods.ig_goods_img.name}_small.$!{obj.goods.ig_goods_img.ext}")
+          	#else
+            #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+          	#end
+                <span class="img"><img src="$!img" width="65" height="65" /></span>
+                <div class="infro" style="width:70%;"><p>$!{obj.goods.ig_goods_name}</p><p class="num">$!{obj.count}个X<span class="red">$!{obj.goods.ig_goods_integral}分</span></p></div>
+            </li>
+        #end    
+        </ul>
+    </div>
+    <!--积分商城-确认收货地址-->
+    
+    <form action="$!webPath/wap/integral/exchange3.htm" name="theForm" method="post" id="theForm">
+    <input name="addr_id" id="addr_id" type="hidden" value="$!addrs_default_val.id" />
+    <input  name="integral_order_session" type="hidden" value="$!integral_order_session"/>
+    #foreach($addr in $addrs)
+    <div class="phone_address">
+    	<ul>
+        	<li class="tel">$!addr.trueName<span> 联系电话： $!{addr.mobile} $!{addr.telephone} </span></li>
+            <li class="site bd">$!addr.area.parent.parent.areaName $!addr.area.parent.areaName $!addr.area.areaName $!addr.area_info</li>
+            <li class="check">
+            <span class="fl">
+                <i>
+                	<img src="$!webPath/resources/style/system/front/wap/images/tick_no.png" width="20" height="20" id="img_$!{addr.id}"/>
+                </i>
+                <a href="javascript:void(0);" onclick="change_addr('$!addr.id')" id="onclick_$!{addr.id}">到这里去</a>
+            </span>
+            </li>
+        </ul>
+    </div>
+    #end
+    <div class="phone_login" style="margin-top:5px;">
+    	<ul>
+            <li class="text"><textarea placeholder="我要留言" id="igo_msg" name="igo_msg"></textarea></li>
+            <li class="score">所需总积分:<b class="red">$!total_integral分</b>,运费：<b class="red">$!trans_fee元</b></li>            
+        </ul>
+    </div>
+    </form>
+    <div class="red_submit"><a href="javascript:void(0);" onclick="saveForm();">确认兑换</a></div>
+    $!httpInclude.include("/wap/footer.htm?op=index") 	
+</body>
+</html>

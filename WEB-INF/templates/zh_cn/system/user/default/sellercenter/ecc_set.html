@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-常用物流设置-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery.validator.addMethod("only_check",function(value,element){
+   var ids=jQuery("#ids").val();
+   if(ids==""){
+	   return false;
+	}else return true;
+});
+jQuery(document).ready(function(){
+ //
+ jQuery(":checkbox[id^=ec_id_]").click(function(){
+    var ids = "";
+    jQuery(":checkbox[checked=true]").each(function(){
+       ids=jQuery(this).val()+","+ids;
+     });
+	jQuery("#ids").val(ids);
+  });
+ //
+ jQuery("#theForm").validate({
+	ignore: "",							 
+    rules:{
+	  ids:{only_check :true}
+	 },
+	messages:{
+	  ids:{only_check :"至少选择一个物流"}
+	},
+	errorPlacement: function(error, element){ 
+	  if(jQuery(error[0]).html()!=""){
+         jQuery("#error_info").empty().append(jQuery(error[0]).html());
+	  }
+    },
+	success:function(label){
+	    jQuery("#error_info").empty();
+	},
+	submitHandler:function(){
+	     var ids = "";
+         jQuery(":checkbox[id^=ec_id_][checked=true]").each(function(){
+             ids=jQuery(this).val()+","+ids;
+         });
+		 jQuery(".seller_save").attr("disabled","disabled");
+		 jQuery.ajax({type:'POST',url:'$!webPath/seller/ecc_save.htm',data:{"ids":ids},
+					  success:function(ret){
+						   window.location.href="$!webPath/seller/ecc_list.htm";jQuery(".seller_save").removeAttr("disabled");
+						}
+		 });
+		 
+	}
+  });  	
+ //
+ var ids = "";
+    jQuery(":checkbox[checked=true]").each(function(){
+       ids=jQuery(this).val()+","+ids;
+     });
+	jQuery("#ids").val(ids);
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=store_express") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b> > <b>常用物流配置</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+           <ul class="seller_title_ul">
+             <li class="this"><a href="$!webPath/seller/ecc_set.htm"><i></i>常用物流配置</a></li>
+            <li><a href="$!webPath/seller/ecc_list.htm"><i></i>常用物流列表</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="add_usercenter">
+        <form action="$!webPath/seller/ecc_save.htm" method="post" name="theForm" id="theForm">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+            <tr>
+              <td colspan="2" align="right" valign="top">
+                <div class="manage_box">
+                  <div class="manage_box_main">
+                    <ul style="margin-left:45px;">
+                    #if($ecs.size()>0)
+                      #foreach($ec in $ecs)
+                      <li>
+                        <label>
+                        #set($common=$!transportTools.query_common_ec("$!ec.id"))
+                          <input name="ec_id_$!{ec.id}" type="checkbox" id="ec_id_$!{ec.id}" value="$!ec.id" #if($!common==1) checked="checked" #end />
+                          $!{ec.company_name}
+                        </label>
+                      </li>
+                      #end
+                      #else
+                      <li>暂无可用物流,请等待平台设置</li>
+                      #end
+                    </ul>
+                  </div>
+                </div></td>
+            </tr>
+            <tr>
+              <td width="20%">&nbsp;</td>
+              <td width="80%" class="px10"><span class="setsub">
+                <input name="ecc_save" type="submit" onclick=""  value="提交" style="cursor:pointer;" class="seller_save" id="ecc_save"/>
+                </span><input type="hidden" name="ids" id="ids" /><span id="error_info" style="color:#F00;"></span>
+               </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

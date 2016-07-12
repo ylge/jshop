@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes">
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+<title>首页 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/TouchSlide.1.1.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+
+
+
+
+
+function timeCount(remain_id){
+   function _fresh(){
+      var nowDate = new Date(),                                    //当前时间
+      endDate = new Date($('#'+remain_id).attr('endtime')),    //截止时间
+      totalS  = parseInt((endDate.getTime() - nowDate.getTime()) / 1000);     //总秒数
+      _day    = parseInt(totalS / 3600 / 24)+"";
+      _hour   = parseInt(totalS / 3600% 24)+"";
+      _minute = parseInt((totalS / 60) % 60)+"";
+      _second = parseInt(totalS % 60)+"";
+	  d_html = "";
+	  if(_day.length<2){
+			d_html = "<b>0</b>";
+			}
+	  for(var n = 0;n<_day.length;n++){
+     		var q = _day.substring(n,n+1);
+			d_html = d_html+'<b>'+q+'</b>';
+		}
+		d_html = d_html+"<b>天</b>"
+	  h_html = "";
+	  if(_hour.length<2){
+			h_html = "<b>0</b>";
+			}
+	  for(var n = 0;n<_hour.length;n++){
+     		var q = _hour.substring(n,n+1);
+			h_html = h_html+'<b>'+q+'</b>';
+		}
+		m_html = "";
+		if(_minute.length<2){
+			m_html = "<b>0</b>";
+			}
+	  for(var n = 0;n<_minute.length;n++){
+     		var q = _minute.substring(n,n+1);
+			m_html =m_html+ '<b>'+q+'</b>'
+		}
+		s_html = "";
+		if(_second.length<2){
+			s_html = "<b>0</b>";
+			}
+	  for(var n = 0;n<_second.length;n++){
+     		var q = _second.substring(n,n+1);
+			s_html =s_html+ '<b>'+q+'</b>'
+		}
+     jQuery('#'+remain_id).html(d_html+'<strong>:</strong>'+h_html+'<strong>:</strong>'+m_html+'<strong>:</strong>'+s_html);
+     if( totalS <= 0){
+       jQuery('#'+remain_id).html('该0元试用已结束');
+       clearInterval(sh);
+     }
+  }
+  _fresh();
+  var sh = setInterval(_fresh,1000);
+}
+jQuery(document).ready(function() {
+	jQuery("li[id=gc_]").each(function(index, element) {
+		if(jQuery(this).find(".fl").html().length>5){
+			var a=jQuery(this).find(".fl").html().substring(0,5);
+			jQuery(this).find(".fl").html(a);
+			}	
+    });
+	
+	
+	
+timeCount("time_down_info");
+#if($!config.app_download==1)
+ if(isWeiXin()){
+       jQuery(".phone_top").hide();
+     }else{
+		 jQuery(".phone_top").show();
+		 }
+#end		 
+});
+function search_form(){
+	jQuery("#theForm").submit();
+}
+function isWeiXin(){
+    var ua = window.navigator.userAgent.toLowerCase();
+    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+        return true;
+    }else{
+        return false;
+    }
+}
+</script>
+</head>
+<body class="index_bg">
+<div class="phone_main">
+  <!--顶部-->
+  #if($!config.app_download==1)<div class="phone_top"><a href="$!webPath/wap/app/download.htm"> <img src="$!webPath/resources/style/system/front/wap/images/download.jpg" /> </a><a class="close" href="javascript:void(0);" onClick="jQuery('.phone_top').remove();"><img src="$!webPath/resources/style/system/front/wap/images/close.png" width="30" height="30" /></a></div>#end
+  <div class="logo_line"> #if($!config.store_weixin_logo)
+    #set($img="$!imageWebServer/$!{config.store_weixin_logo.path}/$!{config.store_weixin_logo.name}")
+    #else
+    #set($img="$!webPath/resources/style/system/front/wap/images/logo.png")
+    #end <img src="$!img" width="250" height="33" /> #if(!$!user) <a class="log" href="$!webPath/wap/login.htm">登录</a> #else <a class="log_after" href="$!webPath/wap/buyer/center.htm">$!user.userName</a> #end </div>
+  <form name="theForm" id="theForm" action="$!webPath/wap/search.htm" method="post">
+    <div class="search_line"><span>
+      <input type="text"  placeholder="搜索商品" name="keyword" id="keyword" />
+      </span><b><img src="$!webPath/resources/style/system/front/wap/images/search_icon.png" width="25" height="25" onClick="search_form();" /></b></div>
+  </form>
+  <!--幻灯-->
+  <div class="focusBox" id="focusBox">
+    <script src="$!webPath/advert_invoke.htm?id=13"></script>
+  </div>
+  
+  <!--导航菜单-->
+  <div class="nav">
+    <ul>
+      <li><a href="$!webPath/wap/goodsclass.htm"><img src="$!webPath/resources/style/system/front/wap/images/nav_01.png" />
+        <p>类目</p>
+        </a></li>
+      <li><a href="$!webPath/wap/brand.htm"><img src="$!webPath/resources/style/system/front/wap/images/nav_02.png" />
+        <p>品牌街</p>
+        </a></li>
+      <li><a href="$!webPath/wap/goods_cart1.htm"><img src="$!webPath/resources/style/system/front/wap/images/nav_car.png" />
+        <p>购物车</p>
+        </a></li>
+      <li><a href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/nav_user.png" />
+        <p>用户中心</p>
+        </a></li>
+       #if($!config.integralStore)
+      <li><a href="$!webPath/wap/integral/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/nav_03.png" />
+        <p>积分专区</p>
+        </a></li>
+        #end
+        #if($!config.whether_free==1) 
+      <li><a href="$!webPath/wap/free/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/nav_shi.png" />
+        <p>0元试用</p>
+        </a></li>
+        #end
+        #if($!config.groupBuy)
+      <li><a href="$!webPath/wap/group/index.htm?type=life"><img src="$!webPath/resources/style/system/front/wap/images/nav_life.png" />
+        <p>生活购</p>
+        </a></li>
+      <li><a href="$!webPath/wap/group/index.htm?type=goods"><img src="$!webPath/resources/style/system/front/wap/images/nav_good.png" />
+        <p>商品购</p>
+        </a></li>
+        #end
+    </ul>
+  </div>
+  <!--精品推荐-->
+  #if($!top_recommends.size()>0)
+  <div class="phone_floor">
+    <h1><span class="fl">精品推荐</span></h1>
+    <div class="recom">
+      <div class="ohbox">
+        <ul class="piclist">
+          #foreach($goods in $top_recommends)
+          #if($!goods.goods_main_photo)               
+          #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+          #else
+          #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+          #end
+          <li><a href="$!webPath/wap/goods.htm?id=$!goods.id"><img src="$!img" /><span class="re_name">$!{goods.goods_name}</span><span class="bg"></span></a></li>
+          #end
+        </ul>
+      </div>
+    </div>
+  </div>
+  #end
+  #if($!freegoods.size()>0)
+  #foreach($f in $freegoods)
+  #set($goods = $!freeTools.queryGoods("$!{f.goods_id}"))
+  #set($users = $!freeTools.queryUser("$!{f.id}"))
+  <!--推荐0元试用-->
+  <div class="phone_floor">
+    <h1><span class="fl">0元试用</span>
+      <div class="zero_time" endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{f.endTime})"  id="time_down_info" ><b>1</b><b>1</b><strong>:</strong><b>1</b><b>1</b><strong>:</strong><b>1</b><b>1</b></div>
+      <span class="fr"><a href="$!webPath/wap/free/index.htm">更多</a></span></h1>
+    <div class="zero">
+      <ul>
+        <li class="pic"><a href="$!webPath/wap/free/view.htm?id=$!f.id"><img src="$!imageWebServer/$!f.free_acc.path/$!f.free_acc.name" width="319" height="131" />
+          <p>$!f.free_name</p>
+          </a></li>
+        <li class="price"><span class="fl">价值:<s>¥#if($!goods) $!goods.goods_current_price #end</s></span><a href="$!webPath/wap/free/view.htm?id=$!f.id">免费试用</a></li>
+        #if($!users.size()>0)
+        <li class="num"><span class="fl"><b>$!obj.apply_count</b>人申请：</span> <span class="fr"> #foreach($user in $users)
+          #if($!user.photo)
+          #set($user_photo="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+          #else 
+          #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          #end <img src="$!user_photo" width="40" height="40"/> #end </span></li>
+        #end
+      </ul>
+    </div>
+  </div>
+  #end
+  #end
+  #if($!activitygoods.size()>0)
+  <!--商城活动-->
+  <div class="phone_floor">
+    <div class="phone_activity">
+      <h1><span class="fl">商城活动</span><span class="fr"><a href="$!webPath/wap/activitys.htm">更多</a></span></h1>
+      <ul>
+        #foreach($obj in $activitygoods)
+        #set($img="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+        #if($!obj.ag_goods.goods_main_photo)
+        #set($big="$!imageWebServer/$!obj.ag_goods.goods_main_photo.path/$!obj.ag_goods.goods_main_photo.name")
+        #set($img="$!{big}_small.$!{obj.ag_goods.goods_main_photo.ext}")
+        #end
+        <li><a href="$!webPath/wap/goods.htm?id=$!obj.ag_goods.id"><img src="$!img" />
+          <p class="price">¥<b>$!obj.ag_goods.goods_current_price</b></p>
+          </a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+  #end
+  #if($!groupgoods.size()>0)
+  <!--超值购-->
+  <div class="phone_floor">
+    <div class="phone_group">
+      <h1><span class="fl">超值购</span><span class="fr"><a href="$!webPath/wap/group/index.htm?type=goods">更多</a></span></h1>
+      <ul>
+        #foreach($obj in $groupgoods)
+        #set($img="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+        #if($!obj.gg_img)
+        #set($img="$!imageWebServer/$!obj.gg_img.path/$!obj.gg_img.name")
+        #end
+        <li><a href="$!webPath/wap/group/view.htm?id=$!obj.id">
+          <p class="g_name">$!obj.gg_goods.goods_name</p>
+          <p class="price"><b>¥$!obj.gg_price</b><s>¥$!obj.gg_goods.goods_current_price</s></p>
+          <img src="$!img" /></a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+  #end
+  #if($!gbs.size()>0)
+  <!--品牌街-->
+  <div class="phone_floor" id="phone_floor">
+    <h1><span class="fl">品牌街</span><span class="fr"><a href="$!webPath/wap/brand.htm">更多</a></span></h1>
+    <div class="phone_brand" >
+      <ul  id="banners" >
+        #foreach($obj in $gbs)
+        <li><a href="$!webPath/wap/brand_goods.htm?gb_id=$!obj.id"><img src="$!imageWebServer/$!obj.brandLogo.path/$!obj.brandLogo.name" width="142" height="66" /></a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+  #end
+  <!--精选市场-->
+  <div class="phone_floor">
+    <div class="phone_menu">
+      <h1><span class="fl">精选市场</span><span class="fr"><a href="$!webPath/wap/goodsclass.htm">更多</a></span></h1>
+      <ul>
+        #foreach($gc in $gcs)
+        #if($!gc.icom_sys)
+        #set($wx_img="$!webPath/resources/style/common/images/icon/icon_$!{gc.icon_sys}.png")
+		#end
+        #if($!gc.wx_icon)
+        #set($wx_img="$!imageWebServer/$!imageTools.queryImg($!gc.wx_icon).path/$!imageTools.queryImg($!gc.wx_icon).name")
+        #end
+        <li id="gc_"><a href="$!webPath/wap/goodsclass.htm?id=$!gc.id"><span class="fl">$!gc.className</span><span class="fr">#if($!gc.icom_sys || $!gc.wx_icon)<img src="$!wx_img" width="50" height="50" />#end</span></a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+  $!httpInclude.include("/wap/footer.htm?op=index") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

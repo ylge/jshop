@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人主页 - $!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.masonry.js"></script>
+<script src="$!webPath/resources/js/iskyshop.pubu.js"></script>
+<script>
+jQuery(document).ready(function(){
+jQuery("#container ul").live("mouseover",function(){
+		jQuery(this).addClass("this"); }).live("mouseout",function(){
+			jQuery(this).removeClass("this");
+			});
+});
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+<div class="sns_width">
+$!httpInclude.include("/buyer/my_sns_head.htm")
+    
+    <div class="sns_main">
+    	$!httpInclude.include("/buyer/my_sns_nav.htm?op=fav")
+        #if($!favorites.size()>0)
+        <div class="sns_list" id="container">
+            #foreach($obj in $favorites)
+             	#if($!obj.goods_photo!="")
+            		#set($img="$!imageWebServer/$!{obj.goods_photo}_middle.$!{obj.goods_photo_ext}")
+            	#else
+            		#set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            	#end
+            	#set($goods_url="$!webPath/goods_$!{obj.goods_id}.htm")
+            	#if($!config.second_domain_open && $!obj.goods_type==1 && $!obj.goods_store_second_domain!="")
+            		#set($goods_url="http://$!{obj.goods_store_second_domain}.$!{domainPath}/goods_$!{obj.goods_id}.htm")
+            	#end
+            <a href="$!goods_url" target="_blank">
+            	<ul class="item">
+                	<li class="img"><img src="$!img" width="223"  /><span class="pri">¥$!{obj.goods_current_price}</span></li>
+                    <li class="name">$!{obj.goods_name}</li>
+                </ul>
+                </a>
+            #end
+        </div>
+        #else
+        <div class="sns_nothing">
+        	<span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span>
+            <span class="fr">没有您想要的信息！</span>
+        </div>
+        #end
+    </div>
+</div>
+<div id="page-nav" style="display: none">
+  <a href="$!webPath/buyer/sns_ajax_favs.htm" class="nextprev" rel="2"></a>
+  </div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

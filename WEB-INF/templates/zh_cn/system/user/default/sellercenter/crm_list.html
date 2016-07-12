@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台 - 商家CRM系统-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+jQuery(document).ready(function(){
+								
+								});
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    $!httpInclude.include("/seller/nav.htm?op=crm")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>客户服务</b> > <b>客户管理</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li #if(!$!type) class="this" #end #if($!type=="") class="this" #end><a href="$!webPath/seller/crm_list.htm"><i></i>全部记录</a></li>
+            <li #if($!type=='order') class="this" #end><a href="$!webPath/seller/crm_list.htm?type=order"><i></i>下过单的</a></li>
+            <li #if($!type=='consult') class="this" #end><a href="$!webPath/seller/crm_list.htm?type=consult"><i></i>咨询过的</a></li>
+            <li #if($!type=='fav') class="this" #end><a href="$!webPath/seller/crm_list.htm?type=fav"><i></i>收藏过的</a></li>
+          </ul>
+        </div>
+        <div class="seller_list_box">
+           <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/crm_list.htm">
+           <div class="user_sp_right"> <span>
+            <input name="userName" type="text" class="user_title_txt" id="userName" placeholder="用户名" value="$!userName"  />
+            <select name="email" id="email">
+            <option value="">发送邮件历史</option>
+            <option value="yes" #if($!email=="yes") selected="selected" #end>已发送</option>
+            <option value="no" #if($!email=="no") selected="selected" #end>未发送</option>
+            </select>
+            <select name="message" id="message">
+            <option value="">发送短信历史</option>
+            <option value="yes" #if($!message=="yes") selected="selected" #end>已发送</option>
+            <option value="no"  #if($!message=="no") selected="selected" #end>未发送</option>
+            </select>
+            <input name="" type="submit" class="seller_sear_btn" value="查询"/>
+            </span>  <h1 style="padding:10px;">当前剩余邮件数:$!email_count &nbsp;&nbsp;&nbsp;&nbsp; 当前剩余短信数:$!sms_count &nbsp;&nbsp;&nbsp;&nbsp; 已发送邮件数量:$!send_email_count &nbsp;&nbsp;&nbsp;&nbsp;已发送短信数量:$!send_message_count &nbsp;&nbsp;&nbsp;&nbsp;剩余数量不足时不足部分不予发送。发送失败时不扣除剩余数量。</h1>  </div>
+            <div class="operation">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+                <tr id="opertitle">
+                  <th width="5%"></th>
+                  <th width="10%">用户名</th>
+                  <th width="10%">时间</th>
+                  <th width="10%">行为</th>
+                  <th width="15%">商品</th>
+                  <th width="12%">发送邮件历史</th>
+                  <th width="12%">发送短信历史</th>
+                  <th align="center">操作</th>
+                </tr>
+                #if($objs.size()>0)
+                #foreach($obj in $objs)
+                <tr>
+                  <td ><span class="checkpro"> <input type="checkbox" value="$!obj.id" /></span></td>
+                  <td align="center">$!obj.userName</td>
+                  <td align="center">$!CommUtil.formatShortDate($!obj.addTime)</td>
+                  <td align="center">#if($!obj.cus_type==0) 下单  #end #if($!obj.cus_type==1) 咨询  #end #if($!obj.cus_type==2) 收藏  #end</td>
+                   #set($goods_url="$!webPath/goods_$!{obj.goods_id}.htm")
+                  #if($!config.second_domain_open && $!user.store.store_second_domain!="")
+     	 			 #set($goods_url="http://$!{user.store.store_second_domain}.$!{domainPath}/goods_$!{obj.goods_id}.htm")
+     	  		  #end
+                  <td align="center"><a href="$!goods_url"  target="_blank">$!obj.goods_name</a></td>
+                  <td align="center">#if($!obj.whether_send_email==1) 已发送  #end #if($!obj.whether_send_email==0) 未发送  #end</td>
+                  <td align="center">#if($!obj.whether_send_message==1) 已发送  #end #if($!obj.whether_send_message==0) 未发送  #end</td>
+                  <td class="del_operate" align="center"><a href="javascript:void(0);" dialog_uri="$!webPath/seller/send_crm_info.htm?mulitId=$!obj.id&type=email" dialog_title="发送邮件内容编辑" dialog_width="850" dialog_height="200" dialog_id="send_infos" class="del_a">发送邮件</a><a href="javascript:void(0);" dialog_uri="$!webPath/seller/send_crm_info.htm?mulitId=$!obj.id&type=message" dialog_title="发送短信内容编辑" dialog_width="500" dialog_height="200" dialog_id="send_infos"  class="del_a">发送短信</a><a href="javascript:void(0);" class="del_a" onclick="showDialog('msg_info','','数据删除后不可恢复，是否继续?',1,'question',3,function(){window.location.href='$!webPath/seller/crm_del.htm?mulitId=$!obj.id'});">删除</a></td>
+                </tr>
+                #end
+                #else
+                <tr>
+                <td colspan="5" align="center"><div class="seller_center_nothing">
+                    <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                    <div class="seller_center_nothing_right">暂时没有数据</div>
+                  </div></td>
+              </tr>
+                #end
+              </table>
+            </div>
+            #if($objs.size()>0)
+           <div class="userlist_allop">
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">$!gotoPageFormHTML</div>              
+              <div class="user_listoper_p"> <i>
+                 <label><input name="all1" type="checkbox" id="all1" onclick="selectAll(this)" value="" />
+               全选</label>
+                </i> <a  href="javascript:void(0);" onclick="cmd('$!webPath/seller/crm_del.htm','')" class="seller_oper_all">删除</a> 
+                	 <a  href="javascript:void(0);" ck_dialog_uri="$!webPath/seller/send_crm_info.htm?type=email" ck_dialog_title="发送邮件内容编辑" ck_dialog_width="850" ck_dialog_height="200" ck_dialog_id="send_infos" class="seller_oper_all">群发邮件</a> 
+                     <a  href="javascript:void(0);" ck_dialog_uri="$!webPath/seller/send_crm_info.htm?type=message" ck_dialog_title="发送短信内容编辑" ck_dialog_width="500" ck_dialog_height="200" ck_dialog_id="send_infos" class="seller_oper_all">群发短信</a> </div>               
+            </div>
+          </div>
+           #end
+           <input id="type" name="type" type="hidden" value="$!type"/>
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+           <input name="mulitId" type="hidden" id="mulitId" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+ $!httpInclude.include("/footer.htm")
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+jQuery(document).ready(function(){
+  	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+  //
+  jQuery(".nav_list a").click(function(){
+	 jQuery(".nav_list a").removeClass("this"); 	
+	 jQuery(this).addClass("this");
+	 jQuery("#kuaidi").hide();
+	 jQuery("#kuaidi2").hide();
+	 jQuery("#kuaidi_set").hide();
+     var target_id=jQuery(this).attr("target_id");
+	 jQuery("#"+target_id).show();
+   });
+  //
+  jQuery(":radio[id=kuaidi_type][value=$!config.kuaidi_type]").attr("checked",true);
+});
+</script>
+<body>
+<form action="$!webPath/admin/set_kuaidi_save.htm" method="post"  name="theForm" id="theForm">
+  <input name="id" id="id" type="hidden" value="$!config.id"/>
+  <div class="cont">
+    <h1 class="seth">快递设置</h1>
+    <div class="operation">
+      <h3>友情提示</h3>
+      <ul>
+        <li>免费快递使用快递100免费接口，可以到<a href="http://www.kuaidi100.com" target="_blank">快递100</a>申请</li>
+        <li>免费接口的查询效率较低且返回数据率较低，会出现查询不出快递结果</li>
+        <li>收费快递是快递100推出的增值服务，效率高，实时性强</li>
+      </ul>
+    </div>
+    <div class="nav_list">
+      <ul>
+        <li> <a href="javascript:void(0);" class="this" target_id="kuaidi_set"><b>快递配置</b></a> </li>
+        #if($!config.kuaidi_type==0)
+        <li> <a href="javascript:void(0);" target_id="kuaidi"><b>免费版快递查询</b></a> </li>
+        #end
+        #if($!config.kuaidi_type==1)
+        <li> <a href="javascript:void(0);" target_id="kuaidi2"><b>收费版快递查询</b></a> </li>
+        #end
+      </ul>
+    </div>
+    <div class="edit"> <div class="editul setcont" id="kuaidi_set">
+    
+      <ul class="set3">
+        <li class="setcont_bg">快递查询类型</li>
+        <li class="setcont_bg">
+          <label>
+            <input name="kuaidi_type" id="kuaidi_type" type="radio" value="0" />
+            免费版 </label>
+        </li>
+        <li class="setcont_bg">
+          <label>
+              <input name="kuaidi_type" id="kuaidi_type" type="radio" value="1" />
+           收费版 </label>
+        </li>
+      </ul>
+    </div>
+    #if($!config.kuaidi_type==0)
+    <div class="editul setcont" id="kuaidi"  style="display:none;">
+      <!--鼠标经过样式-->
+      <ul class="set1">
+        <li>快递100免费授权Key</li>
+        <li><span class="webname">
+          <input name="kuaidi_id" type="text" id="kuaidi_id" value="$!config.kuaidi_id" />
+          </span><a href="http://www.kuaidi100.com/openapi/applyapi.shtml" target="_blank"><span id="nothis"><strong class="q"></strong><strong class="w">免费申请授权Key</strong><strong class="c"></strong></span></a></li>
+      </ul>
+    </div>
+    #end
+    #if($!config.kuaidi_type==1)
+    <div class="editul setcont" id="kuaidi2" style="display:none;">
+      <!--鼠标经过样式-->
+      <ul class="set1">
+        <li>快递100收费版授权Key</li>
+        <li><span class="webname">
+          <input name="kuaidi_id2" type="text" id="kuaidi_id2" value="$!config.kuaidi_id2" />
+          </span><a href="http://www.kuaidi100.com" target="_blank"><span id="nothis"><strong class="q"></strong><strong class="w">申请授权Key</strong><strong class="c"></strong></span></a></li>
+      </ul>
+    </div>
+    #end
+  </div>
+  <div class="submit"> <span class="pad120">
+    <input name="" type="submit" value="提交"  style="cursor:pointer;"/>
+    </span> </div>
+  </div>
+</form>
+</body>
+</html>

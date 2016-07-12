@@ -1,0 +1,619 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自提点查询 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/delivery.css"/>
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/public.css"/>
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/public_auto.css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.cookie.js"></script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+<!--head-->
+<script>
+jQuery(document).ready(function(){
+	search_history_data();
+	var head_h=jQuery("#head_h").height();
+	//搜索框获取焦点
+	jQuery("#keyword").click(function(){
+		var top = jQuery(document).scrollTop();
+		jQuery("div[id^='head_search_goodslist']").hide();
+		if(top>head_h){
+		   jQuery("#head_search_history_up").fadeIn();
+	  	}else{
+		   jQuery("#head_search_history").fadeIn();
+	  	}
+	}).keyup(function(){
+		if(jQuery(this).val()!=''){
+			jQuery("div[id^='head_search_history']").hide();
+		};
+		var keyword = jQuery(this).val();
+		<!--查询分类-->
+		jQuery.post("$!webPath/search_goodsclass.htm",{"keyword":keyword},function(data){
+	    	if(data){
+				search_goodsclass_initialize();
+				jQuery.each(data.parent_gc,function(index,item){
+					if(index==0){
+						//构造提示框
+						jQuery("#head_search_goodslist>dl>dt>ul").append("<li class='this'><span><a href='$!{webPath}/store_goods_list_"+item.id+".htm' target='_blank'>"+item.name+"</a></span></li>");
+						var str = "<dd id='head_search_dd_"+item.id+"'><span class='head_search_history_hot' style='margin-bottom:20px; height:25px; line-height:25px;'>"+item.name+"</span><span onclick='search_gc_close()' class='head_search_history_hot' style='margin-bottom:20px; height:25px;float:right; line-height:15px; color:#999;;cursor:pointer'>关闭</span><ul></ul></dd>"
+						jQuery("#head_search_goodslist>dl").append(str);
+						//下方的提示框
+						jQuery("#head_search_goodslist_up>dl>dt>ul").append("<li class='this'><span><a href='$!{webPath}/store_goods_list_"+item.id+".htm' target='_blank'>"+item.name+"</a></span></li>");
+						str = "<dd id='head_search_up_dd_"+item.id+"'><span class='head_search_history_hot' style='margin-bottom:20px; height:25px; line-height:25px;'>"+item.name+"</span><span onclick='search_gc_close()' class='head_search_history_hot' style='margin-bottom:20px; height:25px;float:right; line-height:15px; color:#999;;cursor:pointer'>关闭</span><ul></ul></dd>"
+						jQuery("#head_search_goodslist_up>dl").append(str);
+					}else{
+						//构造提示框
+						jQuery("#head_search_goodslist>dl>dt>ul").append("<li><span><a href='$!{webPath}/store_goods_list_"+item.id+".htm' target='_blank'>"+item.name+"</a></span></li>");
+						var str = "<dd id='head_search_dd_"+item.id+"' style='display:none'><span class='head_search_history_hot' style='margin-bottom:20px; height:25px; line-height:25px;'>"+item.name+"</span><span onclick='search_gc_close()' class='head_search_history_hot' style='margin-bottom:20px; height:25px;float:right; line-height:15px; color:#999;;cursor:pointer'>关闭</span><ul></ul></dd>"
+						jQuery("#head_search_goodslist>dl").append(str);
+						//下方的提示框
+						jQuery("#head_search_goodslist_up>dl>dt>ul").append("<li><span><a href='$!{webPath}/store_goods_list_"+item.id+".htm' target='_blank'>"+item.name+"</a></span></li>");
+						var str = "<dd id='head_search_up_dd_"+item.id+"' style='display:none'><span class='head_search_history_hot' style='margin-bottom:20px; height:25px; line-height:25px;'>"+item.name+"</span><span onclick='search_gc_close()' class='head_search_history_hot' style='margin-bottom:20px; height:25px;float:right; line-height:15px; color:#999;;cursor:pointer'>关闭</span><ul></ul></dd>"
+						jQuery("#head_search_goodslist_up>dl").append(str);
+					}
+				})
+				jQuery.each(data.list_child,function(index,childs){
+						jQuery.each(childs,function(i,child){
+							jQuery("#head_search_goodslist>dl>dd").eq(index).find("ul").append("<li><a href='$!{webPath}/store_goods_list_"+child.id+".htm' target='_blank'>"+child.name+"</a></li>");
+							jQuery("#head_search_goodslist_up>dl>dd").eq(index).find("ul").append("<li><a href='$!{webPath}/store_goods_list_"+child.id+".htm' target='_blank'>"+child.name+"</a></li>");
+						})
+				})
+				var top = jQuery(document).scrollTop();
+				if(top>head_h){
+		   			jQuery("#head_search_goodslist_up").fadeIn();
+	  			}else{
+		   			jQuery("#head_search_goodslist").fadeIn();
+	  			}
+				//监听搜索分类提示鼠标上移事件
+				jQuery("div[id^='head_search_goodslist']>dl>dt>ul>li").mouseover(function() {
+                    var index = jQuery(this).index();
+					jQuery("div[id^='head_search_goodslist']>dl>dt>ul>li").removeClass("this");
+					jQuery("#head_search_goodslist>dl>dt>ul>li").eq(index).addClass("this");
+					jQuery("#head_search_goodslist_up>dl>dt>ul>li").eq(index).addClass("this");
+					jQuery("dd[id^='head_search_dd_']").hide();
+					jQuery("dd[id^='head_search_dd_']").eq(index).show();
+					jQuery("dd[id^='head_search_up_dd_']").hide();
+					jQuery("dd[id^='head_search_up_dd_']").eq(index).show();
+                });
+			}else{
+				search_goodsclass_initialize();
+			}
+	  	},"json");
+		<!--查询分类END-->
+	});
+	jQuery("div[id^='head_search_history']").mouseover(function(){
+		jQuery(this).show();
+	});
+	jQuery("div[id^='head_search_history']").mouseout(function(){
+		jQuery(this).hide();
+	});
+	jQuery(window).scroll(function(){
+		var top = jQuery(document).scrollTop();
+		if(top>head_h){
+			if(jQuery("#head_search_history").is(":visible")){
+				jQuery("#head_search_history").hide();
+				jQuery("#head_search_history_up").show();  
+		    };
+			if(jQuery("#head_search_goodslist").is(":visible")){  
+						jQuery("#head_search_goodslist").hide();
+						jQuery("#head_search_goodslist_up").show(); 
+			};
+	  	}else{
+		   if(jQuery("#head_search_history_up").is(":visible")){
+				jQuery("#head_search_history_up").hide();
+				jQuery("#head_search_history").show();
+		   };
+		   if(jQuery("#head_search_goodslist_up").is(":visible")){  
+				jQuery("#head_search_goodslist_up").hide();
+				jQuery("#head_search_goodslist").show(); 
+		   };
+	  	}
+		
+	});
+	//选定某一搜索历史
+	jQuery("#head_search_history").find("dl>dt>ul>li>span").click(function(){
+		jQuery("#keyword").val(jQuery(this).attr("data"));
+		jQuery("#searchForm").submit();
+	});
+	//鼠标经过用户中心
+   jQuery("#top_user_sp").mouseover(function(){
+		if(jQuery("#top_user_hb").size()==0){
+			jQuery.ajax({type:'POST',url:'$!current_webPath/head_ajax_usercenter.htm',data:'',
+						   beforeSend:function(){
+							     jQuery("#top_user_hid").html('<div class="top_user_hb" id="top_user_hb"><span class="top_user_loading"><img src="$!webPath/resources/style/system/front/default/images/loading.gif" /></span><b class="top_user_warning">加载中，请稍后...</b></div>');
+							     jQuery("#top_user_hid").show();
+							   },
+						  success:function(data){
+						     jQuery("#top_user_hid").empty();
+								 jQuery("#top_user_hid").html(data);
+							   }
+						});		
+		}else{
+			jQuery("#top_user_hid").show();
+			}
+	jQuery("#top_user_sp").addClass("top_user_sp_this");
+  	});
+   jQuery("#top_user").mouseleave(function(){
+    jQuery("#top_user_hid").hide();
+	jQuery("#top_user_sp").removeClass("top_user_sp_this");
+  });
+   
+   //鼠标经过购物车
+   jQuery("#goodscar_sp").mouseover(function(){
+			var gstatus =jQuery("#goodscar_con_box").attr("mark");
+			if(gstatus=="none")
+			  jQuery.ajax({type:'POST',url:'$!current_webPath/cart_menu_detail.htm',data:'',
+						   beforeSend:function(){
+							     jQuery("#goodscar_con_box").empty().html(' <div><span class="top_user_loading"><img src="$!webPath/resources/style/system/front/default/images/loading.gif" /></span><b class="top_user_warning">加载中，请稍后...</b></div>');
+							     jQuery("#goodscar_con_box").show();
+							   },
+						  success:function(data){
+							  jQuery("#goodscar_con_box").attr("mark","show");
+							     jQuery("#goodscar_con_box").empty();
+								 jQuery("#goodscar_con_box").html(data);
+								
+								 
+							   }
+						});
+			  jQuery("#goodscar_sp").addClass("goodscar_sp_this");
+		   });
+		   jQuery("#goodscar").mouseleave(function(){
+			jQuery("#goodscar_con_box").attr("mark","none");
+			  jQuery("#goodscar_con_box").hide();
+			  jQuery("#goodscar_sp").removeClass("goodscar_sp_this");
+		   });
+});
+//初始化分类搜索提示模块
+function search_goodsclass_initialize(){
+	jQuery("div[class^='head_search_goodslist']").each(function(index,obj) {
+        jQuery(obj).remove();
+    });
+	var str = "<div class='head_search_goodslist' id='head_search_goodslist' style='display:none'><dl><dt><ul></ul></dt></dl></div>";
+	jQuery("#head_search").append(str);
+	str = "<div class='head_search_goodslist_up' id='head_search_goodslist_up' style='display:none'><dl><dt><ul></ul></dt></dl></div>";
+	jQuery("#head_search").append(str);
+}
+function search_gc_close(){
+	jQuery("div[id^='head_search_goodslist']").hide();
+}
+//加载搜索历史记录
+function search_history_data(){
+	var data = jQuery.cookie("search_history");
+	if(data==null){
+		jQuery("div[id^='head_search_history']").remove();
+	}else{
+		jQuery.each(data.split(","),function(index,item){
+			if(index<10){
+				jQuery("#head_search_history_up").find("dl>dt>ul").append("<li><span data='"+item+"'><a href='javascript:void(0)'>"+item+"</a></span><i onclick='search_data_del(this)'><a href='javascript:void(0)'>删除</a></i></li>");
+				jQuery("#head_search_history").find("dl>dt>ul").append("<li><span data='"+item+"'><a href='javascript:void(0)'>"+item+"</a></span><i onclick='search_data_del(this)'><a href='javascript:void(0)'>删除</a></i></li>");
+			}
+		});
+	}
+}
+//删除某一历史记录
+function search_data_del(obj){
+	var item = jQuery(obj).parent().find("span").attr("data");
+	var data = "";
+	var temp = jQuery.cookie("search_history");	
+	jQuery.each(temp.split(","),function(index,value){
+		if(item!=value){
+			if(data!=""){
+				data =data +","+value;
+			}else{
+				data = value;
+			}
+		}
+	});
+	
+	if(data!=""){
+		jQuery.cookie("search_history",data);
+	}else{
+		jQuery.cookie("search_history",null);
+	}
+	search_html_restore();
+	search_history_data();
+}
+//删除全部历史记录
+function search_data_del_all(){
+	jQuery.cookie("search_history",null);
+	search_html_restore();
+	search_history_data();
+}
+//清空搜索历史下拉数据
+function search_html_restore(){
+	jQuery("#head_search_history_up").find("dl>dt>ul>li").each(function(index, element) {
+       if(index!=0){
+		   jQuery(this).remove();
+	   } 
+    });
+	jQuery("#head_search_history").find("dl>dt>ul>li").each(function(index, element) {
+       if(index!=0){
+		   jQuery(this).remove();
+	   } 
+    });
+}
+function search_form(){
+  var keyword=arguments[0];
+  var type=arguments[1];
+  if(keyword!=""&&keyword!=undefined){
+   jQuery("#keyword").val(keyword);
+  }
+  if(type!=""&&type!=undefined){
+    jQuery("#type").val(type);
+  }
+  jQuery("#searchForm").submit();	
+  jQuery("#keyword").val("");
+}
+		 var total_price=0;
+		 #set($total_price=0)
+		 #foreach($gc in $cart)
+		  #if($!gc.goods.group_buy==2)
+		    #set($total_price=$!{gc.goods.group_goods.gg_price}*$!{gc.count}+$total_price)
+		  #else
+		    #set($total_price=$!{gc.goods.store_price}*$!{gc.count}+$total_price)
+		  #end
+		 #end
+		 
+		function menu_cart_remove(id){
+           jQuery.post("$!current_webPath/remove_goods_cart.htm",{"ids":id},function(data){
+		   if(data.code=="100"){		
+		   jQuery(".goodscar_list li[id="+id+"]").remove();
+           jQuery("#cart_goods_count_top").html(data.count);
+		   jQuery("#st_count").html(data.count);
+		   jQuery("#cart_goods_price_top").html(data.total_price);
+		   if(data.count==0){//购物车页面没有商品
+			 jQuery(".goodscar_list").remove();
+			 jQuery("#goodscar_con_box").html("<b class='goodscar_none'>购物车还没有商品!</b>");	
+		   }else{
+			   jQuery("#goodscar_con_box").load("$!current_webPath/cart_menu_detail.htm");
+			   }
+			}
+			 if(data.code=="200"){	
+			   showDialog("msg_info","","系统繁忙，请稍后重试！",2,"warning",3,'');	
+			 }
+         
+         },"json");
+       }
+</script>
+<div class="head_width" id="head_h">
+  <div class="head"> #if($!config.websiteLogo)
+    #set($img="$!imageWebServer/$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+    #else
+    #set($img="$!webPath/resources/style/system/front/default/images/logo.jpg")
+    #end
+    <h1 class="logo"><span>
+      <p><a href="$!webPath/index.htm"> <img src="$!img" border="0" /> </a></p>
+      </span></h1>
+    <form action="$!webPath/search.htm" method="post" target="_blank" id="searchForm">
+      <input name="type" type="hidden" id="type" value="$!type" />
+      <div class="head_search" id="head_search" style="width:705px; margin-left:0px;"> <span class="head_seartxt">
+        <input style="width:618px;" name="keyword" type="text" id="keyword" placeholder="试试搜索，更加方便！" x-webkit-speech lang="zh-CN" onwebkitspeechchange="jQuery('#searchForm').submit()" class="h_sear_txt" style="padding-left:5px;" autocomplete="off"/>
+        <input name="" type="submit"  class="h_sear_btn" value="搜索"/>
+        </span><span class="head_searstr">#if($!config.hotSearch!="")热门搜索：#foreach($info in $CommUtil.splitByChar("$!config.hotSearch",",")) <a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a> #end #end</span>
+      	<!--搜索历史 -->
+    	<div class="head_search_history" id="head_search_history" style="display:none">
+    	<dl>
+        	<dt>
+            	<ul>
+                	<li class="head_search_history_top"><span>搜索历史</span><i ><a href="javascript:void(0)" onclick="search_data_del_all()">清除全部</a></i></li>
+                </ul>
+            </dt>
+            <dd><span  class="head_search_history_hot">热门搜索...</span>
+            	<ul>
+                	
+                    #if($!config.hotSearch!="")
+                    #foreach($info in $CommUtil.splitByChar("$!config.hotSearch",","))
+                	<li><a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a></li>
+                    #end
+                    #end
+                </ul>
+            </dd>
+        </dl>
+    </div>  
+        <!--搜索历史 -->
+        <div class="head_search_history_up" id="head_search_history_up" style="display:none">
+    	<dl>
+        	<dt>
+            	<ul>
+                	<li class="head_search_history_top"><span>搜索历史</span><i ><a href="">清除全部</a></i></li>
+                </ul>
+            </dt>
+            <dd><span  class="head_search_history_hot">热门搜索...</span>
+            	<ul>
+                	
+                    #if($!config.hotSearch!="")
+                    #foreach($info in $CommUtil.splitByChar("$!config.hotSearch",","))
+                	<li><a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a></li>
+                    #end
+                    #end
+                </ul>
+            </dd>
+        </dl>
+    </div>    	
+      </div>
+    </form>
+    <!--用户中心开始-->
+    <div class="top_user" id="top_user">
+      <span class="top_user_sp" id="top_user_sp"><a href="$!webPath/buyer/index.htm">用户中心</a><s></s></span>
+      <div class="top_user_hid" id="top_user_hid" style="display:none"> </div>
+    </div>
+    <div class="goodscar" id="goodscar">
+    
+    
+      <span class="goodscar_sp" id="goodscar_sp">
+      <span>
+      <i class="goodscar_img"></i>
+      <em class="goodscar_num"><b id="cart_goods_count_top">$!carts.size()</b></em><a href="$!webPath/goods_cart1.htm">去购物车结算</a>
+      </span>
+      </span>
+      
+
+      <div class="goodscar_con_box" id="goodscar_con_box" style="display:none" mark="none"> </div>
+    </div>
+    <!--购物车结束-->
+  </div>
+</div>
+<!--head-->
+<!--nav1-->
+<script>
+jQuery(document).ready(function(){
+  jQuery("#navul li").each(function(){
+    var original_url=jQuery(this).attr("original_url");
+	if("$!{current_url}".indexOf(original_url)>=0){
+	   jQuery(this).addClass("this");	
+	}
+  });
+ //鼠标经过左侧分类							
+  jQuery(".left_menu_dl").mouseover(function(){	
+	var child_count = jQuery(this).attr("child_count");
+	if(child_count>0){
+	 var id=jQuery(this).attr("id");
+	  jQuery("#dts_"+id).addClass("left_menu_this").removeClass("left_menu_dt");	
+      jQuery("#child_"+id).show();			
+	}
+	var gc_id=jQuery(this).attr("id");
+	var gc_color=jQuery(this).attr("gc_color");
+	jQuery("#dts_"+gc_id).attr("style","border:1px solid "+gc_color+"; border-left:3px solid "+gc_color+";border-right:none");
+	jQuery("#left_menu_con_"+gc_id).attr("style","border:1px solid "+gc_color+"; border-left:1px solid "+gc_color+";").find(".menu_con_right_top").css("background-color",gc_color);					 	//设置div高度为每行div中最高的高度
+	var begin=0;
+	var end=2;
+	jQuery("#child_"+gc_id).find(".left_menu_con_center_left").each(function(){	
+	 var max_height=0;
+		var index =jQuery(this).index();
+		var	height = jQuery(this).height();
+		if(index>end||index<begin){
+			begin=begin+3;
+			end=end+3;
+		}
+	    if(height>max_height){
+		    max_height = height;
+	    }			   
+		   for(var i=begin;i<=end;i++){
+			   var temp_height = jQuery("#child_"+gc_id).find(".left_menu_con_center_left").eq(i).height();
+				if(temp_height>max_height){
+					max_height = temp_height;
+				   } 
+				 jQuery("#child_"+gc_id).find(".left_menu_con_center_left").eq(i).height(max_height);
+			}	
+	});
+	var top=jQuery("#child_"+gc_id).offset().top;
+	var scroll_top = jQuery(document).scrollTop();
+	var height=jQuery("#left_menu_con_"+gc_id).height();
+	var all_h=top-scroll_top+height;
+	var doc_h=jQuery(window).height();
+	var margin_top=doc_h-all_h;
+	if(margin_top<0){
+		margin_top=margin_top-20;
+	   jQuery("#left_menu_con_"+gc_id).css('margin-top',margin_top+'px');
+	}else{
+	   jQuery("#left_menu_con_"+gc_id).css('margin-top','0px');
+	}
+  }).mouseleave(function(){
+	 jQuery("dt[id^=dts_]").removeAttr("style");
+	jQuery("div[id^=left_menu_con_]").removeAttr("style"); 
+	 var child_count = jQuery(this).attr("child_count");
+	if(child_count>0){ 
+     var id=jQuery(this).attr("id");
+	  jQuery("#dts_"+id).removeClass("left_menu_this").addClass("left_menu_dt");	
+      jQuery("#child_"+id).hide();
+	}
+  });
+ //
+  jQuery(".nav_left").mouseover(function(){
+	  jQuery("#other_menu").show();
+   });
+  jQuery(".nav_left").mouseleave(function(){
+	  jQuery("#other_menu").hide();	  
+   });	 
+});
+</script>
+<style type="text/css">
+.left_menu_con_center_left dd a { font-weight:normal; font-size:12px;}
+.nav ul li a:hover{ color:#0086C6;}
+.head_seartxt .h_sear_btn{background: none repeat scroll 0% 0% #1F96CF;}
+.head_seartxt .h_sear_txt{border: 3px solid #1F96CF;}
+.nav_left{ background:#0086C6}
+.nav{border-bottom: 3px solid #0086C6;}
+</style>
+<div class="nav">
+<div class="nav_center">
+  <div class="nav_left">
+    <h2><a href="$!webPath/goods_class.htm"><span>全部分类<em><img src="$!webPath/resources/style/system/front/default/images/nav_top.gif" width="7" height="4" /></em></span></a>
+    <div class="other_menu" style="display:none" id="other_menu">
+      <div class="left_menu" id="left_menu">
+      #foreach($gc in $!gcs)
+      #set($icon_img="$!webPath/resources/style/common/images/icon/default_icon.png")
+        <dl #if($!velocityCount%2==0)class="left_menu_dl double"  #else class="left_menu_dl" #end child_count="$!gc.childs.size()" #if($!{gc.gc_color}) gc_color="$!{gc.gc_color}" #else gc_color="#E60012" #end id="$!gc.id" style="position:relative;">
+            <!--left_menu_this经过状态，和left_menu_dt不经状态过交换-->
+            #if($!gc.icon_type==0)
+            #if($!gc.icon_sys!="")
+            #set($icon_img="$!webPath/resources/style/common/images/icon/icon_$!{gc.icon_sys}.png")
+            #end
+            #else
+            #if($!gc.icon_acc)
+            #set($icon_img="$!imageWebServer/$!gc.icon_acc.path/$!gc.icon_acc.name")
+            #end
+            #end
+             <!-- 鼠标经过父级时添加style="border:1px solid #F00; border-left:3px solid #F00;"添加底层颜色-->
+            <dt class="left_menu_dt" id="dts_$!gc.id"><i class="left_menu_i"><img src="$!icon_img" width="16" height="16" /></i><strong class="left_menu_str"><a href="$!webPath/store_goods_list_$!{gc.id}.htm">$!gc.className</a></strong><b class="left_menu_str_b">#foreach($child_gc in $gcViewTools.query_third_rec("$!gc.id",4))<a href="$!webPath/store_goods_list_$!{child_gc.id}.htm">$!{child_gc.className}</a>  #end</b></dt>
+            <dd class="left_menu_dd" style="display:none" id="child_$!gc.id">
+            <!--存在广告时left_menu_con this   鼠标经过父级时添加style="border:1px solid #F00; border-left:3px solid #F00;"添加底层颜色-->
+             #set($adv_map=$!gcViewTools.query_gc_advert("$!gc.id","$!webPath"))
+              <div class="left_menu_con #if($!adv_map.get('advert_img')!="") this #end" id="left_menu_con_$!{gc.id}">
+              #set($gbs=$gcViewTools.query_gc_brand("$!gc.id"))
+              #if($!gbs.size()>0)
+              <div class="menu_con_right_top">
+                	<dl>
+                    	<dt>
+                        #foreach($map in $gbs)
+                            <span><a href="$!webPath/store_goods_list_$!{gc.id}.htm?brand_ids=$!{map.get('id')}">$!{map.get('name')}</a></span>
+                    	#end	
+                       </dt>  
+                    </dl>
+                </div>
+              #end  
+              <span class="left_menu_sp">
+                 	
+                <div class="left_menu_con_center">
+                 #foreach($gc1 in $gc.childs)
+                	<div class="left_menu_con_center_left">
+                    	<dl>
+                        	<dt><a href="$!webPath/store_goods_list_$!{gc1.id}.htm">$!gc1.className</a></dt>
+                            #foreach($gc2 in $!gc1.childs)
+                            <dd><a href="$!webPath/store_goods_list_$!{gc2.id}.htm">$!gc2.className</a></dd>
+                  			#end
+                        </dl>
+                    </div>
+                    #end 
+                    <script>
+                    jQuery(document).ready(function(){
+					var height =jQuery(".left_menu_con_center_left").height();
+					
+						});
+                    </script>
+                </div>
+                #if($!adv_map.get('advert_img')!="" && $!adv_map.get('advert_img')!='null')
+                <div class="right_menu_con_right_img">
+                #set($adv_url=$!adv_map.get('advert_url'))
+                	<a #if($!{adv_url}!="") href="$!adv_map.get('advert_url')" target="_blank" #else href="javascript:void(0);" #end><img src="$!adv_map.get('advert_img')"/></a>
+                </div>
+                #end
+                </span> 
+             </div>
+            </dd>
+          </dl>
+      #end
+      </div>
+    </div></h2>
+  </div>
+  <ul id="navul">
+  #set($navs=$!navTools.queryNav(0,-1))
+  #foreach($nav in $navs)
+    #if($!CommUtil.indexOf("$!nav.url","http://")>=0)
+      #set($url="$!nav.url")
+    #else
+      #set($url="$!webPath/$!{nav.url}")
+    #end
+    <li #if($!mark&&$!mark==$!nav.url) class="this" #end><a href="$!url" id="$!nav.id" #if($!nav.new_win==1)target="_blank"#end original_url="$!nav.original_url"><span>$!{nav.title}</span></a></li>
+    #end
+  </ul>
+  </div>
+</div>
+<!--nav1-->
+
+
+<!-- 专题主体-->
+<script>
+jQuery(document).ready(function(){
+		var pro =jQuery("#pro_ul").find("li:first");
+		set_province(pro);	
+	});
+
+	function set_province(obj){
+				jQuery(obj).parent().find("li").removeClass();
+					jQuery(obj).addClass("this");
+					var name = jQuery(obj).find("a").html();
+					var obj_id=jQuery(obj).attr("obj_id");
+					jQuery.post("$!webPath/load_area.htm",
+								{"pid":obj_id},
+								function(data){
+									jQuery("#city_ul").html("");
+									jQuery.each(data, function(index,item){				   
+										jQuery("#city_ul").append("<li obj_id="+item.id+" onclick='set_city(this);'><a href='javascript:void(0);'>"+item.areaName+"</a></li>");
+										jQuery("#current_city").html(name);
+										var city =jQuery("#city_ul").find("li:first");
+										set_city(city);
+									  });											  
+									},"json");
+
+	}
+	
+	function set_city(obj){
+		jQuery(obj).parent().find("li").removeClass();
+		jQuery(obj).addClass("this");
+		var city_name = jQuery(obj).find("a").html();
+		var city_id = jQuery(obj).attr("obj_id");
+		jQuery.post("$!webPath/query_area_delivery.htm",
+					{"city_id":city_id},
+					function(data){
+					jQuery("#delivery_list").html(data);
+					var pro_name= jQuery("#pro_ul").find("li[class='this']").find("a").html();
+					jQuery("#current_city").html(pro_name+">"+city_name);
+					},"text");
+				}
+	
+function ajaxPage(url,currentPage,obj){
+	var city_id =jQuery("#city_ul li[class='this']").attr("obj_id");
+    jQuery.ajax({type:'POST',url:url,data:{"currentPage":currentPage,"city_id":city_id},
+			  beforeSend:function(){
+			   },
+			  success:function(data){
+				jQuery("#delivery_list").html(data);																									                
+			  }
+		})
+  }
+</script>
+<div class="self_place">
+	<div class="self_place_banner"><img src="$!webPath/resources/style/system/front/default/images/self_place_all_box_center.png" /></div>
+  	<div class="self_place_banner_b"></div>
+    <div class="self_place_main">
+    <div class="main_center_particular_join">       
+            <a href="$!webPath/delivery/index.htm">自提点管理</a>
+             	<a href="$!webPath/delivery_apply1.htm">加入自提点</a>
+        </div>
+    	<div class="self_place_main_top">自提点查询</div>
+        
+        <div class="self_place_main_center">
+        	<ul id="pro_ul">
+            #foreach($area in $areas)
+            	<li obj_id="$!area.id" onclick="set_province(this);"><a href="javascript:void(0);">$!area.areaName</a></li>
+            #end   
+            </ul>
+        </div>
+        <div class="self_place_main_center_b">
+        	<ul id="city_ul">
+            </ul>
+        </div>
+        <div class="self_place_main_center_particular" style=" min-height:200px">
+        	<h3>当前查询城市：<b id="current_city">暂无数据</b></h3>
+            <div class="main_center_particular_place" id="delivery_list">
+            </div>
+        </div>
+    </div>
+  $!httpInclude.include("/footer.htm")
+</div>
+  
+</body>
+</html>

@@ -1,0 +1,37 @@
+#if($!objs.size()>0)
+<script>
+function ajaxPage(url,page,obj){
+var id = jQuery("#id").val();
+jQuery.ajax({type:'POST',url:url,data:{"currentPage":page,"id":id},
+success:function(data){
+jQuery("#free_list_left_discuss").html(data);	
+}					
+				 });
+}
+</script>
+<div class="free_list_left_discuss" >
+<ul id="evas">
+#foreach($obj in $objs)
+#set($us = $!freeTools.queryEvaluteUser("$!{obj.user_id}"))
+ #if($!us.photo)
+          			#set($user_photo="$!imageWebServer/$!us.photo.path/$!us.photo.name")
+          			#else 
+          			#set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          			#end
+<li>
+<span class="discuss_img"><a href="$!webPath/sns/other_sns_$!{obj.user_id}.htm"><img src="$!user_photo" /></a></span>
+<span class="discuss_word">
+<i></i>
+<h3><a href="$!webPath/sns/view_$!{obj.user_id}.htm">$!us.userName</a></h3>
+<b>$!obj.use_experience</b>
+<h4>$!CommUtil.formatLongDate($!obj.evaluate_time)</h4>
+</span>
+</li>
+#end
+</ul>
+</div>
+<div class="fenye">
+<span>
+$!gotoPageAjaxHTML </span>
+</div>
+#end

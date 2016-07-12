@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>订单评价 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+    function discuss(obj,goods_id,type,name){
+		var obj_name = type+goods_id;
+		var count = jQuery(obj).attr("mark")-0;
+		jQuery("#"+name+goods_id).val(count);
+		jQuery("a[name="+obj_name+"]").each(function(index, element) {
+			jQuery(element).removeClass("this");
+		});
+		jQuery("a[name="+obj_name+"]").each(function(index, element) {
+		    var mark =  jQuery(element).attr("mark")-0;
+            if(mark<=count){
+		    	jQuery(element).addClass("this");
+		    }
+        });
+		}
+    </script>
+</head>
+
+<body class="index_bg">
+<header>
+  <section>
+
+    <h3>订单评价</h3>
+
+  </section>
+</header>
+
+<div class="mt50"></div>
+<!--评价页-->
+<div class="evaluate">
+<form id="theForm" name="theForm" action="$!webPath/wap/buyer/order_discuss_save.htm" method="post">
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input name="evaluate_session" type="hidden" id="evaluate_session" value="$!evaluate_session" />
+    #foreach($map in $!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+        #set($goods_id = "$!{map.get('goods_id')}")	
+        #set($goods_name = "$!{map.get('goods_name')}")
+        #set($goods_count = "$!{map.get('goods_count')}")
+        #set($goods_price = "$!{map.get('goods_price')}")
+        #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+        #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+        #set($goods_domainPath = "$!{map.get('goods_domainPath')}")
+        #set($img="$!imageWebServer/$!{goods_mainphoto_path}") 
+	<div class="hd"><b><img src="$!img"></b><span>$!goods_name </span></div>
+    
+    <div class="describe">
+    	<ul>
+        	<li><span class="fl">描述相符：</span>
+                <span class="fr">
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="1" id="description_1_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="2" id="description_2_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="3" id="description_3_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="4" id="description_4_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="5" id="description_5_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <input name="description_evaluate$!{goods_id}" id="description_evaluate$!{goods_id}" type="hidden" value="">
+                </span>
+            </li>
+            <li><span class="fl">服务态度：</span>
+            	<span class="fr">
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="1" id="service_1_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="2" id="service_2_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="3" id="service_3_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="4" id="service_4_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="5" id="service_5_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <input name="service_evaluate$!{goods_id}" id="service_evaluate$!{goods_id}" type="hidden" value="">
+                </span>
+            </li>
+            <li><span class="fl">发货速度：</span>
+            	<span class="fr">
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="1" id="ship_1_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="2" id="ship_2_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="3" id="ship_3_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="4" id="ship_4_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="5" id="ship_5_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <input name="ship_evaluate$!{goods_id}" id="ship_evaluate$!{goods_id}" type="hidden" value="">
+                </span>
+            </li>
+            <li><span class="fl">评语：</span><span class="fr"><textarea name="evaluate_info_$!{goods_id}" cols="" rows="" id="evaluate_info_$!{goods_id}"></textarea></span></li>
+            <li>
+            	<span class="fl">评价：</span>
+                <span class="fr">
+                	<dl class="fr_dl">
+                    	<dt><input type="radio" name="evaluate_buyer_val$!{goods_id}" id="evaluate_buyer_val$!{goods_id}" value="1"></dt>
+                    	<dd class="good">好评</dd>
+                        <dt><input type="radio" name="evaluate_buyer_val$!{goods_id}" id="evaluate_buyer_val$!{goods_id}" value="0"></dt>
+                    	<dd class="mid">中评</dd>
+                        <dt><input type="radio" name="evaluate_buyer_val$!{goods_id}" id="evaluate_buyer_val$!{goods_id}" value="-1"></dt>
+                    	<dd class="bad">差评</dd>
+                    </dl>
+                </span>
+            </li>
+        </ul>
+    </div>
+    #end
+    #foreach($child_map in $!orderFormTools.queryGoodsInfo("$!obj.child_order_detail"))
+    <input name="id" type="hidden" id="id" value="$!child_map.get('order_id')" />
+    #foreach($map in $!orderFormTools.queryGoodsInfo("$!child_map.get('order_goods_info')"))
+        #set($goods_id = "$!{map.get('goods_id')}")	
+        #set($goods_name = "$!{map.get('goods_name')}")
+        #set($goods_count = "$!{map.get('goods_count')}")
+        #set($goods_price = "$!{map.get('goods_price')}")
+        #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+        #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+        #set($goods_domainPath = "$!{map.get('goods_domainPath')}")
+        #set($img="$!imageWebServer/$!{goods_mainphoto_path}") 
+	<div class="hd"><b><img src="$!img"></b><span>$!goods_name </span></div>
+    
+    <div class="describe">
+    	<ul>
+        	<li><span class="fl">描述相符：</span>
+                <span class="fr">
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="1" id="description_1_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="2" id="description_2_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="3" id="description_3_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="4" id="description_4_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <a href="javascript:void(0);" name="description_$!{goods_id}" mark="5" id="description_5_$!{goods_id}" onClick="discuss(this,$!goods_id,'description_','description_evaluate');"></a>
+                    <input name="description_evaluate$!{goods_id}" id="description_evaluate$!{goods_id}" type="hidden" value="">
+                </span>
+            </li>
+            <li><span class="fl">服务态度：</span>
+            	<span class="fr">
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="1" id="service_1_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="2" id="service_2_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="3" id="service_3_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="4" id="service_4_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <a href="javascript:void(0);" name="service_$!{goods_id}" mark="5" id="service_5_$!{goods_id}" onClick="discuss(this,$!goods_id,'service_','service_evaluate');"></a>
+                    <input name="service_evaluate$!{goods_id}" id="service_evaluate$!{goods_id}" type="hidden" value="">
+                </span>
+            </li>
+            <li><span class="fl">发货速度：</span>
+            	<span class="fr">
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="1" id="ship_1_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="2" id="ship_2_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="3" id="ship_3_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="4" id="ship_4_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <a href="javascript:void(0);" name="ship_$!{goods_id}" mark="5" id="ship_5_$!{goods_id}" onClick="discuss(this,$!goods_id,'ship_','ship_evaluate');"></a>
+                    <input name="ship_evaluate$!{goods_id}" id="ship_evaluate$!{goods_id}" type="hidden" value="">
+                </span>
+            </li>
+            <li><span class="fl">评语：</span><span class="fr"><textarea name="evaluate_info_$!{goods_id}" cols="" rows="" id="evaluate_info_$!{goods_id}"></textarea></span></li>
+            <li>
+            	<span class="fl">评价：</span>
+                <span class="fr">
+                	<dl class="fr_dl">
+                    	<dt><input type="radio" name="evaluate_buyer_val$!{goods_id}" id="evaluate_buyer_val$!{goods_id}" value="1"></dt>
+                    	<dd class="good">好评</dd>
+                        <dt><input type="radio" name="evaluate_buyer_val$!{goods_id}" id="evaluate_buyer_val$!{goods_id}" value="0"></dt>
+                    	<dd class="mid">中评</dd>
+                        <dt><input type="radio" name="evaluate_buyer_val$!{goods_id}" id="evaluate_buyer_val$!{goods_id}" value="-1"></dt>
+                    	<dd class="bad">差评</dd>
+                    </dl>
+                </span>
+            </li>
+        </ul>
+    </div>
+    #end
+    #end
+    <div class="submit"><input type="submit" value="提交"></div>
+</form>
+</div>
+
+
+
+<div class="mt50"></div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+
+</body>
+</html>

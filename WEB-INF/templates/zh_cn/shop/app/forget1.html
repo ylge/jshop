@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("#theForm").validate({
+	 errorPlacement: function(error, element) {
+        			 error.appendTo(jQuery("#error_place"));  
+					 jQuery("#error_place").show();
+					 if(jQuery("#error_place").html()=="")
+     						 jQuery("#error_place").hide();
+   					 },	
+	success:function(label) {
+		jQuery(label).remove();
+		if(jQuery("#error_place").html()=="")
+     						 jQuery("#error_place").hide();
+						},
+	rules: {
+			userName: {required:true},
+			code:{required:true,
+			      remote:{
+		             url: "$!webPath/verify_code.htm",     //后台处理程序
+                     type: "post",               //数据发送方式
+                     dataType: "json",           //接受数据格式   
+                     data: {                     //要传递的数据
+                           "code": function(){return jQuery("#code").val();}
+		              }
+		          }
+			}
+		 },
+		messages: {
+			userName: {required:"用户名不能为空  "},
+			code:{required:"验证码不能为空  ",remote:"验证码不正确  "}
+					}
+  });
+});
+ function refreshCode(){
+    jQuery("#code_img").attr("src","$!webPath/verify.htm?d"+new Date().getTime());
+ }
+ function submit_form(){
+	 jQuery("#theForm").submit();
+ }
+</script>
+</head>
+<body>
+<div class="phone_main"> 
+  <!--登录页-->
+  <form action="$!webPath/app/forget2.htm" method="post" name="theForm" id="theForm">
+    <div class="phone_forget">
+      <ul>
+        <li class="forget_word" style="border-bottom:1px solid #dfdfdf"><span>
+          <input name="userName" id="userName" type="text" placeholder="请输入用户名/邮箱/已验证手机号" />
+          </span></li>
+        <li class="forget_code" style="border-bottom:1px solid #dfdfdf"> <span>
+          <input name="code" type="text"  id="code" placeholder="请输入验证码" />
+          <b><img id="code_img" src="$!webPath/verify.htm" width="122" height="45" /></b> <em><a href="javascript:void(0);" onClick="refreshCode();" ><img src="$!webPath/resources/style/system/front/wap/images/refresh.png" width="32" height="32" /></a></em> </span> </li>
+      </ul>
+      <div class="forget_error" id="error_place" style="display:none"></div>
+      <div class="phone_forget_button"><a href="javascript:void(0)" onClick="submit_form()">提交</a></div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

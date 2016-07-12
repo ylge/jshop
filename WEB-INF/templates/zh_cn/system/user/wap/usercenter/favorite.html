@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>用户中心 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function() {
+    jQuery(".attent_dl i").click(function(){
+		var id = jQuery(this).attr("mark");
+		window.location.href="$!webPath/wap/buyer/favorite_del.htm?id="+id;
+	})
+});<!--end-->
+function show_goods(id){
+	window.location.href="$!webPath/wap/goods.htm?id="+id;
+}
+</script>
+</head>
+
+<body class="user_bg">
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">我的收藏</span></div>
+<div class="user_index">
+  <div class="mt50" style="height:40px" ></div>
+  <div class="user_order_w">
+    <div class="attention_list">
+    	#if($!objs.size()>0)
+    	#foreach($obj in $objs)
+        <a href="javascript:void(0);">
+      	<dl class="attent_dl">
+            <dt onClick="show_goods($!{obj.goods_id})"><img src="$!imageWebServer/$!obj.goods_photo"></dt>
+            <dd>
+            	<h4 onClick="show_goods($!{obj.goods_id})" style="height:44px; overflow:hidden; line-height:22px;">$!obj.goods_name</h4>
+            	<span style="margin-top:0px;">$!obj.goods_current_price</span>
+                <i mark="$!{obj.id}"><img src="$!webPath/resources/style/system/front/wap/images/user_del.png" ></i>
+            </dd>
+      	</dl>
+     	</a>
+      	#end 
+        #else
+        <div class="car_none" style="padding-top:20px">  <b>您还没有收藏的商品！</b> </div>
+        #end
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+</body>
+</html>

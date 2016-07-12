@@ -1,0 +1,12 @@
+﻿#foreach($obj in $objs)
+<dl>
+   #if($!obj.goods_main_photo)
+      #set($small_img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+   #else
+      #set($small_img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+   #end
+  <dt><a href="$!webPath/goods_$!{obj.id}.htm" target="_blank"><img src="$!small_img" /></a></dt>
+  <span class="contrast_center_center_close" goods_id="$!obj.id"></span>  
+  <dd><a href="$!webPath/goods_$!{obj.id}.htm" target="_blank">$!obj.goods_name</a></dd>
+</dl>
+#end

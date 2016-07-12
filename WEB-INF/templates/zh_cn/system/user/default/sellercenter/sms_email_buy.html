@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-短信邮件-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+function saveForm(){
+	  var params = jQuery("#theForm").serialize();
+	  jQuery(".save").removeAttr("onclick");
+		 jQuery.ajax({type:'POST',url:'$!webPath/seller/sms_email_buy_save.htm',data:params,
+					  success:function(data){
+						if(data==100){
+							showDialog("succeed","","购买成功，账户金币已经扣除！",2,"succeed",3,function(){window.location.href="$!webPath/seller/sms_email.htm";});
+							}
+						if(data==-100){
+							showDialog("error","","参数错误，购买失败！",2,"error",3,function(){window.location.href="$!webPath/seller/sms_email.htm";});
+							}
+						if(data==-300){
+							showDialog("warning","","金币不足，赶快去充值吧！",1,"warning",2,function(){window.location.href="$!webPath/seller/gold_record.htm";});
+						}
+						if(data==-400){
+							showDialog("error","","交易已经完成，请勿重复支付！",2,"error",3,function(){window.location.href="$!webPath/seller/sms_email.htm";});
+							}
+		 			  }
+		 });
+	}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=sms") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>其他管理</b> ><b>短信邮件</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href='$!webPath/seller/sms_email.htm'><i></i>邮件短信</a></li>
+            <li><a href='$!webPath/seller/sms_email_log.htm'><i></i>购买记录</a></li>
+            <li><a href='$!webPath/seller/sms_email_set.htm'><i></i>功能设置</a></li>
+          </ul>
+        </div>
+        <form id="theForm" name="theForm" action="" method="post">
+          <input id="count" name="count" type="hidden" value="$!obj.count">
+          <input id="log_type" name="log_type" type="hidden" value="$!obj.log_type">
+          <div class="cont">
+            <div class="recharge">
+              <div class="recharge_top">
+                <ul>
+                  <li>购买商品</li>
+                  <li>商品单价</li>
+                  <li>购买数量</li>
+                  <li>包含内容</li>
+                  <li>购买总计</li>
+                </ul>
+              </div>
+              <div class="recharge_center">
+                <ul>
+                  <li>$!obj.title</li>
+                  #if($!obj.log_type=="sms")
+                  <li>$!{obj.gold}（金币/100条）</li>
+                  #else
+                  <li>$!{obj.gold}（金币/100封）</li>
+                  #end
+                  <li>$!obj.count</li>
+                  #set($all = 100*$!{obj.count})
+                  #if($!obj.log_type=="sms")
+                  <li>$!{all}条短信</li>
+                  #else
+                  <li>$!{all}封邮件</li>
+                  #end
+                  <li>$!obj.all_gold（金币）</li>
+                </ul>
+              </div>
+              <div class="recharge_center_yes"><a href="javascript:void(0);" onclick="saveForm();" id="save">确认并支付</a></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

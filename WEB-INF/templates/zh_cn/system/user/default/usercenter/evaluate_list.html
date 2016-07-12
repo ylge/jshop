@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的评价 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}" />
+<meta name="copyright" content="$!{config.copyRight}" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery(".user_menu b").toggle(
+		 function(){
+			jQuery(this).siblings().hide();	
+			jQuery(this).find("i").removeClass("active");
+		  },
+		 function(){
+			jQuery(this).siblings().show();	
+			jQuery(this).find("i").addClass("active");
+		 });	
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+  $!httpInclude.include("/head.htm")
+  $!httpInclude.include("/nav1.htm")
+  <div class="main">
+  <div class="usercenter"> $!httpInclude.include("/buyer/nav.htm?op=evaluate")
+      <div class="usercenter_right">
+      <div class="myorder">
+          <h4><span class="myorder_fright"></span><strong>我的评价</strong></h4>
+        </div>
+      <div class="user_list">
+          <div class="user_list_title"> <span class="user_title_sp"> </span>
+          <ul class="user_title_ul">
+              <li class="this"><i></i><a href="javascript:void(0);">我的评价</a></li>
+            </ul>
+        </div>
+          #if($!objs.size()>0)
+          <form action="$!webPath/buyer/evaluate_list.htm" method="post" id="ListForm">
+          <div class="user_list_box">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" class="user_order_table">
+              <tr>
+                  <th width="10%">评价</th>
+                  <th width="30%">评语</th>
+                  <th width="20%">被评价的人</th>
+                  <th width="20%">商品</th>
+                  <th>操作</th>
+                </tr>
+              #foreach($obj in $objs)
+              <tr> #set($evaluate_buyer_val=$!obj.evaluate_buyer_val)
+                  #if($evaluate_buyer_val==1)
+                  #set($eva_img="$!webPath/resources/style/system/front/default/images/usercenter/flower3.gif")
+                  #set($title="好评")
+                  #elseif($evaluate_buyer_val==0)
+                  #set($eva_img="$!webPath/resources/style/system/front/default/images/usercenter/flower2.gif")
+                  #set($title="中评")
+                  #else
+                  #set($eva_img="$!webPath/resources/style/system/front/default/images/usercenter/flower1.gif")
+                  #set($title="差评")
+                  #end
+                  <td align="center"><span><img src=$!eva_img title="$title"/></span></td>
+                  <style>
+               
+                  </style>
+                  <td ><div class="pj_left">
+                  #if($obj.evaluate_status==2)<div class="pj_left_del"><img src="$!webPath/resources/style/system/front/default/images/usercenter/pj_left_del.png" /></div>#end
+                  $!obj.evaluate_info
+                  #set($imgs=$!imageTools.queryImgs($!obj.evaluate_photos))
+                  #if($imgs.size()>0) <span class="pj_b_img"> #foreach($!img in $imgs) <a href="javascript:void(0)"><img src="$!imageWebServer/$!img.path/$!img.name" /></a> #end </span> #end
+                  <div>
+                  #if($!obj.reply_status==1)
+                  <div style="padding:10px; float:left; clear:both; width:100%; background:#f6f6f6"> [店铺回复]$!obj.reply </div>
+                  #end
+                  <div style="color:#ccc; margin-bottom:10px;" > [$!CommUtil.formatLongDate($!obj.addTime)] </div>
+                  #if($!obj.addeva_status==1)
+                  <div style="padding:10px; float:left; clear:both; width:100%; background:#f6f6f6; color:#b28500"> [追加评价]$!obj.addeva_info 
+                  #set($imgs=$!imageTools.queryImgs($!obj.addeva_photos))
+                  #if($imgs.size()>0) <span class="pj_b_img"> #foreach($!img in $imgs) <a href="javascript:void(0)"><img src="$!imageWebServer/$!img.path/$!img.name" /></a> #end </span> #end
+                  </div>
+                  <div style="color:#ccc; margin-bottom:10px;" > [$!CommUtil.formatLongDate($!obj.addeva_time)] </div>
+                  #end </td>
+                  <td align="center">#if($!obj.of.store_name)$!obj.of.store_name#else自营#end</td>
+                  <td align="center">$!obj.evaluate_goods.goods_name</td>
+                  <td align="center">#if($!evaluate_buyer_val!=1&&$obj.evaluate_status!=2&&$!evaluateTools.evaluate_able($!obj.addTime)==1) <a style="border:1px solid #ccc; padding:2px 5px; border-radius:3px" href="$!webPath/buyer/evaluate_edit.htm?id=$!obj.id">修改</a> <a style="border:1px solid #ccc; padding:2px 5px; border-radius:3px" href="javascript:void(0);" onclick="showDialog('msg_info','','确认删除该评论吗?',1,'question',3,function(){window.location.href='$!webPath/buyer/evaluate_del.htm?id=$!obj.id&currentPage=$!currentPage'});">删除</a> #end #if($!obj.addeva_status!=1&&$obj.evaluate_status!=2&&$evaluateTools.evaluate_add_able($!obj.addTime)==1) <a style="border:1px solid #ccc; padding:2px 5px; border-radius:3px" href="$!webPath/buyer/evaluate_add.htm?id=$!obj.id">追加 </a> #end</td>
+                </tr>
+              #end
+            </table>
+            </div>
+          <div class="userlist_allop">
+              <div class="user_list_page"><span class="user_page_sp">
+                <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+                $!gotoPageFormHTML</span> </div>
+            </div>
+        </form>
+          <div class="user_explain">
+          <h3>评价常见问题</h3>
+          <div class="user_explain_box"> &nbsp;&nbsp;&nbsp;评价完成之后$!config.evaluate_edit_deadline天内，中评及差评可以修改为好评或删除评价，修改只能修改一次。</div>
+          <div class="user_explain_box"> &nbsp;&nbsp;&nbsp;评价完成之后$!config.evaluate_add_deadline天内，可以追加评价，评论的内容不得修改</div>
+        </div>
+          #else
+          <div class="nothing">
+          <div class="nothing_left"><img src="$!webPath/resources/style/system/front/default/images/nothing.png" /></div>
+          <div class="nothing_right">您目前还没有评价记录！</div>
+        </div>
+          #end </div>
+    </div>
+    </div>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

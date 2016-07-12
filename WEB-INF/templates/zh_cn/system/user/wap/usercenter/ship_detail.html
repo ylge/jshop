@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>物流信息 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/order_list.htm?type=$!type"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">物流信息</span></div>
+#if($!transInfo_list.size()>0)
+#foreach($transInfo in $transInfo_list)
+<div class="order_page">
+	<!--交易成功-->
+	<table class="trade_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	
+                <td>
+                	<ul>
+                    	<li class="big"><span class="fl">物流公司：$!transInfo.express_company_name</span></li>
+                        <li>运单编号：$!transInfo.express_ship_code</li>
+                        <li>物流状态：
+                        #if($!transInfo.status=="0")
+                        物流单暂无结果
+                        #elseif($!transInfo.status=="1")
+                        查询成功
+                        #elseif($!transInfo.status=="2")
+                        接口出现异常
+                        #end
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+
+	<div class="order_page_box">
+#if($!order.order_status==0)
+#set($status="已取消")
+#end
+#if($!order.order_status==10)
+#set($status="待付款")
+#end
+#if($!order.order_status==16)
+#set($status="待发货")
+#end
+#if($!order.order_status==20)
+#set($status="已付款")
+#end
+#if($!order.order_status==30)
+#set($status="已发货")        
+#end                
+#if($!order.order_status==40)
+#set($status="已收货")
+#end
+#if($!order.order_status==50)
+#set($status="已完成")                                              
+#end
+#if($!order.order_status==65)
+#set($status="已结束")                                              
+#end
+    	<h1><span class="fl">订单号：$!order.order_id</span><span class="fr">$!status</span></h1>
+        #set($price = $!order.totalPrice)
+        #foreach($map in $!orderFormTools.queryGoodsInfo("$!order.goods_info"))
+        	#set($count = $!CommUtil.add($!count, $!map.get("goods_count") ) )
+        #end
+        #if($!orderFormTools.queryGoodsInfo("$!order.goods_info").size()>1)
+        
+            #foreach($map in $!orderFormTools.queryGoodsInfo("$!order.goods_info"))
+            #set($count = $!CommUtil.add($!{count}, $!{map.get("goods_count")}))
+            #set($goods_name = $!{map.get('goods_name')})
+            #set($goods_mainphoto_path = $!{map.get('goods_mainphoto_path')})
+            #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+            #if($!velocityCount < 6)
+            <div class="order_goods">
+            <div class="dt"><a href=""><img src="$!img" width="50" height="50" /></a></div>
+            <ul>
+            	<li><b>¥ $!map.get("goods_price")</b></li>
+                <li>X $!map.get("goods_count")</li>
+            </ul>
+            <div class="dd"><a href="">$!goods_name</a></div>
+            </div>
+            #end    
+            #end
+        
+        #else
+        <div class="order_goods">
+        #foreach($map in $!orderFormTools.queryGoodsInfo("$!order.goods_info"))
+        #set($count = $!CommUtil.add($!{count}, $!{map.get("goods_count")}))
+        #set($goods_name = "$!{map.get('goods_name')}")
+        #set($goods_mainphoto_path = $!{map.get('goods_mainphoto_path')})
+        #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+        	<div class="dt"><a href=""><img src="$!img" width="50" height="50" /></a></div>
+            <ul>
+            	<li><b>¥ $!map.get("goods_price")</b></li>
+                <li>X $!{map.get("goods_count")}</li>
+            </ul>
+            <div class="dd"><a href="">$!goods_name</a></div>
+        #end    
+        </div>
+        #end
+        <div class="order_total">共 $!orderFormTools.query_goods_count("$!order.id") 件商品 实付：<b>¥ $!{price}</b></div>
+    </div>    
+    <!--物流详情-->
+    <div class="order_log">
+    	<h1><span>物流信息</span></h1>
+        <div class="order_log_list">
+        #foreach($info in $transInfo.data)
+        	<dl>
+            	<dt><img src="$!webPath/resources/style/system/front/wap/images/order_info_06.png" width="20" height="20" /></dt>
+                <dd>
+                	<ul>
+                    	<li>$!info.context</li>
+                        <li class="gray">$!info.time</li>
+                    </ul>
+                </dd>
+            </dl>
+        #end 
+            
+        </div>
+    </div>
+    
+    
+</div>
+#end
+#else
+<div class="order_page">
+<table class="trade_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	
+                <td>
+                	<ul>
+                        <li>物流状态：暂无物流信息，请稍后再试</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>    
+#end
+</body>
+</html>

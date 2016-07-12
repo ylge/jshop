@@ -1,0 +1,19 @@
+#if($!favorites.size()>0)
+#foreach($obj in $favorites)
+#if($!obj.goods_photo!="")
+	#set($img="$!imageWebServer/$!{obj.goods_photo}_middle.$!{obj.goods_photo_ext}")
+#else
+	#set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+#end
+#set($goods_url="$!webPath/goods_$!{obj.goods_id}.htm")
+#if($!config.second_domain_open && $!obj.goods_type==1 && $!obj.goods_store_second_domain!="")
+	#set($goods_url="http://$!{obj.goods_store_second_domain}.$!{domainPath}/goods_$!{obj.goods_id}.htm")
+#end
+<a href="$goods_url" target="_blank">
+<ul class="item">
+  <li class="img"><img src="$!img" width="223" /><span class="pri">¥$!{obj.goods_current_price}</span></li>
+  <li class="name">$!{obj.goods_name}</li>
+</ul>
+</a>
+#end
+#end

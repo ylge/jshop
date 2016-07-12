@@ -1,0 +1,19 @@
+<h1 class="album_h1"> <i style="float:left; margin-right:10px; margin-top:7px; font-size:14px;">相册列表</i><div class="album_s"><input placeholder="这里输入相册名称关键字" m="$!{ajax_type}" type="text" id="album_name" value="$!album_name"/><b><a href="javascript:void(0)" #if($!{ajax_type}=='.editor_photo_detail') onclick=" switch_editor_album('album_list')"  #else  onclick="show_album('tab_body_b','a')"#end>搜索</a></b></div>#if($!album_name)<div class="album_l" style="float:left; clear:both; height:30px; line-height:30px;">以下是与“$!album_name”相关的相册，若没有找到请重新输入,或点击<a href="javascript:void(0)" #if($!{ajax_type}=='.editor_photo_detail') onclick=" switch_editor_album('all')"  #else  onclick="show_album('tab_body_b','b')" #end style="text-decoration:underline; color:#0F8DFF">查看所有相册</a></div>#end</h1>
+<div class="album_list">
+  <ul>
+    #foreach($album in $albums)
+    #set($cover_img="$!webPath/resources/style/system/front/default/images/user_photo/phone.png")
+    #if($!album.album_cover)
+    #set($cover_img="$!imageWebServer/$!album.album_cover.path/$!album.album_cover.name") 
+    #end     
+    #set($size=$!{ImageTools.queryAlbumPhotosSize("$!{album.id}")})
+    <li><span><img src="$!cover_img" width="190" height="190" #if($!{ajax_type}=='.editor_photo_detail')onclick="switch_editor_photo(this)" #else onclick="photo_switch('tab_body_b',this)" #end album_id="$!album.id" style="cursor:pointer"/><b>$!{size}</b></span>
+      <p>$!album.album_name</p>
+    </li>
+    #end
+    #if(!$!albums) <span style="text-align: center; font-size:14px; color:#999;height: 150px; margin-top:30px;width: 100%;float: left;line-height: 150px;"><i style=" margin-top:-10px;"><img src="$!webPath//resources/style/system/front/default/images/seller_center_nothing.png" /></i>暂无数据</span> #end
+  </ul>
+</div>
+<div class="tab_page">
+  <div class="tab_page2" id="img_photo" ajax_page="goods_album" ajax_type="$!{ajax_type}">$!gotoPageAjaxHTML</div>
+</div>

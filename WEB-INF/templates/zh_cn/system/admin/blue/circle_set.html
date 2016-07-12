@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	 #if($!config.circle_open=="1")								
+  jQuery("#circle_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/on.jpg");
+ #else
+  jQuery("#circle_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/off.jpg");  
+ #end
+ jQuery("#circle_img").click(function(){
+   var status=jQuery("#circle_open").val();
+   if(status=="1"){
+	 jQuery("#circle_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/off.jpg");
+	 jQuery("#circle_open").val("0");
+	}else{
+	 jQuery("#circle_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/on.jpg");
+	 jQuery("#circle_open").val("1");    
+	}
+ });
+ //
+});
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">圈子管理</h1>
+  <div class="nav_list">
+
+   <ul>
+    <li><a href="$!webPath/admin/circle_set.htm" class="this"><b>圈子设置</b></a></li>
+      <li><a href="$!webPath/admin/circle_list.htm"><b>管理列表</b></a></li>
+      <li><a href="$!webPath/admin/circle_list.htm?status=0"><b>待审核列表</b></a></li>
+      </ul>
+    
+       </div>
+  <form action="$!webPath/admin/circle_set_save.htm" method="post" id="theForm">
+    <div class="edit">
+    <div class="editul setcont">
+      <ul class="set1">
+        <li class="setcont_bg">开启圈子功能</li>
+        <li><span class="webSwitch"><img id="circle_img" src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/on.jpg" width="61" height="23" style="cursor:pointer;" /></span><span id="nothis"><strong class="q"></strong><strong class="w">开启商城圈子后，页面导航中自动显示圈子频道入口</strong><strong class="c"></strong></span></li>
+      </ul>
+      <ul class="set1" style="display:">
+        <li class="setcont_bg">圈子申请审核</li>
+        <li class="radiosp">
+          <label>
+           <span> <input type="radio" value="1" id="circle_audit" #if($!config.circle_audit=='1') checked="checked" #end name="circle_audit"/></span>
+           <span> 需要 </span></label>
+         <label>
+           <span> <input type="radio" value="0" id="circle_audit" name="circle_audit" #if($!config.circle_audit=='0') checked="checked" #end/></span>
+            <span>不需要 </span></label>
+          <span id="nothis"><strong class="q"></strong><strong class="w">用户申请圈子是否需要平台管理员审核，如设置不需要审核，圈子可直接访问，否则需要审核后才可以访问</strong><strong class="c"></strong></span></li>
+      </ul>
+      <ul class="set1" style="display:">
+        <li class="setcont_bg">圈子申请限制</li>
+        <li class="radiosp">
+         <label>
+           <span> <input type="radio" value="0" id="circle_limit" name="circle_limit" #if($!config.circle_limit=='0') checked="checked" #end/></span>
+            <span>铜牌用户 </span></label>
+            
+            <label>
+           <span> <input type="radio" value="1" id="circle_limit" name="circle_limit" #if($!config.circle_limit=='1') checked="checked" #end/></span>
+           <span> 银牌用户 </span></label>
+           
+           <label>
+           <span> <input type="radio" value="2" id="circle_limit" name="circle_limit" #if($!config.circle_limit=='2') checked="checked" #end/></span>
+           <span> 金牌用户 </span></label>
+            
+            <label>
+           <span> <input type="radio" value="3" id="circle_limit" name="circle_limit" #if($!config.circle_limit=='3') checked="checked" #end/></span>
+           <span> 超级用户 </span></label>
+            
+          <span id="nothis"><strong class="q"></strong><strong class="w">只有符合该用户等级的用户才可申请创建圈子，并成为圈主</strong><strong class="c"></strong></span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">创建圈子数量</li>
+        <li><span class="size100">
+          <input name="circle_count" type="text" id="circle_count" value="$!config.circle_count" />
+          </span><span style=" line-height:30px; padding-left:10px;"></span><span id="nothis"><strong class="q"></strong><strong class="w">用户可以申请创建的圈子数量，系统默认数量为1</strong><strong class="c"></strong></span></li>
+      </ul>
+      <ul class="set1" style="display:">
+        <li class="setcont_bg">发布帖子限制</li>
+        <li class="radiosp">
+         <label>
+           <span> <input type="radio" value="0" id="publish_post_limit" name="publish_post_limit" #if($!config.publish_post_limit=='0') checked="checked" #end/></span>
+            <span>铜牌用户 </span></label>
+            
+            <label>
+           <span> <input type="radio" value="1" id="publish_post_limit" name="publish_post_limit" #if($!config.publish_post_limit=='1') checked="checked" #end/></span>
+           <span> 银牌用户 </span></label>
+           
+           <label>
+           <span> <input type="radio" value="2" id="publish_post_limit" name="publish_post_limit" #if($!config.publish_post_limit=='2') checked="checked" #end/></span>
+           <span> 金牌用户 </span></label>
+            
+            <label>
+           <span> <input type="radio" value="3" id="publish_post_limit" name="publish_post_limit" #if($!config.publish_post_limit=='3') checked="checked" #end/></span>
+           <span> 超级用户 </span></label>
+            
+          <span id="nothis"><strong class="q"></strong><strong class="w">只有符合该用户等级的用户才可以在圈子中发布帖子，回复帖子与本设置无关</strong><strong class="c"></strong></span></li>
+      </ul>
+      <ul class="set1" style="display:">
+        <li class="setcont_bg">发布角色限制</li>
+        <li class="radiosp">
+          <label>
+           <span> <input type="radio" value="0" id="publish_seller_limit" name="publish_seller_limit" #if($!config.publish_seller_limit=='0') checked="checked" #end /></span>
+           <span> 所有人可发布 </span></label>
+         <label>
+           <span> <input type="radio" value="1" id="publish_seller_limit" name="publish_seller_limit" #if($!config.publish_seller_limit=='1') checked="checked" #end/></span>
+            <span>只有商家可发布 </span></label>
+          </li>
+      </ul>
+    </div>
+    </div>
+    <div class="submit">
+      <span class="pad120"><input name="" type="submit" value="提交" />
+      <input name="id" type="hidden" id="id" value="$!config.id" />
+      <input name="circle_open" type="hidden" id="circle_open" value="$!config.circle_open" /></span>
+    </div>
+  </form>
+</div>
+</body>
+</html>

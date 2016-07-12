@@ -1,0 +1,7 @@
+﻿#foreach($obj in $activitys)
+  <ul>
+    <li><img src="$!imageWebServer/$!obj.ac_acc.path/$!obj.ac_acc.name"></li>
+    <li class="li_center">$!obj.ac_title</li>
+    <li class="li_time">活动截止时间：$!CommUtil.formatShortDate($!obj.ac_end_time)</li>
+  </ul>
+#end

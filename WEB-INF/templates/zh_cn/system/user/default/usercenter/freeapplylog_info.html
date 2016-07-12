@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>0元试用详情-$!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){
+#if($!obj.evaluate_status==0&&$!obj.apply_status==5)
+jQuery("#theForm").validate({
+			ignore: "",
+		   rules:{
+		      use_experience:{required:true}
+		   },		 
+		  messages:{
+		     use_experience:{required:"使用体验不能为空"}	 
+	     },
+		 submitHandler:function(){
+	       var params = jQuery("#theForm").serialize();
+		   jQuery(".save").attr("disbaled","disbaled");
+		   jQuery.ajax({type:'POST',url:'$!webPath/buyer/freeapplylog_save.htm',data:params,
+					  success:function(ret){
+						showDialog("msg_info","","评价成功！",2,"succeed",300,function(){
+						   window.location.href="$!webPath/buyer/freeapply_logs.htm";
+						});			
+		  }});
+	  }
+ });
+#end
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="usercenter"> $!httpInclude.include("/buyer/nav.htm?op=free")
+    <div class="usercenter_right">
+      <div class="myorder">
+        <h4><strong>0元试用详情</strong></h4>
+      </div>
+      <div class="user_list">
+        <div class="user_list_title">
+          <ul class="user_title_ul">
+             <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm">全部</a></li>
+             <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm?status=waiting">待审核</a></li>
+              <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm?status=yes">审核通过</a></li>
+               <li><i></i><a href="$!webPath/buyer/freeapply_logs.htm?status=no">审核未通过</a></li>
+                <li class="this"><i></i><a href="javascript:void(0);">0元试用详情</a></li>
+          </ul>
+        </div>       
+        <div class="add_usercenter">      
+        <form action="$!webPath/buyer/freeapplylog_save.htm" id="theForm" name="theForm">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" class="user_base_table">
+            <tr>
+                    <td width="15%" align="right"> 0元试用名称：</td>
+                    <td>$!obj.freegoods_name</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 申请时间：</td>
+                    <td>$!CommUtil.formatShortDate($!obj.addTime)</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 审核状态：</td>
+                    <td>#if($!obj.apply_status==0) 待审核 #end #if($!obj.apply_status==5) 审核通过 #end  #if($!obj.apply_status==-5) 审核未通过 #end</td>
+                  </tr> 
+                  <tr>
+                    <td align="right"> 收货人：</td>
+                    <td>$!obj.receiver_Name</td>
+                  </tr>
+                  <tr>
+                    <td align="right"> 收货地区：</td>
+                    <td>$!obj.receiver_area</td>
+                  </tr>  
+                  <tr>
+                    <td align="right"> 详细地址：</td>
+                    <td>$!obj.receiver_area_info</td>
+                  </tr> 
+                  <tr>
+                    <td align="right"> 邮政编码：</td>
+                    <td>$!obj.receiver_zip</td>
+                  </tr>  
+                   <tr>
+                    <td align="right"> 联系电话：</td>
+                    <td>$!obj.receiver_telephone</td>
+                  </tr> 
+                   <tr>
+                    <td align="right"> 手机号：</td>
+                    <td>$!obj.receiver_mobile</td>
+                  </tr>  
+                   #if($!obj.apply_status==5)
+                   #set($ex = $!shipTools.queryExpressCompany($!{obj.express_info}))
+                    <tr>
+                    <td align="right"> 快递公司：</td>
+                    <td>$!ex.company_name </td>
+                  </tr>   
+                    <tr>
+                    <td align="right"> 快递单号：</td>
+                    <td>$!obj.shipCode</td>
+                  </tr>          
+                  #end
+                  #if($!obj.evaluate_status==1)
+                  </tr>   
+                    <tr>
+                    <td align="right"> 使用体验：</td>
+                    <td>$!obj.use_experience</td>
+                  </tr> 
+                  #end
+                  #if($!obj.evaluate_status==0&&$!obj.apply_status==5)
+                  <tr>
+              <td align="right">使用体验：</td>
+               <td><span style="color:#F00"> <textarea style="box-shadow:2px 0px 5px #CCC; border:1px solid #CCC;" name="use_experience" cols="40" rows="6" id="use_experience"></textarea></span>
+                </td>
+            </tr> 
+            <tr>
+              <td>&nbsp;</td>
+              <td>
+              <input type="hidden" id="id" value="$!obj.id" name="id" />
+                <input type="submit" name=""  value="评价" style="cursor:pointer;"  class="save"  />
+              </td>
+            </tr> 
+            	  #end
+          </table>
+          </form>
+        </div> 
+      </div>
+    </div>
+  </div>
+  $!httpInclude.include("/footer.htm")
+</div>
+</body>
+</html>

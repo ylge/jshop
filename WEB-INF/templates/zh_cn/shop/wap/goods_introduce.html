@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<title>商品详细介绍页</title>
+<link href="$!webPath/resources/style/mobile/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+jQuery(document).ready(function(){
+ var data='$!obj.goods_property';
+  if(data!=""){
+	var properties=eval("("+data+")");
+    jQuery.each(properties,function(index,item){
+		jQuery(".pro_intro_tabone ul").append("<li>"+item.name+"："+item.val+"</li>");
+    });
+  }
+})
+  </script>
+</head>
+
+<body class="index_bg">
+<div class="phone_main">
+  <!--0元试用详细页-->
+  <div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>商品详细<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+  <div class="free_con">
+    <h1 class="title">商品详细</h1>
+    <div class="pro_intro_tabone">
+                <ul>
+                <li>商品名称：$!{obj.goods_name}</li>
+                #if($!{obj.goods_brand.name}!="")
+                <li>品牌：$!{obj.goods_brand.name}</li>
+                #end
+                #if($!{obj.goods_seller_time}!="")
+                <li>上架时间：$!CommUtil.formatShortDate($!{obj.goods_seller_time})</li>
+                #end
+                </ul>
+              </div>
+    <div class="integral_infro">#if($!{obj.goods_details_mobile}=="") $!obj.goods_details #else $!obj.goods_details_mobile #end</div>
+  </div>
+  $!httpInclude.include("/wap/footer.htm") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

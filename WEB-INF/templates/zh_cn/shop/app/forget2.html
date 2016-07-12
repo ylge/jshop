@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+var time=60;
+var time_id=""
+function countDown(){
+	--time;
+	jQuery("#code_get_result").html(time+"秒后可重新获取");
+	if(time<=0){
+	   window.clearInterval(time_id);
+	   jQuery("#code_get_result").html("");
+	   jQuery("#code_get").show();
+     }
+}
+function reg_code_get(type){
+	if(jQuery("#accept_type").val()!="")
+		type=jQuery("#accept_type").val();
+	else
+		jQuery("#accept_type").val(type);
+	jQuery("#code_get").hide();
+   jQuery.ajax({type:'POST',url:'$!webPath/reg_code_get.htm',data:{"accept_type":type,"email":"$!{user.email}","mobile":"$!{user.mobile}","userName":"$!{user.userName}"},success:function(ret){
+     if(ret=="1"){
+	   time=60;
+	   jQuery(".forget_word1").hide();
+	   
+	   jQuery(".forget_code1").show();
+	   jQuery("#submit_form").show();
+	   
+	   jQuery("#code_get_result").show();
+	   jQuery("#code_get").hide();
+	   time_id=setInterval(countDown,1000);
+	 }else{
+		 jQuery(".forget_word1").show();
+	   jQuery(".forget_code1").hide();
+	   alert("系统繁忙，发送失败");
+	  // jQuery("#code_get_result").hide(3000); 
+	   jQuery("#code_get").show();
+	 }
+   }});
+}
+function submit_form(){
+	if(jQuery("#verify_code").val()!="")
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<div class="phone_main"> 
+  <!--登录页-->
+  <form action="$!webPath/app/forget3.htm" method="post" name="theForm" id="theForm">
+    <input name="email" type="hidden" id="email" value="$!user.email" />
+    <input name="mobile" type="hidden" id="mobile" value="$!user.mobile" />
+    <input name="accept_type" type="hidden" id="accept_type" />    
+    <input name="userName" type="hidden" id="userName" value="$!user.userName" />
+    <div class="phone_forget">
+      <ul>
+        #if($method_mobile)
+        <li class="forget_word1" style="border-bottom:1px solid #dfdfdf" onClick="reg_code_get('mobile');"><span>$method_mobile</span></li>
+        #end
+        #if($method_email)
+        <li class="forget_word1" style="border-bottom:1px solid #dfdfdf" onClick="reg_code_get('email');"><span>$method_email</span></li>
+        #end
+        <li class="forget_code1" style="display:none"><span>
+          <input name="verify_code" type="text"  id="verify_code" placeholder="请输入验证码" />
+          <b><a href="javascript:void(0);" onClick="reg_code_get();" id="code_get">获得验证码</a><a href="javascript:void(0);" id="code_get_result" style="display:none;"></a></b></span></li>
+      </ul>
+      <div class="phone_forget_button" style="display:none" id="submit_form"><a href="javascript:void(0)" onClick="submit_form()">提交</a></div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

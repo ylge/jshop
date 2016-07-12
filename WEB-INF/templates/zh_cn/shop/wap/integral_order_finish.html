@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>订单支付</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+</head>
+
+<body class="order_bg">
+<header>
+  <section>
+    <h3>订单支付</h3>
+  </section>
+</header>
+<div class="order_box">
+    <div class="mt50" style="height:49px;"></div>
+    <div class="pay_finish">
+      <section>
+        <ul>
+          <li><b>订单编号：</b><span>$!{obj.igo_order_sn}</span></li>
+          <li><b>应付金额：</b><span class="red">¥$!{obj.igo_trans_fee}</span></li>
+#if($!obj.igo_status==-1)
+                  #set($status="已取消")
+                #end
+                #if($!obj.igo_status==0)
+                  #set($status="待付款")
+                #end
+                #if($!obj.igo_status==20)
+                  #set($status="付款成功")
+                #end
+                #if($!obj.igo_status==30)
+                  #set($status="已发货")        
+                #end                
+                #if($!obj.igo_status==40)
+                #set($status="已收货")
+                #end
+                #if($!obj.igo_status==50)
+                #set($status="已完成")                                              
+                #end   
+          <li><b>支付情况：</b><span class="gray">$!status</span></li>
+        </ul>
+      </section>
+      <div class="pay_finish_btn">
+      	  #if($!obj.igo_status==0)
+          <input type="button" class="car_btn" value="返回重新支付" onClick="window.location.href='$!webPath/wap/integral/order_pay_view.htm?id=$!obj.id'">
+          #end
+          <input type="button" class="car_btn" value="查看订单信息" onClick="window.location.href='$!webPath/wap/buyer/integral_order_view.htm?id=$!obj.id'">
+        </div>
+    </div>
+</div>
+$!httpInclude.include("/mobile/footer_new.htm")
+</body>
+</html>

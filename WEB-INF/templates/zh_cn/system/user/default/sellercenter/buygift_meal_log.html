@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-满就送-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left">
+      $!httpInclude.include("/seller/nav.htm?op=combin") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>促销推广</b>><b>满就送</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/buygift_list.htm"><i></i>满就送列表</a></li>
+            <li ><a href="$!webPath/seller/buygift_add.htm"><i></i>新增满就送</a></li>
+            <li ><a href="$!webPath/seller/buygift_meal.htm"><i></i>套餐购买</a></li>
+            <li  class="this"><a href="$!webPath/seller/buygift_meal_log.htm"><i></i>购买日志</a></li>
+          </ul>
+        </div>
+        <form action="$!webPath/seller/buygift_meal_log.htm" method="post" name="ListForm" id="ListForm">
+          <div class="seller_list_box">
+            #if($objs.size()>0) 
+            <table width="790" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+              <tr id="opertitle">
+               <th align="center" width="23%">套餐开始时间</th>
+                <th align="center" width="23%">套餐结束时间</th>
+                <th align="center" width="15%">购买时间</th>
+                <th align="center" width="20%">套餐详情</th>
+                <th align="center">消耗金币</th>
+              </tr>
+              #foreach($obj in $objs)
+              <tr class="opertr">
+               <td align="center">$!CommUtil.formatLongDate($!obj.begin_time)</td>
+                <td align="center">$!CommUtil.formatLongDate($!obj.end_time)</td>
+                <td align="center">$!CommUtil.formatShortDate($!obj.addTime)</td>
+                <td align="center">$!obj.sales_info</td>
+                <td align="center">$!obj.gold</td>
+              </tr>
+              #end
+            </table>
+           #else
+           <table>
+                <tr>
+                  <td colspan="5" align="center"><div class="seller_center_nothing">
+                      <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                      <div class="seller_center_nothing_right">暂时没有数据</div>
+                    </div></td>
+                </tr>
+                </table>
+                #end 
+          </div>
+          #if($objs.size()>0)
+          <div class="userlist_allop">
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">
+                <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+                $!gotoPageFormHTML</div>
+            </div>
+          </div>
+          #end
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

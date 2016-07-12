@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人主页 - $!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.masonry.js"></script>
+<script src="$!webPath/resources/js/iskyshop.pubu.js"></script>
+<script>
+jQuery(document).ready(function(){
+jQuery(".sns_atten dl").live("mouseover",function(){
+		jQuery(this).addClass("sns_att_hover"); }).live("mouseout",function(){
+			jQuery(this).removeClass("sns_att_hover");
+			});
+});
+
+function remove_invitation(obj_id){
+	showDialog("msg_info0","","确定删除该帖子吗？",1,"warning",3,function (){
+						window.location.href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=delete&id="+obj_id+"&currentPage=$!{currentPage}&cid=$!{cir.id}";
+						});
+	
+	}
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+<div class="sns_width">
+ $!httpInclude.include("/buyer/my_sns_head.htm")
+  <div class="sns_main">
+    $!httpInclude.include("/buyer/my_sns_nav.htm?op=cir")
+        <div class="sns_border">
+        <div class="sns_nav_na">
+        	<a href="$!webPath/buyer/my_sns_circle.htm">我关注的圈子</a> <a class="this" href="$!webPath/buyer/my_sns_circle.htm?type=my_circle">管理我的圈子</a>
+        </div>
+        #if($!cir)
+        <div class="sns_atten_box">
+        </div>
+        <div class="sns_att_list_c">
+             #set($photo=$!circleViewTools.genercircleImage("$!cir.id"))
+        	<span><a href="$!webPath/circle/detail_$!{cir.id}.htm" target="_blank"><img src="$!imageWebServer/$!{photo.src}" /></a></span>
+            <h3><a href="$!webPath/circle/detail_$!{cir.id}.htm" target="_blank">$!cir.title</a></h3>
+            <p>分类：$!cir.class_name</p>
+            <i>帖子：$!{cir.invitation_count}</i>
+            <i>关注：$!cir.attention_count</i>
+            <b>$!cir.content</b>
+        </div>
+        <!--圈子内的帖子-->
+    <form id="ListForm" name="ListForm" action="$!webPath/buyer/my_sns_circle_invitation.htm?type=my_circle" method="post">    
+    #if($!objs.size()>0)
+           <table class="sns_circle_table" width="1198px">
+    	<tbody>
+            <tr>
+                <th width="55%">标题</th>
+                <th width="8%">回复人数</th>
+                <th width="18%">发帖人</th>
+                <th>操作</th>
+            </tr>
+            #if($!top)
+             <tr>
+                <td width="55%"><a style="color:#F00" href="$!webPath/circle/invitation_detail_$!{top.id}.htm" target="_blank">【置顶】 #if($!top.invitaion_perfect==1)（精华）#end $!top.title</a></td>
+                <td width="8%" align="center">$!top.reply_count</td>
+                <td width="18%" align="center">$!top.userName</td>
+                <td align="center">
+                 #if($!top.invitaion_top==1)
+                 <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=cancle_top&id=$!{top.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">取消置顶</a> |
+                #else
+                <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=top&id=$!{top.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">置顶</a> | 
+                #end
+                 #if($!top.invitaion_perfect==1)
+                <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=cancle_perfect&id=$!{top.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">取消加精</a> | 
+                #else
+                <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=perfect&id=$!{top.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">加精</a> | 
+                #end
+                <a href="javascript:void(0);" onclick="remove_invitation($!top.id);">删除</a></td>
+            </tr>
+            #end
+             #foreach($obj in $objs)
+                <tr>
+                <td width="55%"><a  #if($!obj.invitaion_top==1) style="color:#F00" #end #if($!obj.invitaion_perfect==1) style="color:#06F" #end href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank">#if($!obj.invitaion_top==1)【置顶】#end #if($!obj.invitaion_perfect==1)（精华）#end $!obj.title</a></td>
+                <td width="8%" align="center">$!obj.reply_count</td>
+                <td width="18%" align="center">$!obj.userName</td>
+                <td align="center">
+                #if($!obj.invitaion_top==1)
+                 <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=cancle_top&id=$!{obj.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">取消置顶</a> |
+                #else
+                <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=top&id=$!{obj.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">置顶</a> |
+                #end 
+                #if($!obj.invitaion_perfect==1)
+                <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=cancle_perfect&id=$!{obj.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">取消加精</a> | 
+                #else
+                 <a href="$!webPath/buyer/my_sns_circle_invitation_operate.htm?operate=perfect&id=$!{obj.id}&currentPage=$!{currentPage}&cid=$!{cir.id}">加精</a> | 
+                #end
+                <a href="javascript:void(0);" onclick="remove_invitation($!obj.id);">删除</a></td>
+            </tr>
+             #end
+            
+        </tbody>
+    </table>
+    #else
+    <div class="sns_nothing"> <span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span> <span class="fr">您的圈子中没有任何人发帖！</span> </div>
+    #end
+    <input id="currentPage" name="currentPage" value="$!currentPage" type="hidden"/>
+    <input id="cid" name="cid" value="$!{cir.id}" type="hidden"/>
+    <div class="sns_pages">$!gotoPageFormHTML</div>
+	</form>
+        #else
+        <div class="sns_nothing">
+        	<span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span>
+            <span class="fr">您没有创建任何圈子！</span>
+        </div>
+        #end
+        </div>
+    </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

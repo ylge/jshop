@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-自建运费模板-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+
+jQuery(function(){ 
+   //
+   jQuery("#theForm").validate({
+	 ignore: "",							   
+     rules: {
+		     ecc_template_acc:{accept:".jpg|.jpeg|.bmp|.png|.gif"},
+			 ecc_template_width:{required :true,digits:true},
+	         ecc_template_heigh:{required :true,digits:true}
+			},
+     messages: {
+		     ecc_template_acc:{accept:"不允许的图片格式"},
+			 ecc_template_width:{required :"宽度不能为空",digits:"宽度只能为整数"},
+	         ecc_template_heigh:{required :"长度不能为空",digits:"长度只能为整数"}
+		  }	  
+  }); 
+//
+  jQuery("#ecc_template_acc").change(function(){
+     jQuery("#ecc_template_acc_path").val(jQuery(this).val());
+  });
+})
+
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=store_express")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b>><b>运费模板打印配置</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/ecc_list.htm"><i></i>常用物流配置</a></li>
+            <li><a href="$!webPath/seller/ecc_list.htm"><i></i>常用物流列表</a></li>
+            <li class="this"><a href='$!webPath/seller/ecc_create.htm?id=$!obj.id' ><i></i>自建运费模板</a></li>
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/ecc_template_save.htm" method="post" enctype="multipart/form-data" id="theForm" >
+            <input name="id" type="hidden" id="id"  value="$!obj.id"/>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td align="right">快递名称：</td>
+                <td >$!{obj.ecc_name}</td>
+              </tr>
+              <tr>
+                <td align="right">快递模板：</td>
+                #set($hight=100*$!{obj.ecc_template_heigh}/$!{obj.ecc_template_width})
+                <td ><label> <span class="water_upload"> <b class="opacity_txt">
+                    <input name="ecc_template_acc_path" type="text" id="ecc_template_acc_path" />
+                    </b> <b class="opacity_submit">
+                    <input name="" type="button" value="浏览..." />
+                    </b> <b class="opacity_up">
+                    <input type="file" name="ecc_template_acc" id="ecc_template_acc" />
+                    </b> </span> </label></td>
+              </tr>
+              <tr>
+                <td width="17%" align="right"><strong class="redstr">*</strong>模板宽度：</td>
+                <td ><input name="ecc_template_width" type="text" class="base_txt" id="ecc_template_width"  value="$!obj.ecc_template_width"/>
+                  毫米</td>
+              </tr>
+              <tr>
+                <td align="right"><strong class="redstr">*</strong>模板高度：</td>
+                <td><input name="ecc_template_heigh" type="text" id="ecc_template_heigh"  value="$!obj.ecc_template_heigh" class="base_txt"/>
+                  毫米</td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td ><input name="" type="submit"  value="提交"  style="cursor:pointer;" class="seller_save"/></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

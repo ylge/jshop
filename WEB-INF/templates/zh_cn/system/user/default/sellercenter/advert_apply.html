@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-广告申请-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("#theForm").validate({
+       rules: {
+			ad_title:{required:true},
+			ad_begin_time:{required:true},
+			ad_text:{required:true},
+			acc:{accept:"$!config.imageSuffix"},
+			day:{
+				   required:true,
+				   min:1,
+				   digits:true,
+			       remote:{
+                           url:"$!webPath/seller/advert_vefity.htm", 
+                           type:"post",
+                           dataType:"json",
+                           data: {day:function(){return jQuery("#day").val();},ap_id:"$!ap.id"}
+				          }
+				   }
+		  },
+	   messages: {
+		    ad_title:{required:"广告标题不能为空"},
+			ad_begin_time:{required:"开始时间不能为空"},
+			ad_text:{required:"广告文字不能为空"},
+			acc:{accept:"不允许的图片格式"},
+			day:{required:"广告购买天数不能为空",min:"不得少于1天",digits:"广告购买天数只能为整数",remote:"您的金币不够,无法购买"}
+	     },
+		submitHandler:function(){
+			var params = jQuery("#theForm").serializeArray();
+			var formData= {};
+			jQuery.each(params, function(i, param){
+				 formData[param.name] = param.value;
+			});
+			jQuery(".seller_save").attr("disabled","disabled");
+			jQuery.ajaxFileUpload({url:'$!webPath/seller/advert_apply_save.htm',
+								  dataType:'json',
+								  fileElementId:['acc'],
+								  data:formData,
+								  success:function(data){		
+				 					var lin = ""+data.url;	
+				 					if(data.ret==true){
+			 		 					showDialog("msg_info","",data.op_title,0,"succeed",3,function(arg){window.location.href=arg},lin);
+										
+		  						   	}else{
+										showDialog("msg_info","",data.op_title,0,"question",3,function(arg){window.location.href=arg},lin);
+										}
+									jQuery(".seller_save").removeAttr("disabled");
+								 }
+			});
+			
+		}
+  });
+  jQuery('#ad_begin_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true,
+	  minDate:0
+  });
+  //
+    jQuery("#acc").change(function(){
+     jQuery("#acc_path").val(jQuery(this).val());
+  });
+	jQuery("#day").live("change",function(){
+			var day =jQuery(this).val();
+			if(day>=1){
+			var price="$!{ap.ap_price}";	
+			var all_price = day*price;
+			var text =all_price+"金币（"+day+"天）";
+			jQuery("#gold_pre").html(text);
+				}else{
+			jQuery("#gold_pre").html("暂无");		
+					}
+		});
+	
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=advert") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>其他管理</b>><b>广告管理</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/advert_list.htm"><i></i>广告列表</a></li>
+            <li ><a href="$!webPath/seller/advert_my.htm"><i></i>我的广告</a></li>
+            <li class="this"><a href="javascript:void(0);"><i></i>广告申请</a></li>
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/advert_apply_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td width="20%" align="right"> 所属广告位：</td>
+                <td> $!ap.ap_title</td>
+              </tr>
+              #if($!ap.ap_type=="img")
+              #set($type="图片")
+              #end
+              #if($!ap.ap_type=="scroll")
+              #set($type="滚动")
+              #end
+              #if($!ap.ap_type=="slide")
+              #set($type="幻灯")
+              #end
+              #if($!ap.ap_type=="text")
+              #set($type="文字")
+              #end
+               #if($!ap.ap_type=="bg_slide")
+              #set($type="背景幻灯")
+              #end
+              <tr>
+                <td align="right"> 广告类型：</td>
+                <td>$!type</td>
+              </tr>
+              <tr>
+                <td align="right"> 广告价格：</td>
+                <td >$!{ap.ap_price}金币/天</td>
+              </tr>
+              <tr>
+                <td  align="right"> 我的金币：</td>
+                <td > $!{user.gold}金币</td>
+              </tr>
+              <tr>
+                <td  align="right"><strong class="redstr">*</strong>广告名称：</td>
+                <td ><input name="ad_title" type="text" id="ad_title" value="$!obj.ad_title" class="base_txt"/></td>
+              </tr>
+              <tr>
+                <td  align="right"><strong class="redstr">*</strong>开始时间：</td>
+                <td > #if(!$!obj)
+                  <input name="ad_begin_time" type="text" id="ad_begin_time" class="base_txt"/>
+                  #else $!CommUtil.formatShortDate($!obj.ad_begin_time) #end</td>
+              </tr>
+              <tr>
+                <td align="right"><strong class="redstr">*</strong>购买天数：</td>
+                <td> #if(!$!obj)
+                  <input name="day" type="text" id="day" class="base_txt"/>
+                   #else $!CommUtil.formatShortDate($!obj.ad_end_time) #end</td>
+              </tr>
+              <tr>
+                <td align="right"><strong class="redstr"></strong>购买预计：</td>
+                <td id="gold_pre">#if(!$!obj)暂无#else $!{obj.ad_gold}金币 #end</td>
+              </tr>
+              #if($!ap.ap_type=="text")
+              <tr>
+                <td align="right"><strong class="redstr">*</strong>广告文字：</td>
+                <td><input name="ad_text" type="text" id="ad_text" value="$!obj.ad_text" class="base_txt"/></td>
+              </tr>
+              #end
+              #if($!ap.ap_type!="text") 
+              #if($!obj.ad_acc)
+              #set($rate=$!CommUtil.div($!obj.ad_acc.width,150))
+              #set($height=$!CommUtil.div($!obj.ad_acc.height,$!rate))
+              <tr>
+                <td align="right">当前图片：</td>
+                <td><img src="$!imageWebServer/$!obj.ad_acc.path/$!obj.ad_acc.name" width="150" height="$!height"></td>
+              </tr>
+              #end
+              #end
+              <tr>
+                <td align="right">广告图片：</td>
+                <td><span class="water_upload"> <b class="opacity_txt">
+                  <input name="acc_path" type="text" id="acc_path" />
+                  </b> <b class="opacity_submit">
+                  <input name="" type="button" value="浏览..." />
+                  </b> <b class="opacity_up">
+                  <input name="acc" type="file" id="acc" size="35" class="base_txt"/>
+                  </b> </span> <i class="base_i">最佳尺寸：$!{ap.ap_width}像素×$!{ap.ap_height}像素</i></td>
+              </tr>
+              <tr>
+                <td align="right">链接地址：</td>
+                <td ><input name="ad_url" type="text" id="ad_url" value="$!obj.ad_url" class="base_txt"/>
+                  <i class="base_i"> 链接需要带http://</i></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td class="px10"><span class="setsub">
+                  <input type="submit"  value="保存" style="cursor:pointer;" class="seller_save"/>
+                  </span></td>
+              </tr>
+            </table>
+            <input name="ap_session" type="hidden" id="ap_session" value="$!ap_session" />
+            <input name="ap_id" type="hidden" id="ap_id" value="$!ap.id" />
+            <input name="id" type="hidden" id="id" value="$!obj.id" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>订单提交成功 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+//返回当前页面高度
+function order_pay(){	
+  var h=jQuery(window).height();
+  var top= document.documentElement.scrollTop;
+  top=top+(h-top)/2;
+  jQuery('.black_overlay').css("height",h);
+  jQuery(".white_content").css("top",top);
+  jQuery('#pay_overlay').show()
+  jQuery('#theForm').submit();
+}
+window.onscroll=function(){
+  var h=document.body.scrollHeight;
+  var top= document.documentElement.scrollTop;
+  top=top+(h-top)/2;
+  jQuery(".white_content").css("top",top);
+}
+jQuery(document).ready(function(){
+   jQuery(":radio[value=$!of.payment.mark]").attr("checked",true);
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="shopping_cart">
+    <div class="shopping_step">
+      <ul>
+        <li class="shopping_step_a"><span></span><i></i><strong>1.我的购物车</strong></li>
+        <li class="shopping_step_bthree"><span></span><i></i><strong>2.填写核对订单信息</strong></li>
+        <li class="shopping_step_cthis"><span></span><i></i><strong>3.成功提交订单</strong></li>
+      </ul>
+    </div>
+     <form action="$!webPath/order_pay.htm" method="post" target="_blank" id="theForm">
+    <div class="shopping_payfor">
+      <div class="shopping_payfor_top"> <span class="shopping_payfor_topleft"></span>
+        <ul class="orderul">
+          <li class="shopping_payfor_title">订单提交成功</li>
+          <li class="order_hui">您的订单已成功生成，选择您想用的支付方式进行支付</li>
+          <li class="order_box"><span class="order_box_cont">
+            <p>应付金额：<b>¥$!{all_of_price}</b></p>
+            </span></li>
+        #if($!order.order_cat!=2)  <li class="order_bottom">您可以在用户中心<a href="$!webPath/buyer/order.htm">“我的订单”</a>查看订单</li>#end
+        </ul>
+      </div>
+      <div class="shopping_payfor_bottom">
+        <h3 class="shopping_payfor_h3">您可以选择的付款方式</h3>
+        <div class="shopping_payfor_bmbox">
+        #set($alipay_install=$!paymentTools.queryShopPayment("alipay").get("install"))
+        #set($paypal_install=$!paymentTools.queryShopPayment("paypal").get("install"))
+        #set($tenpay_install=$!paymentTools.queryShopPayment("tenpay").get("install"))
+        #set($chinabank_install=$!paymentTools.queryShopPayment("chinabank").get("install"))
+        #set($bill_install=$!paymentTools.queryShopPayment("bill").get("install"))
+        #if($!alipay_install==true||$!paypal_install==true||$!tenpay_install==true||$!chinabank_install==true||$!bill_install==true)
+          <h4>在线支付</h4>
+          <ul>         
+            #if($!alipay_install==true)
+            <li>
+            <label>
+              <input name="payType" type="radio" value="alipay" checked="checked" />
+              <span><img src="$!webPath/resources/style/common/images/payment/alipay.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+            #end
+            #if($!paypal_install==true)
+            <li>
+              <label>
+              <input name="payType" type="radio" value="paypal" checked="checked" />
+              <span><img src="$!webPath/resources/style/common/images/payment/paypal.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+            #end
+            #if($!tenpay_install==true)
+            <li>
+             <label>
+              <input name="payType" type="radio" value="tenpay" checked="checked" />
+              <span><img src="$!webPath/resources/style/common/images/payment/tenpay.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+            #end
+            #if($!chinabank_install==true)
+            <li>
+             <label>
+              <input name="payType" type="radio" value="chinabank" checked="checked" />
+              <span><img src="$!webPath/resources/style/common/images/payment/chinabank.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+            #end
+            #if($!bill_install==true)
+            <li>
+             <label>
+              <input name="payType" type="radio" value="bill" checked="checked" />
+              <span><img src="$!webPath/resources/style/common/images/payment/bill.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+            #end
+          </ul>         
+          #end
+          #set($install=$!paymentTools.queryShopPayment("balance").get("install")) 
+          #if($!install==true)           
+          <h4>预存款支付</h4>
+          <ul>
+            <li>
+             <label>
+             <input name="payType" type="radio" value="balance" />
+              <span><img src="$!webPath/resources/style/common/images/payment/balance.jpg" width="115" height="41" /></span>
+              </label>
+              <p></p>
+            </li>
+          </ul>
+          #end
+        </div>
+      </div>
+      <div class="shopping_payfor_next">
+           <input name="" type="button"  value="确认支付" onclick="order_pay();" style="cursor:pointer;"/>
+            <input name="order_id" type="hidden" id="order_id" value="$!{order.id}" />
+      </div>
+    </div>
+  </form>
+  </div>
+    $!httpInclude.include("/footer.htm")
+</div>
+<div style="display:none;" id="pay_overlay">
+  <div class="white_content"> <a href="javascript:void(0);" onclick="javascript:jQuery('#pay_overlay').hide();" class="white_close"><img src="$!webPath/resources/style/system/front/default/images/close.jpg" width="14" height="14" /></a>
+    <div class="white_box">
+      <h1>支付提醒</h1>
+      <dl class="white_dl">
+        <dt></dt>
+        <dd>
+          <div class="payf"><a href="$!webPath/order_finish.htm?order_id=$!{order.id}">已经完成支付！</a></div>
+          <div class="payf"><a href="javascript:void(0);"  onclick="javascript:jQuery('#pay_overlay').hide();" >支付出现问题！</a></div>
+        </dd>
+      </dl>
+    </div>
+  </div>
+  <div class="black_overlay"></div>
+</div>
+</body>
+</html>

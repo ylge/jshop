@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商城专题 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+jQuery(document).ready(function(){
+	var width =jQuery(window).width();	
+		jQuery("map[name^=Map_]").each(function(){
+				var id =jQuery(this).attr("j_id");
+				var j_info =jQuery(this).attr("j_info");
+				jQuery.post("$!webPath/subject/getAreaInfo.htm",
+							{"areaInfo":j_info,"img_id":id,"width":width},
+							function(data){
+							  jQuery.each(data, function(index,item){
+										var area ='<area target="_blank" href="'+item.url+'" coords="'+item.coords+'" shape="rect"></area>';		 
+										jQuery("#Map_"+id).append(area);
+								 	});																						   																				   
+							 },"json");
+				
+				
+			   });
+	});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm?op=subject&id=$!{obj.id}")
+<!-- 专题主体-->
+<div class="subject">
+  <!--商品div-->
+  #foreach($obj_goods in $objs)
+  #if($!obj_goods.type=="goods")
+  <div class="subject_center"> #foreach($goods in $!SubjectTools.getGoodsInfos("$!obj_goods.goods_ids"))
+    #set($goods_url="$!webPath/goods_$!{goods.id}.htm")
+    #if($!SubjectTools.getGoodsUrl("$!goods.id")=="true")
+    #set($goods_url="http://$!{store.store_second_domain}.$!{domainPath}/goods_$!{goods.id}.htm")
+    #end
+    <div class="subject_center_one">
+      <div class="subject_center_one_img"><a href="$!{goods_url}" target="_blank"><img src="$!imageWebServer/$!{goods.img}" width="232px" height="232px"/></a></div>
+      <div class="subject_center_one_name"><a href="$!{goods_url}" target="_blank">$!{goods.name}</a></div>
+      <div class="subject_center_one_price">价格：<b style="color:#F00">￥$!{goods.price}</b></div>
+    </div>
+    #end
+    #end
+    #end </div>
+  #foreach($obj in $objs)
+  #if($!obj.type=="img")
+  <div class="subject_one">
+    <div class="subject_one_m"> <span> #if($!obj.img_href && $!obj.img_href!="") <a href="$!obj.img_href" target="_blank"> <img src="$!imageWebServer/$!{obj.img_url}" usemap="#Map_$!{obj.id}" border="0"/> </a> #else <img src="$!imageWebServer/$!{obj.img_url}" usemap="#Map_$!{obj.id}" border="0"/> #end
+      #if($!obj.areaInfo)
+      <map name="Map_$!{obj.id}" id="Map_$!{obj.id}" j_id="$!{obj.id}" j_info="$!{obj.areaInfo}">
+           #foreach($area in $!SubjectTools.getAreaInfo("$!{obj.areaInfo}","$!{obj.id}"))
+        <area target="_blank" href="$!{area.url}" coords="$!{area.coords}" shape="rect">
+        </area>
+           #end
+      </map>
+      </span> </div>
+  </div>
+  #end 
+  #end
+  #end 
+  #if($!objs.size()==0||!$!objs)
+  <div class="main_list_box">
+    <div class="main_list_none"> <span class="main_none_box"> <i></i>
+      <p> 抱歉，专题没有相应的内容！<a href="$!webPath/index.htm">返回商城首页</a></p>
+      </span></div>
+  </div>
+  #end </div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

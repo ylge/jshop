@@ -1,0 +1,278 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head></head>
+#macro ( genericTree $somelist ) 
+#foreach ( $some in $somelist )
+<option value="$!some.id">#if($!some.level>0)
+#foreach($count in [0..$!some.level])&nbsp;&nbsp;#end #end $!some.className</option>
+#genericTree($some.childs) 
+#end 
+#end
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="$!webPath/resources/editor/themes/default/default.css" />
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+var options = {
+        cssPath : '$!webPath/resources/editor/themes/default/default.css',
+        filterMode : true,
+		uploadJson:'$!webPath/upload.htm',
+		width : '700px',
+		height:'400px',
+		syncType:"form",
+		afterCreate : function() {
+							var self = this;
+							self.sync();
+						},
+		afterChange : function() {
+							var self = this;
+							self.sync();
+						},
+		afterBlur : function() {
+							var self = this;
+							self.sync();
+						},
+		items:['source', '|', 'fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste',
+			'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+			'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+			'superscript', '|', 'selectall', 'clearhtml','quickformat','|',
+			'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+			'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'emoticons', 'link', 'unlink', '|', 'about']
+};
+jQuery(document).ready(function() {
+	editor = KindEditor.create('#article', options);
+    jQuery("#logoShow").mouseover(function() {
+        jQuery("#logoImg").css('display', 'block');
+    }).mouseout(function() {
+        jQuery("#logoImg").css('display', 'none');
+    });
+	jQuery.validator.addMethod("cl",
+    function(value, element) {
+		var level=jQuery(" option:selected").attr("level");
+        if(level==1||level=="1"){
+			return false;	
+		}else{
+			return true;
+		}
+	});
+    jQuery("#theForm").validate({
+        rules: {
+            title: {
+                required: true
+            },
+            classid: {
+                required: true,
+				cl:true
+            },
+            synopsis: {
+                required: true,
+                maxlength: 200
+            },
+			infoSource:{
+			 	required: true
+			}
+        },
+        messages: {
+            title: {
+                required: "资讯标题不能为空"
+            },
+            classid: {
+                required: "资讯分类不能为空",
+				cl:"请选择二级分类"
+            },
+            synopsis: {
+                required: "资讯导读不能为空",
+                maxlength: "资讯导读最多200字"
+            },
+			infoSource:{
+			 	required: "不得为空"
+			}
+        }
+    });
+    //改变系统提示的样式
+    jQuery("span .w").mousemove(function() {
+        var id = jQuery(this.parentNode).attr("id");
+        if (id = "nothis") {
+            jQuery(this.parentNode).attr("id", "this")
+        }
+    }).mouseout(function() {
+        var id = jQuery(this.parentNode).attr("id");
+        if (id = "this") {
+            jQuery(this.parentNode).attr("id", "nothis")
+        }
+    });
+    //
+    
+
+    
+});
+
+function saveForm() {
+  var r = jQuery("#theForm").valid(); 
+	if(jQuery("#article").val()==""){
+		jQuery("#show").show();
+	}else{
+		  editor.sync();
+    	jQuery("#theForm").submit();
+	}
+}
+
+
+function switch_editor_album(mark) {
+    var dis = jQuery("#info_goods").css("display");
+	var dis2 = jQuery("#info_goods_imgs").css("display");
+    if (dis == "none" && dis2 == "none") {
+        jQuery.post("$!webPath/admin/information_goods.htm", {
+        },
+        function(text) {
+            jQuery("#info_goods").empty();
+            jQuery("#info_goods").append(text);
+        },
+        "text");
+        jQuery("#info_goods").show();
+		jQuery("#good_button").html("关闭商品图片");
+    } else {
+        jQuery("#info_goods").hide();
+		jQuery("#info_goods_imgs").hide();
+		jQuery("#good_button").html("添加商品图片");
+    }
+}
+function information_goods_load(){
+	var gc_id=jQuery("#gc_id").val();
+	var goods_name=jQuery("#goods_name").val();
+	jQuery.post("$!webPath/admin/information_goods.htm", {
+		"gc_id":gc_id,
+		"goods_name":goods_name
+        },
+        function(text) {
+            jQuery("#info_goods").empty();
+            jQuery("#info_goods").append(text);
+        },
+        "text");
+}
+function photo_switch(id,obj) {
+    jQuery.post("$!webPath/admin/information_goods_imgs.htm", {
+        "goods_id": id
+    },
+    function(text) {
+		jQuery("#info_goods").hide();
+        jQuery("#info_goods_imgs").empty();
+        jQuery("#info_goods_imgs").append(text);
+    },
+    "text");
+    jQuery("#info_goods_imgs").show();
+}
+
+/*Ajax分页*/
+function ajaxPage(url,currentPage,obj){
+	var gc_id=jQuery("#gc_id").val();
+	var goods_name=jQuery("#goods_name").val();
+     jQuery.post("$!webPath/admin/information_goods.htm",{"currentPage":currentPage,"gc_id":gc_id,
+		"goods_name":goods_name},function(text){
+       jQuery("#info_goods").empty();
+        jQuery("#info_goods").append(text);
+     },"text");
+}
+function show_goods(){
+	jQuery("#info_goods").show();
+    jQuery("#info_goods_imgs").hide();
+}
+function editor_add(obj, id) {
+    var html = "<a href='$!webPath/goods_" + id + ".htm' target='_blank'><img src='" + obj + "' width='200' heigh='200'/></a>";
+    editor.insertHtml(html);
+}
+</script>
+</head><body>
+<form action="$!webPath/admin/information_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+  <input name="id" type="hidden" id="id" value="$!obj.id" />
+  <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/information_list.htm" />
+  <input name="add_url" type="hidden" id="add_url" value="$!webPath/admin/information_add.htm" />
+  <div class="cont">
+    <h1 class="seth">资讯管理</h1>
+    <div class="nav_list">
+      <ul>
+        <li> <a href="$!webPath/admin/information_list.htm"><b>所有资讯</b></a></li>
+        <li><a href="$!webPath/admin/information_verifylist.htm"><b>待审核资讯</b></a></li>
+        <li><a href="$!webPath/admin/information_add.htm" #if(!$!edit) class="this" #end><b>新增资讯</b></a></li>
+        #if($!edit)
+        <li><a href="javascript:void(0);" class="this"><b>编辑</b></a></li>
+        #end
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" >
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>资讯标题</li>
+          <li><span class="webname">
+            <input name="title" type="text" id="title" value="$!obj.title" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>资讯来源</li>
+          <li><span class="webname">
+            <input name="infoSource" type="text" id="infoSource" value="$!obj.infoSource" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>资讯分类</li>
+          <li><span class="webname">
+            <select name="classid" id="classid" >
+              <option value="">请选择资讯分类</option>
+          #foreach($class in $infoclass)
+              <option value="$!class.id" level="1" #if($!obj.classid==$!class.id) selected="selected" #end>$!class.ic_name</option>
+              #if(!$!class.ic_pid)
+              	#foreach($ob in $cmsTools.queryChildClass("$!class.id"))
+                <option value="$!ob.id" level="2" #if($!obj.classid==$!ob.id) selected="selected" #end>----$!ob.ic_name</option>
+                #end
+              #end
+          #end
+            </select>
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">资讯封面</li>
+          <li><span class="webname"> <span class="eidt_li_a" style="position:relative; width:50px; height:22px; line-height:22px;margin-top: 3px; color:#333; border:1px solid #ccc; padding:2px 5px; border-radius:3px;">选择图片
+            <input type="file" id="cover" style="filter:alpha(opacity=0);-moz-opacity:0;opacity:0;top:0;left:1px;position:absolute; z-index:100;width:60px; " name="cover" />
+            </span> </span><span class="preview"> <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="25" height="25"  id="logoShow" style="cursor:help"/> </span><span id="nothis"><strong class="q"></strong><strong class="w">封面用于和标题一起来展示资讯的核心内容（可选）</strong><strong class="c"></strong></span>  $!obj.cover.id
+            #if($!obj.cover)
+          
+            #set($img=$!imageTools.queryImg($!obj.cover))
+              
+            <div class="bigimgpre" id="logoImg" style="display:none; left:270px;"><img src="$!imageWebServer/$!img.path/$!img.name"  width="200" height="200" id="coverimg"/> </div>
+            #end</li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>资讯导读</li>
+          <li><span class="webname">
+            <textarea id="synopsis" name="synopsis" style="width:320px; height:70px; padding:5px;">$!obj.synopsis</textarea>
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>资讯内容</li>
+          <li><span class="webname">
+            <textarea name="article" style="width:100%;height:400px;" id="article">$!obj.article</textarea>        </span></li>
+          <li style=" clear:both; margin-left:135px;height:30px; line-height:30px; width:150px;"><a id="good_button" class="eidt_li_a" href="javascript:void(0);" onclick="switch_editor_album('');">添加商品图片</a>
+          <label id="show" class="error" generated="true" style="display:none">资讯内容不能为空</label>
+          </li>
+          <li style=" clear:both; margin-left:135px;">
+            <div id="info_goods" class="editor_photo_detail" style="display:none;"> </div>
+            <div id="info_goods_imgs" class="editor_photo_detail" style="display:none;"> </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

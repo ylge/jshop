@@ -1,0 +1,91 @@
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(function(){ 
+  jQuery("#theForm").validate({
+	 ignore: "",							   
+     rules: {
+			 goods_top_format_id:{required:true},
+			 goods_bottom_format_id:{required:true}
+			},
+     messages: {
+			goods_top_format_id:{required:"顶部版式不能为空"},
+			goods_bottom_format_id:{required:"底部版式不能为空"}
+		  },
+  submitHandler:function(){
+	  var params = jQuery("#theForm").serialize();
+	  jQuery("#save").attr("disabled","disabled");
+	  jQuery.ajax({type:'POST',url:'$!webPath/seller/goods_format_link.htm',data:params,
+				   success:function(data){
+				       if(data=="true"){
+			                  jQuery("#theForm")[0].reset();
+			                  showDialog("msg_info","","商品版式添加成功！",0,"succeed",3,function(currentPage){
+								 var currentPage=jQuery("#currentPage").val();
+				                 window.location.href="$!webPath/seller/goods.htm?currentPage="+currentPage;
+								 jQuery("#save").removeAttr("disabled");
+		                      });
+							   jQuery("#link_goods_format").remove();
+		                 }
+				   }
+	  }); 
+	  
+	}		  
+  });
+})
+</script>
+<form action="$!webPath/seller/goods_format_link.htm" method="post" name="theForm" id="theForm">
+<table style="float:left;" width="100%" border="0" cellspacing="0" cellpadding="0" class="box_table">
+    <tr>
+      <td width="154" height="37" align="right">顶部版式：</td>
+      <td width="236" align="left"><select name="goods_top_format_id" id="goods_top_format_id">
+        <option value="">请选择...</option>  
+                #foreach($gf in $gfs)
+                  #if($!gf.gf_type==0)
+          <option value="$!gf.id">$!gf.gf_name</option>
+        
+          
+            
+            
+                  #end
+                #end
+              
+          
+          
+        
+      </select></td>
+    </tr>
+    <tr>
+      <td height="30" align="right">底部版式：</td>
+      <td align="left"><select name="goods_bottom_format_id" id="goods_bottom_format_id">
+        <option value="">请选择...</option>
+        
+          
+            
+            
+                #foreach($gf in $gfs)
+                  #if($!gf.gf_type==1)
+                  
+            
+            
+          
+        <option value="$!gf.id">$!gf.gf_name</option>
+        
+          
+            
+            
+                  #end
+                #end
+              
+          
+          
+        
+      </select></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><span class="inputbtn">
+        <input name="" type="submit" value="提交" style="cursor:pointer;" id="save"/>
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        <input name="mulitId" type="hidden" id="mulitId" value="$!mulitId">
+      </span></td>
+    </tr>
+  </table>
+</form>

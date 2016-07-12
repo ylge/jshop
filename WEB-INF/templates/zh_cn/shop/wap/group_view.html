@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes">
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+function timeCount(remain_id){
+   function _fresh(){
+      var nowDate = new Date(),                                    //当前时间
+      endDate = new Date($('#'+remain_id).attr('endtime')),    //截止时间
+      totalS  = parseInt((endDate.getTime() - nowDate.getTime()) / 1000);     //总秒数
+      _day    = parseInt(totalS / 3600 / 24);
+      _hour   = parseInt((totalS / 3600) % 24);
+      _minute = parseInt((totalS / 60) % 60);
+      _second = parseInt(totalS % 60);
+     jQuery('#'+remain_id).html('<b>' + _day +'</b>天<b>' + _hour + '</b>小时<b>' + _minute + '</b>分<b>' + _second + '</b>秒');
+     if( totalS <= 0){
+       jQuery('#'+remain_id).html('该团购已结束');
+       clearInterval(sh);
+     }
+  }
+  _fresh();
+  var sh = setInterval(_fresh,1000);
+}
+jQuery(document).ready(function(){
+  var type="";
+  var url = "";
+  timeCount("time_down_info");
+   var eva_currentPage = 2;
+   var eva_ret = 1;
+   jQuery(window).scroll(function(){	
+	 var page=jQuery("$!evaluate").find("dl").last().attr("page");
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&eva_ret==1&&type=="evaluate"&&eva_currentPage<=page) {
+		 jQuery.ajax({type:'POST',
+	              url:url,
+				  data:{"currentPage":eva_currentPage},
+				beforeSend:function(){
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  eva_ret=2;
+				},
+			   success:function(data){
+				   eva_ret=1;
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".phone_eva").find("dl").last().after(data);
+				  eva_currentPage=eva_currentPage+1;
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		
+   
+   var deal_currentPage = 2;
+   var deal_ret = 1;
+   jQuery(window).scroll(function(){
+	 var page=jQuery("#deal").find("tr").last().attr("page");
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&deal_ret==1&&type=="deal"&&deal_currentPage<=page) {
+		 jQuery.ajax({type:'POST',
+	              url:url,
+				  data:{"currentPage":deal_currentPage},
+				beforeSend:function(){
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  deal_ret=2;
+				},
+			   success:function(data){
+				   deal_ret=1;
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".group_infro_box").find("tr").last().after(data);
+				  deal_currentPage=deal_currentPage+1;
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		
+   
+   jQuery("#group_click li").click(function(){
+				var mark=jQuery(this).attr("mark");
+				if(jQuery("#"+mark).is(":hidden")){
+				jQuery("#group_click li").removeClass("this");						   
+				jQuery(this).addClass("this");
+				jQuery(".group_infro_box").hide();
+				jQuery(".group_infro_box").eq(jQuery(this).index()).show();
+				url=jQuery(this).attr("url");
+				type = mark;
+				if(mark=="deal"){
+				deal_currentPage=2;
+				}
+				if(mark=="evaluate"){
+				eva_currentPage=2;
+				}	
+				if(mark!="info"){
+					jQuery.post(url,"",function(data){
+				jQuery("#"+mark).empty();
+				jQuery("#"+mark).append(data);
+	 								},"text");
+				}
+					}
+				
+				
+										   });
+});
+function ajaxPage(url,currentPage,obj){
+  jQuery.ajax({type:'POST',url:url,data:{"currentPage":currentPage,"goods_id":"$!obj.gg_goods.id","id":"$!obj.gg_goods.goods_store.id"},
+			  beforeSend:function(){
+			   },
+			  success:function(data){
+                 jQuery(".group_introbox").not("#info").empty();						
+                 jQuery(".group_introbox").not("#info").append(data);	
+				 }
+		})
+  }
+</script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>团购详情<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+
+<div class="group_infro">
+	<div class="pic"><img src="$!imageWebServer/$!obj.gg_img.path/$!obj.gg_img.name" /><span>$!obj.gg_name</span></div>
+    <div class="date"><span class="fl"><i><img src="$!webPath/resources/style/system/front/wap/images/clock_black.png" width="20" height="20" /></i><span class="fl" id="time_down_info" endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{obj.endTime})"><b>11</b>天<b>11</b>小时<b>11</b>分<b>11</b>秒</span></span><span class="fr"><b>$!obj.gg_selled_count</b>人已团</span></div>
+    <div class="price"><span class="fl">¥<b>$!{obj.gg_price}</b></span>
+     #if($!obj.gg_status==1)
+     #if($!obj.gg_count>0)
+    <span class="fr"><a href="$!webPath/wap/goods.htm?id=$!{obj.gg_goods.id}">马上团</a></span>
+    #else
+    <span class="fr over"><a href="javascript:void(0);">已售完</a></span>
+    #end
+    #else
+    <span class="fr over"><a href="javascript:void(0);">已结束</a></li>
+    #end
+    
+    </div>
+    <div class="old_price">
+    	<ul>#set($save = $!{obj.gg_goods.goods_price}-$!{obj.gg_price})
+        	<li><p>原价</p><p class="gray"><s>¥$!{obj.gg_goods.goods_price}</s></p></li>
+            <li><p>折扣</p><p class="gray">$!{obj.gg_rebate}折</p></li>
+            <li><p>节省</p><p class="gray">¥$!save</p></li>
+        </ul>
+    </div>
+</div>
+
+<div class="group_infro_con">
+	<div class="group_infro_tab">
+    	<ul id="group_click">
+        	<li class="this" mark="info"><a href="javascript:void(0);">商品介绍</a></li>
+            <li url="$!webPath/wap/group_evaluation.htm?goods_id=$!{obj.gg_goods.id}&id=$!{obj.gg_goods.goods_store.id}" mark="evaluate"><a href="javascript:void(0);">商品评价</a></li>
+            <li url="$!webPath/wap/group_order.htm?goods_id=$!{obj.gg_goods.id}&id=$!{obj.gg_goods.goods_store.id}" mark="deal"><a href="javascript:void(0);">成交记录</a></li>
+        </ul>
+    </div>
+    <!--商品介绍-->
+    <div class="group_infro_box" style="display:block;" id="info">$!obj.gg_content</div>
+    <!--商品评价-->
+    <div class="group_infro_box" style="display:none;" id="evaluate">
+    	
+        
+    </div>
+    <!--成交记录-->
+    <div class="group_infro_box" style="display:none" id="deal">
+    	
+    </div>
+$!httpInclude.include("/wap/footer.htm") </div>
+$!httpInclude.include("/wap/layer.htm")
+
+    
+</body>
+</html>

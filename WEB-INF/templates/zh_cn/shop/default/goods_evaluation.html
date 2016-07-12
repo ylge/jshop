@@ -1,0 +1,53 @@
+﻿<div class="img_list_dl"> #if($!eva_objs.size()>0)
+  #foreach($obj in $eva_objs)
+  #set($img="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+  #if($!obj.evaluate_user.photo)
+  #set($img="$!imageWebServer/$!obj.evaluate_user.photo.path/$!obj.evaluate_user.photo.name")
+  #end
+  <li>
+    <div class="img_list_dl_word">
+      <dl class="details_dis_dl">
+        <dt><span>
+          <p><a href="$!webPath/sns/other_sns.htm?id=$!{obj.evaluate_user.id}" target="_blank"><img src="$!img" width="60" height="60"/ style="border-radius:50%;"></a></p>
+          </span></dt>
+        <p class="details_dis_p"><span><a href="$!webPath/sns/other_sns.htm?id=$!{obj.evaluate_user.id}" target="_blank">$!{obj.evaluate_user.userName}</a>$!CommUtil.formatShortDate($!obj.addTime)</span><b>$!{obj.evaluate_info}</b></p>
+        #if($!obj.reply_status==1)
+        <div class="details_reply" style="margin-left:0; margin-top:10px; color:#b28500">店主<i style="color:#a1a1a1; padding:0 8px">回复：</i>$!obj.reply</div>
+        #end
+      </dl>
+    </div>
+    #set($imgs=$!evaluateViewTools.queryEvaImgSrc($!obj.evaluate_photos))
+    #if($imgs.size()>0)
+    <div class="img_list_dl_img"> #foreach($!img in $imgs)
+      <div class="img_list_dl_img_one">
+        <div class="img_list_dl_img_one_top"><a href="javascript:void(0)" onclick="show_bigimg(this,'$!obj.id')"><img src="$!imageWebServer/$!img.path/$!img.name" /></a></div>
+        <b class="tm_photos_arrow" style="display:none"><img src="$!webPath/resources/style/system/front/default/images/tm-photos-arrow.png" /></b> </div>
+      #end
+      <div class="img_list_dl_img_one_b" id="eva_bigimg_top_$!obj.id" style="display:none">
+        <div class="img_list_dl_img_one_b_top"> <a href="javascript:void(0)" class="img_list_dl_img_one_b_top_back" onclick="hideimg($!obj.id)">收起</a> <a href="javascript:void(0)" class="img_list_dl_img_one_b_top_big" onclick="proimg($!obj.id)">原图</a> </div>
+        <div class="img_list_dl_img_one_b_img"> <img id="eva_bigimg_$!obj.id"/></div>
+      </div>
+    </div>
+    #end
+    #if($!obj.addeva_status==1)
+    #set($soon=$!orderFormTools.how_soon($!obj.addeva_time))
+    <div class="add_comments"> <span class="add_comments_left">#if($!soon==999)很久之后#else$!soon天后#end追加评论：</span> <span class="add_comments_right">$!obj.addeva_info</span> #set($imgs=$!evaluateViewTools.queryEvaImgSrc($!obj.addeva_photos))
+      #if($imgs.size()>0)
+      <div class="img_list_dl_img"> #foreach($!img in $imgs)
+        <div class="img_list_dl_img_one">
+          <div class="img_list_dl_img_one_top"><a href="javascript:void(0)" onclick="show_addbigimg(this,'$!obj.id')"><img src="$!imageWebServer/$!img.path/$!img.name" /></a></div>
+          <b class="tm_photos_arrow" style="display:none"><img src="$!webPath/resources/style/system/front/default/images/tm-photos-arrow.png" /></b> </div>
+        #end
+        <div class="img_list_dl_img_one_b" id="eva_add_bigimg_top_$!obj.id" style="display:none">
+          <div class="img_list_dl_img_one_b_top"> <a href="javascript:void(0)" class="img_list_dl_img_one_b_top_back" onclick="hide_addimg($!obj.id)">收起</a> <a href="javascript:void(0)" class="img_list_dl_img_one_b_top_big" onclick="pro_addimg($!obj.id)">原图</a> </div>
+          <div class="img_list_dl_img_one_b_img"> <img id="eva_add_bigimg_$!obj.id"/></div>
+        </div>
+      </div>
+      #end </div>
+    #end </li>
+  #end </div>
+#else
+<div class="novalue"> 还没有评价内容 </div>
+#end
+</div>
+<div class="details_discus_page"><span target_id="goods_evas_list">$!eva_gotoPageAjaxHTML</span></div>

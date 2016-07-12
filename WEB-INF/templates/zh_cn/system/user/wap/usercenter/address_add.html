@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>用户中心 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+function saveForm(){
+		jQuery("#theForm").submit();
+		}	
+function address_box_show(){
+	jQuery("#sel_area").html("");
+	jQuery.post("$!webPath/wap/load_area_data.htm",function(json_data){
+		var t1="";
+		jQuery("#sel_area").append("<option>请选择...</option>");
+var dataObj=eval("("+json_data+")");	
+		jQuery.each(dataObj.data,function(i,item){
+			t1="<option value="+item.addr_id+">"+item.addr_name+"</option>";
+			jQuery("#sel_area").append(t1);
+			}
+		)
+	})
+	jQuery(".brand_class_opcity").show();
+	jQuery(".brand_class_box").show();
+}
+
+<!--所在区域-->
+function query_address_data(aid){
+	jQuery.ajax({
+				type:'POST',
+	            url:'$!webPath/wap/buyer/address_add_ajax.htm',
+				data:{"aid":aid},
+				success:function(data){
+			    var dataObj=eval("("+data+")");			
+				 if(dataObj.level){
+					jQuery(".brand_class_box ul").html("");
+					var html="";
+				 	jQuery(dataObj.data).each(function(index){
+						html=html+"<li><a href='javascript:void(0)' onClick='query_address_data("+dataObj.data[index].addr_id+")'>"+dataObj.data[index].addr_name+"</a></li>"
+					});
+					jQuery(".brand_class_box ul").html(html);
+				 }else{
+				 	jQuery(".select_right a").html(dataObj.info);
+					jQuery("#area_id").val(dataObj.aid);
+					jQuery(".brand_class_opcity").hide();
+					jQuery(".brand_class_box").hide();
+					var html="";
+				 	jQuery(dataObj.data).each(function(index){
+						html=html+"<li><a href='javascript:void(0)' onClick='query_address_data("+dataObj.data[index].addr_id+")'>"+dataObj.data[index].addr_name+"</a></li>"
+					});
+					jQuery(".brand_class_box ul").html(html);
+				 }
+              	} 
+	},"json");
+}
+function add_address(){
+	var a_id=jQuery("#sel_area").val();
+	jQuery.post("$!webPath/wap/buyer/address_add_ajax.htm",{"aid":a_id},function(data){
+		 var dataObj=eval("("+data+")");		
+		 if(dataObj.level){
+			jQuery("#sel_area").html(""); 
+			var t1="";
+			jQuery("#sel_area").append("<option>请选择...</option>");
+			jQuery.each(dataObj.data,function(index,item){
+				t1="<option value="+item.addr_id+">"+item.addr_name+"</option>";
+				jQuery("#sel_area").append(t1);
+				})		
+				 
+		 }else{
+			 	    jQuery(".select_right a").html(dataObj.info);
+					jQuery("#area_id").val(dataObj.aid);
+										jQuery(".brand_class_opcity").hide();
+					jQuery(".brand_class_box").hide();
+			 
+			 
+			 }
+		})
+	
+	
+	
+	
+	}
+jQuery(function(){
+	jQuery("#theForm").validate({
+	ignore: "",
+    errorPlacement: function(error, element){
+		   jQuery("#note").show();
+		   jQuery("#note").html("");
+           error.appendTo(jQuery("#note"));
+    },
+	rules: {
+		trueName:{
+			required:true
+		},
+		mobile:{
+			required:true
+		},
+		area_id:{
+			required:true
+		},
+		area_info:{
+			required:true
+		},
+	},
+	messages: {
+		trueName:{
+			required:"真实姓名不能为空"
+		},
+		mobile:{
+			required:"手机不能为空"
+		},
+		area_id:{
+			required:"所在区域不能为空"
+		},
+		area_info:{
+			required:"详细地址不能为空"
+		},
+	},
+	});
+});
+
+</script>
+</head>
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/address.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">地址添加</span></div>
+<div class="info_form">
+  <form  method="post"  name="theForm" id="theForm" action="$!webPath/wap/buyer/address_save.htm">
+  <div class="mt50" style="height:49px;"></div>
+  <ul>
+    <li><span class="form_title">收货人</span><span class="form_size300">
+      <input name="trueName" id="trueName" value="$!obj.trueName" type="text">
+      </span>
+    </li>
+    <li><span class="form_title">手机</span><span class="form_size300">
+      <input name="mobile" id="mobile" value="$!obj.mobile" type="text">
+      </span>
+    </li>
+    <li>
+<span class="select_left">所在区域</span>
+        <span class="select_right">
+ #if($!obj)
+			<a class="add_area" href="javascript:void(0)" onClick="address_box_show()">$!areaViewTools.generic_area_info("$!obj.area.id") </a>
+            #else
+        	<a class="add_area" href="javascript:void(0)" onClick="address_box_show()">$!areaViewTools.generic_area_info("$!bj.id") </a>
+        	#end        
+        </span>    
+    </li>
+  	<li><span class="form_title">详细地址</span><span class="form_size300">
+      <input name="area_info" id="area_info" value="$!obj.area_info" type="text">
+      </span>
+    </li>
+    <li><span class="form_title">邮编</span><span class="form_size300">
+      <input name="zip" id="zip" value="$!obj.zip" type="text">
+      </span>
+    </li>
+  </ul>
+  <input id="area_id" name="area_id" #if($!obj) value="$!obj.area.id" #else value="$!bj.id" #end type="hidden">
+  <input id="id" name="id" value="$!obj.id" type="hidden">
+  <input id="type" name="type" value="$!type" type="hidden">
+    #if($!op)
+    <span style="width:100%; line-height:30px; text-align:center; color:#F00; float:left;">$!op</span>
+    #end
+  </form>
+  <div class="red_submit"><a href="javascript:void(0);" onClick="saveForm();">提交</a></div>
+</div>
+
+<div class="brand_class_opcity" style="display:none"></div>
+<div class="brand_class_box" style="display:none">
+<style>
+.brand_class_box{ width:180px; position:fixed; overflow:hidden;height:30px; max-height:none;left:50%; margin-top:0; top:35%; margin-left:-90px; overflow-y:auto; z-index:99; float:left; height:30px;}
+.brand_class_box select{ float:left;width:180px; height:30px; line-height:30px;}
+.brand_class_box select option{ float:left;}
+</style>
+
+  
+  <select id="sel_area" name="sel_area" onChange="add_address()" >
+  <option>请选择...</option>
+ #foreach($area in $!areas)
+ <option value="$!area.id">$!area.areaName</option>
+ #end
+  </select>
+<!--
+    #foreach($area in $!areas)
+    <li><a href="javascript:void(0)" onClick="query_address_data($!area.id)">$!area.areaName</a></li>
+    #end-->
+
+</div>
+<div class="note" id="note" style="display:none"></div>
+<div class="mt50" style="height:49px;"></div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+</body>
+</html>

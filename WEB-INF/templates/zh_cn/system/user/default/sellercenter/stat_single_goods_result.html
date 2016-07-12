@@ -1,0 +1,197 @@
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/charts/highcharts.js"></script>
+<script src="$!webPath/resources/js/charts/modules/exporting.js"></script>
+<script>
+jQuery(function(){ 
+  var chart;
+  chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'logtable',
+                type: 'line',
+                marginRight: 80,
+                marginBottom: 25
+            },
+            title: {
+                text: '$!stat_title',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '统计区间: $!CommUtil.formatShortDate($!{begin}) - $!CommUtil.formatShortDate($!{end})',
+                x: -20
+            },
+            xAxis: {
+                categories:$!{times},
+				labels: {
+				step: $!timeslength
+				}
+            },
+            yAxis: {
+                title: {
+                    text: '数量(次/件)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: '点击量',
+                data: $!goods_click
+            },{
+                name: '收藏量',
+                data: $!goods_collect
+            },{
+                name: '销售量',
+                data: $!goods_salenum
+            }]
+        });
+		
+	chart = new Highcharts.Chart({
+        chart: {
+			renderTo: 'clickfrom_pie',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '点击量来源统计'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+        },
+        series: [{
+            type: 'pie',
+            name: '点击来源',
+            data: [$!goods_clickfrom]
+        }]
+    });
+	chart = new Highcharts.Chart({
+        chart: {
+			renderTo: 'ordertype_pie',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '订单来源统计'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage}%</b>'
+        },
+        plotOptions: {
+           pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+        },
+        series: [{
+            type: 'pie',
+            name: '订单来源',
+            data: [$!goods_ordertype]
+        }]
+    });
+	chart = new Highcharts.Chart({
+        chart: {
+			renderTo: 'orderspec_pie',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '售出规格统计'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage}%</b>'
+        },
+        plotOptions: {
+           pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+        },
+        series: [{
+            type: 'pie',
+            name: '规格统计',
+            data: [$!goods_spectype]
+        }]
+    });
+});
+</script>
+
+<div class="goods_left_img" style=" width:280px; float:left; border:1px solid #ccc; padding:10px; margin-left:20px;"> #set($obj=$goodinfo.get("info"))
+  #set($img=$!imageTools.queryImg("$!obj.img_id"))
+  <div class="goods_left_img_img"><img id="goods_img" width="277" height="277" src="$!imageWebServer/$!img.path/$!img.name" alt="商品图片"/></div>
+  <div class="goods_left_img_name" style=" width:277px; height:30px; line-height:30px; margin-top:5px; text-align:center; overflow:hidden;" id="goods_name">$!CommUtil.substring($!obj.goods_name,15)</div>
+  <div class="goods_left_img_name" style=" width:277px; height:30px; font-weight:bold; line-height:30px; text-align:center; overflow:hidden;" id="logtype">#if($obj.log_form==0)自营#else $!obj.store_name #end</div>
+  <div class="goods_left_img_name" style=" width:277px; height:30px; font-weight:bold; line-height:30px; text-align:center; overflow:hidden;" id="logtype"> 总点击量：$!allclick
+    总销售量：$!allsale</div>
+</div>
+#if($!goods_clickfrom.length()>2)
+<div id="clickfrom_pie" style="width:350px;height:25%; float:left;"></div>
+#end
+#if($!goods_ordertype.length()>2)
+<div id="ordertype_pie" style="width:350px;height:25%; float:left;"></div>
+#end
+#if($!goods_spectype.length()>2)
+<div id="orderspec_pie" style="width:350px;height:25%; float:left;"></div>
+#end
+<div class="fshoptb" id="logtable" style="float:left; width:100%"> </div>
+<div class="fshoptb">
+  <style>
+.highcharts-container{ width:680px;}
+</style>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table" style=" border:1px solid #eaeaea;">
+    <tr>
+      <th width="10%" align="center"><span class="form_btna">统计日期</span></th>
+      <th width="10%" align="center"><span class="form_btna">价格</span></th>
+      <th width="10%" align="center"><span class="form_btna">优惠活动</span></th>
+      <th width="10%" align="center"><span class="form_btna">点击量</span></th>
+      <th width="10%" align="center"><span class="form_btna">收藏量</span></th>
+      <th width="10%" align="center"><span class="form_btna">销售量</span></th>
+    </tr>
+    #foreach($obj in $objs)
+    <tr>
+      <td align="center">$!obj.get("time") </td>
+      <td align="center">$!obj.get("price")</td>
+      <td align="center">#if($!obj.get("preferential").size()==0)无#else #foreach($pre in $!obj.get("preferential")) #foreach($key in $pre.keySet()) <span title="$pre.get($key)">$key</span> #end #end #end</td>
+      <td align="center">$!obj.get("clicknum")</td>
+      <td align="center">$!obj.get("collectnum")</td>
+      <td align="center">$!obj.get("salenum")</td>
+    </tr>
+    #end
+  </table>
+</div>
+<div id="stat_result"> </div>

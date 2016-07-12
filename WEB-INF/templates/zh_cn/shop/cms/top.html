@@ -1,0 +1,91 @@
+<script>
+function queryString(){
+	var queryString = jQuery("#queryString").val();
+	window.location.href="$!webPath/cms/list.htm?title="+queryString+"&&author="+queryString;
+}
+jQuery(function(){
+	var title = "$!title";
+	jQuery("#queryString").val(title);
+	})
+var EnterSubmit = function(evt){
+evt = window.event || evt;
+ if (evt.keyCode == 13)
+ { 
+  queryString();
+ }
+}
+window.document.onkeydown=EnterSubmit;
+</script>
+<div class="information_top">
+  <div class="information_top_center">
+  #if($!config.websiteLogo)
+    #set($img="$!imageWebServer/$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+    #else
+    #set($img="$!webPath/resources/style/system/front/default/images/logo.png")
+    #end
+    <div class="information_top_center_left"><a href="$!webPath/index.htm"> <b><img src="$!img" /></b></a> <span><img src="$!webPath/resources/style/system/front/default/images/cms/inf_top_left.png" /></span> </div>
+    <div class="information_top_center_search">
+      <div class="information_top_center_search_center">
+        <input name="queryString" id="queryString" type="text" value="$!title" />
+      </div>
+      <div class="information_top_center_search_right"><a href="javascript:void(0);" onclick="queryString()"><img src="$!webPath/resources/style/system/front/default/images/cms/inf_top_left_right.png" /></a></div>
+      <!--<div class="information_top_center_search_center_history">
+      	<span>关键词：</span>
+      	<a href="">关键字一</a>
+        <a href="">关键字一</a>
+        <a href="">关键字一</a>
+        <a href="">关键字一</a>
+        <a href="">关键字一</a>
+        <a href="">关键字一</a>
+      </div>-->
+    </div>
+    <div class="information_top_center_right">#if($!user)<span>$!CommUtil.substring("$!{user.userName}",12),欢迎来到$!CommUtil.substring("$!{config.websiteName}",30)！ #if("$!user.userRole"=="ADMIN")[<a href="$!webPath/admin/index.htm">管理后台</a>] #end [<a href="$!webPath/iskyshop_logout.htm">退出商城</a>]</span> #else<span> 您好，欢迎来到$!{config.websiteName}！[<a href="$!webPath/user/login.htm">登录商城</a>][<a href="$!webPath/register.htm">免费注册</a>]</span>#end</div>
+  </div>
+  <!-- nav -->
+
+</div>
+<div class="information_nav">
+			<ul class="cms_nav clearfix">
+				<li id="0" #if($!op=="index") class="m on" #else class="m" #end>
+					<h3><a href="$!webPath/cms/index.htm">资讯首页</a></h3>
+				</li>
+                #foreach($class in $classes)
+				<li id="$!{class.id}" #if($!op==$!{class.id}) class="m on" #else class="m" #end>
+					<h3><a href="$!webPath/cms/list.htm?id=$!{class.id}">$!class.ic_name<i></i></a></h3>
+                    #if($cmsTools.queryChildClass("$!class.id").size()>0)
+					<ul class="sub">
+                    #foreach($childs_class in $cmsTools.queryChildClass("$!class.id"))
+						<li><a href="$!webPath/cms/list.htm?id=$!{childs_class.id}">$!childs_class.ic_name</a></li>
+                    #end    
+					</ul>
+                    #end
+				</li>
+				#end
+                <li class="m">
+					<h3><a href="$!webPath/index.htm">商城</a></h3>
+				</li>
+                #if($!config.groupBuy)
+                <li class="m">
+					<h3><a href="$!webPath/group/index.htm">团购</a></h3>
+				</li>
+                #end
+                #if($!config.circle_open==1)
+                <li class="m">
+					<h3><a href="$!webPath/circle/index.htm">圈子</a></h3>
+				</li>
+                #end
+                
+			</ul>
+	</div>
+    
+    <script type="text/javascript">
+		jQuery(".cms_nav").slide({ 
+				type:"menu", //效果类型
+				titCell:".m", // 鼠标触发对象
+				targetCell:".sub", // 效果对象，必须被titCell包含
+				effect:"slideDown",//下拉效果
+				delayTime:200, // 效果时间
+				triggerTime:0, //鼠标延迟触发时间
+				returnDefault:true  //返回默认状态
+			});
+	</script> 

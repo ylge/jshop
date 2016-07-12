@@ -1,0 +1,22 @@
+<div class="sns_hd">
+    	<div class="sns_main">
+        	<div class="sns_hd_left">
+            	<dl>#if($!user.photo)
+          			#set($user_photo="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+         			 #else 
+         			 #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          			#end
+          			#set($level_name=$integralViewTools.query_user_level_name("$!user.id"))
+          			#set($level_img=$integralViewTools.query_user_level_img("$!user.id"))
+                	<dt><img src="$!user_photo" width="127" height="127" /></dt>
+                    <dd class="name_dd"><span class="name">$!{user.userName}</span><span class="sns_level"><img src="$!webPath/resources/style/common/images/$!{level_img}" width="15" height="25" /></span></dd>
+                    <dd><a class="edit" href="$!webPath/buyer/account.htm"><i></i>编辑个人信息</a></dd>
+                </dl>
+            </div>
+            <div class="sns_hd_right">
+                <ul><a href="$!webPath/buyer/my_sns.htm"><li>收藏</li><li>$!favs</li></a></ul>
+            	<ul><a href="$!webPath/buyer/my_atts.htm"><li>关注</li><li>$!atts</li></a></ul>
+                <ul><a href="$!webPath/buyer/my_fans.htm"><li>粉丝</li><li>$!fans</li></a></ul>
+            </div>
+        </div>
+    </div>

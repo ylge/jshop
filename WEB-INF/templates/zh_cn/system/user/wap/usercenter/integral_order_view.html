@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>订单详情 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+	jQuery(document).ready(function(e) {
+        jQuery("#cond").click(function(){
+			window.location.href="$!webPath/wap/buyer/integral_order_cancel.htm?id=$!{obj.id}";
+		});
+    });
+</script>
+</head>
+
+<body class="user_bg">
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/integral_order_list.htm?igo_status=$!igo_status"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">订单详情</span>#if($!obj.igo_status < 11) <input class="del" type="button" id="cond" value="取消订单"> #end</div>
+
+<div class="order_page">
+	<!--交易成功-->
+	<table class="trade_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	<td class="td_left"><img src="$!webPath/resources/style/system/front/wap/images/order_info_01.png" width="30" height="30" /></td>
+                <td>
+                	<ul>
+                    	<li class="big"><span class="fl">交易成功</span></li>
+                        <li>订单积分：$!{obj.igo_total_integral}</li>
+                        <li>运费金额：$!obj.igo_trans_fee</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+	<!--收货人-->
+    <table class="trade_table cnee_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	<td class="td_left"><img src="$!webPath/resources/style/system/front/wap/images/order_info_02.png" width="30" height="30" /></td>
+                <td>
+                	<ul>
+                    	<li class="big"><span class="fl">收货人: $!obj.receiver_Name	</span><span class="fr">
+                        #if($!obj.receiver_telephone)
+                        $!obj.receiver_telephone
+                        #end
+                        #if($!obj.receiver_mobile!="")
+                        $!obj.receiver_mobile
+                        #end
+                        
+                        </span></li>
+                        <li>收货地址：$!obj.receiver_area $!obj.receiver_area_info</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+
+	
+	<div class="order_page_box">
+    	<h1><span class="fl">订单号：$!obj.igo_order_sn</span></h1>
+        #set($igo_gcs=$!orderFormTools.query_integral_goodsinfo("$!obj.goods_info"))
+        #foreach($gc in $igo_gcs)
+        <div class="order_goods">
+        	<div class="dt"><a href="javascript:void(0);"><img src="$!{gc.ig_goods_img}" width="50" height="50" /></a></div>
+            <ul>
+            	<li><b>$!gc.ig_goods_integral</b></li>
+                <li>X $!gc.ig_goods_count</li>
+            </ul>
+            <div class="dd dd_01">
+            	<span class="name"><a href="javascript:void(0);">$!gc.ig_goods_name</a></span>
+                
+            </div>
+        </div>
+        #end
+        #if($!query_ship)
+        <!--物流信息-->
+        <a href="$!webPath/wap/buyer/integral_ship_detail.htm?order_id=$!obj.id">
+        <table class="trade_table cnee_table" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td class="td_left"><img src="$!webPath/resources/style/system/front/wap/images/order_info_03.png" width="22" height="70" /></td>
+                    <td class="td_mid">
+                        <ul>
+                            <li class="big"><span class="fl">物流信息: $!orderFormTools.queryGoodsInfo("$!obj.igo_express_info").get("express_company_name")</span></li>
+                            <li class="green">点击查看您的物流信息</li>
+                            <li class="gray">物流单号：$!obj.igo_ship_code</li>
+                        </ul>
+                    </td>
+                    <td><img src="$!webPath/resources/style/system/front/wap/images/order_info_04.png" width="13" height="45" /></td>
+                </tr>
+            </tbody>
+        </table>
+        </a>
+        #end
+        <table class="fre_table" cellpadding="0" cellspacing="0">
+        	<tbody>
+            	<tr>
+                	<td width="50%" align="left">运费：</td>
+                    <td align="right">￥ $!obj.igo_trans_fee</td>
+                </tr>
+                
+                <tr>
+                	<td align="left"><span class="big">实付款：</span></td>
+                    <td align="right"><span class="big red">￥ $!obj.igo_trans_fee</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+
+</div>
+
+<!--订单详细底部-->
+<div class="order_foot">
+<script>
+function order_cofirm(id){
+	if(confirm("确定要确认收货？")){
+		window.location.href="$!webPath/wap/buyer/integral_order_cofirm.htm?id="+id;
+	}
+}
+</script>
+
+    #if($!obj.igo_status==30)
+    <a href="javascript:void(0);" onClick="order_cofirm($!{order.id})">确认收货</a>
+    #end
+    #if($!obj.igo_status<=10)
+    <a class="bg_red" href="$!webPath/wap/buyer/integral/order_pay_view.htm?id=$!obj.id"> 付 款 </a>
+    #end
+</div>
+</body>
+</html>

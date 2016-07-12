@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>圈子首页-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/circle.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+function switch_class(cid){
+	jQuery.post("$!webPath/circle/index_switch.htm",
+				{"cid":cid},
+				function(data){
+					if(data!=""){
+						jQuery(".circle_left_main_hot_list_center").html(data)
+						}else{
+							var content ='<div class="circle_tipe">该分类没有对应的圈子信息!</div>';
+							
+							jQuery(".circle_left_main_hot_list_center").html(content)
+							}
+						jQuery(".circle_left_main_hot_list_top a").removeClass("this");
+						jQuery(".circle_left_main_hot_list_top a[obj_id="+cid+"]").addClass("this");	
+					},"text");
+	}
+</script>
+<style>
+.circle_main_center_right_b{ border-left:none; padding:0}
+</style>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/circle/head.htm")
+$!httpInclude.include("/circle/nav.htm")
+<div class="circle_main">
+    <div class="circle_main_center">
+    	<div class="circle_main_center_left">
+        	<div class="circle_left_banner">
+            	<script src="$!webPath/advert_invoke.htm?id=11"></script>
+            </div>
+            <div class="circle_left_main">
+				<div class="circle_left_main_hot">
+                	<h3>热门圈子</h3>
+                    <div class="circle_left_main_hot_center">
+                 #foreach($obj in $circle_hot)
+                 #set($img=$!circleViewTools.genercircleImage("$!obj.id"))
+                    	<dl>
+                        	<dt><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank"><img src="$!imageWebServer/$!img.src" /></a></dt>
+                            <dd>
+                            	<h4><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></h4>
+                                <span>
+                                	<i>帖子（$!obj.invitation_count）</i>
+                                    <i>关注（$!obj.attention_count）</i>
+                                </span>
+                                <p>$!obj.content</p>
+                                
+                            </dd>
+                        </dl>
+                 #end
+                    </div>
+                </div>
+                <div class="circle_left_main_hot_b">
+                	<h3>热门帖子</h3>
+                    <div class="circle_left_main_hot_b_center">
+						<ul>
+                        #foreach($obj in $invitation_hot)
+                        	<li><span><a href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></span><i>$!CommUtil.formatShortDate($!obj.addTime)</i><b>From</b><strong>$!obj.circle_name</strong></li>
+                        #end
+                        </ul>
+                    </div>
+                </div>
+                <div class="circle_left_main_hot_list">
+                <h3>圈子分类</h3>
+                	<div class="circle_left_main_hot_list_top">
+                    #foreach($obj in $ccs)
+                    	<div class="circle_left_main_hot_list_top_nav"><a href="javascript:void(0);"#if($!velocityCount==1) class="this" #end obj_id="$!obj.id"  onclick="switch_class('$!obj.id');">$!obj.className</a></div>
+                    #end   
+                    </div>
+                    
+                    <div class="circle_left_main_hot_list_center">
+                    #if($!switch_first.size()>0)
+                           #foreach($obj in $switch_first)
+                            <div class="circle_main_center_right_b_one_l">
+                    <dl>
+                     #set($img=$!circleViewTools.genercircleImage("$!obj.id"))
+                            <dt><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank"><img src="$!imageWebServer/$!img.src" /></a></dt>
+                            <dd class="headline"><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></dd>
+                            <dd class="headpel">
+                             <span>
+                                <em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_host.png" /></em>
+                                <i>$!obj.attention_count</i>
+                             </span>
+                             <span>
+                                <em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_rp.png" /></em>
+                                <i>$!obj.invitation_count</i>
+                             </span>
+                            </dd>
+                            <dd class="headworld">$!obj.content </dd>
+                        </dl>
+                    </div>
+                		   #end
+                    #else
+                    <div class="circle_tipe">该分类没有对应的圈子信息!</div>
+                    #end       
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        <div class="circle_main_center_right">
+             #if(!$!user)
+        	<div class="circle_main_center_right_login">
+            	<dl>
+                	<dt><img src="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name" /></dt>
+                    <dd>欢迎来到 <b>$!{config.title}圈子</b></dd>
+                    <dd>若是会员？请<b><a href="$!webPath/user/login.htm?url=circle/index.htm">[登录]</a></b>后进行操作！</dd>
+                    <dd>若您不是会员请<b><a href="$!webPath/register.htm">[注册]</a></b>成为会员！</dd>
+                </dl>
+            </div>
+        #else    
+            <div class="circle_main_center_right_login_gone">
+            	<dl>
+                #set($photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+                #if($!user.photo)  
+                #set($photo="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+                #end
+                	<dt><a href="$!webPath/buyer/my_sns_index.htm" target="_blank"><img src="$!{photo}" /></a></dt>
+                    <dd> <b>Hi<a href="$!webPath/buyer/my_sns_index.htm" target="_blank">$!user.userName</a></b><a href="$!webPath/iskyshop_logout.htm">退出</a></dd>
+                    <dd>
+                    	<span><strong><a href="$!webPath/buyer/my_sns_invitation.htm" target="_blank">$!{invi_count}</a></strong><i><a  href="$!webPath/buyer/my_sns_invitation.htm" target="_blank">我的帖子</a></i></span>
+
+                        <span style="border-right:none;"><strong><a href="$!webPath/buyer/my_sns_circle.htm" target="_blank">$!{circle_atten_count}</a></strong><i><a  href="$!webPath/buyer/my_sns_invitation.htm" target="_blank">我的关注</a></i></span>
+                    </dd>
+                </dl>
+            </div>
+        #end 
+             
+              <div class="circle_creat">
+                  <a href="$!webPath/circle/create.htm">创建我的圈子</a>
+            	 <a href="$!webPath/buyer/my_sns_circle.htm?type=my_circle">管理我的圈子</a>
+            </div>
+            <div class="circle_main_center_right_b">
+            	<h3>可能感兴趣的圈子</h3>
+                #foreach($obj in $circle_recommend)
+            	<div class="circle_main_center_right_b_one">
+                	<dl>
+                    #set($img=$!circleViewTools.genercircleImage("$!obj.id"))
+                    	<dt><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank"><img src="$!imageWebServer/$!img.src" /></a></dt>
+                        <dd class="headline"><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></dd>
+                        <dd class="headpel">
+                         <span>
+                        	<em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_host.png" /></em>
+                        	<i>$!{obj.attention_count}</i>
+                         </span>
+                         <span>
+                        	<em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_rp.png" /></em>
+                        	<i>$!{obj.invitation_count}</i>
+                         </span>
+                        </dd>
+                        <dd class="headworld">$!obj.content</dd>
+                    </dl>
+                </div>
+         		#end
+            </div>
+        </div>
+    </div>
+
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

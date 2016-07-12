@@ -1,0 +1,285 @@
+
+<script>
+jQuery(document).ready(function(){	
+	//颜色设置							
+	jQuery("#font_color").bigColorpicker(function(el,color){
+	jQuery(el).val(color);
+	jQuery(el).parent().find(".color_block").css("background-color",color);
+	});	
+	jQuery("#font_back_color").bigColorpicker(function(el,color){
+	jQuery(el).val(color);
+	jQuery(el).parent().find(".color_block").css("background-color",color);
+	});
+	jQuery("#nav_color").bigColorpicker(function(el,color){
+	jQuery(el).val(color);
+	jQuery(el).parent().find(".color_block").css("background-color",color);
+	});	
+	jQuery("#back_color").bigColorpicker(function(el,color){
+	jQuery(el).val(color);
+	jQuery(el).parent().find(".color_block").css("background-color",color);
+	});	
+	jQuery("#hover_color").bigColorpicker(function(el,color){
+	jQuery(el).val(color);
+	jQuery(el).parent().find(".color_block").css("background-color",color);
+	});
+	jQuery("#board_back_color").bigColorpicker(function(el,color){
+	jQuery(el).val(color);
+	jQuery(el).parent().find(".color_block").css("background-color",color);
+	});
+	
+	jQuery("#theForm").validate({
+		errorPlacement: function(error, element) {  
+   			 error.appendTo(element.parent());  
+		},
+        rules:{
+	  	  height:{number :true},
+		  goods_count:{number :true},
+		   font_size:{number :true}
+	  	 },
+	    messages:{
+	  	  height:{number:"只能填写数字"},
+		  goods_count:{number:"只能填写数字"},
+		   font_size:{number :"只能填写数字"}
+	  	},
+		submitHandler:function(){
+			var params = jQuery("#theForm").serialize();
+			jQuery("#save").attr("disabled","disabled");
+			 jQuery.ajax({type:'POST',url:'$!webPath/seller/decorate_module_set_save.htm',data:params,
+					  success:function(data){
+							location.reload();jQuery("#save").removeAttr("disabled");	
+						 }
+				 });
+				 
+		}
+     });
+	
+//初始化默认值
+jQuery("#effect").val("$!{obj.effect}");
+jQuery("#delayTime").val("$!{obj.delayTime}");
+jQuery("#autoPlay").val("$!{obj.autoPlay}");
+
+
+});	
+</script>
+<style>
+.black_overlay{ z-index:100}
+.white_content{ z-index:101}
+</style>
+<form id="theForm" name="theForm" action="" method="post">
+<input id="url" name="url" value="$!{url}" type="hidden">
+<input id="mark" name="mark" value="$!{obj.mark}" type="hidden">
+<input id="div" name="div" value="$!{div}" type="hidden">
+#if($!{url}=="defined_slide")
+<div class="fiit_module_edit">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+            	<tr>
+                	<td width="40%" valign="top" align="right">幻灯高度：</td>
+                    <td align="left"><input id="height" name="height" type="text" class="ip100" value="$!obj.height"/>&nbsp;px</td>
+                </tr>
+                <tr>
+                	<td width="40%" valign="top" align="right">运行效果：</td>
+                    <td align="left">
+                    <select class="nav_edit" id="effect" name="effect" >
+                    <option value="fade">fade</option>
+                    <option value="fold">fold</option>
+                    <option value="left">left</option>
+                    <option value="top">top</option>
+                    <option value="leftLoop">leftLoop</option>
+                    <option value="topLoop">topLoop</option>
+                    </select>
+                    </td>
+                </tr>
+                 <tr>
+                	<td width="40%" valign="top" align="right">运行速度：</td>
+                    <td align="left">
+                    <select class="nav_edit" id="delayTime" name="delayTime">
+                    <option value="500">500</option>
+                    <option value="700">700</option>
+                    <option value="1000">1000</option>
+                    <option value="0">0</option>
+                    </select>
+                    </td>
+                </tr>
+                 <tr>
+                	<td width="40%" valign="top" align="right">自动运行：</td>
+                    <td align="left">
+                    <select class="nav_edit" id="autoPlay" name="autoPlay">
+                    <option value="true">true</option>
+                    <option value="false">false</option>
+                    </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+#end 
+#if($!{url}=="nav")
+<div class="fiit_module_edit">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+            	<tr>
+                	<td width="40%" valign="top" align="right">导航高度：</td>
+                     <td align="left"><input type="text" class="ip100"  id="height" name="height" value="$!obj.height"/> px</td> </tr>
+               
+                <tr>
+                	<td valign="top" align="right">字体大小：</td>
+                     <td align="left"><input type="text" class="ip100" id="font_size" name="font_size" value="$!obj.font_size" /> px</td>
+                </tr>
+                 <tr>
+                	<td valign="top" align="right">文字颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="font_color" name="font_color" value="$!obj.font_color"/><span class="color_block" style="background-color:$!{obj.font_color}"></span></td> 
+                     </tr>
+                 <tr>
+                	<td valign="top" align="right">导航颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="nav_color" name="nav_color" value="$!obj.nav_color"/><span class="color_block" style="background-color:$!{obj.nav_color}"></span></td> 
+                     </tr>
+                      <tr>
+                	<td valign="top" align="right">背景颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="back_color" name="back_color" value="$!obj.back_color"/><span class="color_block" style="background-color:$!{obj.back_color}"></span></td> 
+                     </tr>
+                      <tr>
+                	<td valign="top" align="right">经过颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="hover_color" name="hover_color" value="$!obj.hover_color"/><span class="color_block" style="background-color:$!{obj.hover_color}"></span></td> 
+                     </tr>
+                 <tr>
+            </tbody>
+        </table>
+    </div>
+  
+#end   
+
+
+#if($!{url}=="goods_top")
+<script>
+jQuery(document).ready(function(){		
+		//ajax上传图片
+		  jQuery("#font_img").live("change",function(){	
+			var img_id =jQuery("#font_img_id").val();
+			jQuery("#waiting").show();
+			jQuery.ajaxFileUpload({
+                 url:'$!webPath/seller/decorate_module_set_load.htm?img_id='+img_id+"&type=goods",
+                 fileElementId:['font_img'],      
+                 dataType: 'json',                
+                 success: function (data){
+					jQuery("#font_img_id").val(data.id); 
+				   jQuery("#font_img_show").show().attr("src","$!webPath/"+data.src);
+				   jQuery("#waiting").hide();
+				}
+			});
+	 	 });
+		
+		
+	});
+</script>
+<input id="font_img_id" name="font_img_id" value="$!obj.font_img_id" type="hidden"/>
+<div class="fiit_module_edit">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+            	<tr>
+                	<td width="40%" valign="top" align="right">标题名称：</td>
+                     <td align="left"><input type="text" class="ip100"  id="title" name="title" value="$!obj.title"/></td> </tr>
+               
+                <tr>
+                <tr>
+                	<td valign="top" align="right">标题背景：</td>
+                     <td align="left"><input type="file" class="ip100" id="font_img" name="font_img"/>
+                     <img id="font_img_show" style="display:none" width="100px" height="25px"/>
+                     <img id="waiting" style="display:none" src="$!webPath/resources/style/common/images/zoomloader.gif"/></td>
+                </tr>
+                 <tr>
+                	<td width="40%" valign="top" align="right">标题颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="font_color" name="font_color" value="$!obj.font_color"/> <span class="color_block" style="background-color:$!{obj.font_color}"></span></td> </tr>
+                 <tr>
+                	<td valign="top" align="right">背景颜色：</td>
+                    <td align="left"><input type="text" class="ip100"  id="back_color" name="back_color" value="$!obj.back_color"/><span class="color_block" style="background-color:$!{obj.back_color}"></span></td>
+                     </tr>
+                 <tr>
+            </tbody>
+        </table>
+    </div>
+  
+#end 
+
+#if($!{url}=="goods_right")
+<div class="fiit_module_edit">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+                      <tr>
+                	<td valign="top" align="right">背景颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="back_color" name="back_color" value="$!obj.back_color"/><span class="color_block" style="background-color:$!{obj.back_color}"></span></td> 
+                     </tr>
+                      <tr>
+                	<td valign="top" align="right">经过颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="hover_color" name="hover_color" value="$!obj.hover_color"/><span class="color_block" style="background-color:$!{obj.hover_color}"></span></td> 
+                     </tr>
+                 <tr>
+            </tbody>
+        </table>
+    </div> 
+#end
+#if($!{url}=="goods_sale")
+<div class="fiit_module_edit">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+             <tr>
+                	<td valign="top" align="right">标题颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="font_color" name="font_color" value="$!obj.font_color"/><span class="color_block" style="background-color:$!{obj.font_color}"></span></td> 
+                     </tr>
+                        <tr>
+                	<td valign="top" align="right">标题背景：</td>
+                     <td align="left"><input type="text" class="ip100"  id="font_back_color" name="font_back_color" value="$!obj.font_back_color"/><span class="color_block" style="background-color:$!{obj.font_back_color}"></span></td> 
+                      </tr>
+                      <tr>
+                	<td valign="top" align="right">面板颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="board_back_color" name="board_back_color" value="$!obj.board_back_color"/><span class="color_block" style="background-color:$!{obj.board_back_color}"></span></td> 
+                     </tr>
+                      <tr>
+                	<td valign="top" align="right">显示数量：</td>
+                     <td align="left"><input type="text" class="ip100"  id="goods_count" name="goods_count" value="$!obj.goods_count"/></td> 
+                     </tr>
+                 <tr>
+            </tbody>
+        </table>
+    </div> 
+#end
+
+#if($!{url}=="class" || $!{url}=="store_info")
+<div class="fiit_module_edit">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+             <tr>
+                	<td valign="top" align="right">标题颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="font_color" name="font_color" value="$!obj.font_color"/><span class="color_block" style="background-color:$!{obj.font_color}"></span></td> 
+                    </tr>
+                   <tr>
+                	<td valign="top" align="right">标题背景：</td>
+                     <td align="left"><input type="text" class="ip100"  id="font_back_color" name="font_back_color" value="$!obj.font_back_color"/><span class="color_block" style="background-color:$!{obj.font_back_color}"></span></td> 
+                    </tr>
+                     <tr>
+                	<td valign="top" align="right">面板颜色：</td>
+                     <td align="left"><input type="text" class="ip100"  id="board_back_color" name="board_back_color" value="$!obj.board_back_color"/><span class="color_block" style="background-color:$!{obj.board_back_color}"></span></td> 
+                    </tr>
+            </tbody>
+        </table>
+    </div> 
+#end
+
+#if($!{url}=="defined" || $!{url}=="hotspot")
+<div class="fiit_module_edit">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+                     <tr>
+                	<td valign="top" align="right"></td>
+                     <td  align="center">当前模块没有可设置选项，敬请期待！</td> 
+                    </tr>
+            </tbody>
+        </table>
+    </div> 
+#end
+ #if($!{url}!="defined" && $!{url}!="hotspot")
+    <div class="fiit_save_box">
+    <input type="submit" value="保存" id="save"/>
+  </div>
+ #end 
+  </form>

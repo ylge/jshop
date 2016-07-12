@@ -1,0 +1,271 @@
+<script>
+jQuery(document).ready(function(){						
+	jQuery(".fiit_hot_tab li").click(function(){
+			var tar =jQuery(this).attr("tar");
+			jQuery("div[id^=tar_]").hide();
+			jQuery("#tar_"+tar).show();
+			jQuery(".fiit_hot_tab li").removeClass("this");
+			jQuery(this).addClass("this");
+			if(tar=="img"){
+				 jQuery(".balck_bg").show()
+				}else{
+				 jQuery(".balck_bg").hide()	
+					}
+			var apply_mark =jQuery("#apply_mark").val();		
+			cancelSelection(apply_mark);		
+		});
+	jQuery("#hotspots li").live("click",function(){
+			jQuery(this).parent().find("li").removeClass("this");
+			var mark =jQuery(this).addClass("this").attr("mark");
+			var url = jQuery(this).data("bind-url");
+			jQuery("#hotspot_url").val(url);
+			jQuery(".fiit_hot_img").find(".choose").removeClass("this");
+			jQuery(".choose[mark="+mark+"]").addClass("this");
+			jQuery("#url_count").html(mark);
+			});
+	//ajax上传图片
+		  jQuery("#img").live("change",function(){
+			var val =jQuery(this).val();
+			jQuery("#img_show").val(val);							 
+			var img_id =jQuery(".fiit_hot_img img").attr("id");										 
+			jQuery.ajaxFileUpload({
+                 url:'$!webPath/seller/decorate_module_hotspot_img_upload.htm?img_id='+img_id,
+                 fileElementId:['img'],      
+                 dataType: 'json',                
+                 success: function (data){  
+				     jQuery(".fiit_hot_img").show().find("img").attr("src","$!webPath/"+data.src).attr("id",data.id);
+					  jQuery(".fiit_hot_img span").css("height",data.height).css("width",data.width);
+					 jQuery(".balck_bg").show().css("height",data.height);
+					 jQuery("#hotspots").html("");
+					 jQuery(".fiit_hot_img .choose").each(function(){
+						jQuery(this).remove();										   
+						});
+				}
+			});
+	 	 });
+//新增热点区域
+	jQuery("#add_hotspot").click(function(){							  
+		add_hotspot("","","","");
+	  });
+//热点区域划分
+	jQuery('.fiit_hot_img img').imgAreaSelect({
+		handles:true,									  
+		onSelectEnd: function (img, selection) {
+			var spot=jQuery("#hotspots li").length;
+			var x1 =selection.x1;
+			var y1 =selection.y1;
+			var x2 =selection.x2;
+			var y2 =selection.y2;
+			if(x1!=x2 && y1!=y2){//非点击
+				var apply_mark =jQuery("#apply_mark").val();
+				if(apply_mark==""){//非移动
+					add_hotspot(x1,y1,x2,y2);
+					}else{
+						var data="";
+						data=x1+","+y1+","+x2+","+y2;
+						jQuery("#apply_mark").data("bind-coor",data);
+						setSelection(x1,y1,x2,y2);
+						}
+				}else{
+				cancelSelection(spot);	
+					}
+			}
+   });
+});////
+//添加新热点区域
+function add_hotspot(x1,y1,x2,y2){
+	var img_id =jQuery(".fiit_hot_img img").attr("id");
+	var spot_count=jQuery("#hotspots li").length;
+	var apply_mark =jQuery("#apply_mark").val();
+	spot_count++;
+		if(img_id!=""){
+			if(spot_count==1){
+				jQuery("#hotspots").html("");
+				}
+			setSelection(x1,y1,x2,y2);
+			if(apply_mark==""){
+				jQuery("#hotspots li").removeClass("this");
+				var text='<li mark='+spot_count+' class="this"><a href="javascript:void(0);">热点'+spot_count+'</a><i onclick="cancle_hotspot('+spot_count+');"></i></li>';		
+				jQuery("#hotspots").append(text);
+				jQuery("#apply_mark").val(spot_count);
+				jQuery("#url_count").html(spot_count);
+				}
+		}else{
+			var text='<li style="color:#F00">请先设置背景图片！</li>';		
+			jQuery("#hotspots").html(text);
+			}
+}
+
+//设置默认选择区域
+function setSelection(x1,y1,x2,y2){
+		var ias = jQuery('.fiit_hot_img img').imgAreaSelect({instance: true });	
+		ias.setOptions({ show: true });
+		var data="";
+		if(x1!="" && y1!=""&& x2!=""&& y2!=""){
+			data=x1+","+y1+","+x2+","+y2;
+			ias.setSelection(x1,y1,x2,y2, true);
+			var width = x2 - x1;
+			var height = y2 - y1;
+			var top = y1;
+			var left=x1;
+			}else{
+			data=0+","+0+","+174+","+110;	
+			ias.setSelection(0,0,174,110, true);
+			var width = 174;
+			var height = 110;
+			var top = 0;
+			var left=0;
+				}
+			jQuery("#apply_mark").data("bind-coor",data);
+			jQuery("#apply_mark").data("width",width);
+			jQuery("#apply_mark").data("height",height);
+			jQuery("#apply_mark").data("top",top);
+			jQuery("#apply_mark").data("left",left);
+		ias.update(); 
+	};
+//取消当前选择区域	
+function cancelSelection(spot){
+		var ias = jQuery('.fiit_hot_img img').imgAreaSelect({instance: true });	
+		ias.cancelSelection();
+		if(spot!="" && spot!=undefined){//将热点块去掉
+			var apply_mark =jQuery("#apply_mark").val();
+			jQuery("#hotspots").find("li[mark="+apply_mark+"]").remove();
+			jQuery("#apply_mark").val("");
+			}
+		jQuery("#apply_mark").val("");
+		jQuery("#hotspot_url").val("");	
+	};	
+	
+//删除热点模块
+function cancle_hotspot(count){
+	jQuery(".choose[mark="+count+"]").remove();
+	jQuery("#hotspots li[mark="+count+"]").remove();
+	cancelSelection(count);
+	}
+//应用当前热点区域
+function apply_hotspot(){
+	var img_id =jQuery(".fiit_hot_img img").attr("id");
+	if(img_id!=""){
+		var url =jQuery("#hotspot_url").val();
+		if(url!=""){
+			jQuery("#noticed").hide();	
+			var apply_mark = jQuery("#apply_mark").val();
+			if(apply_mark!=""){
+					var coor =jQuery("#apply_mark").data("bind-coor");
+					var width =jQuery("#apply_mark").data("width");
+					var height =jQuery("#apply_mark").data("height");
+					var top =jQuery("#apply_mark").data("top");
+					var left =jQuery("#apply_mark").data("left");
+					jQuery("#hotspots li[mark="+apply_mark+"]").data("bind-data",url+"=="+coor).data("bind-url",url);
+					jQuery(".fiit_hot_img").find(".choose").removeClass("this");
+					var text ='<div class="choose this" mark="'+apply_mark+'" style="position:absolute; top:'+top+'px; left:'+left+'px; width:'+width+'px; height:'+height+'px;"></div>';
+					jQuery(".fiit_hot_img span").append(text);
+					cancelSelection();
+				}else{
+					jQuery("#noticed").show().html("请划分热点区域！");	
+					}
+			}else{
+			jQuery("#noticed").show().html("请填写热点链接！");	
+				}
+		}else{
+			var text='<li style="color:#F00">请先设置背景图片！</li>';		
+			jQuery("#hotspots").html(text);
+			}
+	}
+	
+function save_form(){
+	var coor_datas ="";
+	jQuery("#hotspots li").each(function(){
+			 coor_datas =jQuery(this).data("bind-data")+"|"+coor_datas;
+		  });
+	var mark = jQuery("#mark").val();
+	var div = jQuery("#div").val();
+	var coor_img =jQuery(".fiit_hot_img img").attr("id");
+	jQuery("#save").attr("disabled","disabled");		
+	jQuery.post("$!webPath/seller/decorate_module_save.htm",
+				{"coor_datas":coor_datas,
+				 "type":"hotspot",
+				 "mark":mark,
+				 "div":div,
+				 "coor_img":coor_img
+				},
+				function(data){
+					cancelSelection("");
+					jQuery('#module_edit').remove();
+						if(div!=""){
+							jQuery("div[mark="+mark+"][div='$!{div}']").html(data);
+							}else{
+							jQuery("div[mark="+mark+"]").html(data);	
+								}jQuery("#save").removeAttr("disabled");	
+					},"text");
+				
+	}
+</script>
+
+<div class="fiit_hot_box">
+	<div class="fiit_hot_hd">
+    <div class="fiit_hot_tab">
+        	<ul>
+            	<li class="this" tar="img"><a href="javascript:void(0);" >图片设置</a></li>
+                <li tar="hotspot"><a href="javascript:void(0);">热点设置</a></li>
+            </ul>
+        </div>
+        <div  id="tar_img">
+    	<dl class="fiit_hot_upload">
+        	<dt>背景图片：</dt>
+            <dd>
+            	<div class="file_box">
+                     <input class="ip180" type='text' id="img_show" name="img_show"/>  
+                     <input type='button' class='btn' value='浏览...' />
+                     <input type="file" class="file" id="img" name="img" />
+                </div>
+            </dd>
+        </dl>
+        </div>
+        <div style="display:none" id="tar_hotspot">
+        <div class="add_hotpints" >
+        	<a class="add_hotpints_btn" href="javascript:void(0);" id="add_hotspot"><b>+</b>新增热点</a>
+            <ul id="hotspots">
+            #set($count=1)
+            #foreach($coor in $coors_list)
+            <li mark="$!{count}"><a href="javascript:void(0);">热点$!{count}</a><i onclick="cancle_hotspot($!{count});"></i></li>
+            <script>
+            jQuery("#hotspots li[mark=$!{count}]").data("bind-data","$!{coor.coor_data}").data("bind-url","$!{coor.coor_url}");
+            </script>
+             #set($count=$!{count}+1)
+            #end
+            </ul>
+        </div>
+        <dl class="fiit_hot_upload">
+        	<dt>热点<b id="url_count">1</b>地址：</dt>
+            <dd>
+            <input id="hotspot_url" name="hotspot_url" type="text" class="ip300" placeholder="http://"/>
+            <input id="apply_mark" name="apply_mark" type="hidden" value=""/>
+            <input class="hot_btn" type="button" value="应用" onclick="apply_hotspot();"/>
+            <span class="red" id="noticed" style="display:none">请填写热点链接！</span>
+            </dd>
+        </dl>
+    	</div>
+    </div>
+    #set($src="$!webPath/resources/style/common/images/ajax_loader.gif")
+    #if($!obj)
+     #set($src="$!{obj.src}")
+    #end
+    <div class="fiit_hot_img"  #if(!$!obj) style="display:none" #end>
+    <span #if($!obj) style="height:$!{obj.height}px; width:$!{obj.width}px;" #end>
+    <img src="$!{src}" id="$!{obj.id}"/>
+     #set($count=1)
+    #foreach($coor in $coors_list)
+    <div class="choose" mark="$!{count}" style="position:absolute;top:$!{coor.top}px; left:$!{coor.left}px; width:$!{coor.width}px; height:$!{coor.height}px;"></div>
+    #set($count=$!{count}+1)
+    #end
+    </span>
+    <div class="balck_bg" style="#if(!$!obj)display:none;#else height:$!{obj.height}px; #end"></div>
+    </div>
+</div>
+
+  <div class="fiit_save_box">
+   <input id="mark" name="mark" type="hidden" value="$!{mark}"/>
+   <input id="div" name="div" type="hidden" value="$!{div}"/>
+    <input type="button" value="保存" onclick="save_form();" id="save" />
+  </div>

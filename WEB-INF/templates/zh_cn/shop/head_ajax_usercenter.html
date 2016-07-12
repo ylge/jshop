@@ -1,0 +1,32 @@
+        <div class="top_user_hb" id="top_user_hb"> <span class="top_user_login">#if($!user)您好$!CommUtil.substring("$!{user.userName}",12)<a href="$!webPath/iskyshop_logout.htm" >退出商城</a>#else <a href="$!webPath/user/login.htm" >用户登录</a> #end</span>
+        <ul class="top_user_ul">
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/waitgoods.png" /></i><a href="$!webPath/buyer/order.htm?order_status=order_shipping">待收货</a>#if($!user)<span style="color:#F00">($!order_size_30)</span>#end</li>
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/mygoods.png" /></i><a href="$!webPath/buyer/order.htm">我的订单</a></li>
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/waitpay.png" /></i><a href="$!webPath/buyer/order.htm?order_status=order_submit">待付款订单</a>#if($!user)<span style="color:#F00">($!order_size_10)</span>#end</li>
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/buygoods.png" /></i><a href="$!webPath/buyer/message.htm">新消息</a>#if($!user)<span style="color:#F00">($!msg_size)</span>#end</li>
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/backpay.png" /></i><a href="$!webPath/buyer/order_return_list.htm">返修退换货</a></li>
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/coupon.png" /></i><a href="$!webPath/buyer/coupon.htm">优惠券</a></li>
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/save_top.png" /></i><a href="$!webPath/buyer/favorite_goods.htm">我的收藏</a></li>
+          <li><i><img src="$!webPath/resources/style/system/front/default/images/foot_top.png" /></i><a href="$!webPath/buyer/foot_point.htm">我的足迹</a></li>
+        </ul>
+        #if($!objs.size()>0)
+        <div class="top_user_browse">
+        <h3>最近浏览的商品</h3>
+        <span>  
+        #foreach($obj in $!objs)   
+        	  #set($goods_url="$!webPath/goods_$!{obj.id}.htm")
+              #if($!config.second_domain_open && $!obj.goods_type==1 && $!obj.goods_store.store_second_domain!="")
+              #set($goods_url="http://$!{obj.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.id}.htm")
+              #end   
+                  #if($!obj.goods_main_photo)              
+                  #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+                  #else
+                  #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+                  #end
+        		      <a href="$!goods_url" target="_blank"><img src="$!img" width="50" height="50"/></a>
+        #end
+        </span>
+        </div>
+        #end
+      </div>
+     

@@ -1,0 +1,55 @@
+<div class="tab_body_b">
+#macro ( genericTree $somelist ) 
+#foreach ( $some in $somelist )
+<option value="$!some.id">#if($!some.level>0)
+#foreach($count in [0..$!some.level])&nbsp;&nbsp;#end #end $!some.className</option>
+#genericTree($some.childs) 
+#end 
+#end
+  <h1 class="album_h1">
+  <style>
+  	.album_h1 i{ float:left;}
+	.album_list ul li{ width:155px;}
+	.album_list ul li span{ width:155px; height:155px;}
+	.album_list ul li span img{ margin:3px 0 0 7px;}
+	.album_list ul li p{ float:left; width:152px; line-height:20px; height:40px; overflow:hidden; margin-top:10px;}
+	.album_list { width:911px;}
+	.tab_body_a, .tab_body_b{ width:911px;}
+	.album_list ul li p{ width:140px;}
+	.tab_body_b h1 i{height: 30px;line-height: 27px;}
+	.gf_goods_name{ margin-top:-1px;}
+  </style> 
+  <i>商品列表</i>
+  <i>选择分类：</i>
+  <i>
+    <select name="gc_id" id="gc_id" class="gf_select">
+      <option value="">请选择商品分类...</option>
+      #genericTree($!gcs) 
+    </select>
+<script>
+jQuery(document).ready(function() {
+	jQuery("#gc_id").val("$!gc_id");
+})
+</script>
+    </i> <i>商品名称：
+    <input name="goods_name" type="text" value="$!goods_name" id="goods_name" class="gf_goods_name"/>
+    </i><i>
+    <input type="button"  class="floor_sear_btn" value="搜索" onclick="information_goods_load();" style="cursor:pointer; margin-top:2px;" />
+    </i></h1>
+  <div class="album_list">
+    <ul>
+      #foreach($obj in $goods)
+      #set($cover_img="$!webPath/resources/style/system/front/default/images/user_photo/phone.jpg")
+      #if($!obj.goods_main_photo)
+      #set($cover_img="$!imageWebServer/$!obj.goods_main_photo.path/$!obj.goods_main_photo.name") 
+      #end
+      <li><span><img src="$!cover_img" width="140"" height="140" onclick="photo_switch('$!obj.id',this)" style="cursor:pointer"/></span>
+        <p>$!obj.goods_name</p>
+      </li>
+      #end
+    </ul>
+  </div>
+  <div class="tab_page">
+    <div class="tab_page2" id="img_photo" ajax_page="goods_album" ajax_type="$!{ajax_type}">$!gotoPageAjaxHTML</div>
+  </div>
+</div>

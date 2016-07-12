@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="$!webPath/resources/editor/themes/default/default.css" />
+<script src="$!webPath/resources/js/jquery.shop.base.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.imgareaselect.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){	
+jQuery("#status").change(function(){
+		if(jQuery(this).val()==-10){
+			jQuery("#reason").show();
+			}else{
+				jQuery("#reason").hide();
+				}							 						 
+	});
+	jQuery("#logoShow").mouseover(function(){		
+	    jQuery("#logoImg").css('display','block');	
+   }).mouseout(function(){
+		jQuery("#logoImg").css('display','none');
+	});
+});
+function saveForm(){
+	jQuery("#theForm").submit();	
+}
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/information_verify_save.htm" method="post"  name="theForm" id="theForm">
+  <input name="id" type="hidden" id="id" value="$!obj.id" />
+  <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/information_verifylist.htm" />
+  <div class="cont">
+    <h1 class="seth">资讯管理</h1>
+    <div class="nav_list">
+      <ul>
+        <li> <a href="$!webPath/admin/information_list.htm"><b>所有资讯</b></a></li>
+        <li><a href="$!webPath/admin/information_verifylist.htm"><b>待审核资讯</b></a></li>
+        <li><a href="$!webPath/admin/information_add.htm"><b>新增资讯</b></a></li>
+        <li><a href="javascript:void(0);" class="this"><b>审核</b></a></li>
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" >
+        <ul class="set1">
+          <li class="setcont_bg">资讯标题：</li>
+          <li><span class="webname">$!obj.title </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">资讯分类：</li>
+          <li><span class="webname">$!className</span></li>
+        </ul>
+         <ul class="set1">
+          <li class="setcont_bg">发布时间：</li>
+          <li><span class="webname">$!CommUtil.formatLongDate($!obj.addTime)</span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">资讯来源：</li>
+          <li><span class="webname">$!obj.infoSource</span></li>
+        </ul>
+         <ul class="set1">
+          <li class="setcont_bg">资讯作者：</li>
+          <li><span class="webname">$!obj.author</span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">发布上架：</li>
+          <li><span class="webname">$!obj.store</span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">资讯封面：</li>
+          <li> #if($!obj.cover)</span><span class="preview"> <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="25" height="25"  id="logoShow" style="cursor:help"/> </span>#else 暂无封面 #end
+            #if($!obj.cover)
+            #set($img=$!imageTools.queryImg($!obj.cover))
+            <div class="bigimgpre" id="logoImg" style="display:none;left:200px;"><img src="$!imageWebServer/$!img.path/$!img.name"  width="200" height="200" id="coverimg"/> </div>
+            #end</li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">资讯导读：</li>
+          <li><span class="webname">$!obj.synopsis</span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">资讯内容：</li>
+          <li><span class="webname"><a href="$!webPath/admin/info_preview.htm?id=$!obj.id" target="_blank" class="blue">预览</a> </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">审核状态</li>
+          <li> <span class="webname">
+            <select name="status" id="status">
+              <option value="20">审核通过</option>
+              <option value="-10">审核未通过</option>
+            </select>
+            </span></li>
+        </ul>
+        <ul class="set1" id="reason" style="display:none">
+          <li class="setcont_bg">审核失败原因:</li>
+          <li> <span class="webname">
+            <textarea rows="6" cols="40" name="failreason"></textarea>
+            </span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

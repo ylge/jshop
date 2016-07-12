@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+</script>
+<body>
+<div class="cont">
+  <h1 class="seth">商品咨询</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/consult_self.htm"  #if($!reply=="") class="this" #end><b>全部咨询</b></a> </li>
+      <li> <a href="$!webPath/admin/consult_self.htm?reply=false" #if($!reply==false) class="this" #end><b>未回复咨询</b></a></li>
+      <li><a href="$!webPath/admin/consult_self.htm?reply=true" #if($!reply==true) class="this" #end><b>已回复咨询</b></a> </li>
+    </ul>
+  </div>
+  <form action="$!webPath/admin/consult_list.htm" method="post" id="queryForm">
+  <div class="search"> 
+  <span >咨询人</span>
+  <span class="size200"><input name="consult_user_userName" type="text" id="consult_user_userName" /></span>
+  <span><input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/></span>
+   </div>
+    </form>
+  <div class="fshoptb2">
+    <FORM name="ListForm" id="ListForm"  action="$!webPath/admin/consult_self.htm" method="post">
+    <input type="hidden" name="reply" value="$!reply" />
+      <div class="consultation">
+        <!--咨询开始-->
+        #foreach($obj in $objs)
+        <div class="consulone">
+          <div class="consultitle"><span class="consuin">
+            <input type="checkbox" name="checkbox" id="checkbox" value="$!obj.id" />
+            </span> 
+            #foreach($map in $!CommUtil.Json2List("$!obj.goods_info"))
+            #set($goods_id = "$!{map.get('goods_id')}")	
+            #set($goods_name = "$!{map.get('goods_name')}")
+            #set($goods_price = "$!{map.get('goods_price')}")
+            #set($goods_mainphoto_path = "$!{map.get('goods_main_photo')}")
+            #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+            #set($goods_domainPath = "$!{map.get('goods_domainPath')}") <span class="consultingtitle"><strong>咨询对象:</strong><a href="$!goods_domainPath" target="_blank">[$!{goods_name}]</a></span><span class="consultingtype"><strong>咨询类型:$!obj.consult_type</strong></span>#end<span class="consultingname"><strong>自营商品</strong></span><span class="consulopr"><strong>操作：<a href="javascript:void(0);" onclick="if(confirm('删除后不可恢复，是否继续?'))window.location.href='$!webPath/admin/consult_self_del.htm?mulitId=$!obj.id&currentPage=$!currentPage'">删除</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" dialog_uri="$!webPath/admin/consult_self_reply.htm?id=$!obj.id&currentPage=$!currentPage" dialog_title="编辑回复" dialog_width="400" dialog_height="100" dialog_id="order_cancel" >#if($!obj.reply)编辑#end回复</a></strong></span></div>
+          <div class="consula">
+            <h2><span>咨询人：$!{obj.consult_user_name}</span><span>咨询时间:$!CommUtil.formatLongDate($!obj.addTime)</span></h2>
+            <div class="consulacon">$!{obj.consult_content}</div>
+          </div>
+          <div class="consulb">
+            <h2><span style="color:#C60">回复</span></h2>
+            <div class="consulacon">#if($!obj.reply)<span id="summary_$!{obj.id}">$!CommUtil.substring("$!{obj.consult_reply}",60)</span> #else 暂无回复 #end <span id="detail_$!{obj.id}" style="display:none;">$!{obj.consult_reply}</span><a id="show_$!{obj.id}" href="javascript:void(0);" onclick="javascript:jQuery('#detail_$!{obj.id}').show();jQuery('#summary_$!{obj.id}').hide();jQuery('#show_$!{obj.id}').hide();jQuery('#hide_$!{obj.id}').show();">【展开】</a><a id="hide_$!{obj.id}" href="javascript:void(0);" onclick="javascript:jQuery('#detail_$!{obj.id}').hide();jQuery('#summary_$!{obj.id}').show();jQuery('#show_$!{obj.id}').show();jQuery('#hide_$!{obj.id}').hide();" style="display:none;">【收起】</a></div>
+          </div>
+        </div>
+        #end
+        <!--咨询结束-->
+        <div class="operate_bar">
+          <div class="fenye">
+            <input name="consult_user_userName" type="hidden" id="consult_user_userName" value="$!consult_user_userName" />
+            <input name="consult_content" type="hidden" id="consult_content" value="$!consult_content" />
+            <input type="hidden" name="currentPage" id="currentPage" value="$!currentPage" />
+            <input name="mulitId" type="hidden" id="mulitId" />
+            $!gotoPageFormHTML</div>
+          <div class="oper_sp"> <span class="oper_check">
+          <label>
+            <input type="checkbox" name="all" id="all" value="" onclick="selectAll(this);" />
+            全部
+            </label></span> <span class="oper_del">
+            <input name="" type="button"  onclick="cmd('$!webPath/admin/consult_del.htm','')" style="cursor:pointer;" value="删除"/>
+            </span></div>
+        </div>
+      </div>
+    </FORM>
+  </div>
+</div>
+</body>
+</html>

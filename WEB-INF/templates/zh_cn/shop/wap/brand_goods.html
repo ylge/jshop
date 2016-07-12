@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>商品列表 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+   jQuery("#top_$!{orderBy}").addClass("this");
+   if("$!{orderBy}"=="store_price"){
+	  if("$!{orderType}"=="desc"){
+		  jQuery("#top_store_price img").attr("src","$!webPath/resources/style/system/front/wap/images/goodsclass_down.png");
+	  }else{
+	  	  jQuery("#top_store_price img").attr("src","$!webPath/resources/style/system/front/wap/images/goodsclass_up.png");
+	  }
+   }else{
+   	  jQuery("#top_$!{orderBy} img").attr("src","$!webPath/resources/style/system/front/wap/images/goodsclass_down.png");
+   }
+   var begin_count =12;
+   var ret = 1;
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&ret==1) {
+		 jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/brand_goods_ajax.htm',
+				  data:{"begin_count":begin_count,
+		  				"gb_id":"$!{gb_id}",
+						"orderBy":"$!{orderBy}",
+						"orderType":"$!{orderType}"},
+				beforeSend:function(){
+				  begin_count = begin_count +6;
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  ret = 0;
+				},
+			   success:function(data){
+				   ret = 1;
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".group_list").find("a").last().after(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		
+	jQuery(".group_top li").click(function(){
+		var orderBy = jQuery(this).attr("id").substring(4);
+		if(orderBy=="store_price"){
+			if("$!{orderType}"=="asc"){
+				window.location.href="$!webPath/wap/brand_goods.htm?gb_id=$!{gb_id}&&orderBy="+orderBy+"&&orderType=desc";
+			}else{
+				window.location.href="$!webPath/wap/brand_goods.htm?gb_id=$!{gb_id}&&orderBy="+orderBy+"&&orderType=asc";
+			}	
+		}else{
+			window.location.href="$!webPath/wap/brand_goods.htm?gb_id=$!{gb_id}&&orderBy="+orderBy;
+		}
+	}) 	  
+});<!--end-->
+</script>
+</head>
+
+<body class="index_bg">
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>商品列表<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="main">
+  <div class="mt50"></div>
+  <div class="group_top">
+    <ul>
+      <li id="top_goods_salenum"><a href="javascript:void(0)"><span><b><img src="$!webPath/resources/style/system/front/wap/images/group_down.png"></b>销量</span></a></li>
+      <li id="top_goods_collect"><a href="javascript:void(0)"><span><b><img src="$!webPath/resources/style/system/front/wap/images/group_down.png"></b>人气</span></a></li>
+      <li id="top_store_price"><a href="javascript:void(0)"><span><b><img src="$!webPath/resources/style/system/front/wap/images/group_sort.png"></b>价格</span></a></li>
+    </ul>
+  </div>
+  <div class="group_list">
+  	#if($!objs.size()>0)
+    #foreach($obj in $objs)
+    <a href="$!webPath/wap/goods.htm?id=$!{obj.id}">
+    <dl>
+      <dt><img width="90" height="90" src="$!imageWebServer/$!obj.goods_main_photo.path/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}"></dt>
+      <dd>
+        <h3><b>$!obj.goods_name</b></h3>
+        <span><strong>¥$!obj.store_price</strong></span> <em>$!{goodsViewTools.query_goods_evaluates("$!obj.id")}人评价，$!{obj.goods_salenum}人已购买</em> </dd>
+    </dl>
+    </a>
+    #end
+    #else
+    <div class="loading">
+    <ul>
+      <li>暂无数据....</li>
+    </ul>
+  </div>
+    #end
+  </div>
+  <div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16"></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+  <div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+  </div>
+</div>
+  $!httpInclude.include("/wap/footer.htm?op=index") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

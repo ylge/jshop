@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-资讯管理- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("a[a_id^=failreason_]").mouseover(function(){
+	   jQuery("b[id^=failreason_]").hide();
+	   var target_id=jQuery(this).attr("target_id");
+	   jQuery("b[id=failreason_"+target_id+"]").show();
+	}).mouseleave(function(){
+	   var target_id=jQuery(this).attr("target_id");
+	   jQuery("b[id=failreason_"+target_id+"]").hide();
+	}); 							
+});<!--end-->
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+<div class="seller_center">
+<div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=information") </div>
+<div class="seller_right">
+  <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>其他管理</b>><b>咨询管理</b></span></div>
+  <div class="seller_list">
+    <div class="seller_list_title">
+      <ul class="seller_title_ul">
+        <li class="this"><a href="$!webPath/seller/information_list.htm"><i></i>资讯列表</a></li>
+        <li ><a href="$!webPath/seller/information_add.htm"><i></i>资讯添加</a></li>
+      </ul>
+    </div>
+    <div  class="user_sp_right">
+      <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/information_list.htm">
+        <div class="operation"> #if($objs.size()>0)
+          <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+            <tr id="opertitle">
+              <th width="2%"></th>
+              <th width="25%">标题</th>
+              <th width="10%">作者</th>
+              <th width="15%">状态</th>
+              <th width="10%">分类</th>
+              <th width="15%">发布时间</th>
+              <th align="center">操作</th>
+            </tr>
+            #end
+            #if($objs.size()>0)
+            #foreach($obj in $objs)
+            <tr >
+              <td align="center"><span class="checkpro">
+                <input name="checkbox" type="checkbox" id="checkbox$!obj.id" value="$!obj.id" />
+                </span></td>
+              <td align="center">$!obj.title</td>
+              <td align="center">$!obj.author</td>
+              #if($!obj.status==-10)
+              #set($status="审核失败")
+              #end
+              #if($!obj.status==0)
+              #set($status="待审核")
+              #end
+              #if($!obj.status==10)
+              #set($status="审核中")
+              #end
+              #if($!obj.status==20)
+              #set($status="审核通过")
+              #end
+              <td align="center">$!{status}#if($!obj.status==-10)<i class="reason"><a href="javascript:void(0);" a_id="failreason_$!obj.id" target_id="$!obj.id">查看原因</a><b style="display:none;" id="failreason_$!obj.id" class="reason_center">$!obj.failreason</b></i>
+#end</td>
+              <td align="center">$!classmap.get($!obj.classid)</td>
+              <td align="center">$!CommUtil.formatShortDate($!obj.addTime)</td>
+              <td align="center" class="del_operate"><a href="$!webPath/seller/info_preview.htm?id=$!obj.id" target="_blank" class="del_a">预览</a>#if($!obj.status<=0)<a href="$!webPath/seller/information_edit.htm?id=$!obj.id" class="del_a">编辑</a><a href="$!webPath/seller/information_apply.htm?id=$!obj.id&currentPage=$!currentPage" class="del_a">提交审核</a>#end <a href="javascript:void(0);" onclick="if(confirm('删除后不可恢复，是否继续？'))window.location.href='$!webPath/seller/information_del.htm?mulitId=$!obj.id&currentPage=$!currentPage'" class="del_a">删除</a></td>
+            </tr>
+            #end
+            #else
+            <tr>
+              <td colspan="6" align="center"><div class="seller_center_nothing">
+                  <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                  <div class="seller_center_nothing_right">暂时没有数据</div>
+                </div></td>
+            </tr>
+            #end
+          </table>
+        </div>
+        #if($objs.size()>0)
+        <div class="userlist_allop">
+          <div class="seller_list_page">
+            <div  class="seller_page_sp">
+              <input name="er_id" type="hidden" id="er_id" value="$!er_id" />
+              <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+              <input name="mulitId" type="hidden" id="mulitId" />
+              $!gotoPageFormHTML</div>
+            <div class="user_listoper_p"> <i>
+              <input name="all" type="checkbox" id="all" value="" onclick="selectAll(this)" />
+              <label for="all">全选</label>
+              </i> <a  href="javascript:void(0);" onclick="cmd('$!webPath/seller/information_del.htm','')" class="seller_oper_all">删除</a></div>
+          </div>
+        </div>
+        #end
+      </form>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

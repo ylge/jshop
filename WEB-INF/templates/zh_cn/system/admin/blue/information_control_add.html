@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/cms.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("#whether_show_img").click(function(){
+	   var whether_show=jQuery("#whether_show").val();
+	   if(whether_show=="1"){
+	      jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#whether_show").val("0");
+	   }else{
+	      jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#whether_show").val("1");
+	   }
+	});	
+	
+	jQuery("#show")
+	
+	#if($!obj.whether_show==1)
+	jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+});
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">资讯首页管理</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/information_control.htm"><b>首页楼层管理</b></a></li>
+      <li><a href="$!webPath/admin/information_control_add.htm" class="this"><b>首页楼层添加</b></a></li>
+    </ul>
+  </div>
+  
+     <form action="$!webPath/admin/cms_template_save.htm" method=post enctype="multipart/form-data" name="theForm" id="theForm">
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+    <div class="edit">
+      <div class="editul setcont ">
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>楼层标题</li>
+          <li><span class="webname">
+            <input name="title" type="text" id="title" value="$!obj.title" size="40" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+        <li class="setcont_bg">风格</li>
+        <li><span class="webnamesec sizese">
+          <select id="type" name="type">
+           <option value="1">资讯-资讯</option>
+           <option value="2">商品-分类</option>
+           <option value="3">商品</option>
+           <option value="4">资讯-资讯-商品-品牌</option>
+           <option value="5">商品-0元试用-圈子</option>
+           </select>
+          </span></li>
+          <span class="preview" style=" position:relative">
+           <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="25" height="25"  id="Show" style="cursor:help"/>
+           
+           </span>
+      </ul>
+
+      <div class="preview_img" style="display:none" id="img1"><img src="$!webPath/resources/style/system/front/default/images/cms/1.png" /></div>
+      <div class="preview_img" style="display:none" id="img2"><img src="$!webPath/resources/style/system/front/default/images/cms/2.png" /></div>
+      <div class="preview_img" style="display:none" id="img3"><img src="$!webPath/resources/style/system/front/default/images/cms/3.png" /></div>
+      <div class="preview_img" style="display:none" id="img4"><img src="$!webPath/resources/style/system/front/default/images/cms/4.png" /></div>
+      <div class="preview_img" style="display:none" id="img5"><img src="$!webPath/resources/style/system/front/default/images/cms/5.png" /></div>
+        
+        <ul class="set1">
+          <li class="setcont_bg">显示</li>
+          <li><span class="webSwitch">
+            <input name="whether_show" id="whether_show" type="hidden" value="$!obj.whether_show" />
+            <img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/on.jpg" width="61" height="23" id="whether_show_img"  style="cursor:pointer"/> </span> </li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">排序</li>
+          <li><span class="webname">
+            <input name="sequence" type="text" id="sequence" value="$!obj.sequence" />
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">序号越小越靠前</strong><strong class="c"></strong></span></li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <div class="submit"> <span class="pad120">
+    <input name="save" type="button" value="提交" onclick="saveForm()" />
+    </span> </div>
+    
+    
+    
+</div>
+</body>
+</html>

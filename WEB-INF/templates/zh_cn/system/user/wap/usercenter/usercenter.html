@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>用户中心 - $!config.title</title>
+<link href="$!webPath/resources/style/mobile/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+</head>
+
+<body class="user_bg">
+<header>
+  <section>
+  	<span class="head_left"></span>
+    <h2>用户中心 </h2>
+    <span class="head_right">
+    </span>
+  </section>
+</header>
+<div class="user_index">
+  <div class="mt50" style="height:48px;"></div>
+  <div class="user_top">
+    <dl>
+      <dt><img #if($!user.photo) src="$!imageWebServer/$!user.photo.path/$!user.photo.name" #else #end></dt>
+      <dd><span>$!user.userName</span><strong>$integralViewTools.query_user_level_name("$!user.id")</strong></dd>
+    </dl>
+    <div class="user_top_bottom"></div>
+    <section>
+      <ul>
+        <li><span style="border-left:0px;"><strong>待付款订单</strong><b>$!orders_10</b></span></li>
+        <li><span><strong>预存款</strong><em>#if($!{user.availableBalance})$!{user.availableBalance} #else 0 #end</em></span></li>
+        <li><span><strong>优惠券</strong><b>$!couponInfos</b></span></li>
+      </ul>
+    </section>
+  </div>
+  <div class="user_list">
+    <ul>
+      <li><a href="$!webPath/mobile/buyer/order_list.htm"><span><b><img src="$!webPath/resources/style/mobile/images/user_list_a.png"></b>我的订单</span></a></li>
+      <li><a href="$!webPath/mobile/buyer/coupon.htm"><span><b><img src="$!webPath/resources/style/mobile/images/user_list_b.png"></b>优惠券</span></a></li>
+    </ul>
+  </div>
+  <div class="user_list">
+    <ul>
+      <li><a href="$!webPath/mobile/buyer/message_list.htm"><span><b><img src="$!webPath/resources/style/mobile/images/user_list_c.png"></b>我的消息</span></a></li>
+      <li><a href="$!webPath/mobile/buyer/favorite.htm"><span><b><img src="$!webPath/resources/style/mobile/images/user_list_d.png"></b>我的收藏</span></a></li>
+    </ul>
+  </div>
+  <div class="user_list">
+    <ul>
+      <li><a href="$!webPath/mobile/buyer/address.htm"><span><b><img src="$!webPath/resources/style/mobile/images/user_list_e.png"></b>收货地址</span></a></li>
+      <li><a href="$!webPath/mobile/buyer/edit_password.htm"><span><b><img src="$!webPath/resources/style/mobile/images/user_list_f.png"></b>修改密码</span></a></li>
+    </ul>
+  </div>
+  <div class="pd5"><div class="pay_btn"><a href="$!webPath/iskyshop_logout.htm">退出登录</a></div></div>
+</div>
+$!httpInclude.include("/mobile/footer_new.htm?op=center")
+</body>
+</html>

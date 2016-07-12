@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("#theForm").validate({
+	 errorPlacement: function(error, element) {  
+					   element.parent().addClass("bd_red");
+        			 error.appendTo(element.parent().next());  
+   					 },	
+	success:function(label) {
+     						 label.parent().prev().removeClass("bd_red");
+						},
+	rules: {
+			userName: {required:true},
+			code:{required:true,
+			      remote:{
+		             url: "$!webPath/verify_code.htm",     //后台处理程序
+                     type: "post",               //数据发送方式
+                     dataType: "json",           //接受数据格式   
+                     data: {                     //要传递的数据
+                           "code": function(){return jQuery("#code").val();}
+		              }
+		          }
+			}
+		 },
+		messages: {
+			userName: {required:"用户名不能为空"},
+			code:{required:"验证码不能为空",remote:"验证码不正确"}
+					}
+  });
+});
+ function refreshCode(){
+    jQuery("#code_img").attr("src","$!webPath/verify.htm?d"+new Date().getTime());
+ }
+</script>
+</head>
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>找回密码第一步<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="phone_main">
+	<!--登录页-->
+    <form action="$!webPath/wap/forget2.htm" method="post" name="theForm" id="theForm">
+    <div class="phone_login">
+    	<ul>
+        	<li class="ip"><input name="userName" id="userName" type="text" placeholder="请输入用户名/邮箱/已验证手机号" /></li><li class="yz"></li>
+            <li class="yzm">
+          <input name="code" type="text"  id="code" placeholder="请输入验证码" />
+          <img id="code_img" src="$!webPath/verify.htm" width="73" height="27" /><a href="javascript:void(0);" onClick="refreshCode();" ><img src="$!webPath/resources/style/system/front/wap/images/refresh.png" width="32" height="32" /></a></li><li class="yz"></li> 
+            <li class="ip_btn"><input type="submit" value="下一步" /></li>
+        </ul>
+    </div>
+	</form>
+    $!httpInclude.include("/wap/footer.htm?op=index")    
+</div>
+</body>
+</html>

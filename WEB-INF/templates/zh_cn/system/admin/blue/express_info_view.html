@@ -1,0 +1,8 @@
+  <table style="float:left;" width="100%" border="0" cellspacing="0" cellpadding="0" class="box_table">
+  #foreach($temp in $orderFormTools.query_ship_getData("$!obj.order_id").data)
+    <tr>
+      <td width="30%" align="right" valign="top">$!temp.time：</td>
+      <td align="left">$!temp.context</td>
+    </tr>
+  #end      
+  </table>

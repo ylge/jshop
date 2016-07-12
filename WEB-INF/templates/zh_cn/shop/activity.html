@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.lazyload.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery(".img_cspan img").lazyload({effect:"fadeIn",width:226,height:226});	
+	});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+#if($!op)
+$!httpInclude.include("/nav1.htm?op=activity")
+#else
+$!httpInclude.include("/nav1.htm?op=activity&id=$!{act.id}")
+#end
+<div class="main">
+<div class="active_top_nav">
+	<ul>
+    #foreach($obj in $acts)
+       <li><a href="$!webPath/activity/index_$!{obj.id}.htm" #if($!obj.id==$!{act.id}) class="this" #end>$!{obj.ac_title}</a></li>
+    #end
+    </ul>
+       <span class="active_top_time">
+    活动时间：$!CommUtil.formatShortDate($!act.ac_begin_time) 至 $!CommUtil.formatShortDate($!act.ac_end_time)
+    </span>
+</div>
+  <div class="active_page">
+  #if($!act)
+    <div class="active_banner">
+      <div class="active_b_left"> <span class="active_b_big"><img src="$!imageWebServer/$!act.ac_acc.path/$!act.ac_acc.name" width="950" height="320" /></span></div>
+      <div class="active_b_right"> <b> <img src="$!imageWebServer/$!act.ac_acc3.path/$!act.ac_acc3.name" width="250" height="320" /> </b>
+        <h3>活动详情</h3>
+        <p><a href="javascript:void(0);">$!act.ac_content</a> </p>
+      </div>
+    </div>
+  #end  
+    <form id="ListForm" name="ListForm" action="" method="post">
+      <div class="active_pro_hid">
+       #foreach($!obj in $!objs)
+        #if($!obj.ag_goods.goods_main_photo)
+        #set($bigimg="$!imageWebServer/$!{obj.ag_goods.goods_main_photo.path}/$!{obj.ag_goods.goods_main_photo.name}")
+        #set($img="$!{bigimg}_middle.$!{obj.ag_goods.goods_main_photo.ext}")
+        #else
+        #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+        #end
+        #set($goods_url="$!webPath/goods_$!{obj.ag_goods.id}.htm")
+        #if($!config.second_domain_open && $!obj.ag_goods.goods_type==1 && $!obj.ag_goods.goods_store.store_second_domain!="")
+        #set($goods_url="http://$!{obj.ag_goods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.ag_goods.id}.htm")
+        #end
+        
+        <div class="active_pro_one">
+          <ul>
+            <li class="active_pro_img"> <a href="$!{goods_url}"><span class="img_cspan">
+              <p><img original="$!{img}" src="$!webPath/resources/style/common/images/loader.gif" width="28" height="28"  onerror="this.src='$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}';" /></p>
+              </span><em></em><i class="act_em_i"></i> 
+              #set($map=$activityViewTools.getActivityPrices("$!obj.ag_goods.id"))
+              <strong> 
+              <b> <img src="$!webPath/resources/style/common/images/userlevel_3.png" width="25" height="35" /></br>
+              $!map.get('price4') 元</b>
+               <b><img src="$!webPath/resources/style/common/images/userlevel_2.png" width="25" height="35" /></br >
+              $!map.get('price3') 元</b>
+              <b><img src="$!webPath/resources/style/common/images/userlevel_1.png" width="25" height="35" /></br >
+              $!map.get('price2') 元</b>
+              <b><img src="$!webPath/resources/style/common/images/userlevel_0.png" width="25" height="35" /></br >
+              $!map.get('price1') 元</b> </strong> </a> </li>
+            <li class="active_pro_name"><a href="$!goods_url">$!obj.ag_goods.goods_name</a></li>
+            <li class="active_pro_price"><b>销量：$!obj.ag_goods.goods_salenum</b>最低价：<span><s>¥</s>$!map.get('price4')</span></li>
+          </ul>
+        </div>
+        #end 
+        
+        #if($!objs.size()==0||!$!objs)
+        <div class="main_list_box">
+          <div class="main_list_none"> <span class="main_none_box"> <i></i>
+            <p> 抱歉，没有相应的活动商品！<a href="$!webPath/index.htm">返回商城首页</a></p>
+            </span></div>
+        </div>
+        #end </div>
+      <div class="fenye"><span>$!gotoPageFormHTML</span></div>
+      <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+    </form>
+  </div>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

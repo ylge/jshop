@@ -1,0 +1,45 @@
+<script>
+jQuery(document).ready(function(){
+  jQuery("#deliveryForm").validate({
+	  errorPlacement: function(error, element) {
+				element.parent().next().html("");
+					error.appendTo(element.parent().next());
+  		},
+	   rules:{
+		   delivery_code:{required:true,digits:true,rangelength:[6,6]},
+		   },
+	   messages:{
+	       delivery_code:{required:"不能为空",digits:"请输入正确六位码",rangelength:"请输入正确六位码"}
+	   },
+	   submitHandler:function(){
+		  var currentPage=jQuery("#currentPage").val();
+		  var orderForm_id=jQuery("#orderForm_id").val();
+		  var delivery_code=jQuery("#delivery_code").val();
+          jQuery.post("$!webPath/delivery/delivery_code_verify.htm",{"currentPage":currentPage,"orderForm_id":orderForm_id,"delivery_code":delivery_code}
+		  		,function(data){
+				  if(data=="success"){
+					 jQuery(".self_eidt_search_error").html("").append("验证成功");
+					 window.location.reload();
+				  }else{
+					 jQuery(".self_eidt_search_error").html("").append("验证失败");
+				  }
+             	},"text");
+	   },
+	   invalidHandler: function(form, validator) {  //不通过回调
+            return false;
+       }
+	});
+});
+</script>
+<form action="$!webPath/delivery/delivery_code_verify.htm" method="post" id="deliveryForm" name="deliveryForm">
+  <div class="self_eidt_search_tipe">请输入取件六位码</div>
+  <div class="self_eidt_search_input">
+    <input name="delivery_code" id="delivery_code" type="text" />
+  </div>
+  <div class="self_eidt_search_error"></div>
+  <div class="self_eidt_search_botton"><span class="inputbtn">
+    <input type="submit" value="提交" style="cursor:pointer;"/>
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+    <input name="orderForm_id" type="hidden" id="orderForm_id" value="$!orderForm_id" />
+    </span></div>
+</form>

@@ -1,0 +1,44 @@
+        	#foreach($obj in $objs)
+        	<dl>#set($ret=1)
+            	#if($!obj.goods_return_status==-2)
+                #set($url="javascript:void(0);")
+                #set($status="已过期")
+                #set($text="退货")
+                #end
+                #if($!obj.goods_return_status==5)
+                #set($url="javascript:void(0);")
+                #set($status="待审核")
+                #set($text="退货")
+                #end
+                #if($!obj.goods_return_status==6)
+                #set($url="$!webPath/wap/buyer/order_returnlog_view.htm?id=$!obj.id")
+                #set($status="填写退货物流")
+                #set($text="退货")
+                #set($ret=2)
+                #end
+                #if($!obj.goods_return_status==7)
+                #set($url="$!webPath/wap/buyer/order_returnlog_view.htm?id=$!obj.id")
+                #set($status="等待商家收货")
+                #set($text="等待商家收货")
+                #end
+                #if($!obj.goods_return_status==-1)
+                #set($url="javascript:void(0);")
+                #set($status="审核未通过")
+                #set($text="退货失败")
+                #end
+                #if($!obj.refund_status==0)
+                  #if($!obj.goods_return_status==10)
+                  	#set($url="javascript:void(0);")
+                	#set($status="退货完成，请等待平台退款")
+                    #set($text="等待退款")
+                  #else
+                  	#set($url="javascript:void(0);")
+                	#set($status="退款完成")
+                    #set($text="退款完成")
+                  #end
+                #end  
+            	<dt><span class="fl">服务号：$!obj.return_service_id</span><span class="fr orange">$!status</span></dt>
+                <dd><span class="fl"><img src="$!imageWebServer/$!obj.goods_mainphoto_path" width="60" height="60" /><p>$!obj.goods_name</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span #if($!ret==1) class="fr gray" #else #end><a href="$!url">$!text</a></span></dd>
+            </dl>
+            #end
+        

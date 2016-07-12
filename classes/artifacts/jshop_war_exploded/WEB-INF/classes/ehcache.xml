@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+	<diskStore path="java.io.tmpdir" />
+	<defaultCache maxElementsInMemory="100" eternal="false"
+		timeToIdleSeconds="1200" timeToLiveSeconds="1200" overflowToDisk="true"
+		clearOnFlush="true" memoryStoreEvictionPolicy="LFU">
+		<!--memoryStoreEvictionPolicy FIFO（First In First Out）：先进先出算法，即先放入缓存的先被移除； 
+			LRU（Least Recently Used）：最久未使用算法，使用时间距离现在最久的那个被移除； LFU（Least Frequently Used）：最近最少使用算法，一定时间段内使用次数（频率）最少的那个被移除； -->
+	</defaultCache>
+	<cache name="SimplePageFragmentCachingFilter"
+		maxElementsInMemory="100" maxElementsOnDisk="1000" eternal="false"
+		overflowToDisk="true" diskSpoolBufferSizeMB="20" timeToIdleSeconds="120"
+		timeToLiveSeconds="120" memoryStoreEvictionPolicy="LFU" />
+	<!-- 单独对某个entity的缓存策略设置 <cache name="com.iskyshop.domain.User" maxElementsInMemory="100" 
+		eternal="false" timeToIdleSeconds="1200" timeToLiveSeconds="1200" overflowToDisk="true" 
+		clearOnFlush="true"> </cache> -->
+</ehcache>

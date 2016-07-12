@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!{config.title}资讯列表 - $!{config.poweredby}</title>
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/cms.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/shop/css/store_$!{store_theme}.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+
+
+</head>
+
+<body>
+<!-- top -->
+<form action="$!webPath/cms/list.htm" method="post" id="ListForm">
+$!httpInclude.include("/cms/top.htm?id=$!id&&title=$!{title}")
+<!-- center --> 
+
+<!-- main -->
+
+<div class="information_main">
+  <div class="information_list">
+    <div class="information_list_left">
+    #if($!objs.size()>0)
+      #foreach($obj in $!objs)
+      <div class="information_list_left_one">
+          #if($!obj.cover)
+          <div class="information_list_left_one_top">
+          <h3><a href="$!webPath/cms/detail_$!{obj.id}.htm">$!obj.title</a></h3>
+          <span><img src="$!webPath/resources/style/system/front/default/images/cms/inf_top_right.png" /><strong>$!cmsTools.queryComment("$!obj.id")</strong>评论</span> </div>
+          <div class="information_list_left_one_img">
+              <ul>
+              #foreach($img in $!imageTools.queryImgs("$!obj.cover"))
+                <li><a href="$!webPath/cms/detail_$!{obj.id}.htm"><img src="$!imageWebServer/$!img.path/$!img.name" /></a></li>
+              #end
+              </ul>
+              <div class="infro">$!obj.synopsis</div>
+          </div>
+          #else
+          <div class="information_list_left_one_top">
+          <h3><a href="$!webPath/cms/detail_$!{obj.id}.htm">$!obj.title</a></h3>
+          <span><img src="$!webPath/resources/style/system/front/default/images/cms/inf_top_right.png" /><strong>$!cmsTools.queryComment("$!obj.id")</strong>评论</span> </div>
+          <div class="information_list_left_one_center">$!obj.synopsis</div>
+          #end
+        
+        
+        <!--<div class="information_list_left_one_img">
+          <ul>
+          #foreach($img in $!imageTools.queryImgs("$!obj.cover"))
+            <li><a href="$!webPath/cms/detail_$!{obj.id}.htm"><img src="$!imageWebServer/$!img.path/$!img.name" /></a></li>
+		  #end
+          </ul>
+        </div>-->
+
+      </div>
+      #end
+      <div class="cms_page">
+      	<span>
+             <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+             <input name="id" type="hidden" id="id" value="$!id" />
+             <input name="orderBy" type="hidden" id="orderBy" value="$!orderBy" />
+             <input name="orderType" type="hidden" id="orderType" value="$!orderType" />
+             $!gotoPageFormHTML</span>
+      </div>
+    #else
+    	<div class="information_list_nothing"></div>
+    #end 
+    </div>
+    
+    
+    <div class="information_list_right">
+      <div class="information_list_right_top">
+        <div class="information_list_right_top_til">
+          <h3>热门话题</h3>
+        </div>
+        <div class="information_list_right_top_list">
+          <ul>
+          #foreach($hot_infor in $hot_infors)
+            <li><a href="$!webPath/cms/detail_$!{hot_infor.id}.htm">$!hot_infor.title</a></li>
+          #end  
+          </ul>
+        </div>
+      </div>
+      <div class="information_list_right_top">
+        <div class="information_list_right_top_til">
+          <h3>品牌商品</h3>
+        </div>
+        <div class="information_list_right_brand_list">
+        
+          <ul>
+          #foreach($goods in $ztc_goods)
+          #if($!goods.goods_main_photo)
+          #set($goods_photo="$!imageWebServer/$!goods.goods_main_photo.path/$!goods.goods_main_photo.name")
+          #else
+          #set($goods_photo="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+          #end
+          #set($goods_url="$!webPath/goods_$!{goods.id}.htm")
+            <li><a href="$!goods_url"><img src="$!goods_photo" /></a><span><a href="$!goods_url">$!goods.goods_name</a><a href="$!goods_url">￥$!{goods.goods_price}</a></span></li>
+          #end 
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+</form>
+<!-- footer -->
+$!httpInclude.include("/cms/footer.htm")
+</body>
+</html>

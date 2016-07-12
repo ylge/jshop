@@ -1,0 +1,13 @@
+##set ($domain = $!domainName.toLowerCase())
+<!-- ${domain}Action -->
+<module name="$domain" path="/$domain" form=""
+	scope="request"
+	action="$!{packageName}.action.$!{domainName}Action"
+	detaulsPage="list">
+	<page name="list" url="/$!{locath}/${domain}List.html"
+		type="template" />
+	<page name="edit" url="/$!{locath}/${domain}Edit.html"
+		type="template" />
+	<property name="service" ref="${domain}Service" />
+</module>
+		

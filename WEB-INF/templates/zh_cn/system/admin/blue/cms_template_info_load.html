@@ -1,0 +1,14 @@
+<ul class="floor_sear_pro">
+  #foreach($obj in $objs)
+  
+  <li> <a href="javascript:void(0);" onclick="goods_list_set(this);"   #if("$!obj.cover"!="")#foreach($img in $!imageTools.queryImgs("$!obj.cover")) img_uri="$!imageWebServer/$!img.path/$!img.name" #end        
+    #end  info_name="$!obj.title" info_id="$!obj.id" class="floor_sear_a"> <span  class="floor_sear_img">
+    #if("$!obj.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!obj.cover"))
+    <img src="$!imageWebServer/$!img.path/$!img.name" width="70" height="70" /> 
+    #end        
+    #end
+    </span> <span class="floor_sear_name">$!obj.title</span> </a> </li>
+  #end
+</ul>
+<div class="floor_page"> <span>$!gotoPageAjaxHTML</span> </div>

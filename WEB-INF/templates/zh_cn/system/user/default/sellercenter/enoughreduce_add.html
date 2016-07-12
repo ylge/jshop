@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-申请满就减-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	
+	#if($!obj.er_json)
+   var json = $!obj.er_json;
+        for(var index in json){
+			var num=jQuery("#ertable tr").length;            
+			var str="<tr><td><span class='enough_ip'> 满 <input name='enoughMoney_count' class='size100' type='text' id='enoughMoney_count' value="+index+"> 减 <input name='reduceMoney_count'  class='size100'  type='text' id='reduceMoney_count' value="+json[index]+"> </span></td></tr>";
+			jQuery("#addermoney").before(str.replace(/count/g,num));
+        }
+		#end
+	
+  jQuery.validator.methods.erend_time = function(value, element, param) {
+   var startDate = jQuery(param).val();
+   var date1=new Date(Date.parse(startDate));
+   var date2=new Date(Date.parse(value));
+   if(jQuery.browser.msie==true){
+      date1 = new Date(Date.parse(startDate.replace("-", "/")));
+      date2 = new Date(Date.parse(value.replace("-", "/")));
+   }
+   return date1 < date2;
+ };
+ jQuery.validator.methods.erbegin_time = function(value, element, param) {
+   var endDate = jQuery(param).val();
+   var date1=new Date(Date.parse(endDate));
+   var date2=new Date(Date.parse(value));
+   if(jQuery.browser.msie==true){
+      date1 = new Date(Date.parse(endDate.replace("-", "/")));
+      date2 = new Date(Date.parse(value.replace("-", "/")));
+   }
+   return date1 > date2;
+ };
+  jQuery("#theForm").validate({
+	  ignore: "",
+	errorPlacement: function(error, element) {  
+       error.appendTo(element.parent());  
+    },						  
+    rules:{
+	   erbegin_time:{required:true},
+	   erend_time:{required:true,erend_time:"#erbegin_time"},
+	   enoughMoney_1:{required:true,min:0},
+	   reduceMoney_1:{required:true,min:0},
+	   ertitle:{required:true},
+	   ercontent:{required:true}
+	 },
+    messages:{	
+	 erbegin_time:{required:"开始时间不能为空"},
+	 erend_time:{required:"结束时间不能为空",erend_time:"结束日期必须大于开始日期"},
+	 enoughMoney_1:{required:"金额不能为空",min:"金额必须大于0"},
+	 reduceMoney_1:{required:"金额不能为空",min:"金额必须大于0"},
+	 ertitle:{required:"标题不能为空"},
+	 ercontent:{required:"说明不能为空"}
+	},
+	submitHandler:function(){		
+		var flag=true;
+		var num=jQuery("#ertable tr").length-1;
+		jQuery("#count").val(num);	
+		var lines="";
+		for(var i=1;i<=num;i++){
+			if(parseFloat(jQuery("#enoughMoney_"+i).val())<parseFloat(jQuery("#reduceMoney_"+i).val())){
+				lines=lines+i+"、";
+				flag=false;					
+			}
+		}		
+		if(flag){
+			var params = jQuery("#theForm").serialize();
+			jQuery(".seller_save").attr("disabled","disabled");
+			jQuery.ajax({type:'POST',url:'$!webPath/seller/enoughreduce_save.htm',data:params,
+			success:function(data){			
+				 data = eval("(" + data + ")");
+				 if(data.ret==true){
+			 		 showDialog("msg_info","",data.op_title,0,"succeed",3,function(data){
+					 window.location.href="$!webPath/seller/enoughreduce_goods.htm?er_id="+data
+					 },data.id
+		  		 );
+		  		}else{
+					showDialog("msg_info","",data.op_title,0,"question",3,function(){
+				      window.location.href="$!webPath/seller/enoughreduce_list.htm";
+		  		 });
+				}jQuery(".seller_save").removeAttr("disabled");
+			}});
+			
+		}else{
+			lines=lines.substring(0,lines.length-1)
+			showDialog("msg_info","","第"+lines+"行减免金额必须小于需满金额",0,"question",3);
+		}
+	}
+	
+  });
+  //
+  jQuery('#erbegin_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#erend_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  //
+  jQuery("input[id^=gift_]").live("keyup",function(){
+	var gid=jQuery(this).attr("gid");	
+	var count=jQuery("#gift_"+gid).val().replace(/\D/g,'');
+	if(count==""){
+       count=1;
+	}	
+	if(count>0){
+	   gift_count_adjust(gid,count);
+	}
+	if(count==0){
+		var count=jQuery("#gift_"+gid).val(1);
+		gift_count_adjust(gid,1);
+	}
+  });
+});
+
+function addermoney(){
+	var num=jQuery("#ertable tr").length;
+	var now=num-1;
+	if(parseFloat(jQuery("#enoughMoney_"+now).val())>parseFloat(jQuery("#reduceMoney_"+now).val())){
+	var str="<tr><td><span class='enough_ip'> 满 <input name='enoughMoney_count'  class='size100'  type='text' id='enoughMoney_count'/> 减 <input name='reduceMoney_count'  class='size100'  type='text' id='reduceMoney_count'/> </span></td></tr>";
+	jQuery("#addermoney").before(str.replace(/count/g,num));
+	}
+	else{
+	alert("减免金额必须小于需满金额");
+	}
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=enoughreduce")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>促销推广</b> ><b>满就减</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/enoughreduce_list.htm"><i></i>满就减列表</a></li>
+            <li #if(!$!edit)class="this"#end><a href="$!webPath/seller/enoughreduce_add.htm"><i></i>新增满就减</a></li>
+            <li><a href="$!webPath/seller/enoughreduce_meal.htm"><i></i>套餐购买</a></li>
+            <li><a href="$!webPath/seller/enoughreduce_meal_log.htm"><i></i>购买日志</a></li>
+            #if($!edit)
+            <li class="this"><a href="javascript:void(0)"><i></i>编辑满就减</a></li>
+            #end
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/enoughreduce_save.htm" method="post" name="theForm" id="theForm">
+            <input name="count" type="hidden" id="count" />
+            <input id="id" name="id" value="$!obj.id" type="hidden" />
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td width="20%" align="right" valign="top"><strong class="redstr">*</strong> 满就减标题：</td>
+                <td class="px10"><input name="ertitle" type="text" id="ertitle" value="$!obj.ertitle" class="base_txt"/></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong> 开始时间：</td>
+                <td class="px10"><input name="erbegin_time" type="text" id="erbegin_time" style="height:25px;" value="$!CommUtil.formatShortDate($!obj.erbegin_time)" size="40" class="base_txt" readonly="readonly"  /></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>结束时间：</td>
+                <td class="px10"><input name="erend_time" type="text" id="erend_time" style="height:25px;" value="$!CommUtil.formatShortDate($!obj.erend_time)" size="40" class="base_txt" readonly="readonly"  /></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>减免金额：</td>
+                <td class="px10"><table class="enough_table" width="100%" border="0" cellspacing="0" cellpadding="0" id="ertable">
+                    #if(!$!obj.er_json)
+                    <tr >
+                      <td><span class="enough_ip"> 满
+                        <input name="enoughMoney_1" type="text" id="enoughMoney_1"  />
+                        减
+                        <input name="reduceMoney_1" type="text" id="reduceMoney_1"  />
+                        </span></td>
+                    </tr>
+                    #end
+                    <tr id="addermoney">
+                      <td><span class="webname"><a href="javascript:void(0);" onclick="addermoney()" class="blue" style=" border:1px solid #00ABF2; background:#00ABF2; color:#fff; padding:2px 5px; border-radius:3px;" >继续添加</a></span></td>
+                    </tr>
+                  </table></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>满就减说明：</td>
+                <td class="px10"><textarea name="ercontent" rows="6" cols="40" id="ercontent">$!obj.ercontent</textarea></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td class="px10"><span class="setsub">
+                  <input type="submit" value="保存"  style="cursor:pointer;" class="seller_save"/>
+                  </span></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

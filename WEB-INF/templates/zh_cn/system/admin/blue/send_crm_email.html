@@ -1,0 +1,71 @@
+<link href="$!webPath/resources/style/common/css/window.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+var options = {
+        cssPath : '$!webPath/resources/editor/plugins/code/prettify.css',
+        filterMode : true,
+		uploadJson:'$!webPath/upload.htm',
+		width : '600px',
+		height:'400px',
+		resizeType : 1,
+		allowImageUpload : true,
+		allowFlashUpload : false,
+		allowMediaUpload : false,
+		allowFileManager : false,
+		syncType:"form",
+		afterCreate : function() {
+							var self = this;
+							self.sync();
+						},
+		afterChange : function() {
+							var self = this;
+							self.sync();
+						},
+		afterBlur : function() {
+							var self = this;
+							self.sync();
+						},
+		items:['source', '|', 'fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste',
+			'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+			'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+			'superscript', '|', 'selectall', 'clearhtml','quickformat','|',
+			'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+			'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image','flash', 'media', 'baidumap','table', 'hr', 'emoticons', 'link', 'unlink', '|', 'about']
+}; 
+jQuery(document).ready(function(){
+	editor = KindEditor.create('#editor_id',options); 
+});
+function save_form(){
+		var message=jQuery("#editor_id").val();
+          var ids=jQuery("#ids").val();
+		  jQuery("#button").attr("disabled",true).val("提交中");
+          jQuery.post("$!webPath/admin/send_email_save.htm",{"ids":ids,"message":message},function(data){
+              if(data=="success"){
+	             window.location.reload();
+	          }
+             },"text");
+}
+</script>
+  <form action="$!webPath/admin/send_email_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+   <input id="ids" name="ids" type="hidden" value="$!ids"/>
+    <table style="float:left;" width="390" border="0" cellspacing="0" cellpadding="0" class="box_table">
+      <tr>
+        <td  align="" valign="top">邮件内容：</td>
+        <td align="left"><textarea name="message" cols="40" rows="6" id="editor_id"></textarea></td>
+      </tr>
+      <tr>
+    <td colspan="2" align="center"><span class="setsub">
+      <input class="choose_btn" name="按钮" type="button" style="cursor:pointer;" value="确定"  onclick="save_form();" id="button"/>
+      </span></td>
+  </tr>
+    </table>
+  </form>

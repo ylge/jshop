@@ -1,0 +1,121 @@
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/charts/highcharts.js"></script>
+<script src="$!webPath/resources/js/charts/modules/exporting.js"></script>
+<script src="$!webPath/resources/js/jvectormap/jquery-jvectormap-2.0.1.min.js"></script>
+<script src="$!webPath/resources/js/jvectormap/jquery-jvectormap-cn-mill-en.js"></script>
+<link href="$!webPath/resources/style/system/front/default/css/jvectormap.css" rel="stylesheet" type="text/css" />
+<script>
+    jQuery(document).ready(function(e) {
+		map  =  new jvm.Map({ 
+    		map:'map_cn', 
+    		container:$('#map'),
+			backgroundColor:'#fff',
+			regionStyle:{
+				initial: {
+                	fill: '#bbb'
+                }
+            },
+    		series :  { 
+      			regions:[{attribute: 'fill'}],		
+    		} ,
+			onRegionClick: function(event, code){
+　　　				
+　　　		　　　}
+  		}); 
+		
+		map.series.regions[0].setValues(eval("($!{mapCityData})")); 
+		var chart;
+  	chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'line',
+                type: 'bar',
+				marginLeft: 60,
+                marginRight: 30,
+                marginBottom: 40,
+				marginTop:50
+            },
+            title: {
+            	text: null,
+			},
+			plotOptions: {
+    			bar: {
+                	pointWidth:35, 
+    			}
+			},
+            xAxis: {
+				categories: [$!{lineCityData}],
+				title: {
+                    text:null
+                },				
+            },
+            yAxis: {
+                title: {
+                    text: '完成订单（个/张）'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            legend: {
+               	width:'400px',
+                align: 'left',
+                verticalAlign: 'top',
+                x: 100000000,
+                y: 0,
+                borderWidth: 0
+            },
+			credits:{enabled:false},exporting:{enabled:false},
+            series: [{                                                               
+            	name: '订单个数', shadow:false,  
+				color:'#009AE2',                                          
+            	data: [$!{lineCountData}]                                
+        		},
+			]
+        });    
+    });<!--end-->
+function show_all(){
+	jQuery(".seller_right_statistics_list").slideDown();
+}	
+</script>
+<div class="main" style="background:#fff;">
+  <div class="seller_center">
+    <div class="seller_right"> #if($!{lineCityData}!="")
+      <div class="seller_map_center" id="map">
+        <div class="seller_map_right_top"> <span class="map_right_1"></span> <span class="map_right_2"></span> <span class="map_right_3"></span> <span class="map_right_4"></span> </div>
+      </div>
+      <div class="seller_map_right">
+        <div class="seller_map_r_b" id="line"></div> 
+        <div class="seller_right_statistics">
+          <div class="seller_right_statistics_top"><a href="javascript:void(0)" onclick="show_all()">查看全部数据</a></div>
+          <div class="seller_right_statistics_list" style="display:none">
+            <dl>
+              <dt class="pm_no">排名</dt>
+              <dt class="pm_name">省份</dt>
+              <dt class="pm_no">数量</dt>
+              #foreach($data in $addAreaData)
+              <dd><em>$!velocityCount</em><span>$!data.name</span><i>$!data.count</i></dd>
+              #end
+            </dl>
+          </div>
+        </div>
+      </div>
+      #else
+      <div class="bigok">
+        <div class="bigokimg"><img src="$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/error.jpg" /></div>
+        <div class="bigleft">
+          <ul>
+            <li class="hui" style="line-height:120px">暂无数据</li>
+          </ul>
+        </div>
+      </div>
+      #end </div>
+  </div>
+</div>

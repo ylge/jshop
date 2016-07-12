@@ -1,0 +1,10 @@
+<ul class="floor_sear_pro">
+#foreach($obj in $objs)
+  <li> <a href="javascript:void(0);" onclick="goods_list_set(this);" img_uri="$!imageWebServer/$!obj.free_acc.path/$!obj.free_acc.name" goods_name="$!obj.free_name" goods_id="$!obj.id" class="floor_sear_a"> <span  class="floor_sear_img"> 
+ <img src="$!imageWebServer/$!obj.free_acc.path/$!obj.free_acc.name" width="70" height="70" /> </span> <span class="floor_sear_name">$!obj.free_name</span> </a> 
+  </li>
+#end  
+</ul>
+<div class="floor_page">
+<span>$!gotoPageAjaxHTML</span>
+</div>

@@ -1,0 +1,432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){														
+  jQuery('#endTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true,
+	   minDate :new Date()
+  });
+   jQuery('#beginTime').datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true,
+	   minDate :new Date()
+  });
+//添加主体商品  
+jQuery("#select_goods_main li").live("click",function(){
+	 var id =jQuery(this).attr("id");
+	 var name =jQuery(this).attr("name");
+	 var img =jQuery(this).attr("img");
+	  var temp_ids = "";
+	 jQuery("input[id^=other_goods_ids_]").each(function(){
+	  temp_ids = temp_ids+","+jQuery(this).val();
+		});
+	 var temp_id = ","+id;
+	 var ret = temp_ids.indexOf(temp_id);
+	 if(ret<0){
+		  //弹层显示
+		 jQuery("#main_show").find("li").find("#img").attr("src",img);
+		 jQuery("#main_show").find("li").find("#name").html(name);
+		 //底层设置
+		 jQuery("ul[id^=main_goods_]").find("#img").attr("src",img);
+		 jQuery("ul[id^=main_goods_]").find("#name").html(name);
+		 jQuery("#main_goods_id").val(id);
+		 //设置每个方案的商品总价
+		 jQuery("input[id^=plan_goods_price_]").each(function(){
+			var count = jQuery(this).attr("count");
+			var other_goods_ids = jQuery("#other_goods_ids_"+count).val();
+				   jQuery.post("$!webPath/admin/self_getPrice.htm",
+						{"main_goods_id":id,
+						"other_ids":other_goods_ids
+							},function(data){
+							jQuery("#all_price_"+count).html("¥"+data);	
+								},"text");
+				});
+		 }else{
+			alert("该商品已存在！");
+			} 
+	});   
+
+//添加组合商品  
+jQuery("#select_goods_other li").live("click",function(){
+	 var length =jQuery(".combin_storey_main").find("ul[status='none']").length;
+	if(length>=1){
+		 var id =jQuery(this).attr("id");
+		 var name =jQuery(this).attr("name");
+		 var img =jQuery(this).attr("img");
+		 var plan_count =jQuery(this).attr("plan_count");
+		 var temp_ids =jQuery("#other_goods_ids_"+plan_count).val();
+		 var temp_id = ","+id;
+		 var ret = temp_ids.indexOf(temp_id);
+		 var main_id = jQuery("#main_goods_id").val();		 
+		 if(ret<0 && main_id!=id){
+			 //弹层显示
+			 jQuery(".combin_storey_main").find("ul[status='none']:first li").find("#img").attr("src",img);
+			 jQuery(".combin_storey_main").find("ul[status='none']:first li").find("#name").html(name);
+			 jQuery(".combin_storey_main").find("ul[status='none']:first").attr("id",id).attr("status","goods");
+			 //底层设置
+			 var obj=jQuery("div[id=plan_"+plan_count+"] table").find("td[status='none']:first");
+			 jQuery(obj).find("#img").attr("src",img);
+			 jQuery(obj).find("#name").html(name);
+			 jQuery(obj).attr("id",id).attr("status","goods");
+			 temp_ids = temp_ids+","+id;
+			 jQuery("#other_goods_ids_"+plan_count).val(temp_ids);
+			  //设置组合方案原价
+			  var main_id = jQuery("#main_goods_id").val();
+			 jQuery.post("$!webPath/admin/self_getPrice.htm",
+						{"main_goods_id":main_id,
+						"other_ids":temp_ids
+							},function(data){
+							jQuery("#all_price_"+plan_count).html("¥"+data);	
+								},"text");
+			 }else{
+			 if(id!=main_id){
+					alert("该商品已存在！"); 
+					 }else{
+					alert("该商品已是主商品！"); 	 
+						 }
+			 }
+	  }	
+	});
+//双击删除主体商品
+jQuery("#main_show").live("dblclick",function(){
+	//弹层删除
+	 jQuery(this).find("li").find("#img").attr("src","$!webPath/resources/style/common/images/good.jpg");
+	 jQuery(this).find("li").find("#name").html("主体商品信息");
+	 //底层删除	
+	 jQuery("ul[id^=main_goods_]").find("#img").attr("src","$!webPath/resources/style/common/images/good.jpg");
+	 jQuery("ul[id^=main_goods_]").find("#name").html("主体商品信息");
+	  jQuery("#main_goods_id").val("");
+	   	 //设置每个方案商品总价
+	  jQuery("input[id^=plan_goods_price_]").each(function(){
+			   var count = jQuery(this).attr("count");
+			   var temp_ids = jQuery("#other_goods_ids_"+count).val();
+				jQuery.post("$!webPath/admin/self_getPrice.htm",
+						{"main_goods_id":"",
+						"other_ids":temp_ids
+							},function(data){
+							jQuery("#all_price_"+count).html("¥"+data);	
+								},"text");
+		});
+	});
+//双击删除组合商品
+jQuery(".combin_storey_main ul").live("dblclick",function(){
+	var plan_count =jQuery(this).parent().attr("plan_count");
+	var count = jQuery(this).attr("count");
+	var id = jQuery(this).attr("id");
+	//弹层删除	
+	 jQuery(this).find("#img").attr("src","$!webPath/resources/style/common/images/good.jpg");
+	 jQuery(this).find("#name").html("主体商品信息");
+	 jQuery(this).attr("status","none");
+	 //底层删除	
+	 var obj = jQuery("div[id=plan_"+plan_count+"] td[count="+count+"]");
+	 jQuery(obj).find("#img").attr("src","$!webPath/resources/style/common/images/good.jpg");
+	 jQuery(obj).find("#name").html("组合商品信息");
+	 jQuery(obj).attr("status","none");
+	 var temp_ids =jQuery("#other_goods_ids_"+plan_count).val();
+	 var temp_id = ","+id;
+	 temp_ids = temp_ids.replace(temp_id,"");
+	 jQuery("#other_goods_ids_"+plan_count).val(temp_ids);
+	  var main_id = jQuery("#main_goods_id").val();
+	 jQuery.post("$!webPath/admin/self_getPrice.htm",
+						{"main_goods_id":main_id,
+						"other_ids":temp_ids
+							},function(data){
+							jQuery("#all_price_"+plan_count).html("¥"+data);	
+								},"text");
+	});
+
+
+});////
+#if($!edit)
+var plan_num = $combinTools.getCombinGoodsMaps("$!obj.id").size();
+#else
+var plan_num = 1;
+#end
+function add_plan(){
+	var max_plan_count = "$!{config.combin_scheme_count}";
+	if(max_plan_count>plan_num){
+		var main_goods_id = jQuery("#main_goods_id").val();
+		 plan_num++;
+		 var name = "主体商品";
+		 var img = "$!webPath/resources/style/common/images/good.jpg";
+		 var price = "0.00";
+		if(main_goods_id!="") {
+			 img =jQuery("ul[id='main_goods_']").find("#img").attr("src");
+		     name = jQuery("ul[id='main_goods_']").find("#name").html();
+			jQuery.post("$!webPath/admin/self_getPrice.htm",
+						{"main_goods_id":main_goods_id,
+						"other_ids":""
+							},function(data){
+								price =data;
+	   var content='<div class="pro_ass_contant_center" id="plan_'+plan_num+'" count='+plan_num+'><span class="pro_ass_left"><input id="other_goods_ids_'+plan_num+'" name="other_goods_ids_'+plan_num+'" type="hidden" value=""/> <input id="plan_goods_price_'+plan_num+'" name="plan_goods_price_'+plan_num+'" value="'+price+'" type="hidden" count="'+plan_num+'"/> <ul id="main_goods_'+plan_num+'"><li class="pro_ass_image"><span><p><img id="img" src="'+img+'" width="80" height="80" /></p> </span></li> <li class="pro_ass_name" id="name">&nbsp;&nbsp;&nbsp;&nbsp;'+name+'</li> </ul> </span><span class="add_ass"></span><div class="pro_ass_mid"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="pro_asstable"><tr> #foreach($count in [1..$!{config.combin_count}]) <td status="none" count="$!velocityCount"><ul class="pro_ass_two"><li class="ass_two_image"><span><p><img id="img" src="$!webPath/resources/style/common/images/good.jpg" width="80" height="80" /></p> </span></li> <li class="ass_two_name" id="name">组合商品信息</li> </ul></td>#if($!{count}!=$!{config.combin_count})<td style=" float:left;"><span class="add_ass"></span></td> #end  #end </tr> </table>   <div class="pro_ass_set"><a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_combin_set_goods.htm?type=other&&plan_count='+plan_num+'" dialog_title="设置主体商品" dialog_width="540" dialog_height="500" dialog_id="load_main_goods">设置</a></div><div class="pro_ass_set_right"><a href="javascript:void(0);" plan_count="'+plan_num+'" onclick="remove_plan(this)">删除</a></div></div><span class="evla_ass"></span><div class="pro_ass_right"><ul class="pro_ass_price"><li><span>商品总价:</span><b id="all_price_'+plan_num+'">¥'+price+'</b></li><li><span>组合价格:</span><input id="combin_price_'+plan_num+'" name="combin_price_'+plan_num+'" type="text" style="width:50px" placeholder="¥"></input></li></ul> </div> </div>';	
+								 jQuery("#plan_list").find("div.pro_ass_contant_center:last").after(content);
+								},"text");
+		}else{
+		 var content='<div class="pro_ass_contant_center" id="plan_'+plan_num+'" count='+plan_num+'><span class="pro_ass_left"><input id="other_goods_ids_'+plan_num+'" name="other_goods_ids_'+plan_num+'" type="hidden" value=""/> <input id="plan_goods_price_'+plan_num+'" name="plan_goods_price_'+plan_num+'" value="'+price+'" type="hidden" count="'+plan_num+'"/> <ul id="main_goods_'+plan_num+'"><li class="pro_ass_image"><span><p><img id="img" src="'+img+'" width="80" height="80" /></p> </span></li> <li class="pro_ass_name" id="name">&nbsp;&nbsp;&nbsp;&nbsp;'+name+'</li> </ul> </span><span class="add_ass"></span><div class="pro_ass_mid"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="pro_asstable"><tr> #foreach($count in [1..$!{config.combin_count}]) <td status="none" count="$!velocityCount"><ul class="pro_ass_two"><li class="ass_two_image"><span><p><img id="img" src="$!webPath/resources/style/common/images/good.jpg" width="80" height="80" /></p> </span></li> <li class="ass_two_name" id="name">组合商品信息</li> </ul></td>#if($!{count}!=$!{config.combin_count})<td style=" float:left;"><span class="add_ass"></span></td> #end  #end </tr> </table>   <div class="pro_ass_set"><a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_combin_set_goods.htm?type=other&&plan_count='+plan_num+'" dialog_title="设置主体商品" dialog_width="540" dialog_height="500" dialog_id="load_main_goods">设置</a></div><div class="pro_ass_set_right"><a href="javascript:void(0);" plan_count="'+plan_num+'" onclick="remove_plan(this)">删除</a></div></div><span class="evla_ass"></span><div class="pro_ass_right"><ul class="pro_ass_price"><li><span>商品总价:</span><b id="all_price_'+plan_num+'">¥'+price+'</b></li><li><span>组合价格:</span><input id="combin_price_'+plan_num+'" name="combin_price_'+plan_num+'" type="text" style="width:50px" placeholder="¥"></input></li></ul> </div> </div>';		
+		jQuery("#plan_list").find("div.pro_ass_contant_center:last").after(content);	
+			}
+	}else{
+	  alert("系统允许最多添加"+max_plan_count+"个组合方案");	
+	}	
+};
+
+function remove_plan(obj){
+	var plan_count =jQuery(obj).attr("plan_count");
+	if(plan_count!=1){
+	jQuery("#plan_"+plan_count).remove();
+	plan_num--;
+	}
+};
+		
+ function save_form(obj){
+	 var temp ="";
+	var main_goods_id = jQuery("#main_goods_id").val();
+		jQuery("#plan_list div[id^=plan_]").each(function(){
+		  var count =jQuery(this).attr("count");
+		  temp = temp+","+count;
+		 });
+		var ret = true;
+		var code ;
+			jQuery("input[id^=other_goods_ids_]").each(function(){
+				var temp_val =	jQuery(this).val();
+					if(temp_val==""){
+						ret = false;
+						code ="组合商品信息不能为空";
+					}
+			 });
+				jQuery("input[id^=combin_price_]").each(function(){
+				var temp_val =	jQuery(this).val();
+					if(temp_val==""){
+						ret = false;
+						code ="组合价格不能为空";
+					}
+			 });
+		var endTime =jQuery("#endTime").val();
+		if(endTime==""){
+			ret = false;
+			code ="结束时间不能为空";
+			}
+	 	jQuery("#plan_num").val(temp);		
+		 if(main_goods_id==""){	
+			ret = false;
+			code ="请设置主体商品";
+		 }	 
+	<!--验证组合结束时间是否在商家套餐结束时间之内-->
+	if(ret){
+		var gid = jQuery("#main_goods_id").val();
+			jQuery.post("$!webPath/admin/self_verify_combin.htm",
+				{"id":"$!{obj.id}",
+				"gid":gid,
+				"combin_mark":obj,
+				"endTime":endTime
+				},function(data){
+					if(data.ret==false){
+						alert(data.code)
+						}else{
+							jQuery("#combin_mark").val(obj);
+							jQuery("#theForm").submit();
+							}				
+				},"json");
+		}else{
+			alert(code);	
+			}
+	 };	
+</script>
+</head>
+<body>
+<form id="theForm" name="theForm" method="post" action="$!webPath/admin/self_combin_plan_save.htm">
+<input id="id" name="id" type="hidden" value="$!obj.id"/>
+    <input id="combin_mark" name="combin_mark" type="hidden"/>
+<div class="cont">
+  <h1 class="seth">组合销售</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/self_combin.htm"><b>组合套装</b></a></li>
+      <li><a href="$!webPath/admin/self_combin.htm?type=1"><b>组合配件</b></a></li>
+      #if($!edit)
+      <li><a href='javascript:void(0);' class="this"><b>组合编辑</b></a></li> 
+      #else
+      <li><a href="$!webPath/admin/self_combin_add.htm" class="this"><b>添加组合</b></a></li>
+      #end
+    </ul>
+  </div>
+  <div class="edit">
+    <div class="pro_ass_contant">
+      #if($!edit)
+      	#if($!obj.combin_type==0)
+      	<div class="save_btn"><a href="javascript:void(0);" onclick="save_form(0);">保存为组合套装</a></div>
+        #else
+        <div class="save_btn03"><a href="javascript:void(0);" onclick="save_form(1);">保存为组合配件</a></div>
+        #end
+     #else
+        <div class="save_btn"><a href="javascript:void(0);" onclick="save_form(0);">保存为组合套装</a></div>
+        <div class="save_btn03"><a href="javascript:void(0);" onclick="save_form(1);">保存为组合配件</a></div>
+     #end   
+        <div class="pro_ass_contant_center_t"> <span class="pro_ass_left_left">主体商品：</span>
+          <input id="main_goods_id" name="main_goods_id" type="hidden" value="$!obj.main_goods_id"/>
+          <input id="old_main_goods_id" name="old_main_goods_id" type="hidden" value="$!obj.main_goods_id"/>
+          <input id="plan_num" name="plan_num" type="hidden"/>
+          <div class="pro_ass_contant_right">
+              #set($img="resources/style/common/images/good.jpg")
+              #set($name="主体商品信息")
+              #set($price="0.00")
+               #if($!obj)
+           	   #set($map=$!combinTools.getMainGoodsMap("$!obj.id"))  
+               #set($img=$!map.get('img'))
+               #set($price=$!map.get('price'))
+               #set($name=$!map.get('name'))
+               #end
+            <ul class="pro_ass_contant_ul" id="main_goods_" price="$!{price}">
+              <li class="pic"><span>
+                <p><img id="img" src="$!imageWebServer/$!{img}"  width="80" height="80" price="$!{price}"/></p>
+                </span></li>
+              <li class="name"> <span class="name_height" id="name">$!{name}</span> <span><a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_combin_set_goods.htm?type=main" dialog_title="设置主体商品" dialog_width="540" dialog_height="500" dialog_id="load_main_goods">设置</a></span> </li>
+            </ul>
+          </div>
+          <div class="combin_notice">
+          1、保存组合套装后，用户可选择购买整个套装，套装价格为组合价格。</br>
+          2、保存组合配件后，用户可任意选择配件中的商品，配件商品均为原价。</br>
+          3、一个主体商品最多可分别设置一个组合套装和一个组合配件。
+          </div>
+        </div>
+        <div class="pro_ass_left_top" >
+          <div class="pro_ass_left_top_name">
+            <dl>
+              <dt>组合时间：</dt>
+              <dd>
+                <input name="beginTime" id="beginTime" type="text" value="#if($!obj)$!CommUtil.formatShortDate($!obj.beginTime) #else $!{now}#end" placeholder="开始时间"/>
+              </dd>
+              <i>——</i>
+              <dd>
+                <input name="endTime" id="endTime" type="text" value="$!CommUtil.formatShortDate($!obj.endTime)" placeholder="结束时间"/>
+              </dd>
+            </dl>
+          </div>
+        </div>
+        <div class="pro_ass_left_left_zh">组合方案：</div>
+        <div id="plan_list">
+#if(!$!obj)<!--新增-->
+        <div class="pro_ass_contant_center" id="plan_1" count=1> <span class="pro_ass_left">
+            <input id="other_goods_ids_1" name="other_goods_ids_1" type="hidden" value=""/>
+            <input id="plan_goods_price_1" name="plan_goods_price_1" value="0.00" type="hidden" count="1"/>
+            <ul id="main_goods_1">
+              <li class="pro_ass_image"><span>
+              #set($img="resources/style/common/images/good.jpg")
+              #if($!obj)
+           	  #set($map=$!combinTools.getMainGoodsMap("$!obj.id"))  
+              #set($img=$!map.get('img'))
+              #end
+                <p><img id="img" src="$!imageWebServer/$!{img}" width="80" height="80" /></p>
+                </span></li>
+              <li class="pro_ass_name" id="name">&nbsp;&nbsp;&nbsp;&nbsp;主体商品</li>
+            </ul>
+            </span> <span class="add_ass"></span>
+            <div class="pro_ass_mid">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" class="pro_asstable">
+                <tr> #foreach($count in [1..$!{config.combin_count}])
+                  <td status="none" count='$!velocityCount'><ul class="pro_ass_two">
+                      <li class="ass_two_image"><span>
+                        <p><img id="img" src="$!webPath/resources/style/common/images/good.jpg" width="80" height="80" /></p>
+                        </span></li>
+                      <li class="ass_two_name" id="name">组合商品信息</li>
+                    </ul></td>
+                  #if($!{count}!=$!{config.combin_count})
+                  <td style=" float:left;"><span class="add_ass"></span></td>
+                  #end 	
+                  #end </tr>
+              </table>
+              <div class="pro_ass_set"><a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_combin_set_goods.htm?type=other&&plan_count=1" dialog_title="设置主体商品" dialog_width="540" dialog_height="500" dialog_id="load_main_goods">设置</a></div>
+            </div>
+            <span class="evla_ass"></span>
+            <div class="pro_ass_right">
+              <ul class="pro_ass_price">
+                <li><span>商品总价:</span><b id="all_price_1">¥0.00</b></li>
+                <li><span>组合价格:</span>
+                  <input id="combin_price_1" name="combin_price_1" type="text" style="width:50px" placeholder="¥">
+                  </input>
+                </li>
+              </ul>
+            </div>
+          </div>
+#else  <!--编辑-->
+         #foreach($plan in $combinTools.getCombinGoodsMaps("$!obj.id"))
+          <div class="pro_ass_contant_center" id="plan_$!{velocityCount}" count=$!{velocityCount}> <span class="pro_ass_left">
+            <input id="other_goods_ids_$!{velocityCount}" name="other_goods_ids_$!{velocityCount}" type="hidden" value="$!combinTools.getCombinGoodsIds($!plan)"/>
+            <input id="plan_goods_price_$!{velocityCount}" name="plan_goods_price_$!{velocityCount}" value="$!plan.get('all_goods_price')" type="hidden" count="$!{velocityCount}"/>
+            <ul id="main_goods_$!{velocityCount}">
+              <li class="pro_ass_image"><span>
+              #set($img="resources/style/common/images/good.jpg")
+              #set($name="主体商品")
+              #if($!obj)
+           	  #set($map=$!combinTools.getMainGoodsMap("$!obj.id"))  
+              #set($img=$!map.get('img'))
+              #set($name=$!map.get('name'))
+              #end
+                <p><img id="img" src="$!imageWebServer/$!{img}" width="80" height="80" /></p>
+                </span></li>
+              <li class="pro_ass_name" id="name">$!{name}</li>
+            </ul>
+            </span> <span class="add_ass"></span>
+            <div class="pro_ass_mid">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" class="pro_asstable">
+                <tr> 
+                #foreach($goodsinfo in $!combinTools.getCombinGoodsInfo_list($!{plan}))
+                  <td #if($!goodsinfo.get('id')!='')status="goods"#else status="none" #end id="$!goodsinfo.get('id')" count='$!velocityCount'><ul class="pro_ass_two">
+                      <li class="ass_two_image"><span>
+                      #set($img="resources/style/common/images/good.jpg")
+                      #set($name="组合商品信息")
+                      #if($!goodsinfo!="null")
+                        #set($img=$!goodsinfo.get('img'))
+                        #set($name=$!goodsinfo.get('name'))
+                      #end
+                        <p><img id="img" src="$!imageWebServer/$!img" width="80" height="80" /></p>
+                        </span></li>
+                      <li class="ass_two_name" id="name">$!{name}</li>
+                    </ul></td>
+                  #if($!{velocityCount}!=$!combinTools.getCombinGoodsInfo_list($!{plan}).size())
+                  <td style=" float:left;"><span class="add_ass"></span></td>
+                  #end 	
+                 #end 
+                 </tr>
+              </table>
+              <div class="pro_ass_set"><a href="javascript:void(0);" dialog_uri="$!webPath/admin/self_combin_set_goods.htm?type=other&&plan_count=$!{velocityCount}" dialog_title="设置主体商品" dialog_width="540" dialog_height="500" dialog_id="load_main_goods">设置</a></div>
+              #if($!velocityCount!=1)
+              <div class="pro_ass_set_right"><a href="javascript:void(0);" plan_count="$!velocityCount" onclick="remove_plan(this)">删除</a></div>
+              #end
+            </div>
+            <span class="evla_ass"></span>
+            <div class="pro_ass_right">
+              <ul class="pro_ass_price">
+                <li><span>商品总价:</span><b id="all_price_$!{velocityCount}">#if($!obj)¥$!{plan.get('all_goods_price')}#else¥0.00#end</b></li>
+                <li><span>组合价格:</span>
+                  <input id="combin_price_$!{velocityCount}" name="combin_price_$!{velocityCount}" type="text" #if($!obj) value="$!plan.get('plan_goods_price')" #end style="width:50px" placeholder="¥">
+                  </input>
+                </li>
+              </ul>
+            </div>
+          </div>
+         #end 
+#end   
+          
+          <div> </div>
+          <div class="seller_center_add"><a href="javascript:void(0);" onclick="add_plan()">添加新方案</a></div>
+        </div>
+      </div>
+  </div>
+</div>
+  </form>
+</body>
+</html>

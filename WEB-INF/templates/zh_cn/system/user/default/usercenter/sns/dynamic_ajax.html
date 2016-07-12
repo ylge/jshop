@@ -1,0 +1,21 @@
+#foreach($dynamic in $userDynamics)
+<div class="sns_main_list">
+            <dl>
+            #if($!user.photo)
+            #set($user_photo="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+            #else 
+            #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+            #end
+              <dt><img src="$!user_photo" /></dt>
+              <dd>
+              	<span class="sns_top"><h3>$!{user.userName}</h3><i>发表日期：$!CommUtil.formatLongDate($!dynamic.addTime)</i></span>
+                <span class="sns_word">$!dynamic.dynamic_content</span>
+                <span class="sns_img">
+                	#foreach($info in $!snsTools.getDynamic_img_info($!dynamic.img_info))	
+                    <strong><a href="javascript:void(0)" onclick="show_big_img('$!{webPath}/$!{info.img}')"><img src="$!imageWebServer/$!info.img" /></a></strong>
+                	#end
+                </span> 
+              </dd>
+            </dl>
+          </div>
+#end

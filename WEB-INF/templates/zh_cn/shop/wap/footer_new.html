@@ -1,0 +1,32 @@
+
+#set($index_img="$!webPath/resources/style/mobile/images/foot_home.png")
+#set($brand_img="$!webPath/resources/style/mobile/images/foot_brand.png")
+#set($cart_img="$!webPath/resources/style/mobile/images/foot_cart.png")
+#set($user_img="$!webPath/resources/style/mobile/images/foot_user.png")
+#if($!op=="brand")
+#set($brand_img="$!webPath/resources/style/mobile/images/foot_brand_this.png")
+#elseif($!op=="car")
+#set($cart_img="$!webPath/resources/style/mobile/images/foot_cart_this.png")
+#elseif($!op=="user")
+#set($user_img="$!webPath/resources/style/mobile/images/foot_user_this.png")
+#else
+#set($index_img="$!webPath/resources/style/mobile/images/foot_home_this.png")
+#end
+<script>
+jQuery(function(){
+	var op = "$!op";
+	jQuery("#index").removeClass("this");
+	jQuery("#brand").removeClass("this");
+	jQuery("#cart").removeClass("this");
+	jQuery("#center").removeClass("this");
+	jQuery("#"+op).addClass("this");
+	})
+</script>
+<div class="foot_width">
+	<ul>
+    	<li id="index" class="this"><a href="$!webPath/mobile/index.htm?op=index"><img src="$!index_img" width="25" height="25" /><p>首页</p></a></li>
+        <li id="brand"><a href="$!webPath/mobile/brand.htm?op=brand"><img src="$!brand_img" width="25" height="25" /><p>品牌</p></a></li>
+        <li id="cart"><a href="$!webPath/mobile/goods_cart0.htm?op=cart"><img src="$!cart_img" width="25" height="25" /><p>购物车</p></a></li>
+        <li id="center"><a href="$!webPath/mobile/buyer/center.htm?op=center"><img src="$!user_img" width="25" height="25" /><p>用户中心</p></a></li>
+    </ul>
+</div>

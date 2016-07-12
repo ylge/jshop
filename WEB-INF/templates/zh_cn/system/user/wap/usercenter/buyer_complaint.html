@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>我的投诉</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+function cancal(){
+	if(confirm("确定要取消投诉？")){
+		window.location.href='$!webPath/wap/buyer/complaint_cancel.htm?id=$!obj.id&currentPage=$!currentPage';
+	}
+	}
+jQuery(document).ready(function(){
+	var currentPage = 2;
+	var  ret = 1;
+	var totalPage = "$!totalPage";
+	
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&ret==1) {
+		if(currentPage<=totalPage){
+		jQuery("#loading").hide();
+		jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/buyer/buyer_complaint.htm',
+				  data:{"currentPage":currentPage},
+				beforeSend:function(){
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  ret = 2;
+				},
+			   success:function(data){
+				   currentPage = currentPage+1;
+				 
+				 ret = 1;
+	             if(data){ 
+				  jQuery(".goods_resturn").append(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	 }else{
+		jQuery("#loading_none").show();
+	}
+	});
+	
+});<!--end-->	
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/order_complaint_list.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">投诉列表</span></div>
+<div class="mt50"></div>
+<div class="phone_main">
+	<!--投诉-->
+    <div class="complain">
+    	<div class="com_box">
+        <ul class="resturn_tab">
+        	<li style="width:48%"><a href="$!webPath/wap/buyer/order_complaint_list.htm">商品列表</a></li>
+            <li class="this" style="width:48%"><a href="#">查看返修/退换货记录</a></li>	
+        </ul>
+        #if($!objs.size()>0)
+        #foreach($obj in $objs)
+        	<table cellpadding="0" cellspacing="0">
+            	<tbody>
+                	<tr>
+                    	<td width="30%"><strong>投诉人：</strong></td>
+                        <td>$!obj.from_user.userName</td>
+                    </tr>
+                    <tr>
+                    	<td><strong>被投诉人：</strong></td>
+                        <td>#if($!obj.to_user)$!obj.to_user.userName #else 平台商 #end</td>
+                    </tr>
+                    <tr>
+                    	<td><strong>投诉主题：</strong></td>
+                        <td>$!obj.cs.title</td>
+                    </tr>
+                    <tr>
+                    	<td><strong>投诉时间：</strong></td>
+                        <td>$!CommUtil.formatLongDate($!obj.addTime)</td>
+                    </tr></tbody>
+                    #if($!obj.status==0)
+                #set($status="新投诉")
+                #end
+                #if($!obj.status==1)
+                #set($status="待申诉")
+                #end
+                #if($!obj.status==2)
+                #set($status="对话中")
+                #end
+                #if($!obj.status==3)
+                #set($status="待仲裁")
+                #end
+                #if($!obj.status==4)
+                #set($status="已完成")
+                #end
+                    <tr>
+                    	<td><strong>投诉状态：</strong></td>
+                        <td>$!status</td>
+                    </tr>
+                    <tr>
+                    	<td><strong>操作：</strong></td>
+                        <td>
+                        	<a class="infro_btn" href="$!webPath/wap/buyer/complaint_view.htm?id=$!obj.id">详 细</a>
+                            #if($!obj.status==0)
+                            <a class="infro_btn" href="javascript:void(0);" onclick="cancal();">取 消</a>
+                            #end
+                        </td>
+                    </tr>
+                
+            </table>
+        #end    
+        #else    
+        	<div class="main">
+          <div class="mt50" style="height:49px;"></div>
+          <div class="error_page1">
+            <span class="error_img"><img src="$!webPath/resources/style/system/front/default/images/nothing.png" /></span>
+            <p>暂无记录！</p>
+          </div>
+        </div>
+        #end    
+        </div>
+        <div class="loading" id="loading" style="display:none">
+<ul>
+  <li><img src="$!webPath/resources/style/system/front/default/images/nothing.gif" width="16" height="16" /></li>
+  <li>正在加载....</li>
+</ul>
+</div>
+<div class="loading" id="loading_none" style="display:none">
+<ul>
+  <li>没有更多了....</li>
+</ul>
+</div>  
+    </div>
+    
+    
+     $!httpInclude.include("/wap/footer.htm?op=center")
+        $!httpInclude.include("/wap/layer.htm")   
+</div>
+</body>
+</html>

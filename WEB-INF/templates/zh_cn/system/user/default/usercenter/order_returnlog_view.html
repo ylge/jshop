@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>服务单详情 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}" />
+<meta name="copyright" content="$!{config.copyRight}" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	timeCount("time_down_info");	
+	jQuery("#theForm").validate({
+	ignore: "",
+    rules:{
+	  express_code:{
+	    required :true
+	  }
+	 },
+	messages:{
+	  express_code:{required:"退货快递单号不能为空！"}
+	}
+  });
+	
+	jQuery("#info_click").toggle(
+			function(){
+			jQuery("#return_info").slideUp();	
+			jQuery(this).html("展开");
+			},
+			function(){
+			jQuery("#return_info").slideDown();	
+			jQuery(this).html("收起");
+			});	
+});
+function timeCount(remain_id){
+   function _fresh(){
+      var nowDate = new Date(),                                    //当前时间
+      endDate = new Date($('#'+remain_id).attr('endtime')),    //截止时间
+      totalS  = parseInt((endDate.getTime() - nowDate.getTime()) / 1000);     //总秒数
+      _day    = parseInt(totalS / 3600 / 24);
+      _hour   = parseInt((totalS / 3600) % 24);
+      _minute = parseInt((totalS / 60) % 60);
+      _second = parseInt(totalS % 60);
+     jQuery('#'+remain_id).html('<i>您还有</i><b><em>' + _day +'</em>天</b><b><em>' + _hour + '</em>时</b><b><em>' + _minute + '</em>分</b><b><em>' + _second + '</em>秒</b><i>超过该时间系统将判定该退货失败！</i>');
+     if( totalS <= 0){
+       jQuery('#'+remain_id).html('退货失败');
+	   jQuery("tr[id^=tr_]").hide();
+       clearInterval(sh);
+     }
+  }
+  _fresh();
+  var sh = setInterval(_fresh,1000);
+}
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+  $!httpInclude.include("/head.htm")
+  $!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="usercenter">
+      $!httpInclude.include("/buyer/nav.htm?op=return")
+    <div class="usercenter_right">
+      <div class="myorder">
+        <h4><strong>服务单详情</strong></h4>
+      </div>
+      <div class="user_list">
+        <div class="user_ser_warning"><strong>服务单号：$!obj.return_service_id</strong>$!obj.goods_name</div>
+      </div>
+      <div class="user_service_box">
+        <div class="user_ser_top"> <span class="user_sert_right" id="time_down_info" endTime="$!CommUtil.formatTime('MM/dd/yyyy HH:mm:ss',$!{of.return_shipTime})"> <i>您还有</i><b><em>01</em>天</b><b><em>01</em>时</b><b><em>01</em>分</b><b><em>01</em>秒</b><i>超过该时间系统将判定该退货失败！</i> </span> <span class="user_sert_left">本次退货服务由<a #if($!store_id) href="$!webPath/store_$!{store_id}.htm" #elsee #end>$!name</a>为您提供<b class="user_sert_online"></b></span></div>
+      </div>
+      <div class="user_service">
+        <h3>服务单收货详情</h3>
+        <div class="user_service_box" style="margin-top:10px">
+          <div class="user_ser_warning">
+            <ul>
+              <li>商家收货信息：</li>
+              <li>$!obj.self_address</li>
+            </ul>
+          </div>
+        </div>
+        <div class="user_service_box">
+          <div class="user_ser_warning">
+            <ul>
+              <li>退货问题描述：</li>
+              <li>$!obj.return_content</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="user_service">
+      #if($!obj.goods_return_status=="6")
+        <form id="theForm" name="theForm" action="$!webPath/buyer/order_return_ship_save.htm" method="post">
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" class="user_base_table">
+            <tr>
+              <td  align="right" ><strong class="redstr"></strong>物流公司：</td>
+              <td><select name="express_id" id="express_id" class="base_select_check">
+                   #foreach($expressCompany in $expressCompanys)
+      				<option value="$!expressCompany.id">$!expressCompany.company_name</option>
+      			   #end
+                </select></td>
+            </tr>
+            <tr>
+              <td width="170" align="right"><strong class="redstr"></strong>物流单号：</td>
+              <td><input name="express_code" type="text" id="express_code" value="" class="base_txt" /></td>
+            </tr>
+            <td>&nbsp;</td>
+              <td><input name="button" type="button" value="保存" class="save" onclick="saveForm()" /></td>
+            </tr>
+            <input type="hidden" value="$!obj.id" id="id" name="id" />
+          </table>
+        </form>
+     #elseif($!obj.goods_return_status=="7")
+     <h3><a href="javascript:void(0);" id="info_click" style=" outline:none">收起</a>物流信息</h3>
+		<div class="user_ser_inbox" id="return_info">
+		<div class="logistics">
+		<h4><span>物流公司：$!express_company_name</span><span>物流单号：$!obj.express_code</span></h4>
+        <ul>
+        #if($!transInfo.status==1)
+        #foreach($info in $transInfo.data)
+        #if($!VelocityCount==$!transInfo.data.size())
+        <li><b></b><span class="logistics_time">$!info.time</span><span class="logistics_over">$!info.context</span></li>
+        #else
+        <li><b></b><span class="logistics_time">$!info.time</span><span class="logistics_ads">$!info.context</span></li>
+        #end
+        #end
+        #end
+        #if($!transInfo.status==0)
+		<li class="this"><b></b><span class="logistics_time"></span><span class="logistics_over">$!transInfo.message</span></li>
+        #end   
+        #if($!transInfo.status==2)
+		<li class="this"><b></b><span class="logistics_time"></span><span class="logistics_over">$!transInfo.message</span></li>
+        #end    
+		</ul>
+	</div>
+</div>
+     #end
+      </div>
+    </div>
+  </div>
+  $!httpInclude.include("/footer.htm")
+</div>
+</body>
+</html>

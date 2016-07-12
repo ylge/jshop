@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-0元试用商品- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	#if($!status)
+	jQuery("#status").val("$!{status}");
+	#end
+	#if($!cls_id)
+	jQuery("#cls").val($!cls_id);
+	#end
+ jQuery('#beginTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#endTime').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+});<!--end-->
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=freelist") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>0元试用管理</b>><b>0元试用商品</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href="$!webPath/seller/freegoods_list.htm"><i></i>0元试用商品</a></li>
+          </ul>
+        </div>
+           #if($!objs.size()>0)
+        <div  class="user_sp_right">
+          <form action="$!webPath/seller/freegoods_list.htm" method="post">
+            <span class="size150">
+            <input name="free_name" type="text" id="free_name" value="$!free_name" placeholder="0元试用名称"/>
+            </span> <span class="size150">
+            <input name="beginTime" type="text" id="beginTime"  placeholder="开始时间" value="$!beginTime" />
+            </span> <span class="size150">
+            <input name="endTime" type="text" id="endTime" placeholder="结束时间" value="$!endTime"/>
+            </span> <span>分类</span> <span class="size150">
+            <select name="cls" id="cls">
+              <option value="">所有分类</option>
+              
+          #foreach($cl in $fcls)
+          
+              <option value="$!cl.id">$!cl.className</option>
+              
+          #end
+          
+            </select>
+            </span> <span>状态</span> <span class="size150">
+            <select name="gift_status" id="gift_status">
+              <option value="">所有状态</option>
+              <option value="0">待审核</option>
+              <option value="5">审核通过</option>
+              <option value="10">已结束</option>
+              <option value="-5">审核未通过</option>
+            </select>
+            </span>
+            <input name="" type="submit"  value="搜索" style="cursor:pointer;"  class="seller_sear_btn"/>
+            </span>
+          </form>
+        </div>
+        #end
+        <div class="seller_list_box">
+          <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/freegoods_list.htm">
+            <div class="operation">
+            #if($!objs.size()>0)
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+                <tr id="opertitle">
+                  <th width="15%">名称</th>
+                  <th width="15%">商品名称</th>
+                  <th width="10%">所属分类</th>
+                  <th width="8%">开始时间</th>
+                  <th width="8%">结束时间</th>
+                  <th width="7%">状态</th>
+                  <th width="7%">发布数量</th>
+                  <th width="7%">当前数量</th>
+                  <th width="7%">申请人数</th>
+                  <th  align="center">操作</th>
+                </tr>
+                #if($objs.size()>0)
+                #foreach($obj in $objs)
+                <tr >
+                  <td align="center">$!obj.free_name</td>
+           <td align="center">$!obj.goods_name</td>
+          #set($freeClass = $!freeTools.queyFreeClass("$!obj.class_id"))
+          <td align="center">#if($!freeClass) $!freeClass.className #else 无 #end</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.beginTime)</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.endTime)</td>
+          <td align="center">#if($!obj.freeStatus==0) 待审核 #end #if($!obj.freeStatus==5) 进行中 #end #if($!obj.freeStatus==10) 已结束 #end #if($!obj.freeStatus==-5) 审核未通过 #end</td>
+          <td align="center">$!obj.default_count</td>
+          <td align="center">$!obj.current_count</td>
+          <td align="center">$!obj.apply_count</td>
+          <td class="del_operate" align="center">
+          		#if($!obj.freeStatus==5)
+                <a href="$!webPath/free/view_$!{obj.id}.htm" class="del_a" target="_blank">查看</a>
+                <a href="$!webPath/seller/apply_logs.htm?id=$!obj.id" class="del_a">申请者</a>
+                #end
+                #if($!obj.freeStatus==10)
+                <a href="$!webPath/seller/apply_logs.htm?id=$!obj.id" class="del_a">申请者</a>
+                #end
+          		#if($!obj.freeStatus==0)<a href="$!webPath/seller/freegoods_edit.htm?id=$!obj.id" class="del_a">编辑</a>#end
+                #if($!obj.freeStatus==-5)<a href="$!webPath/seller/freegoods_edit.htm?id=$!obj.id" class="del_a">再次申请</a>#end
+                #if($!obj.freeStatus!=5)<a href="javascript:void(0);" onclick="showDialog('msg_info','','删除后无法恢复，是否继续?',1,'question',3,function(){window.location.href='$!webPath/seller/free_goods_del.htm?mulitId=$!obj.id&currentPage=$!currentPage'});" class="del_a">删除</a>#end
+          </td>
+           </tr >
+           #end
+           #end
+              </table>
+             #else
+               <table width="790" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+              <tr>
+                <td colspan="5" align="center"><div class="seller_center_nothing">
+                    <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                    <div class="seller_center_nothing_right">暂时没有数据</div>
+                  </div></td>
+              </tr>
+            </table>
+             #end 
+            </div>
+            #if($objs.size()>0)
+            <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+            <div class="seller_list_page">
+              <div  class="seller_page_sp"> $!gotoPageFormHTML</div>
+            </div>
+            #end
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

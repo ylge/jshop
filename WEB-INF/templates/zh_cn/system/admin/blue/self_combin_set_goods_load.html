@@ -1,0 +1,12 @@
+﻿<ul id="select_goods_$!{type}">
+  #foreach($obj in $objs)
+  #if($!obj.goods_main_photo)               
+  #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+  #else
+  #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+  #end
+  <li style="cursor:pointer" name='$!{obj.goods_name}' id='$!{obj.id}' price='$!{obj.goods_current_price}' img='$!{img}' plan_count="$!{plan_count}"><img src="$!{img}" />
+  </li>
+  #end
+</ul>
+<div class="fenye" style=" float:right; margin-top:10px; width:100%;">$!gotoPageAjaxHTML</div>

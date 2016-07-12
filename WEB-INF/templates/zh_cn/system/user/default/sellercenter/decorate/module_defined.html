@@ -1,0 +1,55 @@
+<script>
+jQuery(document).ready(function(){
+    var options = {
+        cssPath: '$!webPath/resources/editor/plugins/code/prettify.css',
+        filterMode: true,
+        uploadJson: '$!webPath/upload.htm',
+        width: '650px',
+        height: '400px',
+        resizeType: 1,
+        syncType: "form",
+        afterCreate: function() {
+            var self = this;
+            self.sync();
+        },
+        afterChange: function() {
+            var self = this;
+            self.sync();
+        },
+        afterBlur: function() {
+            var self = this;
+            self.sync();
+        },
+        items: ['source', '|', 'undo', 'redo', 'cut', 'copy', 'paste', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'selectall', 'clearhtml', 'quickformat', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'flash', 'media', 'table', 'hr', 'emoticons', 'link', 'unlink', '|', 'about']
+    };
+
+    editor = KindEditor.create('#defined_content', options);														
+});
+function save_defined() {
+    editor.sync();
+	var params = jQuery("#theForm").serialize();
+	var mark = jQuery("#mark").val();
+	var div = jQuery("#div").val();
+	jQuery("#save").attr("disabled","disabled");
+    jQuery.ajax({type:'POST',url:'$!webPath/seller/decorate_module_save.htm',data:params,
+					  success:function(data){
+						jQuery('#module_edit').remove();
+						if(div!=""){
+							jQuery("div[mark="+mark+"][div='$!{div}']").html(data);
+							}else{
+							jQuery("div[mark="+mark+"]").html(data);	
+								}jQuery("#save").removeAttr("disabled");
+						
+		 }});
+		 
+}
+</script>
+<form id="theForm" name="theForm" action="" method="post">
+<input id="mark" name="mark" value="$!{mark}" type="hidden"/>
+<input id="div" name="div" value="$!{div}" type="hidden"/>
+<input id="type" name="type" value="defined" type="hidden"/>
+<div style="width:auto; float:left; margin-left:22px;">
+<textarea id="defined_content" name="defined_content">$!{content}</textarea>
+</div>
+<div class="fiit_save_box"><input id="save" type="button" value="确定" onclick="save_defined();" mark="$!mark" /><input class="del" type="button" onclick="javascript:if(confirm('要放弃本次编辑吗？'))jQuery('#module_edit').remove();" value="取消" /></div>
+</form>

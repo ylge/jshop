@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(function(){
+  jQuery("#theForm").validate({
+	errorPlacement: function(error, element) {  
+					   element.parent().addClass("bd_red");
+        			 error.appendTo(element.parent().next());  
+   					 },	
+	success:function(label) {
+     						 label.parent().prev().removeClass("bd_red");
+						},
+    rules:{
+		  password:{required:true,minlength:6},
+		  password1:{required:true, equalTo:"#password"}
+		},
+	messages:{
+		 password:{required:"密码不能为空",minlength:"密码长度最小为6位字母"},
+		 password1:{required:"重复密码不能为空", equalTo:"两次输入密码不一致"}
+		}
+  });
+})
+</script>
+</head>
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>找回密码第三步<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="phone_main">
+	<!--登录页-->
+    <form action="$!webPath/wap/forget4.htm" method="post" name="theForm" id="theForm">
+    <input name="userName" type="hidden" id="userName" value="$!userName" />
+    <input name="verify_session" type="hidden" id="verify_session" value="$!verify_session" />
+    <div class="phone_login">
+    	<ul>
+        	<li class="ip"><input name="password" type="password"  id="password" placeholder="请输入密码" /></li><li class="yz"></li>
+            <li class="ip"><input name="password1" type="password"  id="password1" placeholder="确认密码" /></li><li class="yz"></li>
+            <li class="ip_btn"><input type="submit" value="提交" /></li>
+        </ul>
+    </div>
+	</form>
+    $!httpInclude.include("/wap/footer.htm?op=index")    
+</div>
+</body>
+</html>

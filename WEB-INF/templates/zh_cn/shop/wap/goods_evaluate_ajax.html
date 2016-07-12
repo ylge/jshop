@@ -1,0 +1,12 @@
+#foreach($obj in $!objs)
+<ul>
+    <li><h3>$!{obj.evaluate_user.userName}</h3></li>
+    #set($img="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+    #if($!obj.evaluate_user.photo)
+    #set($img="$!imageWebServer/$!obj.evaluate_user.photo.path/$!obj.evaluate_user.photo.name")
+    #end
+    <li class="evalua_ruler"><img src="$!img" width="45" height="45" /></li>
+    <li class="evalua_con">评价：$!{obj.evaluate_info}</li>
+    <li class="evalua_ruler"><b>购买日期：$!CommUtil.formatShortDate($!obj.addTime)</b></li>
+</ul>
+#end

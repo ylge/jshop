@@ -1,0 +1,17 @@
+<script>
+jQuery(document).ready(function(e) {
+    jQuery("a[op='$!{op}']").addClass("this");
+});
+</script>
+<div class="sns_nav"> 
+    	<a href="$!webPath/sns/other_sns_$!{uid}.htm" op="index">首页</a>
+        <a href="$!webPath/buyer/other_sns_dynamic.htm?other_id=$!{uid}" op="dynamic">动态</a>
+        <a href="$!webPath/sns/other_sns_share.htm?other_id=$!{uid}" op="share">分享</a>
+    	<a href="$!webPath/sns/other_sns_evas.htm?other_id=$!{uid}" op="eva">评价</a>
+        <a href="$!webPath/sns/other_sns_evaps.htm?other_id=$!{uid}" op="evaPhoto">晒单</a>
+        <a href="$!webPath/sns/other_sns_fav.htm?other_id=$!{uid}" op="fav">收藏</a>
+ 	    <a href="$!webPath/sns/other_invitation.htm?other_id=$!{uid}" op="inv">帖子</a> 
+        <a href="$!webPath/sns/other_circle.htm?other_id=$!{uid}" op="cir">圈子</a>
+        <a href="$!webPath/sns/other_sns_atts.htm?other_id=$!{uid}" op="atts">关注</a>
+        <a href="$!webPath/sns/other_sns_fans.htm?other_id=$!{uid}" op="fans">粉丝</a>
+</div>

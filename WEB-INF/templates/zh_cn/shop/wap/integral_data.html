@@ -1,0 +1,22 @@
+#foreach($obj in $integralGoods)
+<dl>
+<dt><a href=""><img src="images/test/5.jpg" /></a></dt>
+<dd>
+<ul>
+<li class="name"><a href="">$!obj.ig_goods_name</a></li>
+<li><img src="images/test/member.png" width="20" />
+#if($!obj.ig_user_Level==0)
+铜牌会员专享
+#elseif($!obj.ig_user_Level==1)
+银牌会员专享
+#elseif($!obj.ig_user_Level==2)
+金牌会员专享
+#elseif($!obj.ig_user_Level==3)
+超级会员专享
+#end
+</li>
+<li><span class="fl"><img src="images/inte_icon.png" width="20" /><b>$!obj.ig_goods_integral</b>积分</span><span class="fr"><a href="">马上兑换</a></span></li>
+</ul>
+</dd>
+</dl>
+#end

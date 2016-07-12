@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人主页 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!obj.seo_keywords" />
+<meta name="description" content="$!obj.seo_description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/user.css"/>
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/public.css"/>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</head>
+<script>
+jQuery(document).ready(function(e) {
+    jQuery(".sns_list_box ul").mouseleave(function(){
+		jQuery(this).find("span").hide();
+	});
+});
+function shareContent(obj){
+	jQuery(obj).parent().next().show();
+};
+function del_share(share_id){
+	jQuery.ajax({type:'POST',url:'$!webPath/buyer/my_sns_share_del.htm',
+				data:{"share_id":share_id},
+			  	success:function(data){
+					if(data=="true"){
+						showDialog("msg_info","","删除成功",0,"succeed",2,function(){
+						   window.location.href="$!webPath/buyer/my_sns_share.htm?currentPage=$!{currentPage}";
+						});
+					}else{
+						showDialog("msg_info","","系统繁忙",0,"error",2,function(){
+						   window.location.href="$!webPath/buyer/my_sns_share.htm?currentPage=$!{currentPage}";
+						});
+					}
+			  	}
+	})
+};
+</script>
+<body>
+$!httpInclude.include("/top.htm")
+<div class="sns_width">
+  $!httpInclude.include("/buyer/my_sns_head.htm")
+  <div class="sns_main">
+    $!httpInclude.include("/buyer/my_sns_nav.htm?op=share")
+    <div class="sns_list">
+	  #if($!objs.size()>0)
+      <form id="ListForm" name="ListForm" method="post" action="$!webPath/buyer/my_sns_share.htm"> 
+      <div class="sns_list_box">
+      #foreach($obj in $objs)
+       <ul>
+          <li class="img"><a href="$!webPath/goods_$!{obj.share_goods_id}.htm" target="_blank"><img src="$!imageWebServer/$!{obj.share_goods_photo}" width="223" height="223" /></a>
+          <strong><a href="javascript:void(0)" onclick="del_share($!{obj.id})">删除</a></strong>
+          </li>
+          <li class="name"><a href="$!webPath/goods_$!{obj.share_goods_id}.htm" target="_blank">$!{obj.share_goods_name}</a></li>
+          <li class="share_word">
+			<b>$!{obj.share_content}</b><em><a href="javascript:void(0)" onmousemove="shareContent(this)"></a></em><span style="display:none;">$!{obj.share_content}</span></li>
+       </ul>
+      #end
+      <div class="sns_pages">
+          $!gotoPageFormHTML
+      </div>
+      </div>
+      <input type="hidden" name="currentPage" id="currentPage" value="$!currentPage">  
+      </form>
+      #else
+      <div class="sns_nothing">
+        	<span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span>
+            <span class="fr">没有您想要的信息！</span>
+      </div>
+      #end 
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

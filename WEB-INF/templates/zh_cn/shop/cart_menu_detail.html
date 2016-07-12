@@ -1,0 +1,24 @@
+#if($!carts.size()>0)
+<div class="new_goods">最新加入的商品</div>
+<div id="sibox">
+<ul class="goodscar_list" #if($!carts.size()>2) style=" overflow-y:auto;height:200px" #end>
+#foreach($gc in $carts)
+#set($goods_url="$!webPath/goods_$!{gc.goods.id}.htm")
+#if($!config.second_domain_open && $!gc.goods.goods_type==1 && $!gc.goods.goods_store.store_second_domain!="")
+#set($goods_url="http://$!{gc.goods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{gc.goods.id}.htm")
+#end  
+<li id="$!gc.id" >
+	<i><a href="$!goods_url" target="_blank"><img src="$!imageWebServer/$!gc.goods.goods_main_photo.path/$!{gc.goods.goods_main_photo.name}_small.$!{gc.goods.goods_main_photo.ext}" width="50" height="50" /></a></i> 
+	<span class="goodscar_listr">
+		<h4><a href="$!goods_url" target="_blank" class="goodscar_n"><span style="color:#D60000">#if($!gc.goods.order_enough_give_status==1) [满送] #end #if($!gc.goods.group_buy==2) [团购] #end #if($!gc.goods.enough_reduce==1) [满减] #end #if($!gc.cart_type=="combin") [套装] #end</span>$!gc.goods.goods_name</a></h4>
+		<b class="goodscar_botm"><em>¥$!{gc.price}</em><a href="javascript:void(0);" class="hover"  #if($!gc.cart_type=="combin") onclick="menu_cart_remove('$!gc.combin_mark');" #else onclick="menu_cart_remove('$!gc.id');" #end>删除</a></b>
+    </span> 
+</li>
+#end        
+</ul>
+<div>
+<span class="goodscar_total">购物车总价：<i>¥</i><b id="cart_goods_price_top">$!{total_price}元</b></span>
+<span class="car_bottom"><span class="fl">共选择<strong id="st_count">$!carts.size()</strong>件商品</span><a href="$!webPath/goods_cart1.htm" class="see_car">查看我的购物车</a></span> 
+#else
+<b class="goodscar_none">购物车还没有商品!</b>
+#end

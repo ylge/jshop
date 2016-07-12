@@ -1,0 +1,22 @@
+<h1> <i><a href="javascript:void(0);" onclick="show_album('tab_body_b',jQuery('.tabbody_ul li:eq(1)'))">返回相册<img src="$!webPath/resources/style/system/front/default/images/usercenter/return_album.jpg" width="17"/></a></i></h1><span></span>
+<script>
+function goods_photo_set(obj){
+  var src=jQuery(obj).attr("src");
+  var image_id=jQuery(obj).attr("image_id");
+  draw_goods_img(src,image_id);
+}
+</script>
+#if($!photos.size()>0)
+<ul class="tabphoto">
+  #foreach($photo in $photos)
+  <li><a href="javascript:void(0);" onclick="goods_photo_set(this);" image_id="$!photo.id" src="$!imageWebServer/$!photo.path/$!photo.name"><img src="$!imageWebServer/$!photo.path/$!{photo.name}_small.$!{photo.ext}" width="90" height="90" /></a></li>
+  #end
+</ul>
+<div class="tab_page">
+  <div class="tab_page2" id="img_photo" ajax_type=".tab_body_b" ajax_page="goods_img" album_id="$!{album_id}" type="goods_img_album">$!gotoPageAjaxHTML</div>
+</div>
+#else
+<div class="tabbodys_nothing">
+	<img src="$!imageWebServer/resources/style/system/front/default/images/nothing.png" /><h3>暂无数据!</h3>
+</div>
+#end

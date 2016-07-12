@@ -1,0 +1,194 @@
+<script>
+jQuery(document).ready(function(){
+   jQuery("#floor_goods_info").sortable({containment:"#floor_goods_info",opacity:0.9,cursor:"crosshair"});
+   jQuery("#floor_goods_info").disableSelection();
+});
+function ajaxPage(url,page,obj){
+ jQuery.ajax({type:'POST',url:url,data:{"currentPage":page},
+			  success:function(data){
+					jQuery("#floor_goods_list").empty().append(data);																											               }																																		    });
+}
+function info_floor_list_info_load(){
+  var ic_id=jQuery("#ic_id").val();
+  var info_name=jQuery("#info_name").val();
+  jQuery.ajax({type:'POST',url:'$!webPath/admin/cms_template_info_load.htm',data:{"ic_id":ic_id,"info_name":info_name},
+			  success:function(data){
+					jQuery("#floor_goods_list").empty().append(data);																											               }																																		    });
+}
+function goods_list_set(obj){
+  var img=jQuery(obj).attr("img_uri");
+  
+  var info_id=jQuery(obj).attr("info_id"); 
+  var info_name=jQuery(obj).attr("info_name");
+  var count=jQuery(".floor_box_pls ul").length;
+  var add=0; 
+  var c = "$!{count}"-0;
+  var allow_count="$!{count}"-1;
+  if(count>allow_count){
+	  alert("最多只能添加"+c+"条资讯！");
+	  add=1;
+  }
+  jQuery(".floor_box_pls ul").each(function(){
+     if(jQuery(this).attr("info_id")==info_id){
+	   alert("已经存在该资讯");
+	   add=2;
+	 }
+  });
+  if(add==0){
+	  var s="<ul ondblclick='jQuery(this).remove();' class='floor_pro' info_id='"+info_id+"'><li class='floor_pro_img'><img src='"+img+"' width='100' height='100' /></li><li class='floor_pro_name'>"+info_name+"</li></ul>";
+	  if(img==null){
+		  s="<ul ondblclick='jQuery(this).remove();' class='floor_pro' info_id='"+info_id+"'><li class='floor_pro_img'></li><li class='floor_pro_name'>"+info_name+"</li></ul>";
+		  }
+  
+  jQuery(".floor_box_pls").append(s);
+  }
+}
+function save_form(){
+ var ids="";
+ jQuery(".floor_box_pls ul").each(function(){
+   ids=ids+","+jQuery(this).attr("info_id"); 
+ });
+ jQuery("#ids").val(ids);
+ jQuery("#theForm").submit();
+}
+</script>
+<form action="$!webPath/admin/cms_template_info_save.htm" method="post" id="theForm">
+<div class="box_floor">
+  <div class="box_floor_six">
+  #set($map=$!gf_tools.generic_info_list("$!obj.floor_info1"))
+  #if($!type=="floor_info2")
+  #set($map=$!gf_tools.generic_info_list("$!obj.floor_info2"))
+  #end
+  #if($!type=="floor_info3")
+  #set($map=$!gf_tools.generic_info_list("$!obj.floor_info3"))
+  #end
+  #if($!type=="floor_info4")
+  #set($map=$!gf_tools.generic_info_list("$!obj.floor_info4"))
+  #end
+    <div class="box_floor_class">
+      <input name="id" type="hidden" id="id" value="$!obj.id">
+      <input type="hidden" name="ids" id="ids">
+      <input type="hidden" name="type" value="$!type" id="type">
+    </div>
+    <span class="floor_choose">已选推荐资讯：</span>
+    <div class="box_floor_prodel"> <em class="floor_warning">注释：最多选择$!{count}条新闻，双击删除已选资讯，按下鼠标拖动资讯次序</em>
+      <div class="floor_box_pls" id="floor_goods_info">
+      #if($!map.get("info1"))
+       #set($info=$!map.get("info1")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info2"))
+       #set($info=$!map.get("info2")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+        #if($!map.get("info3"))
+       #set($info=$!map.get("info3")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info4"))
+       #set($info=$!map.get("info4")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info5"))
+       #set($info=$!map.get("info5")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info6"))
+       #set($info=$!map.get("info6")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info7"))
+       #set($info=$!map.get("info7")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info8"))
+       #set($info=$!map.get("info8")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info9"))
+       #set($info=$!map.get("info9")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+       #if($!map.get("info10"))
+       #set($info=$!map.get("info10")) 
+        <ul ondblclick="jQuery(this).remove();" info_id="$!info.id"  class="floor_pro">
+          <li class="floor_pro_img"> #if("$!info.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />#end        
+          #end</li>
+          <li class="floor_pro_name">$!info.title</li>
+        </ul>
+       #end 
+        </div>
+    </div>
+    <span class="floor_choose">选择要展示的资讯：</span>
+    <div class="floor_choose_box"> <span class="floor_search_sp">
+    <input name="info_name" type="text" id="info_name" placeholder="资讯名称关键字" class="gf_goods_name"/>
+      <select name="ic_id" id="ic_id" class="gf_select">
+        <option value="">请选择资讯分类...</option>
+        #foreach($ic in $ics)
+      
+        <option value="$!ic.id">$!ic.ic_name</option>
+        
+       #foreach($c_ic in $cmsTools.queryChildClass("$!{ic.id}"))
+       
+        <option value="$!c_ic.id">&nbsp;&nbsp;&nbsp;$!c_ic.ic_name</option>
+        
+       #end
+      #end
+      </select>
+      </span> <input type="button"  class="floor_sear_btn" value="搜索" onclick="info_floor_list_info_load();" style="cursor:pointer;" />
+     <div id="floor_goods_list">
+     </div>
+    </div>
+  </div>
+  <!--图片开始-->
+  <div class="submit">
+    <input type="button" value="保存" onclick="save_form();" />
+  </div>
+</div>
+</form>

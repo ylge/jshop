@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>地址管理 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+    jQuery(".address_list dl").click(function(){
+		var id = jQuery(this).attr("mark");
+		window.location.href="$!webPath/wap/buyer/address_edit.htm?id="+id;
+	})
+});<!--end-->
+</script>
+</head>
+
+<body class="order_bg">
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/service_center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">地址管理</span><span class="fr"><a href="javascript:void(0);" onClick="window.location.href='$!webPath/wap/buyer/address_add.htm'">+新增</a></span></div>
+
+<div class="main">
+  <div class="mt50" style="height:49px;"></div>
+  <div class="address_list">
+  	#foreach($addr in $addrs)
+    <dl mark="$!{addr.id}">
+      <dt>
+        <h3><b>$!addr.mobile</b><strong>$!addr.trueName</strong></h3>
+        <span>$!areaViewTools.generic_area_info("$!{addr.area.id}")<br>$!{addr.area_info}</span>
+      </dt>
+      <dd><a href="$!webPath/wap/buyer/address_del.htm?id=$!{addr.id}" class="address_list_edit"><span><img src="$!webPath/resources/style/system/front/wap/images/user_del.png"></span><b>删除</b></a></dd>
+    </dl>
+    #end
+  </div>
+</div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+</body>
+</html>

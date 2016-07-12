@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>订单支付</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body class="order_bg">
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>订单支付<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="order_box">
+    <div class="mt50" style="height:49px;"></div>
+    <div class="pay_finish">
+      <section>
+        <ul>
+          <li><b>订单编号：</b><span>$!obj.order_id</span></li>
+          <li><b>应付金额：</b><span class="red">¥$!{all_price}</span></li>
+           	#if($!obj.order_status==0)
+              #set($status="已取消")
+            #end
+            #if($!obj.order_status==10)
+              #set($status="待付款")
+            #end
+            #if($!obj.order_status==20)
+              #set($status="付款成功")
+            #end
+            #if($!obj.order_status==30)
+              #set($status="已发货")        
+            #end                
+            #if($!obj.order_status==40)
+            #set($status="已收货")
+            #end
+            #if($!obj.order_status==50)
+            #set($status="已完成,已评价")                                              
+            #end
+            #if($!obj.order_status==60)
+             #set($status="已结束")                                              
+            #end 
+          <li><b>支付情况：</b><span class="gray">$!status</span></li>
+        </ul>
+      </section>
+      <div class="pay_finish_btn">
+      	  #if($!obj.order_status==10)
+          <input type="button" class="car_btn" value="返回重新支付" onClick="window.location.href='$!webPath/wap/order_pay.htm?id=$!{obj.id}'">
+          #end
+          #if($!obj.order_cat==0)
+          <input type="button" class="car_btn" value="查看订单信息" onClick="window.location.href='$!webPath/wap/buyer/order_view.htm?id=$!{obj.id}'">
+          #end
+          #if($!obj.order_cat==2)
+          <input type="button" class="car_btn" value="查看订单信息" onClick="window.location.href='$!webPath/wap/buyer/group_view.htm?id=$!{obj.id}'">
+          #end
+        </div>
+    </div>
+</div>
+$!httpInclude.include("/wap/footer.htm")
+</body>
+</html>

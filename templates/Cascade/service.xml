@@ -1,0 +1,6 @@
+##set ($domain = $!domainName.toLowerCase())
+<!-- $!{domain}Service -->
+<bean id="$!{domain}Service" class="$!{packageName}.service.impl.$!{domainName}ServiceImpl">
+		<property name="${domain}Dao" ref="$!{domain}Dao" />
+</bean>
+

@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>用户注册 -$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/login.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+ //
+ jQuery.validator.addMethod("verify",function(value,element){
+	    var re =  /^([0-9a-zA-Z]|[\u4E00-\u9FA5])+$/;
+        if(re.test(jQuery("#userName").val())){			
+			return true;
+		  } 
+		  else {
+		    return false;
+			  }		  
+});
+ jQuery("#theForm").validate({				 
+	errorPlacement:function(error, element) {
+       error.appendTo(element.parent().parent());  
+      },
+	  rules:{
+	    userName:{
+		  required:true,
+		  verify:true,
+          remote:{
+		    url: "$!webPath/verify_username.htm",     //后台处理程序
+            type: "post",               //数据发送方式
+            dataType: "json",           //接受数据格式   
+            data: {                     //要传递的数据
+                  "userName": function(){return jQuery("#userName").val();}
+		     }
+			}
+		},
+        password:{
+		  required:true,
+		  minlength:6,
+		  maxlength:20  
+		},
+		repassword:{
+		  required:true,
+		  equalTo:"#password" 
+		},
+		email:{
+		  required:true,
+		  email:true,
+		  remote:{
+		    url: "$!webPath/verify_email.htm",     //后台处理程序
+            type: "post",               //数据发送方式
+            dataType: "json",           //接受数据格式   
+            data: {                     //要传递的数据
+                  "email": function(){return jQuery("#email").val();}
+		     }
+		  }
+		},
+		agree:{
+		  required:true
+		}#if($!config.securityCodeRegister),
+		code:{
+		  required:true,
+		  remote:{
+		    url: "$!webPath/verify_code.htm",     //后台处理程序
+            type: "post",               //数据发送方式
+            dataType: "json",           //接受数据格式   
+            data: {                     //要传递的数据
+                  "code": function(){return jQuery("#code").val();}
+		     }
+		  }
+		}
+		#end
+	  },
+	  messages:{
+	    userName:{
+		  required:"用户名不能为空",
+		  verify:"不可使用特殊字符",
+		  remote:"用户名已存在"
+		},
+        password:{
+		  required:"密码不能为空",
+		  minlength:"密码不能小于{0}个字符",
+		  maxlength:"密码不能大于{0}个字符" 
+		},
+		repassword:{
+		  required:"重复密码不能为空",
+		  equalTo:"两次输入密码不一致"
+		},
+		email:{
+		  required:"email不能为空",
+		  email:"email格式不正确",
+		  remote:"该email已经存在"
+		},
+		agree:{
+		  required:"请接受用户协议"
+		}#if($!config.securityCodeRegister),
+		code:{
+		  required:"验证码不能为空",
+		  remote:"验证码不正确"
+		}
+		#end
+	  }
+	});
+ //
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+<div class="login_head">
+  <h1><span>#if($!config.websiteLogo) <a href="$!webPath/index.htm"> <img src="$!imageWebServer/$!config.websiteLogo.path/$!config.websiteLogo.name" border="0" /> </a> #else <a href="$!webPath/index.htm"><img src="$!webPath/resources/style/system/front/default/images/logo.jpg"  /> </a> #end</span><strong>用户注册</strong></h1>
+</div>
+<div class="regist_box">
+  <div class="regist_box_tab"><span class="regist_login">我已经注册，现在就<a href="$!webPath/user/login.htm">登录</a></span>
+    <ul class="regist_box_ul">
+      <li class="this">个人用户注册</li>
+      <li><a href="$!webPath/company/register.htm">企业用户注册</a></li>
+    </ul>
+  </div>
+  <div class="regist_box_content">
+    <div class="regist_common">
+      <form action="$!webPath/register_finish.htm" method="post" name="theForm" id="theForm">
+        <table width="900" border="0" cellpadding="0" cellspacing="0" class="regist_common_table">
+          <tr>
+            <td width="70" align="right">账户名称：</td>
+            <td><div class="regist_form_txt"><input name="userName" type="text" id="userName" class="regist_txt" /></div></td>
+          </tr>
+          <tr>
+            <td  align="right">登录密码：</td>
+            <td><div class="regist_form_txt"><input  name="password" type="password" id="password" class="regist_txt" /></div></td>
+          </tr>
+          <tr>
+            <td  align="right">确认密码：</td>
+            <td><div class="regist_form_txt"><input name="repassword" type="password" id="repassword"  class="regist_txt" /></div></td>
+          </tr>
+          #if($!config.securityCodeRegister)
+              <script>
+                 function refreshCode(){
+	                 jQuery("#code_img").attr("src","$!webPath/verify.htm?d"+new Date().getTime());
+                 }
+             </script>
+          <tr>
+            <td  align="right">验证码：</td>
+            <td>
+            <div class="regist_form_txt"><input name="code" type="text" class="regist_code" id="code" /></div>
+             #if($!config.securityCodeType=='voice')
+            <script>
+				   function readCode(id){
+                         var  s = "<embed id='sound_play' name='sound_play' src='$!webPath/resources/flash/soundPlayer.swf?" + (new Date().getTime()) + "' FlashVars='url=$!webPath"+ "' width='0'   height='0' allowScriptAccess='always' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' /></embed>";
+                    jQuery("#"+id).html(s);
+                    }
+			 </script>
+              <b class="regist_code_img"><img id="code_img" src="$!webPath/verify.htm" width="59" height="27" style="display:none;" /></b>
+              <a href="javascript:void(0);" onclick="readCode('player')" title="朗读验证码" class="code_speech"></a>
+              <a href="javascript:void(0);" onclick="refreshCode();"  class="code_refresh"></a>
+              <span id="player"></span>
+             #else
+               <b class="regist_code_img"><img id="code_img" src="$!webPath/verify.htm" width="59" height="27" /></b><a href="javascript:void(0);" onclick="refreshCode();" class="code_refresh"></a>
+             #end  
+               </td>
+          </tr>
+          #end
+          <tr>
+            <td>&nbsp;</td>
+            <td class="font12">
+            <div class="regist_form_txt">
+                <input name="agree" type="checkbox" class="regist_check" id="agree" value="true" checked="checked" />
+                <label for="agree">我已阅读并同意 </label>
+              <a href="javascript:void(0);" onclick="jQuery('#agree_article').show();"  class="blue2">《商城在线服务协议》</a></div>              
+              </td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td><input name="" type="submit"  class="regist_btn" value="立即注册"/></td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <div class="regist_common_right"><img src="$!webPath/resources/style/system/front/default/images/login/register.jpg" width="300" height="227" /></div>
+  </div>
+</div>
+<div style="display:none;" id="agree_article">
+  <div class="white_content" > </div>
+  <div class="white_content_box"> <a href="javascript:void(0);"  onclick="jQuery('#agree_article').hide();" class="white_close"><img src="$!webPath/resources/style/system/front/default/images/login/close.gif" width="16" height="16" /></a>
+    <div class="white_con">
+      <h3 class="white_title"><span>用户注册协议</span></h3>
+      <div class="white_box">
+        <div class="white_box_contant"> $!doc.content </div>
+      </div>
+      <div class="white_box_btn">
+        <input name="" type="button" value="同意并继续" onclick="jQuery('#agree_article').hide();" />
+      </div>
+    </div>
+  </div>
+  <div class="black_overlay"></div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</body>
+</html>

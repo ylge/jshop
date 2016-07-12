@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自提点后台 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/delivery.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/public.css"/>
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>  
+jQuery(document).ready(function(e) {							
+    jQuery("#right_nav_open").click(function(){
+		jQuery("#right_nav_open").fadeToggle();
+		jQuery("#right_nav").fadeToggle();
+		jQuery("#self_eidt_input_right").animate({right:"show",width:'515px'},"slow");
+		jQuery("body").append("<div class='bg_fixed'></div>");
+	});
+	jQuery("#right_nav").click(function(){
+		jQuery("#right_nav").fadeToggle();
+		jQuery("#right_nav_open").fadeToggle();
+		jQuery("#self_eidt_input_right").animate({right:"hide",width:'0px'},"slow");
+		jQuery(".bg_fixed").remove();
+	})
+		jQuery("input[name='da_service_type']").click(function() {
+        var type = jQuery(this).val();
+		if(type=='1'){
+			jQuery("#da_begin_time").parent().show();
+			jQuery("#da_end_time").parent().show();
+		}else{
+			jQuery("#da_begin_time").parent().hide();
+			jQuery("#da_end_time").parent().hide();
+		}
+    });
+	
+	jQuery("select").change(function(){
+    	var level=jQuery(this).attr("level");
+		var id=jQuery(this).val();
+		jQuery("#sa_area_id").val("");
+	 	for(var i=4;i>level;i--){
+	  		jQuery("#area"+i).empty();
+	  		jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 	}
+	 if(id!=""){
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	     jQuery("#area"+level).empty();
+		  jQuery("#area"+level).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+level).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }else{
+	   for(var i=level;i<=4;i++){
+	    jQuery("#area"+i).empty();
+	   }
+	 }
+  	});
+	jQuery("#theForm").validate({	
+	errorPlacement: function(error, element) {
+				element.parent().parent().find("b").html("");
+					error.appendTo(element.parent().parent().find("b"));
+				},					  
+    rules:{
+	  da_name:{required :true},
+	  da_contact_user:{required:true},
+	  da_tel:{required:true},
+	  area3:{required:true},
+	  da_address:{required:true},
+	  da_service_day:{required:true}
+	 },
+	messages:{
+	  da_name:{required :"自提点名称不得为空"},
+	  da_contact_user:{required:"联系人姓名不得为空"},
+	  da_tel:{required:"联系人电话不得为空"},
+	  area3:{required:"所在区域不得为空"},
+	  da_address:{required:"详细地址不得为空"},
+	  da_service_day:{required:"请选择服务时间"}
+	 },
+	    submitHandler:function(){
+	       var params = jQuery("#theForm").serialize();
+		   jQuery.ajax({type:'POST',url:'$!webPath/delivery/ajax_base_save.htm',data:params,
+					  success:function(ret){
+						showDialog("msg_info","","自提点信息保存成功！",2,"succeed",300,function(){
+						   window.location.href="$!webPath/delivery/index.htm";
+						});			
+		  }});
+	  }
+  });
+	  jQuery("#area1").val("$!deliaddr.da_area.parent.parent.id");
+	  jQuery("#area2").html("<option>$!deliaddr.da_area.parent.areaName</option>");
+	  jQuery("#area3").html("<option value='$!deliaddr.da_area.id'>$!deliaddr.da_area.areaName</option>");
+	  jQuery("input[id='da_service_type'][value='$!{deliaddr.da_service_type}']").attr("checked","checked");
+	  var type = jQuery("input[id='da_service_type'][checked='checked']").val();
+		if(type=='1'){
+			jQuery("#da_begin_time").parent().show();
+			jQuery("#da_end_time").parent().show();
+		}else{
+			jQuery("#da_begin_time").parent().hide();
+			jQuery("#da_end_time").parent().hide();
+		}
+		jQuery("#da_begin_time").val("$!{deliaddr.da_begin_time}");
+		jQuery("#da_end_time").val("$!{deliaddr.da_end_time}");
+		var da_service_day = "$!{deliaddr.da_service_day}";
+		var days =	da_service_day.split(",");
+		for(var i=0;i<=days.length;i++){
+				if(days[i]!=""){
+					jQuery("input[type='checkbox'][value="+days[i]+"]").attr("checked",true);
+					}				
+			}
+});////
+
+function saveForm(){
+	jQuery("#theForm").submit();
+	};
+	
+function set_start(){
+	jQuery.post("$!webPath/delivery/set_divery_status.htm",
+				{"id":"$!deliaddr.id","mark":"start"},
+				function(data){
+					showDialog("msg_info","","服务开启成功！",2,"succeed",300,function(){
+						   window.location.href="$!webPath/delivery/index.htm";	
+						   });		
+		},"text");
+	};	
+function set_stop(){
+	jQuery.post("$!webPath/delivery/set_divery_status.htm",
+				{"id":"$!deliaddr.id","mark":"stop"},
+				function(data){
+					showDialog("msg_info","","服务暂停成功！",2,"succeed",300,function(){
+						   window.location.href="$!webPath/delivery/index.htm";	
+						   });																							  
+		},"text");
+};
+
+function confirm_order(obj_id){
+		showDialog("msg_info","","确认接收快件吗？",1,"warning",300,function(){
+			   jQuery.post("$!webPath/delivery/confirm_order.htm",
+						   {"id":obj_id}
+						   ,function(data){
+								window.location.href="$!webPath/delivery/index.htm";	 
+										  },"text");
+			});	
+		
+	}
+
+function again_code(orderForm_id){	
+		showDialog("msg_info","","重发后旧号码将失效，是否确认？",1,"warning",500,function(){
+			   jQuery(".delivery_code").show();
+			   jQuery.post("$!webPath/delivery/delivery_code_again.htm",
+						   {"orderForm_id":orderForm_id}
+						   ,function(data){
+							   jQuery(".delivery_code").hide();
+								showDialog("msg_info","",data,2,"succeed",300,null);	 
+										  },"text");
+			});
+		
+	}	
+function search_list(){
+	jQuery("#ListForm").submit();
+	};
+
+</script>
+</head>
+<body style="background:url($!webPath/resources/style/system/front/default/images/map.png) right bottom;" >
+<div class="main">
+  <div class="map_bg"></div>
+  <!--自提点--协议 -->
+  <div class="self_eidt">
+    <div class="self_eidt_input">
+      <form id="ListForm" name="ListForm" action="$!webPath/delivery/index.htm" method="post">
+      	<div class="delivery_code" style="display:none">
+        	<div class="delivery_code_center">
+            	<img src="$!ImageWebService/resources/style/system/front/default/images/loading.gif" />
+            	<i>正在重新发送...</i>
+            </div>
+        </div>     	
+        <div class="self_eidt_input_left">
+          <h4>我的自提点</h4>
+          <div class="self_eidt_search"><span><a href="javascript:void(0);" onclick="search_list();">搜 索</a></span>
+            <input name="keyword" id="keyword" type="text" value="$!keyword"  placeholder="可输入订单号、收件人姓名、收件人手机号、电话"/>
+          </div>
+          <dl>
+            <dt><span>订单号</span><span>收件人姓名</span><span>收件人手机号</span><span>收件人电话</span><span>订单金额</span><span>操作</span></dt>
+            #foreach($obj in $objs)
+            <dd><i>$!obj.order_id</i><i>$!obj.receiver_Name</i><i>#if($!obj.receiver_telephone!="")$!{obj.receiver_telephone}#else未填写#end</i><i>#if($!obj.receiver_mobile!="")$!{obj.receiver_mobile}#else未填写#end</i><i>$!obj.totalPrice</i> <i class="edit"> #if($!obj.order_status==30) <a style="margin-left:60px;" href="javascript:void(0);" onclick="confirm_order('$!obj.id');">确认代收货</a> #end
+              #if($!obj.order_status==35) 
+              <a href="javascript:void(0);" dialog_uri="$!webPath/delivery/delivery_code.htm?orderForm_id=$!{obj.id}&&currentPage=$!{currentPage}" dialog_title="买家取件" dialog_width="410" dialog_height="100">买家取件</a> 
+              <a href="javascript:void(0);" onclick="again_code('$!obj.id')">重发六位码</a>
+              #end
+              #if($!obj.order_status>=40) 已结束 #end </i></dd>
+            #end
+          </dl>
+        </div>
+        <div class="right_nav_open" id="right_nav_open"></div>
+        <div class="self_eidt_fy"> <span> $!gotoPageFormHTML</span> <i><a href="$!webPath/iskyshop_logout.htm">退出登录</a></i> </div>
+        <input id="currentPage" name="currentPage" value="$!currentPage" type="hidden"/>
+      </form>
+      <form id="theForm" name="thiForm" action="$!webPath/delivery/ajax_base_save.htm" method="post">
+        <input id="id" name="id" value="$!deliaddr.id" type="hidden">
+        <div class="self_eidt_input_right" id="self_eidt_input_right" style="width:0px;display:none">
+          <ul>
+            <h4>我的自提点</h4>
+            <li> <i>自提点状态：</i> #if($!deliaddr.da_status==10)
+              #set($status="正常服务") <a class="self_eidt_input_open" href="javascript:void(0)"><img src="$!webPath/resources/style/system/front/default/images/close.png" onclick="set_stop();"/></a> #end
+              #if($!deliaddr.da_status==5)
+              #set($status="暂停服务") <a class="self_eidt_input_open" href="javascript:void(0)"><img src="$!webPath/resources/style/system/front/default/images/open.png" onclick="set_start();"/></a> #end
+              <h3>当前状态：<strong>$!{status}</strong></h3>
+            </li>
+            <li><i>自提点名称：</i><span> $!deliaddr.da_name </span></li>
+            <li><i>联系人姓名：</i><span>
+              <input name="da_contact_user" id="da_contact_user" class="self_eidt_inp"  value="$!deliaddr.da_contact_user" type="text"/>
+              </span><b></b></li>
+            <li><i>联系人电话：</i><span>
+              <input name="da_tel" id="da_tel" value="$!deliaddr.da_tel" class="self_eidt_inp" type="text"/>
+              </span><b></b></li>
+            <li><i>自提点说明：</i><span>
+              <textarea name="da_content" id="da_content" cols="" rows="">$!deliaddr.da_content</textarea>
+              </span><b></b></li>
+            <li><i>所在区域：</i><span>
+              <select name="area1" id="area1" level="2">
+                <option>省份/自治区</option>
+                
+              #foreach($area in $areas)           
+              
+                <option value="$!area.id" >$!area.areaName</option>
+                                             
+	          #end 
+            
+              </select>
+              <select name="area2" id="area2" level="3">
+                <option value="">市/区</option>
+              </select>
+              <select name="area3" id="area3" level="4">
+                <option value="">县/区</option>
+              </select>
+              </span><b></b></li>
+            <li><i>详细地址：</i><span>
+              <input class="self_eidt_inp" name="da_address" id="da_address" type="text" value="$!deliaddr.da_address" />
+              </span><b></b></li>
+            <li style="position:relative;"> <i>服务时间：</i> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="1" />
+                星期一</label>
+              <b style="position:absolute; right:0px; text-align:left; top:0px; height:10px; width:170px; display:block;"></b></span> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="2"/>
+                星期二</label>
+              </span> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="3" />
+                星期三</label>
+              </span> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="4" />
+                星期四</label>
+              <b style="float:right;"></b></span> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="5" />
+                星期五</label>
+              </span> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="6" />
+                星期六</label>
+              </span> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="7" />
+                星期日</label>
+              </span> </li>
+            <li> <i>具体时间：</i> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_type" id="da_service_type" type="radio" value="0"/>
+                全天</label>
+              </span> <span>
+              <label style="cursor:pointer">
+                <input class="time" name="da_service_type" id="da_service_type" type="radio" value="1"/>
+                非全天</label>
+              </span> <span style="display:none">
+              <select name="da_begin_time" id="da_begin_time">
+                <option value="1">凌晨1时</option>
+                <option value="2">凌晨2时</option>
+                <option value="3">凌晨3时</option>
+                <option value="4">凌晨4时</option>
+                <option value="5">凌晨5时</option>
+                <option value="6">早上六时</option>
+                <option value="7">早上七时</option>
+                <option value="8">早上八时</option>
+                <option value="9">早上九时</option>
+                <option value="10">上午10时</option>
+                <option value="11">上午11时</option>
+              </select>
+              </span> <span style="display:none">
+              <select name="da_end_time" id="da_end_time">
+                <option value="13">下午13时</option>
+                <option value="14">下午14时</option>
+                <option value="15">下午15时</option>
+                <option value="16">下午16时</option>
+                <option value="17">下午17时</option>
+                <option value="18">下午18时</option>
+                <option value="19">晚上19时</option>
+                <option value="20">晚上20时</option>
+                <option value="21">晚上21时</option>
+                <option value="22">晚上22时</option>
+                <option value="23">晚上23时</option>
+              </select>
+              </span> </li>
+          </ul>
+          <div class="self_eidt_protocol_yes"><a href="javascript:void(0);" onclick="saveForm();">提交</a></div>
+          <div class="right_nav" id="right_nav"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

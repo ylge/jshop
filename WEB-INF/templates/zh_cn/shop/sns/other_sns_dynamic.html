@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人主页 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!obj.seo_keywords" />
+<meta name="description" content="$!obj.seo_description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/user.css"/>
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/system/front/default/css/public.css"/>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+/**查看大图**/
+function show_big_img(url){
+	jQuery(".sns_list_box_img img").attr("src",url);
+	jQuery(".sns_list_box_bg").fadeToggle();
+	jQuery(".sns_list_box_img").fadeToggle();
+}
+function hide_big_img(){	
+	jQuery(".sns_list_box_img").fadeToggle();
+	jQuery(".sns_list_box_bg").fadeToggle();
+}
+var count =12;
+function dynamic_more(){
+	jQuery.ajax({type:'POST',
+					  url:'$!webPath/buyer/ajax_dynamic.htm',
+					  data:{"count":count,"otherId":$!{other_id}},
+					beforeSend:function(){
+					  count = count +12;
+					  jQuery("#loading_more").hide();
+					  jQuery("#loading").show();
+					},
+				   success:function(data){
+					 jQuery("#loading").hide();
+					 if(data){
+					 	jQuery(".sns_main_list").last().after(data);  
+						jQuery("#loading_more").show();
+					 }else{
+						jQuery("#loading_none").show();
+					 }
+					}
+			});
+};
+function change_snsUser(obj,type){
+	jQuery(".sns_main_box_right_top span").removeClass("this");
+	jQuery(obj).parent().addClass("this");
+	jQuery(".sns_main_box_right_center").hide();
+	jQuery(".sns_main_box_right_b").hide();
+	jQuery("div[class^='sns_main_box_right_center_nothing']").hide();
+	jQuery(".sns_main_box_right_center_nothing_"+type).show();
+	jQuery("div[type='"+type+"']").slideDown("slow");
+}			
+</script>
+</head>
+
+<body background="$!webPath/resources/style/system/front/default/images/sns_bg.png";>
+$!httpInclude.include("/top.htm")
+<div class="sns_width">$!httpInclude.include("/sns/other_sns_head.htm?uid=$!{other_id}")
+  <div class="sns_main">$!httpInclude.include("/sns/other_sns_nav.htm?op=dynamic&&uid=$!{other_id}")
+    <div class="sns_list_box_m">
+      <div class="sns_list_box_bg"  style="display:none;"></div>	
+      <div class="sns_list_box_img" style="display:none;">
+      	<img src=""/>
+      	<i><a href="javascript:void(0)" onclick="hide_big_img()">关闭</a></i>
+      </div> 
+      <div class="sns_main_box">
+        <div class="sns_main_box_left">
+          #if($!userDynamics.size()>0)
+          <!--sns -->
+          #foreach($dynamic in $userDynamics)
+          <div class="sns_main_list">
+            <dl>
+            #if($!otherUser.photo)
+            #set($user_photo="$!imageWebServer/$!otherUser.photo.path/$!otherUser.photo.name")
+            #else 
+            #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+            #end
+              <dt><img src="$!user_photo" /></dt>
+              <dd>
+              	<span class="sns_top"><h3>$!{otherUser.userName}</h3><i>发表日期：$!CommUtil.formatLongDate($!dynamic.addTime)</i></span>
+                <span class="sns_word">$!dynamic.dynamic_content</span>
+                <span class="sns_img">
+                	#foreach($info in $!snsTools.getDynamic_img_info($!dynamic.img_info))	
+                    <strong><a href="javascript:void(0)" onclick="show_big_img('$!{webPath}/$!{info.img}')"><img src="$!imageWebServer/$!info.img" /></a></strong>
+                	#end
+                </span> 
+              </dd>
+            </dl>
+          </div>
+          #end
+          <div class="sns_center_more" id="loading_more">
+          	<a href="javascript:void(0)" onclick="dynamic_more()">加载更多</a>
+          </div>
+          <div class="sns_center_more_loading" id="loading" style="display:none">
+          	<a href="javascript:void(0)">正在加载...</a>
+          </div>
+          <div class="sns_center_more_loading_none" id="loading_none" style="display:none">
+          	<a href="javascript:void(0)">没有更多了</a>
+          </div>
+          #else
+          <div class="sns_nothing"> <span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span> <span class="fr">暂无动态</span> </div>
+          #end
+        </div>
+        <div class="sns_main_box_right">
+          <div class="sns_main_box_right_top"> <span class="this"><a href="javascript:void(0)" onclick="change_snsUser(this,'att')">ta关注的</a></span> <span><a href="javascript:void(0)" onclick="change_snsUser(this,'fan')">关注ta的</a></span> </div>
+          #if($!userAttsList.size()>0)
+          <div class="sns_main_box_right_center" type="att"> #foreach($userAtt in $userAttsList)
+            #if($!userAtt.user_photo)
+            #set($userAtt_photo="$!imageWebServer/$!userAtt.user_photo")
+            #else 
+            #set($userAtt_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+            #end
+            <dl>
+              <dt><a href="$!webPath/sns/other_sns_$!{userAtt.user_id}.htm" target="_blank"><img src="$!userAtt_photo" /></a></dt>
+              <dd>
+                <h3><b><a href="$!webPath/sns/other_sns_$!{userAtt.user_id}.htm" target="_blank">$!userAtt.user_name</a></b></h3>
+                <span><i>粉丝<a href="$!webPath/sns/other_sns_fans.htm?other_id=$!{userAtt.user_id}"  target="_blank">$!snsTools.queryFans("$!{userAtt.user_id}")</a></i><i>关注<a href="$!webPath/sns/other_sns_atts.htm?other_id=$!{userAtt.user_id}"  target="_blank">$!snsTools.queryAtts("$!{userAtt.user_id}")</a></i></span> </dd>
+            </dl>
+            #end </div>
+          <div class="sns_main_box_right_b" type="att">
+            <div class="sns_main_box_right_b_c"><a href="$!webPath/sns/other_sns_atts.htm?other_id=$!{other_id}">关注了<b>$!snsTools.queryAtts("$!{other_id}")</b>人，点击查看全部  >></a></div>
+          </div>
+          #else
+          <div class="sns_main_box_right_center_nothing_att"></div>
+          #end  
+          #if($!userFansList.size()>0)
+          <div class="sns_main_box_right_center" style="display:none" type="fan"> #foreach($userFan in $userFansList)
+            #if($!userFan.user_photo)
+            #set($userFan_photo="$!imageWebServer/$!userFan.user_photo")
+            #else 
+            #set($userFan_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+            #end
+            <dl>
+              <dt><a href="$!webPath/sns/other_sns_$!{userFan.user_id}.htm" target="_blank"><img src="$!userFan_photo" /></a></dt>
+              <dd>
+                <h3><b><a href="$!webPath/sns/other_sns_$!{userFan.user_id}.htm" target="_blank">$!userFan.user_name</a></b></h3>
+                <span><i>粉丝<a href="$!webPath/sns/other_sns_fans.htm?other_id=$!{userFan.user_id}"  target="_blank">$!snsTools.queryFans("$!{userFan.user_id}")</a></i><i>关注<a href="$!webPath/sns/other_sns_atts.htm?other_id=$!{userFan.user_id}"  target="_blank">$!snsTools.queryAtts("$!{userFan.user_id}")</a></i></span> </dd>
+            </dl>
+            #end </div>
+          <div class="sns_main_box_right_b" style="display:none" type="fan">
+            <div class="sns_main_box_right_b_c"><a href="$!webPath/sns/other_sns_fans.htm?other_id=$!{other_id}">共有<b>$!snsTools.queryFans("$!{other_id}")</b>位粉丝，点击查看全部  >></a></div>
+          </div>
+          #else
+          <div class="sns_main_box_right_center_nothing_fan" style="display:none"></div>
+          #end </div>
+      </div>
+    </div>
+    
+    <!--<div class="sns_nothing"> <span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span> <span class="fr">没有您想要的信息！</span> </div>--> 
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

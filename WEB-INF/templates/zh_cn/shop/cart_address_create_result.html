@@ -1,0 +1,26 @@
+#foreach($addr in $addrs)
+  #if($!velocityCount==1)
+    #set($addr_id="$!{addr.id}")
+    #set($area_id="$!{addr.area.id}")
+  #end
+    <script>
+  jQuery(function(){ 
+     jQuery("#addr_id").val("$!addr_id");
+	 //
+	 var addr_id=jQuery(".shopping_address_one:first").attr("addr_id");
+	 var obj=jQuery(".shopping_address_one:first a:last");
+	  addr_default(addr_id,obj);
+  })
+  </script>
+    <div addr_id="$!addr.id" class="shopping_address_one #if($!velocityCount==1)this#end">
+  <ul>
+        <li class="shopping_address_one_top">收货人：$!{addr.trueName}</li>
+        <li class="shopping_address_one_tel">联系电话：$!{addr.mobile}&nbsp;&nbsp;$!{addr.telephone}</li>
+        <li class="shopping_address_one_address">收货地址：$!{addr.area.parent.parent.areaName}$!{addr.area.parent.areaName}$!{addr.area.areaName}</li>
+        <li class="shopping_address_one_address_a">详细地址：$!{addr.area_info}</li>
+        <li class="shopping_address_one_coding">邮编：$!{addr.zip}</li>
+        <li class="shopping_address_one_edit" style="display:none;"><a href="javascript:void(0);" onclick="addr_edit('$!{addr.id}',this)">编辑</a></li>
+        <li class="shopping_address_one_default" style="display:none;"><a href="javascript:void(0);" onclick="addr_default('$!{addr.id}',this)">设为默认地址</a></li>
+      </ul>
+</div>
+#end

@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>商家中心收入提成 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(function(){
+	jQuery(".category_center_list li").click(function(){
+		var id = jQuery(this).attr("id").substr(10);
+		jQuery("#income_dl_"+id).slideToggle();
+		if(jQuery(this).attr("mark")=="false"){
+			jQuery(this).attr("mark","true");
+			jQuery(this).find("i>img").attr("src","$!webPath/resources/style/system/front/wap/images/search_off_bg.png");
+		}else{
+			jQuery(this).attr("mark","false");
+			jQuery(this).find("i>img").attr("src","$!webPath/resources/style/system/front/wap/images/search_on_bg.png");
+		}
+	});
+});<!--end-->
+</script>
+</head>
+
+<body class="index_bg">
+<header>
+  <section>
+  	<span class="head_left">
+    	<input type="button" class="back_btn" value="返回" onClick="window.location.href='$!webPath/wap/seller/income.htm'">
+    </span>
+    <h2>招募二级商城提成</h2>
+  </section>
+</header>
+<div class="category">
+  #if($!objs.size()>0)
+  	<div class="category_center">
+    <div class="category_center_list">
+    #foreach($obj in $objs)
+      <ul>
+        <li id="income_li_$!{obj.id}" mark="false" style="height:auto;#if($!velocityCount!=1) margin-top:-1px; #end ">
+          <div class="category_center_list_left">$!obj.second_mall_name</div>
+          <i><img src="$!webPath/resources/style/system/front/wap/images/search_on_bg.png"></i>
+        </li>
+        <div id="income_dl_$!{obj.id}" class="category_center_list_right" style=" margin-bottom:4px;display:none">
+          <dl class="income_dl">
+            <dd><strong>推荐人：</strong>$!obj.user_name</dd>
+            <dd><strong>开始时间：</strong>$!CommUtil.formatShortDate($!obj.begin_time)</dd>
+            <dd><strong>结束时间：</strong>$!CommUtil.formatShortDate($!obj.end_time)</dd>
+            <dd><strong>金额：</strong>￥$!{obj.sum}</dd>
+            <dd><strong>审核人：</strong>$!obj.oper_user</dd>
+            <dd><strong>操作时间：</strong>$!CommUtil.formatLongDate($!obj.addTime)</dd>
+          </dl>
+        </div>
+      </ul>
+     #end
+     </div>
+  </div>
+  #else
+    <div class="loading">
+        <ul>
+          <li>本月暂无数据</li>
+        </ul>
+    </div>
+  #end
+</div>
+</body>
+</html>

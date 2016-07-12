@@ -1,0 +1,11 @@
+<div class="edit_img_list_intimg_top_c"> #foreach($goods in $goods_objs)
+  #if($!goods.goods_photo)
+  #set($img="$!imageWebServer/$!{goods.goods_photo}_small.$!{goods.goods_photo_ext}")
+  #else
+  #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+  #end
+  #set($goods_url="$!webPath/goods_$!{goods.goods_id}.htm")
+  #if($!config.second_domain_open && $!goods.goods_type==1 && $!goods.goods_store_second_domain!="")
+  #set($goods_url="http://$!{goods.goods_store_second_domain}.$!{domainPath}/goods_$!{goods.goods_id}.htm")
+  #end <span><a item_data="file_goods_$!goods.id" href="javascript:void(0);" item_id="$!goods.id" img_type="goods" img_path="$!img" img_url="$!goods_url"><img src="$!img" /></a></span> #end </div>
+<div class="fenye_circle" target_id="goods_fav_list"> <span> $!{goods_gotoPageAjaxHTML} </span> </div>

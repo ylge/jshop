@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>系统提示 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+function iosFun(cmd,para)
+{ 
+    document.location="objc://"+cmd+":/"+para;  //cmd代表objective-c中的的方法名，parameter1自然就是参数了
+}
+function iosFun(cmd)
+{ 
+    document.location="objc://"+cmd;  //cmd代表objective-c中的的方法名，parameter1自然就是参数了
+}
+</script>
+</head>
+
+<body class="index_bg">
+<div class="main">
+  <div class="mt50" style="height:49px;"></div>
+  <div class="error_page1"> <span class="error_img"><img src="$!webPath/resources/style/system/front/wap/images/dun.png"></span>
+    <p>$!{op_title}！<br/>
+  </div>
+  #if($!url) 
+  <script>
+	  var count=3;
+	  window.setInterval(go,1000);
+	  function go(){
+	    count--;
+		jQuery(".error_page1 strong").text(count);
+	    if(count==0) window.location.href="$!url";
+		
+	  }
+</script> 
+  #else 
+  <script>
+window.setInterval(go,1000);
+var count=2;
+	  function go(){
+		  count--;
+		  if(count==0){
+		  window.jsInterface.finish_activity();
+		  iosFun('close');
+		  }}  
+</script> 
+  #end </div>
+</body>
+</html>

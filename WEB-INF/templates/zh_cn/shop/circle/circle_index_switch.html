@@ -1,0 +1,20 @@
+#foreach($obj in $objs)
+<div class="circle_main_center_right_b_one_l">
+                    <dl>
+                     #set($img=$!circleViewTools.genercircleImage("$!obj.id"))
+                            <dt><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank"><img src="$!imageWebServer/$!img.src" /></a></dt>
+                            <dd class="headline"><a href="$!webPath/circle/detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></dd>
+                            <dd class="headpel">
+                             <span>
+                                <em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_host.png" /></em>
+                                <i>$!obj.attention_count</i>
+                             </span>
+                             <span>
+                                <em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_rp.png" /></em>
+                                <i>$!obj.invitation_count</i>
+                             </span>
+                            </dd>
+                            <dd class="headworld">$!obj.content </dd>
+                        </dl>
+                    </div>
+#end

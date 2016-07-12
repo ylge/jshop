@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  tipStyle();
+//设置推荐的默认装态
+	function recommendState(){
+	var state = jQuery("#recommend").val();
+	if(state=="true"){
+		jQuery("#recommend").val("false");
+		jQuery("#stateOff").show();
+		jQuery("#stateOn").hide();
+	}else{
+		jQuery("#recommend").val("true");
+		jQuery("#stateOff").hide();
+		jQuery("#stateOn").show();
+	}
+}
+});
+
+</script>
+<body>
+<div class="cont">
+  <h1 class="seth">手机品牌管理</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="javascript:void(0);" class="this"><b>手机端品牌</b></a></li>
+    </ul>
+  </div>
+  <form name="ListForm" id="ListForm" action="" method="post">
+    <div class="search">
+      <ul>
+        <li> <span>品牌名称</span> <span class="size150">
+          <input name="name" type="text" id="name" value="$!name" />
+          </span> <span>类别</span> <span class="size150">
+          <input name="category" type="text" id="category" value="$!category"/>
+          </span> <span>
+          <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+          </span> </li>
+      </ul>
+    </div>
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="4%">&nbsp;</th>
+          <th width="20%"><span class="form_btna">品牌名称</span></th>
+          <th width="30%"><span class="form_btna">类别</span></th>
+          <th width="20%"><span class="form_btna">品牌图片标识</span></th>
+          <th align="center">操作</th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+          <td align="center"><input name="ids" id="ids" type="checkbox" value="$!obj.id" /></td>
+          <td align="center">$!obj.name</td>
+          <td align="center"><span> $!obj.category.name </span></td>
+          <td align="center"><img src="$!imageWebServer/$!obj.brandLogo.path/$!obj.brandLogo.name" width="88px" height="44px" /></td>
+          <td class="hui oprate_con" align="center">
+          #if($!obj.mobile_recommend==0)
+          <a href="$!webPath/admin/mobile_brand_switch.htm?mulitId=$!obj.id&currentPage=$!currentPage&type=1" title="推荐后在手机端首页推荐位置显示" class="blue">手机端推荐</a>
+          #else
+          <a href="$!webPath/admin/mobile_brand_switch.htm?mulitId=$!obj.id&currentPage=$!currentPage&type=0" class="blue">取消推荐</a>
+          #end
+          </td>
+        </tr>
+        #end
+      </table>
+      <div class="operate_bar">
+        <div class="fenye">
+          <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+           	<input name="mulitId" type="hidden" id="mulitId" />
+          $!gotoPageFormHTML </div>
+          <div class="oper_sp">
+    	<span class="oper_check"><label><input type="checkbox" name="all" id="all" value="" onclick="selectAll(this)"/>全部</label></span>
+        <span class="oper_del"><input name="input" type="button" value="推荐" style="cursor:pointer;" onclick="cmd('$!webPath/admin/mobile_brand_switch.htm?type=1&currentPage=$!currentPage')"/></span>
+        <span class="oper_del"><input name="input" type="button" value="取消" style="cursor:pointer;" onclick="cmd('$!webPath/admin/mobile_brand_switch.htm?type=0&currentPage=$!currentPage')"/></span>
+    </div>
+      </div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

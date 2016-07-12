@@ -1,0 +1,593 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.sina_login)
+$!config.sina_domain_code
+#end
+#if($!config.qq_login)
+$!config.qq_domain_code
+#end
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+#if($!config.sina_login)
+$!config.sina_domain_code
+#end
+#if($!config.qq_login)
+$!config.qq_domain_code
+#end
+<meta property="wb:webmaster" content="3c0d2bedd819ab1c" />
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/index.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.lazyload.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.iskyshop.validate.js" type="text/javascript"></script>
+<script>
+jQuery(document).ready(function(){							
+	//鼠标经过左侧分类
+jQuery(".sale_two_img img").lazyload({effect:"fadeIn",width:170,height:170});		
+  jQuery(".left_menu_dl").mouseover(function(){	
+	var child_count = jQuery(this).attr("child_count");
+	if(child_count>0){
+	 var id=jQuery(this).attr("id");
+	  jQuery("#dts_"+id).addClass("left_menu_this").removeClass("left_menu_dt");	
+      jQuery("#child_"+id).show();			
+	}
+	var gc_id=jQuery(this).attr("id");
+	var gc_color=jQuery(this).attr("gc_color");
+	jQuery("#dts_"+gc_id).attr("style","border:1px solid "+gc_color+"; border-left:3px solid "+gc_color+";border-right:none");
+	jQuery("#left_menu_con_"+gc_id).attr("style","border:1px solid "+gc_color+"; border-left:1px solid "+gc_color+";").find(".menu_con_right_top").css("background-color",gc_color);				
+	//设置div高度为每行div中最高的高度
+	var begin=0;
+	var end=2;
+	jQuery("#child_"+gc_id).find(".left_menu_con_center_left").each(function(){	
+	 var max_height=0;
+		var index =jQuery(this).index();
+		var	height = jQuery(this).height();
+		if(index>end||index<begin){
+			begin=begin+3;
+			end=end+3;
+		}
+	    if(height>max_height){
+		    max_height = height;
+	    }			   
+		   for(var i=begin;i<=end;i++){
+			   var temp_height = jQuery("#child_"+gc_id).find(".left_menu_con_center_left").eq(i).height();
+				if(temp_height>max_height){
+					max_height = temp_height;
+				   } 
+				 jQuery("#child_"+gc_id).find(".left_menu_con_center_left").eq(i).height(max_height);
+			}	
+	});
+
+	var top=jQuery("#child_"+gc_id).offset().top;
+	var scroll_top = jQuery(document).scrollTop();
+	var height=jQuery("#left_menu_con_"+gc_id).height();
+	var all_h=top-scroll_top+height;
+	var doc_h=jQuery(window).height();
+	var margin_top=doc_h-all_h;
+	if(margin_top<=5){
+		margin_top=margin_top-20;
+	   jQuery("#left_menu_con_"+gc_id).css('margin-top',margin_top+'px');
+	}else{
+	   jQuery("#left_menu_con_"+gc_id).css('margin-top','0px');
+	}
+  }).mouseleave(function(){
+	 jQuery("dt[id^=dts_]").removeAttr("style");
+	jQuery("div[id^=left_menu_con_]").removeAttr("style"); 
+	 var child_count = jQuery(this).attr("child_count");
+	if(child_count>0){ 
+     var id=jQuery(this).attr("id");
+	  jQuery("#dts_"+id).removeClass("left_menu_this").addClass("left_menu_dt");	
+      jQuery("#child_"+id).hide();
+	}
+  });
+  //鼠标经过推荐商品行	
+  jQuery("#index_sale_tab ul li").mouseover(function(){								 
+	jQuery(this).siblings().removeClass("this");
+	jQuery(this).addClass("this");
+	var i = jQuery(this).index();
+	jQuery("#index_sale_tab").siblings().hide();
+	jQuery("#index_sale_tab").siblings().eq(i).show();
+	jQuery("#sale_change").attr("mark",jQuery(this).attr("id").replace("goodscase",""));	
+  });
+  //鼠标经过楼层标题
+  jQuery(".storey_tab ul li").mouseover(function(){								 
+	jQuery(this).siblings().removeClass("this");
+	jQuery(this).addClass("this");
+	var i = jQuery(this).index();
+	jQuery(this).parent().parent().siblings().not(".hot_sell").hide();
+	jQuery(this).parent().parent().siblings().eq(i).show();
+	
+  });
+  var head_h=jQuery("#head_h").height();
+  jQuery("#head_unbomb").height(head_h);
+  jQuery(window).scroll(function(){
+	  var top = jQuery(document).scrollTop();
+	  //顶部搜索框跟随
+	  if(top==0){
+		  jQuery("#top").attr("style","");
+	  }else{
+		  jQuery("#top").attr("style","position:fixed;top:0px");
+	  }
+	  if(top>head_h){
+		   jQuery("#head_h").addClass("head_fixd");
+	  }else{
+		   jQuery("#head_h").removeClass("head_fixd");
+	  }
+	  //楼层导航跟随
+	  jQuery("li[floor_id^=floor_] b").css("display","block");
+	  jQuery("div[id^=floor_]").each(function(){
+	     var floor_top=jQuery(this).offset().top-top;
+		 if(floor_top<=580&&floor_top>=0){
+		  var floor_id=jQuery(this).attr("id");
+		   jQuery("li[floor_id="+floor_id+"] b").css("display","none");
+		 }
+	  });
+  });	
+  //右上角公告切换
+  	jQuery(".top_mr_tab li").mouseover(function(){
+		jQuery(this).siblings().removeClass("this");
+		jQuery(this).addClass("this");
+		var i = jQuery(this).index();
+		jQuery(".top_mr_box").hide();		
+		jQuery(".top_mr_box").eq(i).show();										
+	});
+  
+  //用户登录、商家入驻tab页切换
+  jQuery("#top_mid_login_tab>li").css("cursor","pointer").mouseover(function(){
+      var id=jQuery(this).attr("id");
+	  jQuery("#top_mid_login_tab>li").removeClass("this");
+	  jQuery(this).addClass("this");
+	  if(id=="top_mid_login_tab_user"){
+	     jQuery("#top_mid_login_tab_seller_info").hide();
+		 jQuery("#top_mid_login_tab_user_info").show();
+	  }
+	  if(id=="top_mid_login_tab_seller"){
+	     jQuery("#top_mid_login_tab_user_info").hide();
+		 jQuery("#top_mid_login_tab_seller_info").show();
+	  }
+  });
+ //
+});
+</script>
+</head>
+<body>
+<!--点击收藏-->
+<script type="text/javascript">
+var brow_type="";
+jQuery(document).ready(function(){
+  jQuery(".top_pull").mouseover(function(){
+	jQuery(this).find("div").show();
+	jQuery(this).find("em").addClass("em_this");
+	jQuery(this).find("s").addClass("this");
+  	}).mouseleave(function(){
+    jQuery(this).find("div").hide();
+	jQuery(this).find("em").removeClass("em_this");
+	jQuery(this).find("s").removeClass("this");
+  });
+  var brow=jQuery.browser;
+   var bInfo="";
+   if(brow.msie) {brow_type=1}
+   if(brow.mozilla) {brow_type=2}
+});
+var browserEvent = function (obj, url, title) {
+	if(brow_type==2){
+				var e = window.event || arguments.callee.caller.arguments[0];
+			  var B = {
+				IE : /MSIE/.test(window.navigator.userAgent) && !window.opera
+				, FF : /Firefox/.test(window.navigator.userAgent)
+				, OP : !!window.opera
+			};
+		
+			obj.onmousedown = null;
+			if (B.IE) {
+				obj.attachEvent("onmouseup", function () {
+					try {
+						window.external.AddFavorite(url, title);
+						window.event.returnValue = false;
+					} catch (exp) {
+					
+						}
+				});
+			} else {
+				if (B.FF || obj.nodeName.toLowerCase() == "a") {
+					obj.setAttribute("rel", "sidebar"), obj.title = title, obj.href = url;
+					 } else if (B.OP) {
+					var a = document.createElement("a");
+					a.rel = "sidebar", a.title = title, a.href = url;
+					obj.parentNode.insertBefore(a, obj);
+					a.appendChild(obj);
+					a = null;
+				}
+			}
+		}else{
+			try {
+				   window.external.addFavorite(url, title);
+				 }
+				catch (e) {
+				   try {
+					window.sidebar.addPanel(title, url, "");
+				  }
+				   catch (e) { 
+					 alert("抱歉，您所使用的浏览器无法完成此操作。\n\n加入收藏失败，请使用Ctrl+D进行添加");
+				   }
+						}
+			
+			} 
+};
+</script>
+<!--[if IE 6]>
+<div class="top_tipe">
+	<div class="top_tipe_center">
+    	<em><img src="$!webPath/resources/style/system/front/default/images/ie6_warning.png" style="height:16px; width:16px;"/></em><b>温馨提示：您当前使用的浏览器版本过低，兼容性和安全性较差，建议您升级：</b><em><img src="$!webPath/resources/style/system/front/default/images/ie_b.png"/></em><b><a href="http://windows.microsoft.com/zh-cn/internet-explorer/download-ie?tp=1.0.0.0.0.KdMt0Yu">IE8浏览器</a>或</b><em><img src="$!webPath/resources/style/system/front/default/images/google_b.png" /></em><b><a href="http://www.google.cn/intl/zh-CN/chrome/">谷歌浏览器</a></b>
+        <span><a href="javascript:void(0);" onclick="javascript:jQuery('.top_tipe').hide();">x</a></span>
+    </div>
+</div>
+<![endif]-->
+<div class="top" id="top">
+  <div class="top_page">
+    <div class="top_right">#if($!user)<span>$!CommUtil.substring("$!{user.userName}",12)您好,欢迎来到$!CommUtil.substring("$!{config.websiteName}",30)！ #if($!CommUtil.indexOf("$!user.userRole","ADMIN")>=0)[<a href="$!webPath/admin/index.htm">管理后台</a>] #end[<a href="$!webPath/iskyshop_logout.htm">退出商城</a>]</span> #else<span> 您好，欢迎来到$!{config.websiteName}！[<a href="$!webPath/user/login.htm">登录商城</a>][<a href="$!webPath/register.htm">免费注册</a>]</span>#end <b>|</b> <span class="top_pull"> <a href="$!webPath/buyer/order.htm">我的订单</a> </span> <b>|</b> #if($!config.weixin_store==1&&$!config.weixin_qr_img)
+      <!--微信商城-->
+      <span class="top_pull"> <em class="">
+      <h3>微信商城</h3>
+      <s class="this"></s></em>
+      <div class="top_this">
+        <div class="top_this_box_wx" style="display:none;">
+          <h3>扫一扫关注公众账号</h3>
+          <div class="top_this_code"><img src="$!imageWebServer/$!config.weixin_qr_img.path/$!config.weixin_qr_img.name" /></div>
+        </div>
+      </div>
+      </span> <b>|</b> #end
+      #if($!config.app_download==1) <span class="top_pull">
+      <!--加em_this和top_this-->
+      <em class=""><i>手机商城</i><s class="this"></s></em>
+      <div class="top_this" style="display:none;">
+        <div class="top_this_box">
+          <div class="top_this_code"><img src="$!imageWebServer/$!{config.uploadFilePath}/app/app_dowload.png" width="77" height="77" /></div>
+          <i class="top_this_i"><a href="$!config.ios_download" target="_blank"><img src="$!webPath/resources/style/system/front/default/images/app-store.png" width="111" height="37" /></a></i> <i class="top_this_i"><a href="$!config.android_download" target="_blank"><img src="$!webPath/resources/style/system/front/default/images/android.png" width="111" height="37" /></a></i> </div>
+      </div>
+      </span> <b>|</b> #end <span class="top_pull"> <em class="">客户服务<s  class="this"></s></em>
+      <div class="top_this" style="display:none;">
+        <ul class="top_pull_con_style2">
+          <li><a href="$!webPath/articlelist_help.htm" target="_blank">帮助中心</a></li>
+          <li><a href="$!webPath/doc_service.htm" target="_blank">售后服务</a></li>
+          <li><a href="$!webPath/doc_online.htm" target="_blank">在线客服</a></li>
+          <li><a href="$!webPath/doc_complaint.htm" target="_blank">投诉中心</a></li>
+          <li><a href="$!webPath/doc_email.htm" target="_blank">客服邮箱</a></li>
+          <li><a href="$!webPath/seller_apply.htm" target="_blank">商家入驻</a></li>
+          <li><a href="$!webPath/delivery_apply0.htm" target="_blank">自提服务</a></li>
+        </ul>
+      </div>
+      </span> <b>|</b> #set($navs=$!navTools.queryNav(-1,-1))
+      #if($!navs.size()>0) <span class="top_pull"> <em class="">网站导航<s class=""></s></em>
+      <div class="top_this" style="display:none">
+        <div class="website">
+          <ul>
+            #foreach($nav in $navs)
+            <li><a href="$!nav.url"  #if($!{nav.new_win}==1)target="_blank"#end  rel="nofollow">$!nav.title</a></li>
+            #end
+          </ul>
+        </div>
+      </div>
+      </span> #end </div>
+    <span class="top_collect"><a href="javascript:void(0);" onclick="browserEvent(this, '$!webPath','$!{config.websiteName}')">收藏本站</a></span> 
+    #if(!$!user) <b class="top_b">|</b> <span class="top_shop"><a href="$!webPath/seller/login.htm" target="_blank">商家登录</a></span> 
+<!--     #else #if("$!user.userRole"=="SELLER") <b class="top_b">|</b> <span class="top_shop"><a href="$!webPath/seller/index.htm" target="_blank">商家管理</a></span> #end -->
+    #end </div>
+</div>
+<div class="top_right_banner">
+  <script src="$!webPath/advert_invoke.htm?id=10"></script>
+</div>
+<div id="head_unbomb"> $!httpInclude.include("/head.htm") </div>
+$!httpInclude.include("/nav.htm")
+<script src="$!webPath/advert_invoke.htm?id=1"></script>
+<div class="main">
+  <div class="top_index">
+    <div class="top_mid">
+      <div class="top_mid">
+        <div class="banner_nothing"></div>
+        <div class="bottom_slide" >
+          <script src="$!webPath/advert_invoke.htm?id=7"></script>
+        </div>
+      </div>
+    </div>
+    <div class="top_mid_right">
+      <div class="top_mr_news">
+        <ul class="top_mr_tab">
+          <li class="this">公告</li>
+          <li>规则</li>
+          <li>安全</li>
+          <li>指南</li>
+        </ul>
+        #foreach($param in ${articles.keySet()})
+        #if($!velocityCount==1)
+        #set($display="block") 
+        #else 
+        #set($display="none") 
+        #end
+        <ul class="top_mr_box"  style="display:$!display">
+          #foreach($article in ${articles.get($param)})
+          #if($!article.url!="")
+          #set($url="$!article.url")
+          #else
+          #set($url="$!webPath/article_$!{article.id}.htm")
+          #end
+          <li><b><a href="$!webPath/article_list_$!{article.articleClass.id}.htm">[$!article.articleClass.className]</a></b><a href="$!url" target="_blank">$!CommUtil.substring("$!article.title",26)</a></li>
+          #end
+        </ul>
+        #end </div>
+      <div class="top_mid_login">
+        <ul id="top_mid_login_tab">
+          <li class="this" id="top_mid_login_tab_user" style="border-left:none;">马上登录</li>
+          <li id="top_mid_login_tab_seller">招商入驻</li>
+        </ul>
+        #if(!$!user)
+        <div class="top_mid_login_dl" id="top_mid_login_tab_user_info">
+          <div class="login_dl_one_left"><img src="$!webPath/resources/style/system/front/default/images/tx.png" width="50" height="50" /></div>
+          <div class="login_dl_one_right">
+            <div class="login_dl"><a href="$!webPath/user/login.htm">登录</a></div>
+            <div class="login_zx"><a href="$!webPath/register.htm">注册</a></div>
+          </div>
+        </div>
+        #else
+        #if($!user.photo)
+        #set($img="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+        #else 
+        #set($img="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+        #end
+        <div class="login_after" id="top_mid_login_tab_user_info">
+          <div class="login_dl_one_left"><img src="$!img" width="50" height="50" /></div>
+          <div class="login_dl_one_right1">
+            <div class="login_icenter"><a href="$!webPath/buyer/index.htm">欢迎您! $!{user.userName} </a></div>
+            <div class="login_review">
+              <dl>
+                <dt>¥#if($!{user.availableBalance})$!{user.availableBalance} #else 0 #end</dt>
+                <dd>预存款</dd>
+              </dl>
+            </div>
+            <div class="login_received">
+              <dl>
+                <dt>$!{user.integral}</dt>
+                <dd>积分</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+        #end
+        <div class="top_mid_login_sh"  style="display:none;" id="top_mid_login_tab_seller_info">
+          <div class="top_mid_login_sh_left"><a href="$!webPath/seller_apply.htm">申请商家入驻</a></div>
+          <div class="top_mid_login_sh_bottom"><a href="$!webPath/seller/index.htm">登录商家管理中心</a></div>
+        </div>
+      </div>
+      <script>
+	  var arr=["9.80-11.00","19.60-21.00","29.40-31.00","49.00-50.00","98.0-100.0","196.0-200.0","294.0-300.0","490.0-500.0"];
+	  jQuery(function(){ 
+	     jQuery("#recharge_form").validate({
+           rules:{
+	          mobile:{required :true,isMobile:true}
+	       },
+	       messages:{
+	          mobile:{required:"请输入手机号",isMobile:"手机号格式不正确"}
+	       }
+         });
+		 jQuery("#rc_amount").change(function(){
+			 var mobile=jQuery("#mobile").val();
+		     var rc_amount=jQuery("#rc_amount").val();
+		     var mobile_test = /^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+		     if(mobile.length==11&&mobile_test.test(mobile)){
+		          jQuery.post("$!webPath/recharge_query.htm",{"mobile":mobile,"rc_amount":rc_amount},function(data){
+					if(data.retcode=="1"){																						  
+			          jQuery("#recharge_query_result").html("").html(data.inprice+"元");
+					  jQuery("#recharge_mobile_result").html("").html(data.game_area);
+					}else{
+				      jQuery("#recharge_query_result").html("").html("系统错误");
+					  jQuery("#recharge_mobile_result").html("").html("");
+					  jQuery("#mobile").val("");
+					}
+			      },"json");
+		     }else{
+			 	 var index=jQuery("#rc_amount").prop('selectedIndex');
+			     jQuery("#recharge_query_result").text(arr[index]);
+			 }
+		 });
+		 
+		 jQuery("#mobile").keyup(function(){
+		   var mobile=jQuery("#mobile").val();
+		   var rc_amount=jQuery("#rc_amount").val();
+		   var mobile_test = /^(((13[0-9]{1})|(14[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+		   if(mobile.length==11&&mobile_test.test(mobile)){
+		       jQuery.post("$!webPath/recharge_query.htm",{"mobile":mobile,"rc_amount":rc_amount},function(data){
+			       if(data.retcode=="1"){																						  
+			          jQuery("#recharge_query_result").html("").html(data.inprice+"元");
+					  jQuery("#recharge_mobile_result").html("").html(data.game_area);
+					}else{
+				      jQuery("#recharge_query_result").html("").html("系统错误");
+					  jQuery("#recharge_mobile_result").html("").html("");
+					  jQuery("#mobile").val("");
+					}
+				},"json");
+		   }
+		 });
+         jQuery("#rc_amount").get(0).selectedIndex=0;//页面初始化时设置索引为0
+		 //
+		 jQuery(".top_mid_nav div").css("cursor","pointer").mouseover(function(){
+		    var target_tab_id=jQuery(this).attr("target_tab_id");
+			jQuery(".top_mid_nav div").removeClass("this");
+			jQuery(this).addClass("this");
+			jQuery("#recharge_tab").hide();
+			jQuery("#group_tab").hide();
+			jQuery("#"+target_tab_id).show();
+		 });
+		 //
+		 jQuery(".group_tab").slide({mainCell:".top_regiment ul",autoPlay:true,interTime:3000,prevCell:".top_mid_regiment_img_left",nextCell:".top_mid_regiment_img_right"});
+		 //
+		 jQuery(".top_regiment").mouseenter(function(){
+		    jQuery(".top_mid_regiment_img_left").show();
+			jQuery(".top_mid_regiment_img_right").show();
+		 }).mouseleave(function(){
+	        jQuery(".top_mid_regiment_img_left").hide();
+			jQuery(".top_mid_regiment_img_right").hide();
+		 });
+	  })
+	  </script>
+      <form action="$!webPath/recharge.htm" method="post" id="recharge_form">
+        <div class="top_mid_phone">
+          <div class="top_mid_nav">
+            <div class="top_mid_nav_phone this" target_tab_id="recharge_tab">充值</div>
+            #if($!group_goods_list.size()>0)
+            <div class="top_mid_nav_phone" target_tab_id="group_tab">团购</div>
+            #end </div>
+          <div class="top_mid_phone_center" id="recharge_tab">
+            <ul class="top_mid_phone_center_t">
+              <li><span class="phone_sp_left">手机号：</span><span class="phone_sp_right">
+                <input name="mobile" type="text" class="phone_txt" id="mobile" autocomplete="off" />
+                <b id="recharge_mobile_result">支持移动、联通、电信</b> </span></li>
+              <li><span class="phone_sp_left">面值：</span><span class="phone_sp_right">
+                <select name="rc_amount" id="rc_amount">
+                  <option value="10" selected="selected">10元</option>
+                  <option value="20">20元</option>
+                  <option value="30">30元</option>
+                  <option value="50">50元</option>
+                  <option value="100">100元</option>
+                  <option value="200">200元</option>
+                  <option value="300">300元</option>
+                  <option value="500">500元</option>
+                </select>
+                <i id="recharge_query_result">9.80-11.00</i></span></li>
+              <li><span class="phone_sp_left"></span><span class="phone_sp_right">
+                <input name="" type="submit"  class="phone_btn" value="点击充值"/>
+                </span></li>
+            </ul>
+          </div>
+          #if($!group_goods_list.size()>0)
+          <div class="group_tab">
+            <div class="top_regiment" id="group_tab" style="display:none;">
+              <ul class="top_mid_regiment">
+                #foreach($group_goods in $group_goods_list)
+                <li> <span class="top_mid_regiment_img"><a target="_blank" href="$!webPath/group/view_goods_$!{group_goods.id}.htm"><img src="$!imageWebServer/$!group_goods.gg_img.path/$!group_goods.gg_img.name" /></a></span>
+                  <p class="top_mid_regiment_img_bottom"> <span class="top_mid_regiment_img_bottom_left">团购价：<strong>¥$!{group_goods.gg_price}</strong></span> <span class="top_mid_regiment_img_bottom_right"><a target="_blank" href="$!webPath/group/view_goods_$!{group_goods.id}.htm"><img src="$!webPath/resources/style/system/front/default/images/ct.png" /></a></span> </p>
+                </li>
+                #end
+              </ul>
+              <div class="top_mid_regiment_img_left" style="display:none;"><a href="javascript:void(0);"></a></div>
+              <div class="top_mid_regiment_img_right" style="display:none;"><a href="javascript:void(0);"></a></div>
+            </div>
+          </div>
+          #end </div>
+      </form>
+    </div>
+  </div>
+  <script>
+  var goods_random=1;//随机次数
+  function change_case_goods(){
+	var caseid = jQuery("#sale_change").attr("mark");
+	goods_random=parseInt(jQuery(".index_sale_tab li[class='this']").attr("goods_random"));
+   jQuery.ajax({type:'POST',url:'$!webPath/switch_case_goods.htm',data:{"goods_random":goods_random,"caseid":caseid},
+			  beforeSend:function(){
+				     jQuery("#index_sale_con_"+caseid).empty();
+					 jQuery("#index_sale_box_"+caseid).html("<div style='width:100%;height:301px;text-align:center;'><img src='$!webPath/resources/style/common/images/loader.gif' style='margin-top:145px;' /></div>");
+				  },
+			  success:function(html){
+	                      jQuery("#index_sale_box_"+caseid).html(html);
+	                      goods_random++;						  
+						  jQuery(".index_sale_tab li[class='this']").attr("goods_random",goods_random);
+					  }
+			 });
+}
+  </script>
+  <div class="index_center_box">
+    <div class="index_sale"> #set($goodscases=$!goodsCaseViewTools.queryGoodsCase("index_top"))
+      #if($!goodscases.size()>0)
+      <div class="index_sale_tab" id="index_sale_tab"> <a href="javascript:void(0);" class="sale_change" mark="$!goodscases.get(0).id" id="sale_change" onclick="change_case_goods();">换一组</a>
+        <ul>
+          #set($first=1)
+          #foreach($obj in $goodscases)
+          <li #if($!first==1) class="this" #set($first=0) #end id="goodscase$!obj.id"  goods_random="1">$!obj.case_name<s></s></li>
+          #end
+        </ul>
+      </div>
+      #set($first=1)
+      #foreach($obj in $goodscases)
+      <div class="index_sale_box" #if($!first==1) #set($first=0) #else style="display:none" #end id="index_sale_box_$!obj.id"> #set($case_list=$!goodsCaseViewTools.queryCaseGoods($obj.case_content))
+        <div class="index_sale_con" id="index_sale_con_$!obj.id">#foreach($!casegoods in $case_list)
+          <ul class="index_sale_two">
+            #if($!casegoods.goods_main_photo)
+            #set($img="$!imageWebServer/$!{casegoods.goods_main_photo.path}/$!{casegoods.goods_main_photo.name}_middle.$!{casegoods.goods_main_photo.ext}")
+            #else
+            #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+            #end
+            #set($goods_url="$!webPath/goods_$!{casegoods.id}_gcase.htm")
+            #if($!config.second_domain_open && $!casegoods.goods_type==1 && $!casegoods.goods_store.store_second_domain!="")
+            #set($goods_url="http://$!{casegoods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{casegoods.id}_gcase.htm")
+            #end
+            <li class="sale_two_img"> <a href="$!goods_url" target="_blank"> <span class="img_cspan">
+              <p><img original="$!img" onerror="this.src='$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}';" src="$!webPath/resources/style/common/images/loader.gif" width="28" height="28" /></p>
+              </span></a> </li>
+            <li class="sale_two_name"><a href="$!goods_url" target="_blank">$!casegoods.goods_name</a></li>
+            <li class="sale_two_price">售价：<strong>¥$!casegoods.goods_current_price</strong></li>
+          </ul>
+          #end </div>
+      </div>
+      #end
+      #end </div>
+    <div class="index_brand_right">
+      <div class="brand">
+        <h3><span><a href="$!webPath/brand/index.htm" target="_blank">更多</a></span>推荐品牌</h3>
+        <ul>
+          #foreach($gb in $!goodsBrands)
+          #set($gb_url="$!webPath/brand_goods_$!{gb.id}.htm")
+          <li>#if($!{gb.brandLogo})<img src="$!imageWebServer/$!{gb.brandLogo.path}/$!{gb.brandLogo.name}" width="142" height="66" /><a href="$!gb_url" target="_blank">$!{gb.name}</a>#end</li>
+          #end
+        </ul>
+      </div>
+      <div class="brand_bottom_adv">
+        <script src="$!webPath/advert_invoke.htm?id=8"></script>
+      </div>
+    </div>
+  </div>
+  $!httpInclude.include("/floor.htm")
+  #if($!img_partners.size()>0 ||$!$text_partners.size()>0)
+  <div class="friendlink">
+    <h1>友情链接</h1>
+    <ul class="linkimg">
+      #foreach($info in $img_partners)
+      <li> <a href="$!info.url" target="_blank"><img src="$!imageWebServer/$!info.image.path/$!info.image.name" width="92" height="35" /></a></li>
+      #end
+    </ul>
+    <div class="linka">#foreach($info in $text_partners)<a href="$!info.url" target="_blank">$!info.title</a>#end </div>
+  </div>
+  #end
+  <div class="shopping"> #foreach($ac in $acs)
+    <div class="shopone">
+      <h3>$!ac.className</h3>
+      <ul>
+        #foreach($article in $ac.articles)
+        #if($!article.url!="")
+        #set($url="$!article.url")
+        #else
+        #set($url="$!webPath/article_$!{article.id}.htm")
+        #end
+        #if($!article.display==true)
+        <li><a  href="$!url" target="_blank">$!CommUtil.substring("$!article.title",12)</a></li>
+        #end
+        #end
+      </ul>
+    </div>
+    #end </div>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

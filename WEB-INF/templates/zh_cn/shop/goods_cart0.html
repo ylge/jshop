@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>我的购物车 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){			
+ //添加到购物车
+   jQuery("a[id^=goods_cart_]").live("click",function(e){
+	var obj = jQuery(this);												  
+	  var goods_id=jQuery(this).attr("goods_id");
+	  var type=jQuery(this).attr("type");
+	  var goods_type=jQuery(this).attr("goods_type");
+	  var user_id=jQuery(this).attr("user_id");
+	  var buy=true;
+	  if(goods_type=="0"){
+	    if("$!user.userRole"=="ADMIN"){
+			buy=false;
+	    }
+	  }
+	  if(goods_type=="1"){
+	    if("$!user.id"==user_id){
+		   buy=false;
+		}
+	  }
+	  if(!buy){
+	     showDialog("msg_info","","不可以购买自己的商品！",2,"warning",3,'');
+	  }else{
+	     jQuery.post("$!current_webPath/add_goods_cart.htm",{"id":goods_id,"count":1,"price":"","gsp":""},
+				function(data){
+					var change_count=function(){
+						 if(data.code!=-1){
+						var count;
+									if(data.count==0){
+									count=1;
+									}else{
+										count=data.count;
+										}
+									 jQuery("b[id=cart_goods_count_top]").html(count);
+									}
+						 jQuery("#float_div").stop();		
+						 jQuery("#float_div").remove();
+					   };
+					  if(data.code==-3){
+						   showDialog("error","","商品库存不足，添加失败！",2,"error",3,'');
+					  }else{
+						if(!jQuery("#float_div").is(':animated')){
+						   var tar_x= jQuery("b[id=cart_goods_count_top]").offset().left;
+						   var tar_y= jQuery("b[id=cart_goods_count_top]").offset().top;
+						   var src = jQuery("img[id="+type+"_"+goods_id+"]").attr("src");
+						   var x=jQuery(obj).offset().left;
+						   var y=jQuery(obj).offset().top;
+						   var html = "<div id='float_div' style='border:1px solid #ececec;left:"+x+"px;top:"+y+"px;position:absolute;padding:2px; background:#fff;z-index:9999'><img width='15px' height='15px' src='"+src+"' style=''/></div>";
+							jQuery("body").append(html);
+							jQuery("#float_div").animate({'left':tar_x,'top':tar_y,'width':15,'height':15},1000,'',change_count);
+						 }
+					  }
+				 },"json");
+	  }
+   });			
+			
+   //F码购买
+   jQuery("a[id^=f_goods_cart_]").live("click",function(){
+	  var goods_id=jQuery(this).attr("goods_id");
+	  var user_id=jQuery(this).attr("user_id");
+	  var goods_type=parseInt(jQuery(this).attr("goods_type"));
+	  if("$!{user.id}"==user_id){
+         showDialog("msg_info","","不能购买自己的商品！",2,"warning",3,'');
+	  }else{
+          window.location.href="$!webPath/f_code_cart.htm?goods_id="+goods_id;
+	  }								  
+   })
+     
+});////
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="shopping_cart">
+    <div class="shopping_ok"><span>商品已经成功加入购物车</span><a href="$!{return_url}" class="go_on_buy">继续购物</a><a href="$!webPath/goods_cart1.htm" class="car_total">去购物车结算</a></div>
+  </div>
+ <div class="shopping_other">
+    <h3><strong>购买该商品的用户还购买了</strong></h3>
+    <div class="shopping_other_list">
+      <div class="shopping_other_list_box"> 
+      #foreach($goods in $class_goods)
+        #if($!goods.goods_main_photo)
+        #set($small_img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+        #else
+        #set($small_img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+        #end
+        
+           #set($goods_url="$!webPath/goods_$!{goods.id}.htm")
+            #if($!config.second_domain_open && $!goods.goods_type==1 && $!goods.goods_store.store_second_domain!="")
+            #set($goods_url="http://$!{goods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{goods.id}.htm")
+            #end 
+        
+        <dl>
+          <dt><a href="$!goods_url" target="_blank"><span class="img_cspan">
+            <p><img src="$!{small_img}" width="100" height="100" id="class_$!{goods.id}"/></p>
+            </span></a></dt>
+          <dd>
+            <h4><a href="$!goods_url" target="_blank">$!goods.goods_name</a></h4>
+            <strong>¥$!{goods.goods_current_price}</strong>
+            
+             <em class="shopping_other_list_center_box_buy">
+              #if($!user)
+           		 #if($!goods.f_sale_type==1)
+            	<a href="javascript:void(0);" goods_id="$!goods.id" goods_type="$!goods.goods_type" user_id="$!goods.goods_store.user.id" type="class" id="f_goods_cart_$!{goods.id}">F码购买</a></a>
+                 #else
+                 <a href="javascript:void(0);" goods_id="$!goods.id" goods_type="$!goods.goods_type" user_id="$!goods.goods_store.user.id" type="class" id="goods_cart_$!{goods.id}">加入购物车</a>
+                 #end
+             #else
+            	 #if($!goods.f_sale_type==1)
+           		 <a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login">F码购买</a>
+                 #else
+                 <a href="javascript:void(0);" goods_id="$!goods.id" goods_type="$!goods.goods_type" user_id="$!goods.goods_store.user.id" type="class" id="goods_cart_$!{goods.id}">加入购物车</a>
+                 #end
+             #end
+             </em>
+            </dd>
+            
+        </dl>
+        #end </div>
+    </div>
+  </div>
+  #if($!ztc_goods.size()>0) 
+  <div class="shopping_other">
+    <h3><strong>您可能还需要其他商品</strong></h3>
+    <div class="shopping_other_list">
+      <div class="shopping_other_list_box"> #foreach($goods in $ztc_goods)
+        #if($!goods.goods_main_photo)
+        #set($small_img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+        #else
+        #set($small_img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+        #end
+        
+              #set($goods_url="$!webPath/goods_$!{goods.id}.htm")
+            #if($!config.second_domain_open && $!goods.goods_type==1 && $!goods.goods_store.store_second_domain!="")
+            #set($goods_url="http://$!{goods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{goods.id}.htm")
+            #end 
+        <dl>
+          <dt><a href="$!goods_url" target="_blank"><span class="img_cspan">
+            <p><img src="$!{small_img}" width="100" height="100" id="ztc_$!{goods.id}"/></p>
+            </span></a></dt>
+          <dd>
+            <h4><a href="$!goods_url" target="_blank">$!goods.goods_name</a></h4>
+            <strong>¥$!{goods.goods_current_price}</strong>
+            <em class="shopping_other_list_center_box_buy">
+            
+             #if($!user)
+           		 #if($!goods.f_sale_type==1)
+            	<a href="javascript:void(0);" goods_id="$!goods.id" goods_type="$!goods.goods_type" user_id="$!goods.goods_store.user.id" type="ztc" id="f_goods_cart_$!{goods.id}">F码购买</a></a>
+                 #else
+                 <a href="javascript:void(0);" goods_id="$!goods.id" goods_type="$!goods.goods_type" user_id="$!goods.goods_store.user.id" type="ztc" id="goods_cart_$!{goods.id}">加入购物车</a>
+                 #end
+             #else
+            	 #if($!goods.f_sale_type==1)
+           		 <a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login">F码购买</a>
+                 #else
+                 <a href="javascript:void(0);" goods_id="$!goods.id" goods_type="$!goods.goods_type" user_id="$!goods.goods_store.user.id" type="ztc" id="goods_cart_$!{goods.id}">加入购物车</a>
+                 #end
+             #end
+            
+            </em>
+            </dd>
+        </dl>
+        #end </div>
+    </div>
+  </div>
+  #end
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

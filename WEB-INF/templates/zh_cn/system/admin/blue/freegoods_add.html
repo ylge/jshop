@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("#status").change(function(){
+		if(jQuery(this).val()==-5){
+			jQuery("#reason").show();
+			}else{
+				jQuery("#reason").hide();
+				}							 						 
+										 });
+});
+
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+  <div class="cont">
+    <h1 class="seth">自营满就送管理</h1>
+    <div class="nav_list">
+   <ul>
+	<li><a href="$!webPath/admin/freegoods_list.htm"><b>管理</b></a></li>
+    <li><a href="javascript:void(0);" class="this"><b>审核</b></a></li>
+   </ul>
+    </div>
+    <div class="edit">
+    <form action="$!webPath/admin/freegoods_save.htm" method="post" name="theForm" id="theForm">
+    <div class="editul setcont" id="base">
+    <ul class="set1">
+        <li class="setcont_bg">名称:</li>
+        <li> <span class="webname">
+          $!obj.free_name
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">开始时间:
+          <input name="id" type="hidden" id="id" value="$!obj.id" />
+        </li>
+        <li><span class="webname">
+       			$!CommUtil.formatShortDate($!obj.beginTime)
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">结束时间:</li>
+        <li> <span class="webname">
+          $!CommUtil.formatShortDate($!obj.endTime)
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">商品:</li>
+        <li> <span class="webname">
+          $!goods.goods_name
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">图片:</li>
+        <li> <span class="webname">
+         <img height="200" width="300" src="$!imageWebServer/$!obj.free_acc.path/$!obj.free_acc.name" />
+        </span></li>
+        </ul>
+        <ul class="set1">
+        <li class="setcont_bg">发布数量:</li>
+        <li> <span class="webname">
+         $!obj.default_count
+        </span></li>
+        </ul>
+        #if($!obj.freeStatus==0||$!obj.freeStatus==-5)
+       <ul class="set1">
+        <li class="setcont_bg">审核状态:</li>
+        <li> <span class="webname">
+         <select name="status" id="status">
+          <option value="5">审核通过</option>
+          <option value="-5">审核未通过</option>
+        </select>
+        </span></li>
+        </ul>
+        <ul class="set1" id="reason" style="display:none">
+        <li class="setcont_bg">审核失败原因:</li>
+        <li> <span class="webname">
+        <textarea rows="6" cols="40" name="failed_reason">
+        $!obj.failed_reason
+        </textarea>
+        </span></li>
+        </ul>
+      #else
+      <ul class="set1">
+        <li class="setcont_bg">审核状态:</li>
+        <li> <span class="webname">
+           #if($!obj.freeStatus==0) 待审核 #elseif($!obj.freeStatus==10) 已结束 #elseif($!obj.freeStatus==-5) 审核未通过 #elseif($!obj.freeStatus==5) 进行中  #end
+        </span></li>
+        </ul>
+      #end
+      #if($!obj.freeStatus==0||$!obj.freeStatus==-5)
+    <div class="submit"><span class="pad120">
+      <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/>
+      </span> 
+  </div>
+  	  #end  
+        
+    </div>
+    </form>
+    </div>
+    <div class="submit">
+  </div>
+  </div>
+</body>
+</html>

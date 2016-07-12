@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-组合销售-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){	
+  jQuery("#theForm").validate({
+  submitHandler:function(){
+	 var meal_day= jQuery("#meal_day").val();
+	 jQuery(".seller_save").attr("disabled","disabled");
+	  jQuery.post("$!webPath/seller/combin_meal_buy.htm",{"meal_day":meal_day},function(data){
+		  if(data=="true"){
+			  showDialog("succeed","","套餐购买成功！",2,"succeed",3,function(){
+				      window.location.href="$!webPath/seller/combin.htm";
+		   });
+		 }else{
+			   showDialog("faild","","金币不足或请求参数错误！",2,"error",3,function(){
+				      window.location.href="$!webPath/seller/combin.htm";
+		   });
+			 }
+			 jQuery(".seller_save").removeAttr("disabled");
+	  },"text"); 
+	}		  
+  }); 
+  });
+
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=combin") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>促销推广</b>><b>组合销售</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/combin.htm"><i></i>组合套装</a></li>
+       	    <li><a href="$!webPath/seller/combin.htm?type=1"><i></i>组合配件</a></li>
+            <li><a href='$!webPath/seller/combin_add.htm'><i></i>添加组合</a></li>
+            <li class="this"><a href='$!webPath/seller/combin_meal.htm'><i></i>套餐购买</a></li>
+            <li><a href='$!webPath/seller/combin_meal_log.htm'><i></i>购买日志</a></li>
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="" method="post" name="theForm" id="theForm">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td width="195" align="right">金币余额：</td>
+                <td width="510">¥ $!{gold}</td>
+              </tr>
+              <tr>
+                <td align="right">当前套餐到期：</td>
+                <td> #if(!$!store.combin_end_time) 未购买 #else $!CommUtil.formatLongDate($!store.combin_end_time) #end</td>
+              </tr>
+              <tr>
+                <td align="right">购买套餐：</td>
+                <td >
+                  #set($meal=$!{config.combin_amount}*2)
+                  #set($meal1=$!{config.combin_amount}*3)
+                  #set($meal2=$!{config.combin_amount}*6)
+                  #set($meal3=$!{config.combin_amount}*12)
+                  <select name="meal_day" id="meal_day">
+                    <option value="a">$!{config.combin_amount}金币/30天</option>
+                    <option value="b">$!{meal}金币/60天</option>
+                    <option value="c">$!{meal1}金币/90天</option>
+                    <option value="d">$!{meal2}金币/180天</option>
+                    <option value="e">$!{meal3}金币/360天</option>
+                  </select>
+                </td>
+              </tr>
+
+              <tr>
+                <td>&nbsp;</td>
+                <td class="px10"><span class="setsub">
+                  <input type="submit" onclick="saveForm();"  value="购买" style="cursor:pointer;" class="seller_save"/>
+                  </span></td>
+              </tr>
+            </table>
+          </form>
+          <div class="combin_meal_bottom">重要提醒：重复购买套餐会增加当前商家的总套餐可用时间</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

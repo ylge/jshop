@@ -1,0 +1,25 @@
+#if($!evas.size()>0)
+#foreach($obj in $evas)
+#if($!obj.evaluate_goods.goods_main_photo)
+#set($img="$!imageWebServer/$!{obj.evaluate_goods.goods_main_photo.path}/$!{obj.evaluate_goods.goods_main_photo.name}_middle.$!{obj.evaluate_goods.goods_main_photo.ext}")
+#else
+#set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+#end
+#set($goods_url="$!webPath/goods_$!{obj.evaluate_goods.id}.htm")
+#if($!config.second_domain_open && $!obj.evaluate_goods.goods_type==1 && $!obj.evaluate_goods.goods_store.store_second_domain!="")
+#set($goods_url="http://$!{obj.evaluate_goods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.evaluate_goods.id}.htm")
+#end<a href="$goods_url" target="_blank">
+<ul class="item">
+<li class="img"><img src="$!img" width="223"  /><span class="pri">¥$!{obj.evaluate_goods.store_price}</span></li>
+<li class="name">$!{obj.evaluate_goods.goods_name}</li>
+<li class="like"><span class="love"><i></i>喜欢<b>$!obj.evaluate_goods.favs.size()</b></span><span class="num">销量($!obj.evaluate_goods.goods_salenum)</span></li>
+<li>
+<dl class="dis">
+<dt>评价：</dt>
+<dd class="dis_info">$!obj.evaluate_info</dd>
+</dl>
+</li>
+</ul>
+</a>
+#end
+#end

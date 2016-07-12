@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>分类 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+    jQuery(".category_xx_center_list li").click(function(){
+		var id = jQuery(this).attr("id");
+		var mark = jQuery(this).attr("mark");	
+		if(mark=="true"){
+			jQuery(this).find("img").attr("src","$!webPath/resources/style/system/front/wap/images/search_on_bg.png");
+			jQuery("#class2_"+id).fadeOut();
+			jQuery(this).attr("mark","false");
+		}else{
+			jQuery(this).find("img").attr("src","$!webPath/resources/style/system/front/wap/images/search_off_bg.png");
+			jQuery("#class2_"+id).fadeIn();
+			jQuery(this).attr("mark","true");
+		}	
+	})
+});
+</script>
+</head>
+<body class="index_bg">
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>商品分类<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="category_xx">
+	<div class="category_xx_center">
+   	  
+      <div class="category_xx_center_list">
+      	<ul>
+        	#if($!gcs.size()>0)
+        #foreach($gc in $gcs)
+        <li id="$!{gc.id}" mark="false">
+          <div class="category_center_list_left">#if($!gc.level==2)<a href="$!webPath/wap/class_goods.htm?gc_id=$!{gc.id}">$!gc.className</a>#else $!gc.className #end</div>
+          <i><img src="$!webPath/resources/style/system/front/wap/images/search_on_bg.png"></i>
+        </li>
+        #if($!gc.childs.size()>0)
+        <div class="category_center_list_right" style="display:none" id="class2_$!{gc.id}">
+        	#foreach($child in $gc.childs)
+            #if($!child.level==2)
+        	<span><a href="$!webPath/wap/class_goods.htm?gc_id=$!{child.id}">$!child.className</a></span>
+            #else
+            <span><a href="$!webPath/wap/goodsclass.htm?id=$!{child.id}">$!child.className</a></span>
+            #end
+        	#end
+        </div>
+        #end
+        #end
+        #else
+    <div class="loading">
+    <ul>
+      <li>暂无数据....</li>
+    </ul>
+    </div>
+    #end
+        </ul>
+      </div>
+        
+    </div>
+  $!httpInclude.include("/wap/footer.htm?op=index") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

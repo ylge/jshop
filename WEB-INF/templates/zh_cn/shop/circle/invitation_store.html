@@ -1,0 +1,12 @@
+﻿<div class="edit_img_list_intimg_top_c"> #foreach($store in $store_objs)
+  #if($!store.store_photo)
+  #set($store_logo="$!imageWebServer/$!{store.store_photo}")
+  #else
+  #set($store_logo="$!imageWebServer/$!config.storeImage.path/$!config.storeImage.name")
+  #end
+  
+  #set($store_url="$!webPath/store_$!{store.store_id}.htm")
+  #if($!config.second_domain_open && $!store.store_second_domain!="")
+  #set($store_url="http://$!{store.store_second_domain}.$!{domainPath}")
+  #end <span style="width:74px; height:28px;"><a item_data="file_store_$!store.id" item_id="$!store.id"  href="javascript:void(0);" img_type="store" img_path="$!store_logo" img_url="$!store_url"><img style="width:74px; height:28px;" src="$!store_logo"  /></a></span> #end </div>
+<div class="fenye_circle" target_id="store_fav_id"> <span> $!{store_gotoPageAjaxHTML} </span> </div>

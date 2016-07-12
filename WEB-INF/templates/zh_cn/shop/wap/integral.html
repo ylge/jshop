@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>积分商城</title>
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes" />
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>积分专区
+#if($!user)
+<a class="menu" href="$!webPath/wap/integral/integral_cart.htm"><img src="$!webPath/resources/style/system/front/wap/images/layer_03.png"  width="25" height="25" /></a>
+#end</div>
+<div class="phone_main">
+	
+    <div class="phone_inte">
+    	<!--登录后before_log加after_log-->
+    	
+        #if($!user)
+        #set($ret = $!integralViewTools.query_user_level("$!user.id"))
+        <div class="before_log after_log">
+        	<table cellpadding="0" cellspacing="0">
+            	<tbody>
+                	<tr>
+                    	<td width="30%"><div class="inte_bg">$!user.integral</div></td>
+                        <td width="10%"><img src="$!webPath/resources/style/system/front/wap/images/userlevel_$!{ret}.png" width="25" /></td>
+                        <td height="100%" align="left">
+                        #if($!ret==0)
+                        铜牌会员
+                        #elseif($!ret==1)
+                        银牌会员
+                        #elseif($!ret==2)
+                        金牌会员
+                        #elseif($!ret==3)
+                        超级会员
+                        #end
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        #else
+        <div class="before_log">
+        	<table cellpadding="0" cellspacing="0">
+            	<tbody>
+                	<tr>
+                    	<td width="30%"><div class="inte_bg"></div></td>
+                        <td width="40%">登录后显示积分</td>
+                        <td height="100%"><a href="$!webPath/wap/login.htm">登录</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        #end
+    </div>
+    <script>
+	
+    jQuery(function(){
+		var rank = "$!rank";
+		if(rank==""){
+			rank = 0;	
+		}
+		var img = jQuery("#img").html();
+		jQuery(" li[id^=rand_]").each(function(index, element) {
+            jQuery(element).removeClass("this");
+        });
+		jQuery("#rank_"+rank).addClass("this");
+		var begin_count =12;
+	   jQuery(window).scroll(function(){								  
+		 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()) {
+			 jQuery.ajax({type:'POST',
+					  url:'$!webPath/wap/integral/integral_data.htm',
+					  data:{"begin_count":begin_count,"ig_user_Level":"$!ig_user_Level","begin":"$!begin","end":"$!end","rank":"$!rank"},
+					beforeSend:function(){
+					  begin_count = begin_count +6;
+					  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+					},
+				   success:function(data){
+					 jQuery("#loading").hide();
+					 if(data){ 
+					  jQuery(".inte_list").append(data);
+					 }else{
+					 jQuery("#loading_none").show();
+					  }    
+					}
+			});
+		 }
+	   });
+	})
+    </script>
+    <!--积分选择区-->
+    <div class="inte_tab">
+    	<ul>
+        	<li id="rank_0"><a href="$!webPath/wap/integral/index.htm?rank=0">全部</a></li>
+            <li id="rank_1"><a href="$!webPath/wap/integral/index.htm?begin=0&&end=1999&rank=1">1999分以下</a></li>
+            <li id="rank_2"><a href="$!webPath/wap/integral/index.htm?begin=2000&&end=3999&rank=2">2000分~3999分</a></li>
+            <li id="rank_3"><a href="$!webPath/wap/integral/index.htm?begin=4000&&end=5999&rank=3">4000分~5999分</a></li>
+            <li id="rank_4"><a href="$!webPath/wap/integral/index.htm?begin=6000&&end=9999&rank=4">6000分~9999分</a></li>
+            <li id="rank_5"><a href="$!webPath/wap/integral/index.htm?begin=10000&&rank=5">10000分以上</a></li>
+        </ul>
+    </div>
+    
+    <!--积分商品列表-->
+    <div class="inte_list">
+    #foreach($obj in $integralGoods)
+    	<dl>
+        	<dt><a href="$!webPath/wap/integral/view.htm?id=$!{obj.id}"><img src="$!imageWebServer/$!obj.ig_goods_img.path/$!obj.ig_goods_img.name"  /></a></dt>
+            <dd>
+            	<ul>
+                	<li class="name"><a href="$!webPath/wap/integral/view.htm?id=$!{obj.id}">$!obj.ig_goods_name</a></li>
+                    <li>
+                    #set($img="$!webPath/resources/style/system/front/wap/images/userlevel_0.png")
+                    #if($!obj.ig_user_Level==0)
+                    铜牌会员专享
+                    #elseif($!obj.ig_user_Level==1)
+                    #set($img="$!webPath/resources/style/system/front/wap/images/userlevel_1.png")
+                    银牌会员专享
+                    #elseif($!obj.ig_user_Level==2)
+                    #set($img="$!webPath/resources/style/system/front/wap/images/userlevel_2.png")
+                    金牌会员专享
+                    #elseif($!obj.ig_user_Level==3)
+                    #set($img="$!webPath/resources/style/system/front/wap/images/userlevel_3.png")
+                    超级会员专享
+                    #end
+                    <img src="$!img" width="20"/>
+                    </li>
+                    <li><span class="fl"><img src="$!webPath/resources/style/system/front/wap/images/inte_icon.png" width="20" /><b>$!obj.ig_goods_integral</b>积分</span><span class="fr"><a href="$!webPath/wap/integral/view.htm?id=$!{obj.id}">马上兑换</a></span></li>
+                </ul>
+            </dd>
+        </dl>
+    #end  
+
+    </div>
+<div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16" /></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+<div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+</div>   
+$!httpInclude.include("/wap/footer.htm?op=index") 
+</div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

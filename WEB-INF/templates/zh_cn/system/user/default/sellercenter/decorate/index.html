@@ -1,0 +1,604 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>店铺装修-商家后台-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/decorate/css/decorate.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/shop/css/store_$!{store_theme}.css" rel="stylesheet" type="text/css" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery.bigcolorpicker.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.cookie.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.bigcolorpicker.js"></script>
+<script src="$!webPath/resources/js/jquery.imgareaselect.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+jQuery(document).ready(function(){									
+	jQuery("#main_layout").sortable({stop: function(event, ui) {},containment:"#main_layout",opacity:0.9,cursor:"move"});
+    jQuery("#main_layout").disableSelection();	
+	jQuery("#main_layout").bind('sortstop', 
+			function(event, ui) {
+					var marks = "";
+					jQuery("div[location='true']").each(function(){
+						var location_mark =jQuery(this).attr("location_mark");
+					    marks = marks+","+location_mark;	
+					});
+					if(marks!=""){
+						 jQuery.post("$!webPath/seller/decorate_module_location_record.htm",{"marks":marks},
+						 function(data){
+						 },"text");
+					}
+			});
+//背景颜色							
+	jQuery("#bg_color").bigColorpicker(function(el,color){
+	jQuery(el).val(color);
+	jQuery(el).parent().find(".color_block").css("background-color",color);
+	});
+		//ajax上传背景图片
+		  jQuery("#bg_img").live("change",function(){	
+			var bg_img_id =jQuery("#bg_img_id").val();
+			jQuery("#bg_img_show").val(jQuery(this).val());
+			jQuery.ajaxFileUpload({
+                 url:'$!webPath/seller/decorate_background_upload.htm?bg_img_id='+bg_img_id,
+                 fileElementId:['bg_img'],      
+                 dataType: 'json',                
+                 success: function (data){
+					 jQuery("#bg_img_id").val(data.id);
+					jQuery(".fiit_bg_prew img").attr("src","$!webPath/"+data.src);
+				}
+			});
+	 	 });
+	
+	#if("$!{fun_info}"=="off")
+	jQuery("a[mark='info']").addClass("$!{fun_info}");
+	jQuery("#store_info").hide();
+	#else
+	jQuery("a[mark='info']").addClass("on");
+	jQuery("#store_info").show();
+	#end
+	#if("$!{fun_banner}"=="off")
+	jQuery("a[mark='banner']").addClass("$!{fun_banner}");
+	jQuery("#store_banner").hide();
+	#else
+	jQuery("a[mark='banner']").addClass("on");
+	jQuery("#store_banner").show();
+	#end
+	#if("$!{fun_slide}"=="off")
+	jQuery("a[mark='slide']").addClass("$!{fun_slide}");
+	jQuery("#store_slide").hide();
+	#else
+	jQuery("a[mark='slide']").addClass("on");
+	jQuery("#store_slide").show();
+	#end
+	#if("$!{fun_nav}"=="off")
+	jQuery("a[mark='nav']").addClass("$!{fun_nav}");
+	jQuery("#store_nav").hide();
+	#else
+	jQuery("a[mark='nav']").addClass("on");
+	jQuery("#store_nav").show();
+	#end	
+	jQuery(".fiit_color_ul a[theme='$!{store_theme}']").parent().addClass("this");
+	//页面加载模块
+	jQuery("div[id=content]").each(function (){
+		var url =jQuery(this).attr("url");
+		var mark =jQuery(this).attr("mark");
+		var div =jQuery(this).attr("div");
+		if(url!=""){
+		jQuery(this).load("$!webPath/module_loading.htm?url="+url+"&id=$!{store.id}&mark="+mark+"&decorate_view=true&div="+div);	
+		}
+		});
+	//切换菜单
+	jQuery(".f_top_nav li").click(function(){
+       jQuery("div[div_tab='decorate']").hide();
+	   var tab_target=jQuery(this).attr("tab_target");
+	   jQuery("div[id="+tab_target+"]").show();
+	   jQuery(".f_top_nav li").removeClass("this");
+	   jQuery(this).addClass("this");
+	   jQuery.cookie("tab_target",tab_target);
+   });
+//通过cookie记录当前装修菜单
+var tab_target = jQuery.cookie("tab_target");
+if(tab_target!=null){
+	jQuery("div[div_tab='decorate']").hide();
+	   jQuery("div[id="+tab_target+"]").show();
+	   jQuery(".f_top_nav li").removeClass("this");
+	   jQuery("li[tab_target='"+tab_target+"']").addClass("this");
+	}
+	
+ });////
+
+
+
+//添加新布局模块
+function add_layout(obj){
+	jQuery(".no_decorate").remove();
+	var layout =jQuery(obj).attr("layout");
+	 jQuery.post("$!webPath/seller/decorate_layout.htm",{"layout":layout},function(html){
+				if(layout=="layout0"){
+				jQuery("#main_layout").before(html);
+				}
+				if(layout=="layout1"){
+				jQuery("#main_layout").after(html);
+				}
+				if(layout=="layout2" || layout=="layout3" ||layout=="layout4"){
+				jQuery("#main_layout").append(html);
+				}
+		  },"html");
+	}
+	
+//删除布局模块
+function dele_layout(obj){
+	var div = jQuery(obj).attr("div");
+	var layout = jQuery(obj).attr("layout");
+	var mark = jQuery(obj).attr("mark");
+	 jQuery.post("$!webPath/seller/decorate_layout_remove.htm",{"layout":layout,"mark":mark,"div":div},
+				 function(data){
+		  	  	  if(data=="true"){
+					location.reload();
+					}
+		  },"text");
+	}
+//设置基础模块	
+function set_fundation_module(obj){
+	var mark =jQuery(obj).attr("mark");
+	var status =jQuery(obj).attr("class");
+	if(status=="on"){
+		jQuery(obj).attr("class","off");
+		jQuery("#store_"+mark).hide();
+		 jQuery.post("$!webPath/seller/decorate_fundation_set.htm",{"type":mark,"status":jQuery(obj).attr("class")},
+				 function(data){},"text");
+		}else{
+		jQuery(obj).attr("class","on");	
+		jQuery("#store_"+mark).show();	
+		 jQuery.post("$!webPath/seller/decorate_fundation_set.htm",{"type":mark,"status":jQuery(obj).attr("class")},
+				 function(data){
+					 
+		  },"text");
+			}
+	}
+//设置非基础模块
+function module_set(obj){
+	var mark=jQuery(obj).attr("mark");
+	var div=jQuery(obj).attr("div");
+	var type=jQuery(obj).attr("type");
+		  jQuery.post("$!webPath/seller/decorate_module_save.htm",
+				{"mark":mark,
+				"type":type,
+				"div":div},
+				function(data){
+					jQuery("#module_edit").remove();
+					if(div!=""){
+						var html='<a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark='+mark+'&div='+div+'" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>';	
+						jQuery("div[option="+mark+"][div="+div+"]").find("a:first").before(html);	
+						jQuery("div[mark="+mark+"][div="+div+"][id='content']").html(data);		
+						}else{
+						var html='<a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark='+mark+'" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>';	
+						jQuery("div[option="+mark+"]").find("a:first").before(html);
+						jQuery("div[mark="+mark+"][id='content']").html(data);	
+							}
+					},"html");
+	}
+//撤销
+function backout(){
+	showDialog('msg_info','','当前装修信息将丢失，是否继续?',1,'question',3,	function fun_backout(){
+		 jQuery.post("$!webPath/seller/decorate_backout.htm",
+				{},
+				function(data){
+					location.reload();
+					},"text");
+		})
+	}
+//保存并退出
+function subquite(){
+	 jQuery.post("$!webPath/seller/decorate_subquite.htm",
+				{},
+				function(data){
+					showDialog('success','','数据保存成功，点击确定退出装修界面',2,'success',3,function(){window.close();})
+					},"text");
+	}	
+function set_theme(obj){
+	var text ="<div id='set_theme'><div class='white_content'><div class='white_box'><p style='margin-bottom:-15px;margin-top: 20px;font-size: 16px;'>正在切换主题...</p><div class='content_load'></div></div></div><div class='black_overlay'></div></div>";
+	jQuery("body").append(text);
+		jQuery.post("$!webPath/seller/decorate_theme_set.htm",
+					{"theme":jQuery(obj).attr("theme")},
+					function(data){
+						location.reload();
+						},"text");
+	}	
+	function bg_set(type){
+	if(type=="cancle"){
+		jQuery("#bg_img_id").val("");
+		jQuery("#bg_color").val("");
+		jQuery("#bg_img_show").val("");
+		}	
+	var params = jQuery("#bg_form").serialize();
+    jQuery.ajax({type:'POST',url:'$!webPath/seller/decorate_background_set.htm?type='+type,data:params,
+					  success:function(data){
+						location.reload();
+				 }});
+		}
+</script>
+<style>
+input[type="text"]:focus { border:1px solid #50B2E7;} 
+</style>
+</head>
+<body>
+<div class="fiit_top">
+  <div class="fiit_top_box">
+    <div class="main">
+      <div class="f_top_left"></div>
+      <div class="f_top_nav">
+        <ul>
+          <li class="this" tab_target="layout_tab"><a href="javascript:void(0);">布局模块设置</a></li>
+          <li tab_target="module_tab" id="test"><a href="javascript:void(0);">基础模块设置</a></li>
+          <li tab_target="theme_tab"><a href="javascript:void(0);">主题设置</a></li>
+          <li tab_target="background_tab"><a href="javascript:void(0);">背景设置</a></li>
+        </ul>
+      </div>
+      <div class="f_top_right"> <a class="save" href="javascript:void(0);" onclick="subquite()">保存并退出</a> <a class="exit" href="javascript:void(0);" onclick="showDialog('msg_info','','当前装修信息将丢失，是否继续?',1,'question',3,function(){window.close();})">退出</a> <a class="pepeal" href="javascript:void(0);" onclick="backout();"><i></i>撤销</a> <a class="pre" href="$!webPath/seller/decorate_preview.htm" target="_blank"><i></i>预览</a> </div>
+    </div>
+  </div>
+  <!--换颜色-->
+  <div class="fiit_top_down">
+    <!--换布局-->
+    <div div_tab="decorate" id="layout_tab"  class="fiit_layout" style="display:;">
+      <ul>
+        <li onclick="add_layout(this)"  layout="layout0"><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/lay_00.jpg" width="100" height="120" /></span><span class="bt"></span><span class="name">通栏布局上</span></a></li>
+        <li onclick="add_layout(this)"  layout="layout1"><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/lay_01.jpg" width="100" height="120" /></span><span class="bt"></span><span class="name">通栏布局下</span></a></li>
+        <li layout="layout2" onclick="add_layout(this)"><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/lay_02.jpg" width="100" height="120" /></span><span class="bt"></span><span class="name">居中布局</span></a></li>
+        <li layout="layout3" onclick="add_layout(this)"><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/lay_03.jpg" width="100" height="120" /></span><span class="bt"></span><span class="name">1:2布局</span></a></li>
+        <li layout="layout4" onclick="add_layout(this)"><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/lay_04.jpg" width="100" height="120" /></span><span class="bt"></span><span class="name">2:1布局</span></a></li>
+      </ul>
+    </div>
+    <!--换肤色-->
+    <div div_tab="decorate"  id="theme_tab" class="fiit_color" style="display:none;">
+    #set($theme="默认")
+    #if($!store_theme=="black")
+    #set($theme="黑色")
+    #end
+     #if($!store_theme=="blue")
+    #set($theme="蓝色")
+    #end
+     #if($!store_theme=="green")
+    #set($theme="绿色")
+    #end
+     #if($!store_theme=="orange")
+    #set($theme="橘色")
+    #end
+     #if($!store_theme=="pink")
+    #set($theme="粉色")
+    #end
+    #if($!store_theme=="purple")
+    #set($theme="紫色")
+    #end
+      <div class="fiit_tab"> <b>当前主题：$!{theme}</b>
+      </div>
+      <!--换颜色-->
+      <div class="fiit_color_ul">
+        <ul>
+          <li><a href="javascript:void(0);" onclick="set_theme(this)" theme="default"><span class="img"><img src="$!webPath/resources/style/decorate/images/red.jpg" width="111" height="77" /></span><span class="name">默认</span></a></li>
+          <li><a onclick="set_theme(this)" theme="blue"><span class="img"><img src="$!webPath/resources/style/decorate/images/blue.jpg" width="111" height="77" /></span><span class="name">蓝色</span></a></li>
+          <li><a onclick="set_theme(this)" theme="pink"><span class="img"><img src="$!webPath/resources/style/decorate/images/pink.jpg" width="111" height="77" /></span><span class="name">粉色</span></a></li>
+          <li><a onclick="set_theme(this)" theme="orange"><span class="img"><img src="$!webPath/resources/style/decorate/images/orange.jpg" width="111" height="77" /></span><span class="name">黄色</span></a></li>
+          <li><a onclick="set_theme(this)" theme="purple"><span class="img"><img src="$!webPath/resources/style/decorate/images/purple.jpg" width="111" height="77" /></span><span class="name">紫色</span></a></li>
+          <li><a onclick="set_theme(this)" theme="green"><span class="img"><img src="$!webPath/resources/style/decorate/images/green.jpg" width="111" height="77" /></span><span class="name">绿色</span></a></li>
+          <li><a onclick="set_theme(this)" theme="black"><span class="img"><img src="$!webPath/resources/style/decorate/images/black.jpg" width="111" height="77" /></span><span class="name">黑色</span></a></li>
+        </ul>
+      </div>
+      <!--换背景-->
+      <div class="fiit_module" style="display:none">
+        <ul>
+          <li class="mod_add"><a class="img" href=""><img src="$!webPath/resources/style/decorate/images/plus_icon.jpg" width="70" height="70" /></a><span class="name">添加背景</span></li>
+          <li class="this"> <a class="img" href=""><img src="$!webPath/resources/style/decorate/images/pic_icon.jpg" width="70" height="70" /></a> <a class="plus" href=""></a><span class="name">条纹背景</span> <a class="mod_edit" title="编辑" href=""><i></i></a><a class="mod_del" title="删除" href=""><i></i></a> </li>
+          <li> <a class="img" href=""><img src="$!webPath/resources/style/decorate/images/pic_icon.jpg" width="70" height="70" /></a> <a class="plus" href=""></a><span class="name">条纹背景</span> <a class="mod_edit" title="编辑" href=""><i></i></a><a class="mod_del" title="删除" href=""><i></i></a> </li>
+        </ul>
+      </div>
+    </div>
+    <!--基础模块-->
+    <div div_tab="decorate" id="module_tab" class="fiit_module" style="display:none;">
+      <ul>
+      <li> <span class="img"><img src="$!webPath/resources/style/decorate/images/layout_03.jpg" width="70" height="70" /></span> <span class="name">默认banner</span> <a class="on" href="javascript:void(0);" onclick="set_fundation_module(this)" mark="banner" title="开启"></a> </li>
+        <li> <span class="img"><img src="$!webPath/resources/style/decorate/images/layout_01.jpg" width="70" height="70" /></span> <span class="name">店铺信息</span> <a class="on" href="javascript:void(0);" onclick="set_fundation_module(this)" mark="info" title="开启"></a> </li>
+        <li> <span class="img"><img src="$!webPath/resources/style/decorate/images/layout_02.jpg" width="70" height="70" /></span> <span class="name">默认导航</span> <a class="on" href="javascript:void(0);" onclick="set_fundation_module(this)" mark="nav" title="开启"></a> </li>
+         <li> <span class="img"><img src="$!webPath/resources/style/decorate/images/layout_04.jpg" width="70" height="70" /></span> <span class="name">默认幻灯</span> <a class="on" href="javascript:void(0);" onclick="set_fundation_module(this)" mark="slide" title="开启"></a> </li>
+      </ul>
+    </div>
+    <!--背景设置-->
+    <form id="bg_form" name="bg_form" action="" method="post">
+    <div class="fiit_bg_edit" id="background_tab" div_tab="decorate" style="display:none;">
+    	<table cellpadding="0" cellspacing="0">
+        	<tbody>
+                <tr>
+                	<td width="15%" valign="top" align="right">背景图片：</td>
+                    <td>
+                    <input name="bg_img_id" type="hidden" id="bg_img_id" value="$!{bg.bg_img_id}"/>  
+                    	<div class="file_box">
+                             <input class="ip180" type='text' id="bg_img_show"/>  
+                             <input type='button' class='btn' value='浏览...'/>
+                             <input type="file" class="file"  id="bg_img" name="bg_img"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                	<td valign="top" align="right">背景颜色：</td>
+                    <td><input type="text" class="ip100" id="bg_color" name="bg_color" value="$!{bg.bg_color}"/><span class="color_block" style="background-color:$!{bg.bg_color}"></span></td>
+                </tr>
+                <tr>
+                	<td valign="top" align="right">背景样式：</td>
+                    <td>
+                    	<ul class="bg_style">
+                        	<li><label><input type="radio" id="repeat" name="repeat" #if($!bg.repeat=="repeat" || !$!{bg}) checked="checked" #end value="repeat"/><span>平铺</span></label></li>
+                            <li><label><input type="radio" id="repeat" name="repeat" #if($!bg.repeat=="stretch") checked="checked" #end value="stretch"/><span>拉伸</span></label></li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="fiit_save_box"><input type="button" value="保存设置"  onclick="bg_set('save')"/><input onclick="bg_set('cancle')" class="del" type="button" value="清空设置" /></div>
+        #set($img="$!webPath/resources/style/decorate/images/bg_img.png")
+        #if($!bg.bg_img_src)
+         #set($img="$!imageWebServer/$!{bg.bg_img_src}")
+        #end
+        <div class="fiit_bg_prew"><table width="100%" height="100%"><tr><td width="100%" height="100%" valign="middle" align="center" style="padding:0px;"><img src="$!{img}" /></td></tr></table></div>
+    </div>
+    </form>
+  </div>
+</div>
+<div class="fiit_height"></div>
+ #set($bg_img="")
+   #if($!bg.bg_img_src)
+         #set($bg_img="$!imageWebServer/$!{bg.bg_img_src}")
+        #end
+  #set($repeat="background-repeat:repeat;")
+   #if($!bg.repeat=="stretch")
+         #set($repeat="background-size: 100% auto;")
+        #end    
+<div class="shop_main" style="#if($!{bg_img}!='')background-image:url('$!{bg_img}'); #end #if($!{bg.bg_color}!='')background-color:$!{bg.bg_color}; #end $!{repeat}">
+<!--店铺头部-->
+<div class="store_head" id="store_info" >
+  <div class="store_top">
+    <div class="store_main" >
+    <!--店铺信息行-->
+      <div class="store_head_right">
+        <ul>
+          <li class="head_a"></li>
+          <li class="head_middle">
+            <div class="store_head_box"  id="store_head_box">
+              <div class="store_name">$!store.store_name【$!store.grade.gradeName】</div>
+              <div class="scores"> <i class="smill"></i> <b class="scores_scroll"> #set($pecent=$!{store.point.store_evaluate}/5*100) <span class="scroll_gray"></span><span class="scroll_red" style="width:$!{pecent}%"></span> </b> </div>
+              <div class="store_level" style="display:none" id="store_level">
+                <ul class="pro_shop_date" style="display:;">
+                  <li><span>评分详细</span><b>与行业相比</b></li>
+                  <li><span>描述相符：<strong>#if(!$!{store.point.description_evaluate})0 #else $!{store.point.description_evaluate} #end分</strong></span><em class="$!{description_css}">$!description_result</em></li>
+                  <li><span>服务态度：<strong>#if(!$!{store.point.service_evaluate})0 #else $!{store.point.service_evaluate} #end分</strong></span><em class="$!{service_css}">$!service_result</em></li>
+                  <li><span>发货速度：<strong>#if(!$!{store.point.ship_evaluate})0 #else $!{store.point.ship_evaluate} #end分</strong></span><em class="$!{ship_css}">$!ship_result</em></li>
+                </ul>
+                <div class="store_detail">
+                  <ul>
+                    <li><span class="company_name">店铺名称：</span><span class="red">$!store.store_name</span></li>
+                    <li><span class="company_name">公司名称：</span><span class="company_r">$!store.license_c_name</span></li>
+                    <li><span class="company_name">联系电话：</span><span class="company_r">$!store.store_telephone</span></li>
+                    <li><span class="company_name">店铺地址：</span><span class="company_r">$!areaViewTools.generic_area_info("$!store.area.id")</span></li>
+                    <li><span class="company_name">详细地址：</span><span class="company_r">$!store.store_address</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="scroll_scroll">#if($!{store.point.store_evaluate})$!{store.point.store_evaluate}#else 0 #end分</div>
+            <div class="service"><a href="javascript:void(0);"></a></div>
+          <li class="head_b"></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!--店铺头部-->
+
+#if($!store.store_banner)
+  #set($banner="$!imageWebServer/$!store.store_banner.path/$!store.store_banner.name")
+  #else
+  #set($banner="$!webPath/resources/style/shop/images/store_default/banner.jpg")
+  #end
+  <!--banner行-->
+<div class="store_logo" id="store_banner" style="background:url($!banner) no-repeat top center; "> 
+#set($logo="$!webPath/resources/style/shop/images/store_default/logo.jpg")
+  #if($!config.storeImage)
+  #set($logo="$!imageWebServer/$!config.storeImage.path/$!config.storeImage.name")
+  #end
+  #if($!store.store_logo)
+  #set($logo="$!imageWebServer/$!store.store_logo.path/$!store.store_logo.name")
+  #end
+  <div class="main"><span style="clear:both;"><img src="$!logo" width="210" height="78" /></span></div>
+</div>
+
+  <!--导航行-->
+<div class="store_nav_width" id="store_nav">
+  <div class="main">
+    <div class="store_nav">
+      <ul>
+        <li><a href="javascript:void(0);">店铺首页</a></li>
+        #foreach($nav in $navs)
+        <li  id="$!nav.id" ><a href="javascript:void(0);">$!nav.title</a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+</div>
+  <!--默认幻灯-->
+ <div id="store_slide"> 
+ #if($!default_slides.size()>0)
+<div class="fullSlide" id="default_fullSlide">
+		<div class="bd" id="default_bd">
+			<ul>
+            	#foreach($slide in $default_slides)
+				<li><a style="text-align:center;" #if($!slide.src!='')href="$!{slide.url}" target="_blank" #else href="javascript:void(0)" #end ><img src="$!imageWebServer/$!{slide.acc.path}/$!{slide.acc.name}" height="450" /></a></li>
+                #end
+			</ul>
+		</div>
+		<div class="hd" id="default_hd">
+			<ul>
+            	#foreach($slide in $default_slides)
+				<li #if($!velocityCount==1) class="on" #end>$!{velocityCount}</li>
+                #end 
+			</ul>
+		</div>
+	</div>
+#else    
+    <div class="fullSlide" id="default_fullSlide">
+		<div class="bd" id="default_bd">
+			<ul>
+				<li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides1.jpg" width="1920" height="450" /></a></li>
+               	<li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides2.jpg" width="1920" height="450" /></a></li>
+                <li><a style="text-align:center;" href="javascript:void(0)"><img src="$!webPath/resources/style/shop/images/store_default/slides3.jpg" width="1920" height="450" /></a></li>
+			</ul>
+		</div>
+		<div class="hd" id="default_hd">
+			<ul>
+				<li class="on">1</li>
+                <li class="">2</li>
+                <li class="">3</li>
+			</ul>
+		</div>
+	</div>
+#end
+</div>
+    <!--默认幻灯结束-->
+#foreach($obj in $maps)
+#if($!obj.layout=="layout0")
+<div class="layout_one" location="true" location_mark="$!{obj.mark}">
+<div id="content" url="$!{obj.url}" mark="$!obj.mark" style="text-align:center">
+#if(!$!obj.url)
+      <h3 class="module_wide">
+        <div class="main">通栏布局上（不可拖动）</div>
+      </h3> 
+#end      
+</div>  
+  <div class="f_edit_box" option="$!{obj.mark}">
+  #if($!obj.url && $!obj.url!="defined")
+   <a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark=$!{obj.mark}" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>
+	#end
+   <a class="f_edit" href="javascript:void(0);"  dialog_uri="$!webPath/seller/decorate_module.htm?layout=$!{obj.layout}&mark=$!{obj.mark}" dialog_top="200" dialog_title="模块编辑" dialog_width="470" dialog_height="100" dialog_id="module_edit"><i></i>编辑</a> 
+   <a class="f_del" href="javascript:void(0);" onclick="dele_layout(this)"  mark="$!{obj.mark}" layout="layout0"><i></i>删除</a>
+   </div>
+</div>
+#end
+#end
+
+<div class="main" id="main_layout"> 
+#foreach($obj in $maps)
+  #if($!obj.layout=="layout2" || $!obj.layout=="layout3" || $!obj.layout=="layout4")      
+  #if($!obj.layout=="layout2")
+  <div class="layout_two" option="$!{obj.mark}" location="true" location_mark="$!{obj.mark}">
+    <div id="content" url="$!{obj.url}" mark="$!obj.mark">
+      <h3 class="module_big">居中布局（可拖动）</h3>
+    </div>
+     #if($!obj.url)
+   <a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark=$!{obj.mark}" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>
+	#end
+    <a class="f_edit" href="javascript:void(0);"  dialog_uri="$!webPath/seller/decorate_module.htm?layout=$!{obj.layout}&mark=$!{obj.mark}&position=goods_top" dialog_top="200" dialog_title="模块编辑" dialog_width="470" dialog_height="100" dialog_id="module_edit"><i></i>编辑</a> <a class="f_del" href="javascript:void(0);" onclick="dele_layout(this)" mark="$!{obj.mark}" layout="layout2"><i></i>删除</a> </div>
+  #end 
+  
+  
+  #if($!obj.layout=="layout3")
+  <div class="layout_three" location="true" location_mark="$!{obj.mark}"> 
+  #if($!obj.div1=="true")
+    <div class="fl">
+      <div class="module" option="$!{obj.mark}" div="div1">
+      <div id="content" url="$!{obj.div1_url}" mark="$!obj.mark" div="div1">
+        <h3 class="module_small">1:2布局（可拖动）</h3>
+        </div>
+         #if($!obj.div1_url)
+   <a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark=$!{obj.mark}&div=div1" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>
+	#end
+        <a class="f_edit" href="javascript:void(0);"  dialog_uri="$!webPath/seller/decorate_module.htm?layout=$!{obj.layout}&mark=$!{obj.mark}&div=div1" dialog_top="200" dialog_title="模块编辑" dialog_width="470" dialog_height="100" dialog_id="module_edit"><i></i>编辑</a><a class="f_del" href="javascript:void(0);" onclick="dele_layout(this)" mark="$!{obj.mark}" div="div1" layout="layout3"><i></i>删除</a> </div>
+    </div>
+    #end
+    #if($!obj.div2=="true")
+    <div class="fr">
+      <div class="module" option="$!{obj.mark}" div="div2">
+      <div id="content" url="$!{obj.div2_url}" mark="$!obj.mark" div="div2">
+        <h3 class="module_mid">1:2布局（可拖动）</h3>
+        </div>
+         #if($!obj.div2_url)
+   <a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark=$!{obj.mark}&div=div2" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>
+	#end
+        <a class="f_edit" href="javascript:void(0);"  dialog_uri="$!webPath/seller/decorate_module.htm?layout=$!{obj.layout}&mark=$!{obj.mark}&div=div2&position=goods_right" dialog_top="200" dialog_title="模块编辑" dialog_width="470" dialog_height="100" dialog_id="module_edit"><i></i>编辑</a><a class="f_del" href="javascript:void(0);" onclick="dele_layout(this)" mark="$!{obj.mark}" div="div2" layout="layout3"><i></i>删除</a> </div>
+    </div>
+    #end </div>
+  #end 
+  #if($!obj.layout=="layout4")
+  <div class="layout_four" location="true" location_mark="$!{obj.mark}"> 
+  #if($!obj.div2=="true")
+    <div class="fl">
+      <div class="module" option="$!{obj.mark}" div="div2">
+       <div id="content" url="$!{obj.div2_url}" mark="$!obj.mark" div="div2">
+        <h3 class="module_mid">2:1布局（可拖动）</h3>
+        </div>
+         #if($!obj.div2_url)
+   <a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark=$!{obj.mark}&div=div2" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>
+	#end
+        <a class="f_edit" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module.htm?layout=$!{obj.layout}&mark=$!{obj.mark}&div=div2&position=goods_right" dialog_top="200" dialog_title="模块编辑" dialog_width="470" dialog_height="100" dialog_id="module_edit"><i></i>编辑</a><a class="f_del" href="javascript:void(0);" onclick="dele_layout(this)" mark="$!{obj.mark}" div="div2" layout="layout4"><i></i>删除</a> </div>
+    </div>
+    #end    
+    #if($!obj.div1=="true")
+    <div class="fr">
+      <div class="module" option="$!{obj.mark}" div="div1">
+       <div id="content" url="$!{obj.div1_url}" mark="$!obj.mark" div="div1">
+        <h3 class="module_small">2:1布局（可拖动）</h3>
+        </div>
+         #if($!obj.div1_url)
+   <a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark=$!{obj.mark}&div=div1" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>
+	#end
+        <a class="f_edit" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module.htm?layout=$!{obj.layout}&mark=$!{obj.mark}&div=div1" dialog_top="200" dialog_title="模块编辑" dialog_width="470" dialog_height="100" dialog_id="module_edit"><i></i>编辑</a><a class="f_del" href="javascript:void(0);" onclick="dele_layout(this)" mark="$!{obj.mark}" div="div1" layout="layout4"><i></i>删除</a> </div>
+    </div>
+    #end </div>
+  #end
+  
+  #end
+  #end </div>
+#foreach($obj in $maps)
+        #if($!obj.layout=="layout1")
+<div class="layout_one" location="true" location_mark="$!{obj.mark}">
+<div id="content" url="$!{obj.url}" mark="$!obj.mark" style="text-align:center">
+#if(!$!obj.url)
+      <h3 class="module_wide">
+        <div class="main">通栏布局下（不可拖动）</div>
+      </h3> 
+#end      
+</div>  
+  <div class="f_edit_box" option="$!{obj.mark}"> 
+      #if($!obj.url)
+   <a class="f_set" href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_set.htm?mark=$!{obj.mark}" dialog_top="200" dialog_title="模块设置" dialog_width="450" dialog_height="100" dialog_id="module_edit"><i></i>设置</a>
+	#end
+  <a class="f_edit" href="javascript:void(0);"  dialog_uri="$!webPath/seller/decorate_module.htm?layout=$!{obj.layout}&mark=$!{obj.mark}" dialog_top="200" dialog_title="模块编辑" dialog_width="470" dialog_height="100" dialog_id="module_edit"><i></i>编辑</a> <a class="f_del" href="javascript:void(0);" onclick="dele_layout(this)" mark="$!{obj.mark}" layout="$!{obj.layout}"><i></i>删除</a></div>
+</div>
+		#end
+#end
+#if(!$!maps || $!maps.size()==0)
+<div class="no_decorate">
+	<table>
+    	<tbody>
+        	<tr>
+            	<td width="48%" align="right"><img src="$!webPath/resources/style/decorate/images/no_decorate.png" width="150" height="150" /></td>
+                <td align="left">没有任何装修信息！</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+#end
+<div class="main"> $!httpInclude.include("/footer.htm") </div>
+</div>
+</body>
+</html>

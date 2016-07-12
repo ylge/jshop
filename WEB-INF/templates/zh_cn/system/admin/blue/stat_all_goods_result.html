@@ -1,0 +1,185 @@
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/charts/highcharts.js"></script>
+<script src="$!webPath/resources/js/charts/modules/exporting.js"></script>
+<script>
+jQuery(function(){ 
+  var chart;
+  chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'logtable',
+                type: 'line',
+                marginRight: 130,
+                marginBottom: 25
+            },
+            title: {
+                text: '$!stat_title',
+                x: -20 //center
+            },
+            subtitle: {
+                text: '统计区间: $!CommUtil.formatShortDate($!{begin}) - $!CommUtil.formatShortDate($!{end})',
+                x: -20
+            },
+            xAxis: {
+                categories:$!{times},
+				labels: {
+				step: $!timeslength
+				}
+            },
+            yAxis: {
+                title: {
+                    text: '数量(次/件)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -10,
+                y: 100,
+                borderWidth: 0
+            },
+            series: [{
+                name: '点击量',
+                data: $!goods_click
+            },{
+                name: '收藏量',
+                data: $!goods_collect
+            },{
+                name: '销售量',
+                data: $!goods_salenum
+            }]
+        });
+		
+	chart = new Highcharts.Chart({
+        chart: {
+			renderTo: 'clickfrom_pie',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '点击量来源统计'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+        },
+        series: [{
+            type: 'pie',
+            name: '点击来源',
+            data: [$!goods_clickfrom]
+        }]
+    });
+	chart = new Highcharts.Chart({
+        chart: {
+			renderTo: 'ordertype_pie',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '订单来源统计'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage}%</b>'
+        },
+        plotOptions: {
+           pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+        },
+        series: [{
+            type: 'pie',
+            name: '订单来源',
+            data: [$!goods_ordertype]
+        }]
+    });
+});
+</script>
+<style>
+.clickfrom_table td{ height:30px; line-height:30px; border-bottom:1px dotted #eaeaea}
+.highcharts-container{ width:680px;}
+</style>
+#if($!goods_clickfrom.length()>2)
+<div id="clickfrom_pie" style="width:400px;height:25%; float:left;"></div>
+<div class="clickfrom_table"  style="width:340px;height:400px; float:left; margin-left:30px; overflow-x:auto">
+
+  <table style="width:323px; padding:10px; border:1px solid #eaeaea;">
+    <tr style="border-bottom:1px solid #eaeaea">
+      <th width="50%" align="center">商品</th>
+      <th width="50%" align="center">点击量（共$!allclick次）</th>
+    </tr>
+    #foreach($obj in $clicksort)
+    <tr>
+      <td align="center">$!CommUtil.substring($!obj.get("name"),10)</td>
+      <td align="center">$!obj.get("data")</td>
+    </tr>
+    #end    
+  </table>
+</div>
+#end
+#if($!goods_ordertype.length()>2)
+<div id="ordertype_pie" style="width:400px;height:25%; float:left;"></div>
+
+<div class="clickfrom_table"  style="width:340px;height:400px; float:left; margin-left:30px; overflow-x:auto">
+
+  <table style="width:323px; padding:10px; border:1px solid #eaeaea;">
+    <tr style="border-bottom:1px solid #eaeaea">
+      <th width="50%" align="center">商品</th>
+      <th width="50%" align="center">销售量（共$!allsale件）</th>
+    </tr>
+    #foreach($obj in $salesort)
+    <tr>
+      <td align="center">$!CommUtil.substring($!obj.get("name"),10)</td>
+      <td align="center">$!obj.get("data")</td>
+    </tr>
+    #end    
+  </table>
+</div>
+
+#end
+<div class="fshoptb" id="logtable"> </div>
+<div class="fshoptb">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+    <tr>
+      <th width="25%" align="center"><span class="form_btna">统计日期</span></th>
+      <th width="25%" align="center"><span class="form_btna">总点击量</span></th>
+      <th width="25%" align="center"><span class="form_btna">总收藏量</span></th>
+      <th width="25%" align="center"><span class="form_btna">总销售量</span></th>
+    </tr>
+    #foreach($obj in $stat)
+    <tr>
+      <td align="center">$!obj.get("date") </td>
+      <td align="center">$!obj.get("click")</td>
+      <td align="center">$!obj.get("collect")</td>
+      <td align="center">$!obj.get("sale")</td>
+    </tr>
+    #end
+  </table>
+</div>
+<div id="stat_result"> </div>

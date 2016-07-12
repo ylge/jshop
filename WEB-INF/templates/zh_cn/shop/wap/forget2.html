@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+var time=60;
+var time_id=""
+function countDown(){
+	--time;
+	jQuery("#code_get_result").html(time+"秒后可重新获取");
+	if(time<=0){
+	   window.clearInterval(time_id);
+	   jQuery("#code_get_result").html("");
+	   jQuery("#code_get").show();
+     }
+}
+function reg_code_get(){
+   jQuery("#code_get").hide();	
+   var accept_type=jQuery("#accept_type").val();
+   jQuery.ajax({type:'POST',url:'$!webPath/reg_code_get.htm',data:{"accept_type":accept_type,"email":"$!{user.email}","mobile":"$!{user.mobile}","userName":"$!{user.userName}"},success:function(ret){
+     if(ret=="1"){
+	   time=60;
+	   jQuery("#code_get_result").show();
+	   jQuery("#code_get").hide();
+	   time_id=setInterval(countDown,1000);
+	 }else{
+	   alert("系统繁忙，发送失败");
+	  // jQuery("#code_get_result").hide(3000); 
+	   jQuery("#code_get").show();
+	 }
+   }});
+}
+</script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>找回密码第二步<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="phone_main">
+	<!--登录页-->
+    <form action="$!webPath/wap/forget3.htm" method="post" name="theForm" id="theForm">
+    <input name="email" type="hidden" id="email" value="$!user.email" />
+            <input name="mobile" type="hidden" id="mobile" value="$!user.mobile" />    
+            <input name="userName" type="hidden" id="userName" value="$!user.userName" />
+    <div class="phone_login">
+    	<ul class="yz_step2">
+        	<li class="sele_li">
+            <select name="accept_type" id="accept_type">
+            <option value="">请选择接收方式</option>
+              #if($!CommUtil.null2String("$!user.email")!="")
+                <option value="email">邮箱接收</option>
+              #end
+               #if($!CommUtil.null2String("$!user.mobile")!="")
+                <option value="mobile">手机接收</option>
+              #end
+              </select></li>
+            <li class="tel_yz"><a href="javascript:void(0);" onClick="reg_code_get();" id="code_get">获得验证码</a><a href="javascript:void(0);" id="code_get_result" style="display:none;color:#F00;"></a></li>
+            <li class="yzm">
+          <input name="verify_code" type="text"  id="verify_code" placeholder="请输入验证码" />
+          </li><li class="yz"></li> 
+            <li class="ip_btn"><input type="submit" value="下一步" /></li>
+        </ul>
+    </div>
+	</form>
+    $!httpInclude.include("/wap/footer.htm?op=index")    
+</div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+##set ($domain = $!domainName.toLowerCase())
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>	
+	\#macro(orderPic $type)
+	\#if ($orderBy.equals($type)) 
+		<img src="image/ico/${orderType}.gif" />  
+	\#end
+\#end
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		\#parse("/include/meta.html")
+		<script type="text/javascript" src="script/easyjweb-util.js"></script>
+		<script type="text/javascript">		
+		function init(){
+			F=new FORM("$!{domain}.ejf","ListForm");
+			\#if ($\!isDel.equals('true'))
+			F.onSortCallback=function(){$("ListForm").easyJWebCommand.value="listDel";}		
+			F.onGotoPageCallback=function(){$("ListForm").easyJWebCommand.value="listDel";}
+			\#end
+			windowInit();
+		}
+		window.onload=init;		
+		</script>		
+		\#if($\!msg)
+			<script type="text/javascript">
+				alert("$\!msg");
+			</script>
+		\#end
+<!--
+模板说明：
+-->
+<link href="include/css.css" rel="stylesheet" type="text/css" />
+<title>$!{domainName}管理页面</title>
+<script language="JavaScript" src="include/ForbidNew.js" type="text/JavaScript"></script>
+
+</head>
+
+<body bgcolor="#EBF0F4" leftmargin="0" rightmargin="6" topmargin="0" bottommargin="1" scroll="no" onselectstart="return false;">
+
+<table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="Border">
+  <tr>
+    <td height="38" align="center" valign="bottom"><table width="96%" height="34"  border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td valign="middle"><table width="53%"  border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td width="10%" valign="bottom"><img src="\#if (${dir.tagImg}) ${dir.tagImg} \#else image/winzip.jpg \#end" width="32" height="32"></td>
+                <td width="90%" valign="bottom" class="titletxt">$!{domainName}信息管理</td>
+          </tr>
+        </table></td>
+        <td width="100">&nbsp;</td>
+        <td width="120">&nbsp;		</td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+	<div style="height:100%;overflow:auto;">
+		<form id="ListForm" name="ListForm"  method="post" action="$!{domain}.ejf" />		
+	   <input type="hidden" name="easyJWebCommand" value=""/>	     
+	   <input type="hidden" name="id" value="$\!id" />
+	   <input type="hidden" name="mulitId" value="$\!mulitId" />
+       <input type="hidden" name="currentPage" value="$\!currentPage"/>
+       <input name="orderBy" type="hidden" value="$\!orderBy"/>
+       <input name="orderType" type="hidden" value="$\!orderType"/>
+	      <table width="96%"  border="1" cellpadding="4" cellspacing="0" bordercolor="#30524D" bgcolor="CBD9D9" class="BorderLine" style="border-collapse: collapse" >
+            <thead>
+			 <tr valign="middle"> 
+                <td height="24" colspan="7" align="center" background="images/index_18.gif" class="title1"></td>
+              </tr>
+              <tr valign="middle"> 
+                <td width="20" height="24" background="images/index_18.gif" align="center" class="title1" style=""><input type="checkbox" onclick="F.selectAll(ids,this.checked);"></td>
+                #foreach($field in $!fields)
+					<td width="150" align="center" style="cursor:pointer" onclick="F.doSort('$!field.getName()')" class="title1">$!field.getName() #orderPic("$!field.getName()")</td>
+				#end              
+              </tr>
+            </thead>
+            \#foreach( $info in $\!list) 
+            <tr bgcolor="#F8FCF8"  class="coolselect" style="cursor:pointer" id='$\!info.$!{id.toLowerCase()}' ondblclick="F.selectRow(this.id);F.doEdit();" onClick="F.selectRow(this.id);" onMouseOver="this.className='MouseOver';" onMouseOut="this.className='MouseOut'"> 
+              <td height="23" title="111"><input type="checkbox" name="ids" value="$\!info.$!{id.toLowerCase()}"></td>
+              #foreach($field in $!fields)
+              <td height="23" title="111">$\!info.$!{field.getName()}</td>
+              #end
+            </tr>
+            \#end 
+          </table>  
+	    </form>
+	  </div>
+	  
+	  </td>
+  </tr>
+  <tr><td align="center" height="25">
+   <table width="92%" height="24"  border="0" cellpadding="0" cellspacing="0">
+        <tr valign="bottom">
+			<td nowrap>第<strong>$\!currentPage</strong>页 共<strong>$\!totalPage</strong>页<span class="txt1">[共<b>$\!rows</b>条记录]</span> 　　分页：$\!gotoPageHTML</td>
+        </tr>
+      </table>
+  </td></tr>
+  <tr>
+    <td height="40" align="left" valign="middle"><table height="30"  border="0" cellpadding="0" cellspacing="0">
+        <tr> 
+          <td width="50" align="left" valign="middle">&nbsp;</td>
+         
+          <td width="50" align="left" valign="middle"><input type="button" name="Submitadd" value="添加" onclick="F.doAdd();"> </td>
+          <td width="50" align="left" valign="middle"><input type="button" name="Submit2" value="修改" onclick="F.doEdit();"></td>
+          <td width="50" align="left" valign="middle"><input type="button" name="Submit2" value="删除" onclick="F.doDel();"></td>
+                 
+        </tr>
+      </table></td>       
+  </tr>
+</table>
+
+</body>
+</html>
+
+		

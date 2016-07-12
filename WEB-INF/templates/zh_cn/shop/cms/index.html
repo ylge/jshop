@@ -1,0 +1,594 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!{config.title} - 资讯频道 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!obj.seo_keywords" />
+<meta name="description" content="$!obj.seo_description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}" />
+<meta name="copyright" content="$!{config.copyRight}" />
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/cms.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery(".main_left_m").slide({mainCell:".main_left_news_one ul",autoPage:true,effect:"topLoop",autoPlay:true,vis:7,delayTime:1000});
+	jQuery("#brands li").mouseover(function(){
+	jQuery(this).find("span").show();
+											});
+	jQuery("#brands li").mouseout(function(){
+	jQuery(this).find("span").hide();
+											});
+});
+</script>
+</head>
+<body>
+<!-- top -->
+$!httpInclude.include("/cms/top.htm?id=index")
+
+<!-- center -->
+<div class="cms_main">
+	<div class="cms_head">
+    	<!--幻灯开始-->
+    	<div class="cms_hd_box">
+        <h1><img src="$!webPath/resources/style/system/front/default/images/cms/today.jpg" width="100" height="30" /></h1>
+		<script src="$!webPath/advert_invoke.htm?id=12"></script>
+
+		<script type="text/javascript">
+		jQuery(".cms_hd_side").slide({mainCell:".bd ul",autoPlay:true});
+		</script>
+        </div>
+        
+        <!--头条开始-->
+        <div class="cms_hd_box">
+        	<h1><img src="$!webPath/resources/style/system/front/default/images/cms/hd_new.jpg" width="100" height="30" /></h1>
+            <div class="cms_hd_mid">
+            #if($!information.cover)
+      		#set($head_img="$!imageWebServer/$!imageTools.queryImg($!information.cover).path/$!imageTools.queryImg($!information.cover).name")
+      		<span class="img"><img src="$!head_img" width="150" height="100" /></span>
+      		#end
+                <h2><a href="$!webPath/cms/detail.htm?id=$!information.id">$!information.title</a></h2>
+                <p>$!information.synopsis</p>
+            </div>
+        </div>
+        
+        <!--热点开始-->
+        <div class="cms_hd_box">
+        	<h1><img src="$!webPath/resources/style/system/front/default/images/cms/hot_new.jpg" width="100" height="30" /></h1>
+            <ul class="cms_news_ul">
+            #foreach($hot_infor in $hot_infors)
+            	<li><a href="$!webPath/cms/detail.htm?id=$!{hot_infor.id}">$!hot_infor.title</a></li>
+            #end    
+            </ul>
+        </div>
+        
+    </div>
+</div>
+
+<!-- main -->
+<div class="information_main"> 
+  <!-- main_top strat -->
+  #foreach($obj in $objs)
+  #if($!obj.type=="info-info")    
+ <div class="information_main_left_one">
+        <div class="information_main_left_one_top">
+          <h3>$!obj.title</h3>
+          </div>
+        <div class="information_main_left_one_center">
+         
+          <div class="information_main_left_one_center_left">
+             #set($map=$!gf_tools.generic_info_list("$!obj.floor_info1"))
+          #if($!map.get("info1"))
+           	#set($info=$!map.get("info1"))
+            <div class="information_main_left_one_center_left_t"><a href="$!webPath/cms/detail_$!{info.id}.htm">
+            #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+    <img src="$!imageWebServer/$!img.path/$!img.name" width="70" height="70" /> 
+    #end        
+    #end</a><span>$!info.title</span></div>
+    		#end
+            <div class="information_main_left_one_center_left_b">
+              <ul>
+              #if($!map.get("info2"))
+           		#set($info=$!map.get("info2"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info3"))
+           		#set($info=$!map.get("info3"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info4"))
+           		#set($info=$!map.get("info4"))
+                 <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info5"))
+           		#set($info=$!map.get("info5"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+              </ul>
+            </div>
+          </div>
+          
+          
+          <div class="information_main_left_one_center_right">
+          #set($map=$!gf_tools.generic_info_list("$!obj.floor_info2"))
+          	#if($!map.get("info1"))
+           	#set($info=$!map.get("info1"))
+            <div class="information_main_left_one_center_right_t">
+              <div class="information_main_left_one_center_right_t_l">#if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" />#end#end</div>
+              <div class="information_main_left_one_center_right_t_r">
+                 <h3><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></h3>
+                <p><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.synopsis</a></p>
+              </div>
+            </div>
+            #end
+            <div class="information_main_left_one_center_right_b">
+              <ul>
+                #set($map=$!gf_tools.generic_info_list("$!obj.floor_info3"))
+              #if($!map.get("info1"))
+           		#set($info=$!map.get("info1"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                <span>$!info.title</span></a></li>
+               #end
+                #if($!map.get("info2"))
+           		#set($info=$!map.get("info2"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                <span>$!info.title</span></a></li>
+               #end
+                #if($!map.get("info3"))
+           		#set($info=$!map.get("info3"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                <span>$!info.title</span></a></li>
+               #end
+                #if($!map.get("info4"))
+           		#set($info=$!map.get("info4"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                <span>$!info.title</span></a></li>
+               #end
+              </ul>
+            </div>
+          </div>
+        </div>
+       
+        <div class="information_main_right_img">
+      	<ul>
+         #foreach($info in $gf_tools.generic_info("$!obj.floor_info4"))
+        	<li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+         #end
+        </ul>
+      </div>
+      </div>     
+  #end
+  #if($!obj.type=="goods-class") 
+<div class="information_main_left_one">
+        <div class="information_main_left_one_top">
+          <h3>$!obj.title</h3>
+           </div>
+        <div class="information_main_left_one_center">
+          <div class="information_main_left_like">
+            <ul>
+            #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info1"))
+             #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm"><img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" /></a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm">#if($!goods.goods_brand.brandLogo)<img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" />#end</a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm">#if($!goods.goods_brand.brandLogo)<img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" />#end</a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm">#if($!goods.goods_brand.brandLogo)<img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" />#end</a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm">#if($!goods.goods_brand.brandLogo)<img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" />#end</a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+            </ul>
+          </div>
+        </div>
+        <div class="information_main_right_nav">
+        <h3><a href="$!webPath/index.htm"><img src="$!webPath/resources/style/system/front/default/images/cms/inf_right_nav.png" /></a></h3>
+        #foreach($c_gc in $gf_tools.generic_gf_gc("$!obj.floor_info2"))
+        <dl>
+          <dt><a href="$!webPath/store_goods_list_$!{c_gc.id}.htm">$!c_gc.className</a></dt>
+         #foreach($c_c_gc in $c_gc.childs) 
+          <dd><a href="$!webPath/store_goods_list_$!{c_c_gc.id}.htm">$!c_c_gc.className</a></dd>
+          #end
+        </dl>
+        #end
+      </div>
+      </div>
+  #end
+  <!-- main banner -->
+  <!--<div class="information_main_banner"><script src="$!webPath/advert_invoke.htm?id=11"></script></div>-->
+  <!-- main_top center -->
+   #if($!obj.type=="goods") 
+  <div class="information_main_center">
+    <div class="information_main_center">
+      <div class="information_main_left_one_top">
+        <h3>$!obj.title</h3>
+         </div>
+      <div class="information_main_center_top">
+        <ul>
+        #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info1"))
+        #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods6"))
+           			 #set($goods=$!map.get("goods6"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods7"))
+           			 #set($goods=$!map.get("goods7"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods8"))
+           			 #set($goods=$!map.get("goods8"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods9"))
+           			 #set($goods=$!map.get("goods9"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods10"))
+           			 #set($goods=$!map.get("goods10"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        </ul>
+      </div>
+    </div>
+  </div>
+  #end
+  <!-- main banner -->
+  <!-- 商城推荐-->
+   #if($!obj.type=="info-info-goods-brand") 
+  <div class="information_main_recommend">
+    <div class="information_main_left_one_top">
+      <h3>$!obj.title</h3>
+       </div>
+    <div class="information_main_recommend_center">
+          <div class="information_main_left_one_center_left">
+             #set($map=$!gf_tools.generic_info_list("$!obj.floor_info1"))
+          #if($!map.get("info1"))
+           	#set($info=$!map.get("info1"))
+            <div class="information_main_left_one_center_left_t"><a href="$!webPath/cms/detail_$!{info.id}.htm">
+            #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+    <img src="$!imageWebServer/$!img.path/$!img.name" width="70" height="70" /> 
+    #end        
+    #end<span>$!info.title</span></a></div>
+    		#end
+            <div class="information_main_left_one_center_left_b">
+              <ul>
+              #if($!map.get("info2"))
+           		#set($info=$!map.get("info2"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info3"))
+           		#set($info=$!map.get("info3"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info4"))
+           		#set($info=$!map.get("info4"))
+                 <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info5"))
+           		#set($info=$!map.get("info5"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+              </ul>
+            </div>
+          </div>
+      <div class="information_main_recommend_center_c">
+        <div class="information_main_recommend_center_c_t">
+          <dl>
+            #foreach($info in $gf_tools.generic_info("$!obj.floor_info2"))
+            <dd><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></dd>
+            #end
+          </dl>
+        </div>
+      </div>
+      <div class="information_main_left_one_center_right_r">
+        <div class="information_main_left_one_center_right_r_t">
+          <ul>
+          #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info3"))
+          #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+          </ul>
+        </div>
+        <div class="information_main_left_one_center_right_r_b">
+          <ul id="brands">
+          #foreach($brand in $gf_tools.generic_brand("$!obj.floor_info4"))
+            <li><a href="$!webPath/brand_goods_$!{brand.id}.htm">#if($!brand.brandLogo)<img src="$!imageWebServer/$!brand.brandLogo.path/$!brand.brandLogo.name" />#end<span style="display:none;">$!brand.name</span></a></li>
+             #end
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  #end
+  <!-- 大杂烩-->
+   #if($!obj.type=="goods-free-circle") 
+  <div class="information_main_collect">
+    <div class="information_main_left_one_top">
+      <h3>$!obj.title</h3>
+       </div>
+    <div class="information_main_collect_center">
+      <div class="information_main_collect_center_left">
+        <h3>新品上市</h3>
+        <div class="information_main_collect_center_left_new">
+          <ul>
+          #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info1"))
+          #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+             #if($!map.get("goods6"))
+           			 #set($goods=$!map.get("goods6"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+             #if($!map.get("goods7"))
+           			 #set($goods=$!map.get("goods7"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+             #if($!map.get("goods8"))
+           			 #set($goods=$!map.get("goods8"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+          </ul>
+        </div>
+      </div>
+      <div class="information_main_collect_center_left">
+        <h3>0元试用</h3>
+        <div class="information_main_collect_center_left_free">
+          <ul>
+           #foreach($free in $gf_tools.generic_free("$!obj.floor_info2"))
+            <li><img src="$!imageWebServer/$!free.free_acc.path/$!free.free_acc.name" /><span><a class="name" href="$!webPath/free/view_$!{free.id}.htm">$!free.free_name</a><a href="$!webPath/free/view_$!{free.id}.htm" class="botton">立即试用</a></span></li>
+            #end
+          </ul>
+        </div>
+      </div>
+      <div class="information_main_collect_center_left">
+        <h3>推荐圈子</h3>
+        <div class="information_main_collect_center_left_circle">
+          <ul>
+          #foreach($circle in $gf_tools.generic_circle("$!obj.floor_info3"))
+          #set($img=$!circleViewTools.genercircleImage("$!circle.id"))
+            <li><a href="$!webPath/circle/detail_$!{circle.id}.htm"><img src="$!imageWebServer/$!img.src" /></a><span><a href="$!webPath/circle/detail_$!{circle.id}.htm">$!circle.title</a></span></li>
+            #end
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  #end
+  
+  #end
+</div>
+$!httpInclude.include("/cms/footer.htm")
+</body>
+</html>

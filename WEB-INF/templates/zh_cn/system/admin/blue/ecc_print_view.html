@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css" />
+<title></title>
+</head>
+<body>
+<!--快递单打印 start -->
+<div class="express_center_bg"> <img  id="company_template_bg" src="$!imageWebServer/$!obj.ecc_template" /> #if($!offset_map.get("seller_company_width")!='')
+      <div class="express_center_one" id="seller_company"  style='position: absolute; left: $!{offset_map.get("seller_company_left")}px; top: $!{offset_map.get("seller_company_top")}px; width: $!{offset_map.get("seller_company_width")}px; height: $!{offset_map.get("seller_company_height")}px;'>发货公司</div>
+      #end
+      #if($!offset_map.get("seller_user_width")!='')
+      <div class="express_center_one" id="seller_user"  style='position: absolute; left: $!{offset_map.get("seller_user_left")}px; top: $!{offset_map.get("seller_user_top")}px; width: $!{offset_map.get("seller_user_width")}px; height: $!{offset_map.get("seller_user_height")}px;'>发货联系人</div>
+      #end
+      #if($!offset_map.get("seller_address_width")!='')
+      <div class="express_center_one" id="seller_address"  style='position: absolute; left: $!{offset_map.get("seller_address_left")}px; top: $!{offset_map.get("seller_address_top")}px; width: $!{offset_map.get("seller_address_width")}px; height: $!{offset_map.get("seller_address_height")}px;'>发货地址</div>
+      #end
+      #if($!offset_map.get("seller_zone_width")!='')
+      <div class="express_center_one" id="seller_zone" style='position: absolute; left: $!{offset_map.get("seller_zone_left")}px; top: $!{offset_map.get("seller_zone_top")}px; width: $!{offset_map.get("seller_zone_width")}px; height: $!{offset_map.get("seller_zone_height")}px;'>发货区号</div>
+      #end
+      #if($!offset_map.get("seller_phone_width")!='')
+      <div class="express_center_one" id="seller_phone" style='position: absolute; left: $!{offset_map.get("seller_phone_left")}px; top: $!{offset_map.get("seller_phone_top")}px; width: $!{offset_map.get("seller_phone_width")}px; height: $!{offset_map.get("seller_phone_height")}px;'>发货人电话</div>
+      #end
+      #if($!offset_map.get("receipt_company_width")!='')
+      <div class="express_center_one" id="receipt_company"  style='position: absolute; left: $!{offset_map.get("receipt_company_left")}px; top: $!{offset_map.get("receipt_company_top")}px; width: $!{offset_map.get("receipt_company_width")}px; height: $!{offset_map.get("receipt_company_height")}px;'>收货公司</div>
+      #end
+      #if($!offset_map.get("receipt_user_width")!='')
+      <div class="express_center_one" id="receipt_user" style='position: absolute; left: $!{offset_map.get("receipt_user_left")}px; top: $!{offset_map.get("receipt_user_top")}px; width: $!{offset_map.get("receipt_user_width")}px; height: $!{offset_map.get("receipt_user_height")}px;'>收货人</div>
+      #end
+      #if($!offset_map.get("receipt_address_width")!='')
+      <div class="express_center_one" id="receipt_address"  style='position: absolute; left: $!{offset_map.get("receipt_address_left")}px; top: $!{offset_map.get("receipt_address_top")}px; width: $!{offset_map.get("receipt_address_width")}px; height: $!{offset_map.get("receipt_address_height")}px;'>收货地址</div>
+      #end
+      #if($!offset_map.get("receipt_zone_width")!='')
+      <div class="express_center_one" id="receipt_zone" style='position: absolute; left: $!{offset_map.get("receipt_zone_left")}px; top: $!{offset_map.get("receipt_zone_top")}px; width: $!{offset_map.get("receipt_zone_width")}px; height: $!{offset_map.get("receipt_zone_height")}px;'>收货区号</div>
+      #end
+      #if($!offset_map.get("receipt_phone_width")!='')
+      <div class="express_center_one" id="receipt_phone" style='position: absolute; left: $!{offset_map.get("receipt_phone_left")}px; top: $!{offset_map.get("receipt_phone_top")}px; width: $!{offset_map.get("receipt_phone_width")}px; height: $!{offset_map.get("receipt_phone_height")}px;'>收货电话</div>
+
+      #end </div>
+<!--快递单打印 end -->
+<div id="submit">
+  <p class="pad120">
+    <input name="" type="button" value="打印测试" style="cursor:pointer;" onClick="template_print();"/>
+  </p>
+</div>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+function template_print(){
+  jQuery("#submit").hide();
+  jQuery("#company_template_bg").hide();
+  window.print();
+}
+function js_getDPI() {
+        var arrDPI = new Array;
+        if (window.screen.deviceXDPI) {
+           arrDPI[0] = window.screen.deviceXDPI;
+           arrDPI[1] = window.screen.deviceYDPI;
+        }else{
+          var tmpNode = document.createElement("DIV");
+          tmpNode.style.cssText = "width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden";
+          document.body.appendChild(tmpNode);
+          arrDPI[0] = parseInt(tmpNode.offsetWidth);
+          arrDPI[1] = parseInt(tmpNode.offsetHeight);
+          tmpNode.parentNode.removeChild(tmpNode);    
+        }
+       return arrDPI;
+     }
+     var list=js_getDPI();
+	 var width=$!{obj.ecc_template_width}*10*list[0]/254;
+	 var height=$!{obj.ecc_template_heigh}*10*list[0]/254;
+	 jQuery(function(){
+	   jQuery("#company_template_bg").width(width).height(height);
+	 });
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>品牌 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+	jQuery(".brand_nav_fixed a:first").addClass("this");
+   jQuery(window).scroll(function(){
+	var top = 0;
+	var id;
+	 top = jQuery(document).scrollTop();
+		 jQuery(".brand_list h2").each(function(){
+	    var top=jQuery(this).offset().top - jQuery(window).scrollTop();
+		if(top<=10 && top>0){
+		  id = jQuery(this).attr("id");
+		  jQuery(".brand_nav_fixed a").removeClass("this");
+		  jQuery("#word_"+id).addClass("this");
+		}
+	  });	
+		
+	});	
+});<!--end-->
+</script>
+</head>
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>品牌街<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="phone_main">
+  <!--品牌街-->
+  <div class="brand_page">
+    <div class="brand_list">
+    #foreach($list in $all_list)
+      <h2 id="$!list.get('word')">$!list.get("word")</h2>
+      <ul>
+      #foreach($map in $!list.get("brand_list"))
+        <li ><a href="$!webPath/wap/brand_goods.htm?gb_id=$!map.get('id')"><span class="lg"><img src="$!map.get('photo')" width="142" height="66" /></span>
+          <p class="name">$!map.get("name")</p>
+          </a></li>
+      #end  
+      </ul>
+      #end
+    </div>
+  </div>
+  <!--右侧字母-->
+  <div class="brand_nav_fixed">
+   #foreach($list in $all_list)
+  <a href="javascript:void(0);" id="word_$!list.get('word')" >$!list.get("word")</a>
+  #end
+ </div>
+  $!httpInclude.include("/wap/footer.htm?op=index") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人主页 - $!{config.title}-$!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.masonry.js"></script>
+<script src="$!webPath/resources/js/iskyshop.pubu.js"></script>
+<script>
+jQuery(document).ready(function(){
+jQuery("#container ul").live("mouseover",function(){
+		jQuery(this).addClass("this"); }).live("mouseout",function(){
+			jQuery(this).removeClass("this");
+			});
+});
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+<div class="sns_width">
+$!httpInclude.include("/buyer/my_sns_nav.htm")
+    
+    <div class="sns_main">
+    	<div class="sns_nav">
+        	<a href="$!webPath/buyer/my_sns.htm">收藏</a>
+            <a href="$!webPath/buyer/my_sns_evas.htm">评价</a>
+            <a href="$!webPath/buyer/my_sns_evaps.htm">晒单</a>
+            <a class="this" href="$!webPath/buyer/my_sns_cons.htm">咨询</a>
+             <a href="$!webPath/buyer/attention.htm?type=fans">粉丝</a>
+            <a href="$!webPath/buyer/attention.htm?type=atts">关注</a>
+            <a href="$!webPath/buyer/my_sns_invitation.htm">帖子</a> 
+            <a href="$!webPath/buyer/my_sns_circle.htm">圈子</a>
+        </div>
+        #if($!cons.size()>0)
+        <div class="sns_list" id="container">
+            #foreach($obj in $cons)
+             #foreach($map in $!CommUtil.Json2List("$!obj.goods_info"))
+                	#set($goods_id = "$!{map.get('goods_id')}")	
+                    #set($goods = $!freeTools.queryGoods($!{goods_id}))
+                    #if($!goods)
+            		#set($goods_name = "$!{map.get('goods_name')}")
+            		#set($goods_price = "$!{map.get('goods_price')}")
+            		#set($goods_mainphoto_path = "$!{map.get('goods_main_photo')}")
+            		#set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+             		#set($store=$!orderFormTools.goods_second_domain("$!{goods_id}","goods"))
+               		#set($goods_domainPath="$!webPath/goods_$!{goods_id}.htm")
+              		#if($!store&&$!config.second_domain_open && $!store.store_second_domain!="")
+               		#set($goods_domainPath="http://$!{store.store_second_domain}.$!{domainPath}/goods_$!{goods_id}.htm")
+               		#end<a href="$!goods_domainPath" target="_blank">
+            	<ul class="item">
+                	<li class="img"><img src="$!img" width="223"  /><span class="pri">¥$!{goods.store_price}</span></li>
+                    <li class="name">$!{goods_name}</li>
+                    <li class="like"><span class="love"><i></i>喜欢<b>$!goods.favs.size()</b></span><span class="num">销量($!goods.goods_salenum)</span></li>
+                   <li>
+                    	<dl class="dis">
+                        	<dt>咨询：</dt>
+                            <dd class="dis_info">$!obj.consult_content</dd>
+                        </dl>
+                    </li>
+                    #if($!obj.reply)
+                     <li>
+                    	<dl class="dis">
+                        	<dt>回复：</dt>
+                            <dd class="dis_info">$!obj.consult_reply</dd>
+                        </dl>
+                    </li>
+                    #end
+                </ul>
+                	#end
+                	#end
+                </a>
+            #end
+        </div>
+        #else
+        <div class="sns_nothing">
+        	<span class="fl"><img src="$!webPath/resources/style/system/front/default/images/sns_no.png" width="30" height="30" /></span>
+            <span class="fr">没有您想要的信息！</span>
+        </div>
+        #end
+    </div>
+</div>
+<div id="page-nav" style="display: none">
+  <a href="$!webPath/buyer/sns_ajax_cons.htm" class="nextprev" rel="2"></a>
+  </div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

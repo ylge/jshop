@@ -1,0 +1,29 @@
+#foreach($applyLog in $applyLogs)
+#set($obj = $!this.queryFreeGoods("$!applyLog.freegoods_id"))
+#set($img = "$!imageWebServer/$!obj.free_acc.path/obj.free_acc.name")
+
+<dl>
+<dt><img src="$!img" width="150" height="62" /></dt>
+<dd>
+<p class="name">$!obj.free_name</p>
+<p>申请时间：$!CommUtil.formatShortDate("$!applyLog.addTime")</p>
+<p><a class="see" href="$!webPath/wap/buyer/freeapply_detail.htm?id=$!applyLog.id">查看详情</a></p>
+</dd>
+<dd class="bt"><span>审核状态：
+#if($!applyLog.apply_status==0)
+<b>待审核</b></span>
+#elseif($!applyLog.apply_status==5)
+<b class="green">通过</b>
+#elseif($!applyLog.apply_status==-5)
+<b class="red">审核失败</b>
+#end
+<span>评价状态：
+#if($!applyLog.evaluate_status==1)
+<b class="green">已评价</b>
+#else
+<b class="red">未评价</b>
+#end
+</span></dd>
+</dl>
+
+#end

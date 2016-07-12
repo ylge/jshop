@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>优惠券列表 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+</head>
+
+<body class="user_bg">
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">我的优惠券</span></div>
+<div class="user_index">
+    <div class="user_order_w" style="margin-top:50px;">
+    #if($!couponinfos.size()>0)
+    #foreach($obj in $!couponinfos)
+    #if($!obj.status == 0)
+    	<div class="sale_red sale_list">
+        <section>
+            <span class="sale_left">优惠卷</span>
+            <div class="sale_box">
+            <h3>￥ $!obj.coupon.coupon_amount<sub>元</sub></h3>
+            <span>购物满 $!obj.coupon.coupon_order_amount 立减 $!obj.coupon.coupon_amount 元现金</span>
+            <p>使用期限:$!CommUtil.formatShortDate($!obj.coupon.coupon_begin_time)~$!CommUtil.formatShortDate($!obj.coupon.coupon_end_time)
+            </p>
+            </div>
+            <span class="sale_right">立即兑换</span>
+        </section>
+        </div>
+    #elseif($!obj.status == 1) 
+    	<div class="sale_gray sale_list">
+        <section>
+            <span class="sale_left">优惠卷</span>
+            <div class="sale_box">
+            <h3>￥ $!obj.coupon.coupon_amount<sub>元</sub></h3>
+            <span>购物满 $!obj.coupon.coupon_order_amount 立减 $!obj.coupon.coupon_amount 元现金</span>
+            <p>使用期限:$!CommUtil.formatShortDate($!obj.coupon.coupon_begin_time)~$!CommUtil.formatShortDate($!obj.coupon.coupon_end_time)
+            </p>
+            </div>
+            <span class="sale_right">已使用</span>
+        </section>
+        </div>
+    #else
+    	<div class="sale_gray sale_list">
+        <section>
+            <span class="sale_left">优惠卷</span>
+            <div class="sale_box">
+            <h3>￥ $!obj.coupon.coupon_amount<sub>元</sub></h3>
+            <span>购物满 $!obj.coupon.coupon_order_amount 立减 $!obj.coupon.coupon_amount 元现金</span>
+            <p>使用期限:$!CommUtil.formatShortDate($!obj.coupon.coupon_begin_time)~$!CommUtil.formatShortDate($!obj.coupon.coupon_end_time)
+            </p>
+            </div>
+            <span class="sale_right">已过期</span>
+        </section>
+        </div>
+    #end   
+    #end  
+    #else
+    <div class="car_none" style="padding-top:20px">  <b>您还没有优惠券！</b>
+</div>
+	#end  
+    </div>
+</div>
+$!httpInclude.include("/wap/footer.htm?op=center")
+</body>
+</html>

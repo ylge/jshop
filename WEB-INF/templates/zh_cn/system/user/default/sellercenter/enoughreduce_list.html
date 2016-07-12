@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-满就减- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	#if($!erstatus)
+	jQuery("#erstatus").val($!erstatus);
+	#end
+ jQuery('#erbegin_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#erend_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+});<!--end-->
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=enoughreduce") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>促销推广</b>><b>满就减</b></span></div>
+      <div class="seller_list">
+      <div class="seller_list_title">
+        <ul class="seller_title_ul">
+          <li class="this"><a href="$!webPath/seller/enoughreduce_list.htm"><i></i>满就减列表</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_add.htm"><i></i>新增满就减</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_meal.htm"><i></i>套餐购买</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_meal_log.htm"><i></i>购买日志</a></li>
+        </ul>
+      </div>
+      <div  class="user_sp_right">
+      <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/enoughreduce_list.htm">
+        <span></span> <span>标题</span><span class="size150">
+        <input name="ertitle" type="text" id="ertitle"  value="$!ertitle">
+        </span> <span class="size150">
+        <input name="erbegin_time" type="text" id="erbegin_time"  placeholder="开始时间" value="$!erbegin_time"/>
+        </span>- <span class="size150">
+        <input name="erend_time" type="text" id="erend_time" placeholder="结束时间" value="$!erend_time"/>
+        </span> <span>状态</span> <span class="size150">
+        <select name="erstatus" id="erstatus">
+          <option value="">所有状态</option>
+          <option value="0">待审核</option>
+          <option value="10">审核通过</option>
+          <option value="20">已结束</option>
+          <option value="-10">审核未通过</option>
+        </select>
+        </span>
+        <input name="" type="submit"  value="搜索" style="cursor:pointer;"  class="seller_sear_btn"/>
+        </span>
+        <div class="seller_list_box">
+          <div class="operation"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+            #if($objs.size()>0)
+              <tr id="opertitle">
+                <th width="2%"></th>
+                <th width="18%">满就减标题</th>
+                <th width="20%">满减金额</th>
+                <th width="10%">开始时间</th>
+                <th width="10%">结束时间</th>
+                <th width="15%">状态</th>
+                <th align="center">操作</th>
+              </tr>
+              #foreach($obj in $objs)
+              <tr >
+                <td align="center"><span class="checkpro">
+                  <input name="checkbox" type="checkbox" id="checkbox$!obj.id" value="$!obj.id" />
+                  </span></td>
+                <td align="center">$!obj.ertitle</td>
+                <td align="center">$!obj.ertag</td>
+                <td align="center">$!CommUtil.formatShortDate($!obj.erbegin_time)</td>
+                <td align="center">$!CommUtil.formatShortDate($!obj.erend_time)</td>
+                <td align="center">#if($!obj.erstatus==0)
+                  #if($!obj.ergoods_ids_json.length()>2)待审核
+                  [<a href="$!webPath/seller/enoughreduce_apply.htm?id=$!obj.id" style="color:#03F;  text-decoration:underline"  title="提交申请及审核成功后不能修改">提交申请</a>]
+                  #else<span style="color:#F00">无活动商品</span>#end
+                  #elseif($!obj.erstatus==5)审核中
+                  #elseif($!obj.erstatus==10)审核通过
+                  #elseif($!obj.erstatus==20)已结束
+                  #elseif($!obj.erstatus==-10)未通过
+                  [<a href="$!webPath/seller/enoughreduce_apply.htm?id=$!obj.id" style="color:#03F; text-decoration:underline">提交申请</a>]#end</td>
+                <td align="center" class="del_operate"><a href="$!webPath/seller/enoughreduce_info.htm?id=$!{obj.id}" class="del_a">详情</a> #if($!{obj.erstatus}<=0)<a href="$!webPath/seller/enoughreduce_edit.htm?id=$!obj.id" class="del_a">编辑</a> <a href="$!webPath/seller/enoughreduce_goods.htm?er_id=$!obj.id" class="del_a">活动商品</a> #end <a href="javascript:void(0);" onclick="showDialog('msg_info','','确认删除该条数据吗?',1,'question',3,function(){window.location.href='$!webPath/seller/enoughreduce_del.htm?mulitId=$!obj.id'});" class="del_a">删除</a></td>
+              </tr>
+              #end
+              #else
+              <tr>
+                <td colspan="6" align="center"><div class="seller_center_nothing">
+                    <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                    <div class="seller_center_nothing_right">暂时没有数据</div>
+                  </div></td>
+              </tr>
+              #end
+            </table>
+          </div>
+        </div>
+        #if($objs.size()>0)
+        <div class="userlist_allop">
+          <div class="seller_list_page">
+            <div  class="seller_page_sp">
+              <input name="er_id" type="hidden" id="er_id" value="$!er_id" />
+              <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+              <input name="mulitId" type="hidden" id="mulitId" />
+              $!gotoPageFormHTML</div>
+            <div class="user_listoper_p"> <i>
+              <input name="all" type="checkbox" id="all" value="" onclick="selectAll(this)" />
+              <label for="all">全选</label>
+              </i> <a  href="javascript:void(0);" onclick="cmd('$!webPath/seller/enoughreduce_del.htm','')" class="seller_oper_all">删除</a></div>
+          </div>
+        </div>
+        #end
+        
+      </form>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

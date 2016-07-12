@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-物流设置- $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+function default_ec(id){
+	jQuery.ajax({type:'POST',url:'$!webPath/seller/ecc_default.htm',data:{"id":id},
+			success:function(data){				
+				 if(data=="true"){
+					window.location.href="$!webPath/seller/ecc_list.htm?currentPage=$!currentPage"
+				 }
+			}});	
+}
+
+function default_ec_cancle(id){
+	jQuery.ajax({type:'POST',url:'$!webPath/seller/ecc_default_cancle.htm',data:{"id":id},
+			success:function(data){				
+				 if(data=="true"){
+					window.location.href="$!webPath/seller/ecc_list.htm?currentPage=$!currentPage"
+				 }
+			}});	
+}
+function bind_default(id){
+	showDialog("msg_info","","恢复后不可撤销，是否继续?",1,"warning",3,function(){
+	   window.location.href="$!webPath/seller/ecc_bind_defalut_template.htm?id="+id;
+	});
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=store_express") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>交易管理</b>><b>常用物流列表</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/ecc_set.htm"><i></i>常用物流配置</a></li>
+            <li class="this"><a href="$!webPath/seller/ecc_list.htm"><i></i>常用物流列表</a></li>
+          </ul>
+        </div>
+        <div class="user_ser_warning">
+          <ul>
+            <li>常用物流配置说明：</li>
+            <li>发货时将会从常用物流中选择，自动选择默认物流公司，如未配置常用物流则发货不选择物流信息。</li>
+            <li>可以配置打印设置，发货完毕后快递打印运费单，目前仅支持单个快递单打印。</li>
+            <li>平台没有配置的物流模板或者本地物流模板和平台配置不一致的，可以选择“自建物流模板”。</li>
+          </ul>
+        </div>
+        <form method="post" name="ListForm" id="ListForm" action="$!webPath/seller/ecc_list.htm">
+        <div class="seller_list_box">
+          <div class="operation">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table">
+              <tr id="opertitle">
+                <th width="18%">物流名称</th>
+                <th width="20%">物流模板</th>
+                <th width="10%">默认物流</th>
+                <th  align="center">操作</th>
+              </tr>
+              #if($objs.size()>0)
+              #foreach($obj in $objs)
+              <tr>
+                <td align="center">$!obj.ecc_name</td>
+                
+                #set($hight=100*$!{obj.ecc_template_heigh}/$!{obj.ecc_template_width})
+                <td align="center"><a href="$!webPath/$!obj.ecc_template" target="_blank"><img src="$!imageWebServer/$!obj.ecc_template" width="100" height="$!{hight}"   alt="暂无物流模板" /></a></td>
+                <td align="center">#if($!obj.ecc_default==1)是#else否#end</td>
+                <td align="center" class="del_operate">
+                #if($!obj.ecc_default==0)
+                <a href="javascript:void(0);"  onclick="default_ec('$!obj.id')" class="del_a">设为默认</a>
+                #else
+                <a href="javascript:void(0);"  onclick="default_ec_cancle('$!obj.id')" class="del_a">取消默认</a>
+                #end
+                 <a href="$!webPath/seller/ecc_print_view.htm?id=$!obj.id" target="_blank"  class="del_a">打印测试</a>
+                 #if($!obj.ecc_from_type==0)
+                 <a href="$!webPath/seller/ecc_print_set.htm?id=$!obj.id" class="del_a">打印配置</a>
+                 #end
+                 #if($!obj.ecc_from_type==1)
+                 <a href="javascript:void(0);" onclick="bind_default('$!obj.id');" class="del_a">绑定系统模板</a>
+                 <a href="$!webPath/seller/ecc_design.htm?id=$!obj.id&currentPage=$!currentPage" class="del_a">自建模板设计</a>
+                 #end
+                 <a href="$!webPath/seller/ecc_create.htm?id=$!obj.id" class="del_a">自建模板</a>
+               	 <a href="$!webPath/seller/ecc_delete.htm?id=$!obj.id" class="del_a">删除模板</a>
+                </td>
+              </tr>
+              #end
+              #else
+              <tr>
+              <td colspan="5" align="center"><div class="seller_center_nothing">
+                  <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                  <div class="seller_center_nothing_right">暂时没有数据</div>
+                </div></td>
+            </tr>
+              #end
+            </table>
+          </div>
+          #if($objs.size()>0)
+          <div class="userlist_allop">
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">
+                <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+                <input name="mulitId" type="hidden" id="mulitId" />
+                $!gotoPageFormHTML</div>
+            </div>
+          </div>
+          #end
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

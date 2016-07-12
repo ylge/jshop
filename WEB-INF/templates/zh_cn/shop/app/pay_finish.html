@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/app/css/style.css">
+<title></title>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+function iosFun(cmd,para)
+{ 
+    document.location="objc://"+cmd+":/"+para;  //cmd代表objective-c中的的方法名，parameter1自然就是参数了
+}
+</script>
+</script>
+</head>
+<body style="background-image:none">
+<div class="succeed">
+  <div class="pd10">
+    <div class="succeed_left"><img src="$!webPath/resources/style/app/images/succeed.png" width="48" height="48" /></div>
+    #if($!order_type=="integral")
+    <div class="succeed_right">
+      <ul>
+        <li><strong>支付成功！</strong></li>
+        <li>订单号：$!{obj.igo_order_sn}</li>
+      <li>付款金额：<b>¥$!{obj.igo_trans_fee}</b></li>
+      </ul>
+    </div>
+    #else
+    <div class="succeed_right">
+      <ul>
+        <li><strong>#if($!obj.payType=="payafter")下单成功，请等待发货！ #else付款成功！#end</strong></li>
+        <li>订单号：$!{obj.order_id}</li>
+      #if(!$!obj.payType || $!obj.payType=="")<li>付款金额：<b>¥$!{order_total_price}</b></li>#end
+      </ul>
+    </div>
+    #end
+  </div>
+</div>
+ #if($!order_type=="integral")
+ <div class="back_btn"><a href="javascript:void(0);" #if($!type=="android") onClick="window.js.go_integral_order('$!{obj.id}')" #else onClick="iosFun('go_integral_order','$!{obj.id}')"  #end>订单详情</a></div>
+ #else
+ 	#if($!obj.order_cat==2)
+     <div class="back_btn"><a href="javascript:void(0);" #if($!type=="android") onClick="window.js.go_group_order('$!{obj.id}')" #else onClick="iosFun('go_group_order','$!{obj.id}')"  #end>订单详情</a></div>
+    #else
+    <div class="back_btn"><a href="javascript:void(0);" #if($!type=="android") onClick="window.js.go_goods_order('$!{obj.id}')" #else onClick="iosFun('go_goods_order','$!{obj.id}')"  #end>订单详情</a></div>
+    #end
+#end
+</body>
+</html>

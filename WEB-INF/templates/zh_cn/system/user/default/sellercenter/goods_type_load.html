@@ -1,0 +1,25 @@
+#foreach($property in $gtpList)
+          <tr>
+            <td align="right" valign="top">$!{property.name}：</td>
+            <td>
+            
+            <div class="goods_brand_input">
+                <div class="goods_brand_input_top" pid="$!{property.id}">
+            
+                      <label lid="$!{property.id}" class="goods_brand_infor" name="property_$!{property.id}" id="property_$!{property.id}"></label>          
+                    
+                     <b><a href="javascript:void(0);"></a></b>            
+                </div>  
+                        
+                <div aa="$!property.value" class="goods_brand_input_list" lid="$!{property.id}" id="list_$!{property.id}" style="display:none">
+                  <input class="list_search" pid="$!{property.id}" id="keyup_$!{property.id}" type="text" />
+                  <ul>
+                      #foreach($info in $CommUtil.splitByChar("$!property.value",","))
+                      <li>$!info</li>
+                      #end
+                  </ul>
+                 </div>            
+            </div>
+           </td>
+          </tr>
+          #end

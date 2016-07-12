@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>申请0元试用 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.iskyshop.validate.js"></script>
+<script>
+jQuery(document).ready(function(){	
+//
+  #if($!addrs.size()==0)
+   jQuery.ajax({type:'POST',url:'$!webPath/cart_address_create.htm',data:'',
+				    success:function(data){
+					    jQuery(".shopping_orderinfo_top").after(data);
+					 }
+	});
+  #end 
+    jQuery(":radio[id^=addr_id]:first").attr("checked",true);	//默认地址
+	jQuery("select[id^=ship_price_]").find("option:first").attr("selected",true);//默认运费
+	jQuery(".goodscar").remove();//清除购物车
+   //
+   jQuery(".shopping_address_one").live("mouseover",function(){
+      jQuery(this).find(".shopping_address_one_edit").show(); 
+	  jQuery(this).find(".shopping_address_one_default").show(); 
+   }).live("mouseleave",function(){
+        jQuery(this).find(".shopping_address_one_edit").hide(); 
+		jQuery(this).find(".shopping_address_one_default").hide(); 
+   });
+   
+   //
+   jQuery("#addr_add ").css("cursor","pointer").click(function(){
+	   jQuery(".shopping_address_one_top_add").remove();	
+	   jQuery(".shopping_address_first").parent().remove();
+	   jQuery.ajax({type:'POST',url:'$!webPath/cart_address_create.htm',data:'',
+				    success:function(data){
+					    jQuery(".shopping_orderinfo_top").after(data);
+					 }
+				   });
+    });
+});//
+function addr_default(addr_id,obj){
+	jQuery.post("$!webPath/cart_addr_default.htm",{"id":addr_id},
+				function(data){
+			       if(data=="true"){
+					  	jQuery(".shopping_address_one").removeClass("this");
+	                    jQuery(obj).parent().parent().parent().addClass("this");
+						var addr_id=jQuery(obj).parent().parent().parent().attr("addr_id");
+	                    jQuery("#addr_id").val(addr_id);
+  		                #foreach($map in $map_list)
+		                   #set($store_id="$!{map.get('store_id')}")
+	                    jQuery.ajax({type:'POST',url:'$!webPath/order_address.htm',data:{'addr_id':addr_id,"store_id":"$!{store_id}"},dataType:'json',
+				         beforeSend: function(){
+					           jQuery("#order_save").removeAttr("disabled");  
+					      },
+				         success:function(data){
+	                         jQuery("#ship_price_$!{store_id}").empty();
+					         jQuery(data).each(function(index,item){					
+					         jQuery("#ship_price_$!{store_id}").append("<option value='"+item.value+"'>"+item.key+"</option>");
+					     });
+				       }
+	                });
+		         #end
+	           }
+	},"text")
+}
+function addr_edit(id,obj){	
+  jQuery(".shopping_address_one_top_add").remove(); 
+  jQuery('.shopping_address_first').parent().remove();
+  jQuery.post("$!webPath/cart_address.htm",{"id":id},
+			  function(data){
+			    jQuery(obj).parent().parent().parent().append(data);
+				jQuery(".shopping_address_one_top_add").show();
+			  },"html");
+}
+var time_count=2;
+var alert_timer_id;
+function save_order(){
+	var addr_save = true;	
+  	if(jQuery("#addr_id").val()==""){
+	   var top = jQuery(".shopping_address_first").offset().top-80;
+       jQuery('body,html').animate({scrollTop:top},1000);
+	   addr_save=false;
+	   jQuery("body").remove(".prompt");
+	   jQuery("body").append("<div id='prompt' class='prompt'><div class='prompt_center'><div class='prompt_center_top'>您还未填写地址哦！</div><div class='prompt_center_b'>此消息<span id='time_count_down'>2</span>秒后自动关闭...</div></div></div>");
+	   time_count=2;
+	   alert_timer_id=window.setInterval("closewin('prompt')",1000);
+	}else{
+		jQuery("#cart_form").submit();   
+		}
+}
+function closewin(id) {
+  time_count--;
+  if(time_count==0){
+   jQuery("#"+id).remove();
+   window.clearInterval(alert_timer_id);
+  }else{
+   jQuery("#time_count_down").html(time_count);
+  } 
+}
+</script>
+<style type="text/css">
+.goodscar {
+	display:none;
+}
+.top_user {
+	position:absolute;
+	right:0px
+}
+.head_search {
+	width:610px;
+}
+.head_seartxt .h_sear_txt {
+	width:500px;
+}
+</style>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="shopping_cart">
+    <div class="shopping_orderinfo_top" style="margin-top:0px;">
+      <h3>收货地址信息</h3>
+      <div class="shoppin_addrees_top_add"><a id="addr_add" href="javascript:void(0);">添加新地址</a></div>
+    </div>
+    <form action="$!webPath/free_apply_save.htm" method="post" id="cart_form">
+      <div class="shopping_information">
+        <div class="shopping_orderinfo">
+          <div class="shopping_address"> #foreach($addr in $addrs)
+            #if($!velocityCount==1)
+            #set($addr_id="$!{addr.id}")
+            #set($area_id="$!{addr.area.id}")
+            #end
+            <div addr_id="$!addr.id" class="shopping_address_one #if($!velocityCount==1)this#end">
+              <ul>
+                <li class="shopping_address_one_top">收货人：$!{addr.trueName}</li>
+                <li class="shopping_address_one_tel">联系电话：$!{addr.mobile}&nbsp;&nbsp;$!{addr.telephone}</li>
+                <li class="shopping_address_one_address">收货地址：$!{addr.area.parent.parent.areaName}$!{addr.area.parent.areaName}$!{addr.area.areaName}</li>
+                <li class="shopping_address_one_address_a">详细地址：$!{addr.area_info}</li>
+                <li class="shopping_address_one_coding">邮编：$!{addr.zip}</li>
+                <li class="shopping_address_one_edit" style="display:none;"><a href="javascript:void(0);" onclick="addr_edit('$!{addr.id}',this)">编辑</a></li>
+                <li class="shopping_address_one_default" style="display:none;"><a href="javascript:void(0);" onclick="addr_default('$!{addr.id}',this)">设为默认地址</a></li>
+              </ul>
+            </div>
+            #end </div>
+        </div>
+        <div class="free_mess">
+        	<h2>申请留言</h2>
+            <textarea class="mess" name="apply_reason"></textarea>
+            <div class="tips">填写留言可提高审核通过率，请认真填写。</div>
+        </div>
+        <div class="result_count">
+          <div class="result_count_submit">
+            <span class="count_submit_btn">
+            <input name="order_save" type="button"  value="提交申请" onclick="save_order();"  style="cursor:pointer;" id="order_save"/>
+            <input name="apply_session" type="hidden" id="apply_session" value="$!apply_session" />
+            <input name="id" type="hidden" id="id" value="$!{id}" />
+            <input name="addr_id" id="addr_id" type="hidden" value="$!addr_id" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  $!httpInclude.include("/footer.htm") </div>
+ 
+</body>
+</html>

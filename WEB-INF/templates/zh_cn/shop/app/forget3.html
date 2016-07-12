@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(function(){
+  jQuery("#theForm").validate({
+	errorPlacement: function(error, element) {  
+					error.appendTo(jQuery("#error_place"));
+					 jQuery("#error_place").show();
+					 if(jQuery("#error_place").html()=="")
+     						 jQuery("#error_place").hide(); 
+   					 },	
+	success:function(label) {
+     		jQuery(label).remove();
+		if(jQuery("#error_place").html()=="")
+     						 jQuery("#error_place").hide();
+						},
+    rules:{
+		  password:{required:true,minlength:6},
+		  password1:{required:true, equalTo:"#password"}
+		},
+	messages:{
+		 password:{required:"密码不能为空  ",minlength:"密码长度最小为6位字母  "},
+		 password1:{required:"重复密码不能为空  ", equalTo:"两次输入密码不一致  "}
+		}
+  });
+})
+function submit_form(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<div class="phone_main">
+	<!--登录页-->
+    <form action="$!webPath/app/forget4.htm" method="post" name="theForm" id="theForm">
+    <input name="userName" type="hidden" id="userName" value="$!userName" />
+    <input name="verify_session" type="hidden" id="verify_session" value="$!verify_session" />
+    <div class="phone_forget">
+    	<ul>
+        	<li class="forget_word" style="border-bottom:1px solid #dfdfdf"><span><input name="password" type="password"  id="password" placeholder="请输入密码" /></span></li>
+            <li class="forget_word" style="border-bottom:1px solid #dfdfdf"><span><input name="password1" type="password"  id="password1" placeholder="确认密码" /></span></li>
+        </ul>
+        <div class="forget_error" id="error_place" style="display:none"></div>
+        <div class="phone_forget_button"><a href="javascript:void(0)" onClick="submit_form()">提交</a></div>
+    </div>
+	</form>
+</div>
+</body>
+</html>

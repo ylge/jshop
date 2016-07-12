@@ -1,0 +1,31 @@
+
+#foreach($obj in $eva_objs)
+#set($img="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+#if($!obj.evaluate_user.photo)
+#set($img="$!imageWebServer/$!obj.evaluate_user.photo.path/$!obj.evaluate_user.photo.name")
+#end
+    <dl>
+        <dt><img src="$!img" width="50" height="50" /></dt>
+        <dd><p><span class="fl">$!{obj.evaluate_user.userName}</span><span class="fr">$!CommUtil.formatShortDate($!obj.addTime)</span></p><p>$!{obj.evaluate_info}</p></dd>
+        #if($!obj.reply_status==1)
+        <dd class="reply"><span class="gray">回复：</span>$!obj.reply</dd>
+        #end
+    </dl>
+    #if($!evaluateViewTools.queryEvaImgSrc($!obj.evaluate_photos).size()>0)
+        <dl>
+            <dt><img src="$!img" width="50" height="50" /></dt>
+            <dd>
+                <p>
+                    <span class="fl">$!{obj.evaluate_user.userName}</span>
+                    <span class="fr">$!CommUtil.formatShortDate($!obj.addTime)</span>
+               </p>
+               <p class="eva">$!{obj.evaluate_info}</p>
+               <p class="pic">
+               #foreach($!img in $!evaluateViewTools.queryEvaImgSrc($!obj.evaluate_photos))
+                <img src="$!imageWebServer/$!img.path/$!img.name" width="100" height="100" />
+               #end 
+               </p>
+            </dd>
+        </dl>
+    #end
+#end

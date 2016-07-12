@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+//
+  jQuery("#theForm").validate({
+    rules:{
+	  title:{
+	    required :true
+	  }
+	 },
+	messages:{
+	  title:{required:"导航标题不能为空"}
+	}
+  });
+  
+  jQuery("#status").val("$!obj.status");
+  jQuery("#class_id").val("$!obj.class_id")
+	jQuery("#status").change(function(){
+		var val =	jQuery(this).val();
+			if(val==-1){
+				jQuery("#refuse").show();
+				}else{
+				jQuery("#refuse").hide();
+					}
+		});
+	#if($!obj.status==-1)
+		jQuery("#refuse").show();
+	#end
+	
+});
+
+function saveForm(){
+ var type=jQuery(":radio[id='type'][checked=true]").val();
+ var type_id=jQuery("#"+type+"_id");
+ jQuery("#type_id").val(type_id);
+ jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">页面导航</h1>
+  <div class="nav_list">
+    <ul>
+      <li> <a href="$!webPath/admin/circle_list.htm"><b>管理</b></a></li>
+      <li> <a href="$!webPath/admin/circle_add.htm" class="this" ><b>新增</b></a> </li>
+      #if($!edit)
+      <li> <a href="javascript:void(0);" class="this"><b>编辑</b></a></li>
+      #end
+    </ul>
+  </div>
+  <form name="theForm" id="theForm" action="$!webPath/admin/circle_save.htm" method=post>
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <div class="edit">
+      <div class="editul setcont">
+        <ul class="set1">
+          <li class="setcont_bg">圈子名称:</li>
+          <li><span class="webname"> $!obj.title </span></li>
+        </ul>
+        #if($!photo_map)
+        <ul class="set1">
+          <li class="setcont_bg">圈子图标:</li>
+          <li><span class="webname"> <img src="$!imageWebServer/$!{photo_map.src}" width="150px" height="100px"/> </span></li>
+        </ul>
+        #end
+        <ul class="set1">
+          <li class="setcont_bg">申请人：</li>
+          <li><span class="webname"> $!obj.userName </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">圈子类型：</li>
+          <li><span> $!obj.class_name </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">圈子说明：</li>
+          <li><span class="webname"> $!obj.content </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">圈子状态：</li>
+          <li><span>
+            <select name="status" id="status">
+              <option value="0">待审核</option>
+              <option value="5">审核通过</option>
+              <option value="-1">审核拒绝</option>
+            </select>
+            </span></li>
+        </ul>
+        <ul class="set1"  id="refuse" style="display:none">
+          <li class="setcont_bg">拒绝理由：</li>
+          <li><span class="webname">
+            <textarea id="refuseMsg" name="refuseMsg" rows="5" cols="29">$!obj.refuseMsg</textarea>
+            </span></li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <div class="submit"> <span class="pad120">
+    <input name="save" type="button" value="提交" onclick="saveForm()" />
+    </span> </div>
+</div>
+</body>
+</html>

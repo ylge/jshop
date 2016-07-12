@@ -1,0 +1,25 @@
+#if($!cons.size()>0)
+#foreach($obj in $cons)
+#foreach($map in $!CommUtil.Json2List("$!obj.goods_info"))
+#set($goods_id = "$!{map.get('goods_id')}")	
+#set($goods = $!freeTools.queryGoods($!{goods_id}))
+#if($!goods)
+#set($goods_name = "$!{map.get('goods_name')}")
+#set($goods_price = "$!{map.get('goods_price')}")
+#set($goods_mainphoto_path = "$!{map.get('goods_main_photo')}")
+#set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+#set($store=$!orderFormTools.goods_second_domain("$!{goods_id}","goods"))
+#set($goods_domainPath="$!webPath/goods_$!{goods_id}.htm")
+#if($!store&&$!config.second_domain_open && $!store.store_second_domain!="")
+#set($goods_domainPath="http://$!{store.store_second_domain}.$!{domainPath}/goods_$!{goods_id}.htm")
+#end<a href="$!goods_domainPath" target="_blank">
+<ul class="item">
+<li class="img"><img src="$!img" width="223"  /><span class="pri">¥$!{goods.store_price}</span></li>
+<li class="name">$!{goods_name}</li>
+<li class="like"><span class="love"><i></i>喜欢<b>$!goods.favs.size()</b></span><span class="num">销量($!goods.goods_salenum)</span></li>
+</ul>
+#end
+#end
+</a>
+#end
+#end

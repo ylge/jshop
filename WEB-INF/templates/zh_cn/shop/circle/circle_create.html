@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>创建圈子 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/circle.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script>
+jQuery(document).ready(function(){
+  //
+   jQuery.validator.addMethod("title_verify",function(value,element){
+	    var re =  /^([0-9a-zA-Z]|[\u4E00-\u9FA5])+$/;
+        if(re.test(jQuery("#title").val())){			
+			return true;
+		  } 
+		  else {
+		    return false;
+			  }		  
+});
+      jQuery.validator.addMethod("content_verify",function(value,element){
+	    var re =  /^([0-9a-zA-Z]|[\u4E00-\u9FA5])+$/;
+        if(re.test(jQuery("#content").val())){			
+			return true;
+		  } 
+		  else {
+		    return false;
+			  }		  
+});
+      jQuery.validator.addMethod("title_count",function(value,element){
+	    var val =jQuery("#title").val();
+		var len  =val.length;
+		if(len<=20 && len>=4){
+			return true;
+			}else{
+			return false;	
+				}
+		});
+	  jQuery.validator.addMethod("content_count",function(value,element){
+	    var val =jQuery("#content").val();
+		var len  =val.length;
+		if(len<=255 && len>=20){
+			return true;
+			}else{
+			return false;	
+				}
+		});
+	  jQuery.validator.addMethod("img_validat",function(value,element){
+	    var val =jQuery("#img_id").val();
+		if(val!=""){
+			return true;
+			}else{
+			return false;	
+				}
+		});
+ jQuery("#theForm").validate({					 
+    rules:{
+	  title:{required :true,title_verify:true,title_count:true},
+	  content:{required :true,content_count:true},
+	   image:{img_validat :true},
+	   circle_aggren:{required :true}
+	 },
+	messages:{
+	  title:{required :"圈子名称不能为空！",title_verify :"不可使用特殊字符！",title_count:"字符长度在4~12个字符之间！"},
+	  content:{required :"圈子说明不能为空！",content_count:"字符长度在20~255个字符之间！"},
+	  image:{img_validat :"请上传圈子图标"},
+	  circle_aggren:{required :"请接受圈子使用须知"}
+	},
+	errorPlacement: function(error, element) {
+		 element.parent().parent().find(".tipe").html("");
+         error.appendTo(element.parent().parent().find(".tipe"));
+           }	 
+  });
+ 		//ajax图片上传
+		  jQuery("#image").live("change",function(){
+			var img_id =jQuery("#img_id").val();									  
+			jQuery.ajaxFileUpload({
+                 url:'$!webPath/circle/image_upload.htm?img_id='+img_id,
+                 fileElementId:['image'],      
+                 dataType: 'json',                
+                 success: function (data){   
+				 if(data.ret=="true"){
+					 	jQuery("#dl_img").show().find("img").attr("src",data.src);
+						jQuery("#img_id").val(data.id);
+
+					 } 
+				}
+			});
+	  }); 
+  });////
+
+function submit_form(){
+	jQuery("#theForm").submit();
+	}
+ </script>
+</head>
+
+<body>
+
+<!--圈子申请 -->
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/circle/head.htm")
+$!httpInclude.include("/circle/nav.htm")
+<div class="circle_main">
+    <div class="circle_main_center">
+          <div class="circle_main_center_top">创建我自己的圈子</div>  
+          <div class="circle_main_center_maid">欢迎在$!{config.title}圈子这个快乐和谐的地方，聚集和你爱好相同，品位相当的好朋友，畅谈交流，分享心情，享受生活！</div>    
+          <form action="$!webPath/circle/create_save.htm" id="theForm" name="theForm" method="post" enctype="multipart/form-data">
+          <input name="img_id" id="img_id"  type="hidden" value=""/>
+          <input id="session_circle_create" name="session_circle_create" value="$!session_circle_create" type="hidden"/>
+		  <div class="circle_main_center_main">
+          	  <div class="circle_main_center_main_c">
+              		<dl>
+                    	<dt>所属分类：</dt>
+                        <dd>
+                        	<ul>
+                            #foreach($class in $c_classes)
+                            	<label><li><i><input name="class_id" #if($!velocityCount==1) checked="true" #end id="class_id" type="radio" value="$!class.id" /></i>$!class.className</li></label>
+                        	#end
+                            </ul>
+                          </dd>
+                    </dl>
+                    <dl>
+                    	<dt>圈子名称：</dt>
+                        <dd><input class="name" name="title" id="title" type="text" /></dd>
+                        <dd class="tipe">圈子名称规定使用4~12个字符，确定后不可修改。</dd>
+                    </dl>
+                    <dl>
+                    	<dt>圈子简介：</dt>
+                        <dd><textarea name="content" id="content" cols="" class="introduce" rows=""></textarea></dd>
+                        <dd class="tipe">圈子名称规定使用20~255个字符，确定后不可修改。</dd>
+                    </dl>
+                      <dl id="dl_img" style="display:none">
+                    	<dt>圈子图标：</dt>
+                         <dd><img src="" width="100px" height="100px" style="border:1px solid #ccc;"/></dd>
+                    </dl>
+                        <dl>
+                    	<dt>圈子图标：</dt>
+                         <dd><input type="file" name="image" id="image"/></dd>
+                        <dd class="tipe">圈子图标最佳尺寸为100X100，确定后不可修改。</dd>
+                    </dl>
+              </div>
+              <div class="circle_agree">
+              <label>
+              	<i><input name="circle_aggren" id="circle_aggren" type="checkbox" value="circle_aggren" /></i>
+                <span>我已认真阅读并同意<a href="$!webPath/doc.htm?mark=circle" target="_blank">《圈子使用须知》</a>中的所有条款</span>
+                 <dd class="tipe this"></dd>
+                </label>
+              </div>
+              <div class="circle_yes"><a href="javascript:void(0);" onclick="submit_form();">提交</a></div>
+          </div>
+          </form>
+    </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

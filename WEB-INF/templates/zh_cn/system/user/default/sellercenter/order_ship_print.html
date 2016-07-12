@@ -1,0 +1,77 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<title></title>
+</head>
+<body>
+<!--快递单打印 start -->
+<div class="express_center_bg"> <img  id="company_template_bg" src="$!imageWebServer/$!ecc.ecc_template" /> #if($!offset_map.get("seller_company_width")!='')
+      <div  id="seller_company"  style='position: absolute; left: $!{offset_map.get("seller_company_left")}px; top: $!{offset_map.get("seller_company_top")}px; width: $!{offset_map.get("seller_company_width")}px; height: $!{offset_map.get("seller_company_height")}px;'>$!{ship_addr.sa_company}</div>
+      #end
+      #if($!offset_map.get("seller_user_width")!='')
+      <div  id="seller_user"  style='position: absolute; left: $!{offset_map.get("seller_user_left")}px; top: $!{offset_map.get("seller_user_top")}px; width: $!{offset_map.get("seller_user_width")}px; height: $!{offset_map.get("seller_user_height")}px;'>$!{ship_addr.sa_user}</div>
+      #end
+      #if($!offset_map.get("seller_address_width")!='')
+      <div  id="seller_address"  style='position: absolute; left: $!{offset_map.get("seller_address_left")}px; top: $!{offset_map.get("seller_address_top")}px; width: $!{offset_map.get("seller_address_width")}px; height: $!{offset_map.get("seller_address_height")}px;'>$!{area.parent.parent.areaName}$!{area.parent.areaName}$!{area.areaName}$!{ship_addr.sa_addr}</div>
+      #end
+      #if($!offset_map.get("seller_zone_width")!='')
+      <div  id="seller_zone" style='position: absolute; left: $!{offset_map.get("seller_zone_left")}px; top: $!{offset_map.get("seller_zone_top")}px; width: $!{offset_map.get("seller_zone_width")}px; height: $!{offset_map.get("seller_zone_height")}px;'>$!{ship_addr.sa_zip}</div>
+      #end
+      #if($!offset_map.get("seller_phone_width")!='')
+      <div  id="seller_phone" style='position: absolute; left: $!{offset_map.get("seller_phone_left")}px; top: $!{offset_map.get("seller_phone_top")}px; width: $!{offset_map.get("seller_phone_width")}px; height: $!{offset_map.get("seller_phone_height")}px;'>$!{ship_addr.sa_telephone}</div>
+      #end
+      #if($!offset_map.get("receipt_company_width")!='')
+      <div  id="receipt_company"  style='position: absolute; left: $!{offset_map.get("receipt_company_left")}px; top: $!{offset_map.get("receipt_company_top")}px; width: $!{offset_map.get("receipt_company_width")}px; height: $!{offset_map.get("receipt_company_height")}px;'>$!obj.receiver_Name</div>
+      #end
+      #if($!offset_map.get("receipt_user_width")!='')
+      <div  id="receipt_user" style='position: absolute; left: $!{offset_map.get("receipt_user_left")}px; top: $!{offset_map.get("receipt_user_top")}px; width: $!{offset_map.get("receipt_user_width")}px; height: $!{offset_map.get("receipt_user_height")}px;'>$!obj.receiver_Name</div>
+      #end
+      #if($!offset_map.get("receipt_address_width")!='')
+      <div  id="receipt_address"  style='position: absolute; left: $!{offset_map.get("receipt_address_left")}px; top: $!{offset_map.get("receipt_address_top")}px; width: $!{offset_map.get("receipt_address_width")}px; height: $!{offset_map.get("receipt_address_height")}px;'>$!{obj.receiver_area}$!{obj.receiver_area_info}</div>
+      #end
+      #if($!offset_map.get("receipt_zone_width")!='')
+      <div  id="receipt_zone" style='position: absolute; left: $!{offset_map.get("receipt_zone_left")}px; top: $!{offset_map.get("receipt_zone_top")}px; width: $!{offset_map.get("receipt_zone_width")}px; height: $!{offset_map.get("receipt_zone_height")}px;'>$!{obj.receiver_zip}</div>
+      #end
+      #if($!offset_map.get("receipt_phone_width")!='')
+      <div  id="receipt_phone" style='position: absolute; left: $!{offset_map.get("receipt_phone_left")}px; top: $!{offset_map.get("receipt_phone_top")}px; width: $!{offset_map.get("receipt_phone_width")}px; height: $!{offset_map.get("receipt_phone_height")}px;'>#if($!{obj.receiver_telephone})$!{obj.receiver_telephone}#else $!{obj.receiver_mobile} #end</div>
+
+      #end </div>
+<!--快递单打印 end -->
+<div id="submit">
+  <p class="pad120">
+    <input name="" type="button" value="打印测试" style="cursor:pointer;" onClick="template_print();"/>
+  </p>
+</div>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+function template_print(){
+  jQuery("#submit").hide();
+  jQuery("#company_template_bg").hide();
+  window.print();
+}
+function js_getDPI() {
+        var arrDPI = new Array;
+        if (window.screen.deviceXDPI) {
+           arrDPI[0] = window.screen.deviceXDPI;
+           arrDPI[1] = window.screen.deviceYDPI;
+        }else{
+          var tmpNode = document.createElement("DIV");
+          tmpNode.style.cssText = "width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden";
+          document.body.appendChild(tmpNode);
+          arrDPI[0] = parseInt(tmpNode.offsetWidth);
+          arrDPI[1] = parseInt(tmpNode.offsetHeight);
+          tmpNode.parentNode.removeChild(tmpNode);    
+        }
+       return arrDPI;
+     }
+     var list=js_getDPI();
+	 var width=$!{ecc.ecc_template_width}*10*list[0]/254;
+	 var height=$!{ecc.ecc_template_heigh}*10*list[0]/254;
+	 jQuery(function(){
+	   jQuery("#company_template_bg").width(width).height(height);
+	 });
+</script>
+</body>
+</html>

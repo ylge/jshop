@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>退货申请</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("#theForm").validate({
+	   rules:{
+		   return_goods_content:{required:true}
+		   },
+	   messages:{
+		   return_goods_content:{required:"请填写说明"}
+	   }
+	});
+});
+function cancal(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="javascript:void(0);"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">申请退货</span></div>
+<div class="phone_main">
+
+
+	
+<div class="order_return_list">
+    <div class="apply_return">
+        <h2 class="explain">提交申请后请及时与商家联系，商家同意退货后可填写退货物流信息</h2>
+        #if($!view)
+        #if($!goods.goods_main_photo)
+        #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_middle.$!{goods.goods_main_photo.ext}")
+        #else
+        #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+        #end
+        <form action="$!webPath/wap/buyer/order_return_apply_cancel.htm" method="post" id="theForm">
+        <input name="return_goods_count" type="hidden" value="$!return_count" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        <input type="hidden" value="$!goods_gsp_ids" name="goods_gsp_ids" />
+        <input name="id" type="hidden" id="id" value="$!oid" />
+        <input name="goods_id" type="hidden" id="goods_id" value="$!goods.id" /> 
+        <table cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td width="15%"><img src="$!img" width="60" height="60" /></td>
+                    <td>$!goods.goods_name</td>
+                </tr>
+                <tr>
+                    <td colspan="2">退货说明：$!return_content</td>
+                </tr>
+            </tbody>
+        </table>
+        </form>
+        <div class="red_submit"><a href="javascript:void(0);" onclick="cancal();">取消退货</a></div>
+        #else
+        <form action="$!webPath/wap/buyer/order_return_apply_save.htm" method="post" id="theForm">
+        #if($!goods.goods_main_photo)
+        #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_middle.$!{goods.goods_main_photo.ext}")
+        #else
+        #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+        #end
+        <table cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <td width="15%"><img src="$!img" width="60" height="60" /></td>
+                    <td>$!goods.goods_name</td>
+                </tr>
+                
+                <tr>
+                	<td>申请说明: </td>
+                    <td><textarea name="return_goods_content" id="return_goods_content"></textarea></td>
+                </tr>
+            </tbody>
+        </table>
+        <input name="return_goods_count" type="hidden" value="$!return_count" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        <input type="hidden" value="$!goods_gsp_ids" name="goods_gsp_ids" />
+        <input name="id" type="hidden" id="id" value="$!oid" />
+        <input name="goods_id" type="hidden" id="goods_id" value="$!goods.id" /> 
+        <div class="red_submit"><a href="javascript:void(0);" onclick="cancal()">提交</a></div>
+        </form>
+        #end
+        
+    </div>
+</div>
+    
+    
+    
+    
+</div>
+</body>
+</html>

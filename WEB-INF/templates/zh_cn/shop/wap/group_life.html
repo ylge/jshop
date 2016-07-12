@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes">
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("#menu").click(function(){
+		var show = jQuery("#menu_overly").is(":hidden");
+		if(show){
+			jQuery("#menu_overly").show();
+			}else{
+			jQuery("#menu_overly").hide();	
+				}
+								});
+   jQuery(".group_tab li").removeClass("this");
+  jQuery(".group_tab a[id^=$!order_type]").parent().addClass("this");
+  #if($!objs.size()>=12)
+   var currentPage = 2;
+   var ret = 1;
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&ret==1&&currentPage<=$!{totalPage}) {
+		 jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/group/data.htm',
+				  data:{"currentPage":currentPage,
+		  				"gpr_id":"$!{gpr_id}",
+						"gc_id":"$!{gc_id}",
+						"orderBy":"$!{orderBy}",
+						"type":"$!{type}",
+						"orderType":"$!{orderType}"},
+				beforeSend:function(){
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  ret=2;
+				},
+			   success:function(data){
+				   ret=1;
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".group_ul").find("li").last().after(data);
+				  currentPage=currentPage+1;
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		
+   #end
+});
+function group_sel(field,val){
+  jQuery("#"+field).val(val);
+  jQuery("#ListForm").submit();
+}
+function group_order(field1,val1,field2,val2){
+  jQuery("#"+field1).val(val1);
+  jQuery("#"+field2).val(val2);
+  jQuery("#ListForm").submit();
+}
+</script>
+</head>
+<body>
+<div class="phone_hd"> <a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a> 生活购<a class="city" href="$!webPath/wap/group/area.htm?ga_id=$!ga_id&type=$!type">[$!ga]</a>  <a class="menu" href="javascript:void(0);" id="menu"><img src="$!webPath/resources/style/system/front/wap/images/menu.png" width="30" height="30" /></a>
+  <div class="menu_overly" id="menu_overly" style="display:none;">
+    <ul class="menu_ul">
+      <li #if(!$!gc_id) class="this" #end><a href="javascript:void(0);"  onclick="group_sel('gc_id','')" id="gc_">全部</a></li>
+      #foreach($gc in $gcs)
+      <li #if($!gc.id==$!gc_id) class="this" #end><a href="javascript:void(0);" onClick="group_sel('gc_id','$!gc.id')" id="gc_$!{gc.id}">$!gc.gc_name</a></li>
+      #end
+    </ul>
+    <div class="menu_bg"></div>
+  </div>
+</div>
+
+<div class="phone_main">
+  <!--团购列表页-->
+  <form action="$!webPath/wap/group/index.htm?type=$!type" method="post" id="ListForm">
+  		<input name="ga_id" type="hidden" id="ga_id" value="$!ga_id" />
+        <input name="gpr_id" type="hidden" id="gpr_id" value="$!gpr_id" />
+        <input name="gc_id" type="hidden" id="gc_id" value="$!gc_id" />
+        <input name="orderBy" type="hidden" id="orderBy" value="$!orderBy" />
+        <input name="orderType" type="hidden" id="orderType" value="$!orderType" />
+  <div class="group_box">
+    <div class="group_tab">
+      <ul>
+        <li><a href="javascript:void(0);" onClick="group_order('orderBy','addTime','orderType','$!c_orderType');"   id="addTime_$!orderType">默认</a></li>
+        <li><a href="javascript:void(0);" onClick="group_order('orderBy','group_price','orderType','$!c_orderType');" id="group_price_$!orderType">价格</a></li>
+        <li><a href="javascript:void(0);" onClick="group_order('orderBy','gg_rebate','orderType','$!c_orderType');"  id="gg_rebate_$!orderType">折扣</a></li>
+        <li><a href="javascript:void(0);" onClick="group_order('orderBy','selled_count','orderType','$!c_orderType');"  id="selled_count_$!orderType">销量</a></li>
+
+      </ul>
+    </div>
+    <ul class="group_ul">
+    #if($!objs.size()>0)
+    #foreach($obj in $objs)
+      <li><a href="$!webPath/wap/grouplife/view.htm?id=$!obj.id"> <span class="left"><img src="$!imageWebServer/$!obj.group_acc.path/$!obj.group_acc.name" width="140" /></span> <span class="right">
+        <h4>$!obj.gg_name </h4>
+        <span class="price">¥$!obj.group_price</span>
+        <div class="num"><s>¥$!obj.cost_price</s><span>$!obj.gg_rebate折</span><span class="purson">$!obj.groupInfos.size()人已买</span></div>
+        </span> </a></li>
+    #end
+    #else
+    <div class="loading">
+    <ul>
+      <li>暂无数据....</li>
+    </ul>
+    </div>
+    #end
+    </ul>
+  </div>
+  </form>
+  <div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16"></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+  <div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+  </div>
+  $!httpInclude.include("/wap/footer.htm") </div>
+  
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

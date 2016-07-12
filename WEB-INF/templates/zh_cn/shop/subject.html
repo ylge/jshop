@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商城专题 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm?op=subject")
+<div class="main">
+  <!-- 专题主体-->
+  <form id="ListForm" name="ListForm" action="$!webPath/subject/index.htm" method="post">
+    #foreach($obj in $objs)
+    <div class="subject_top_nav"><a href="$!webPath/subject/view_$!{obj.id}.htm">$!{obj.title}</a></div>
+    <div class="subject"><a href="$!webPath/subject/view_$!{obj.id}.htm"><img style="padding: 10px;border: 1px solid #eee;width: 1180px;" src="$!imageWebServer/$!obj.banner.path/$!obj.banner.name"/></a> </div>
+    #end
+    
+    #if($!objs.size()==0||!$!objs)
+    <div class="main_list_box">
+      <div class="main_list_none"> <span class="main_none_box"> <i></i>
+        <p> 抱歉，没有相应的数据！<a href="$!webPath/index.htm">返回商城首页</a></p>
+        </span></div>
+    </div>
+    #end
+    <div class="fenye"><span>$!gotoPageFormHTML</span></div>
+    <input id="currentPage" name="currentPage" value="$!currentPage" type="hidden"/>
+  </form>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

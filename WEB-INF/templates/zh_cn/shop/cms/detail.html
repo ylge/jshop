@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>资讯详情 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!gc.seo_keywords" />
+<meta name="description" content="$!gc.seo_description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}" />
+<meta name="copyright" content="$!{config.copyRight}" />
+<link href="$!webPath/resources/style/system/front/default/css/cms.css" type="text/css" rel="stylesheet" />
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script type="text/javascript" src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+jQuery(document).ready(function() {
+    jQuery(".information_detail_left_r_bg li").click(function(){
+		jQuery(".information_detail_left_r_bg li").removeClass("this");
+		jQuery(this).addClass("this");
+		var color = jQuery(this).attr("color");
+		jQuery("body").attr("bgcolor",color);		
+	});
+	
+});<!--end-->
+function info_icon(type){
+	var user_id="$!{user.id}";
+	var info_id = "$!{obj.id}";
+	jQuery.ajax({type:'POST',url:'$!webPath/cms/info_icon.htm',
+				data:{"type":type,"user_id":user_id,info_id:info_id},
+			  	success:function(data){
+					if(data=="true"){
+					 	showDialog("msg_info","","操作成功",0,"succeed",2,function(){
+						   location.reload();
+						 })  
+					}else{
+						showDialog("msg_info","","你已经选择过表情了",0,"succeed",2,function(){
+						   location.reload();
+						})
+					}
+					
+			  	}
+	})
+};
+function reply_save(){
+	var content = jQuery("#reply_content").val();
+	if(content==""){
+		jQuery(".information_nothing").fadeIn(250);
+		jQuery(".information_nothing").fadeOut(250);
+		jQuery(".information_nothing").fadeIn(250);
+		jQuery(".information_nothing").fadeOut(250);
+		return ;
+	}
+	jQuery.ajax({type:'POST',url:'$!webPath/cms/reply_save.htm',
+				data:{"content":content,"info_id":"$!obj.id"},
+			  	success:function(data){
+					if(data=="true"){
+						showDialog("msg_info","","发布成功",0,"succeed",2,function(){
+						    location.reload();
+						});
+					}else{
+						showDialog("msg_info","","系统繁忙",0,"error",2,function(){
+						    location.reload();
+						});
+					}
+			  	}
+	})
+};
+function ajaxPage(url,currentPage,obj){
+	 jQuery.ajax({type:'POST',url:"$!webPath/cms/reply_ajax.htm",
+	 			data:{"currentPage":currentPage,"info_id":"$!{obj.id}"},
+			  	success:function(data){
+				 jQuery("#rcomment_reply").empty();
+				 jQuery("#rcomment_reply").append(data);              
+			  	}
+	})
+};
+</script>
+</head>
+
+<body bgcolor="#e9faff">
+<!-- top --> 
+$!httpInclude.include("/cms/top.htm") 
+<!-- center --> 
+
+<!-- main -->
+
+<div class="information_main">
+  <div class="information_list" >
+    <div class="information_list_left">
+      <div class="information_detail_left">
+        <div class="information_detail_left_top">
+          <div class="information_detail_left_top_t">$!{obj.title}</div>
+          <div class="information_detail_left_top_b"><span>$!CommUtil.formatLongDate($!{obj.addTime})</span><span>来源：$!{obj.infoSource}</span><span>分类：<a href="$!webPath/cms/list.htm?id=$!{obj.classid}">$!className</a></span></div>
+          <div class="information_detail_left_top_r">
+            <div class="information_detail_left_r_bg">
+              <ul>
+                <h3>背景色：</h3>
+                <li class="this" style="background:#e9faff;cursor:pointer" color="#e9faff"></li>
+                <li style="background:#ffffff;cursor:pointer" color="#ffffff"></li>
+                <li style="background:#ffffed;cursor:pointer" color="#ffffed"></li>
+                <li style="background:#eefaee;cursor:pointer" color="#eefaee"></li>
+                <li style="background:#fcefff;cursor:pointer" color="#fcefff"></li>
+                <li style="background:#efefef;cursor:pointer" color="#efefef"></li>
+                <li style="background:#ede9e0;cursor:pointer" color="#ede9e0"></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="information_detail_left_center" style="font-size:14px"> #if("$!obj.cover"!="")
+          #foreach($img in $!imageTools.queryImgs("$!obj.cover"))
+          <div class="information_detail_left_center_img"> <img src="$!imageWebServer/$!img.path/$!img.name"/> </div>
+          #end        
+          #end
+          $!{obj.article} </div>
+        <div class="information_detail_left_rcomment">
+          <h3>看完来表达一下心情吧~~</h3>
+          <ul>
+            <li> <span class="rcomment_price">$!IconDataMap.hehe_count</span> <span class="rcomment_columnar"><b style="background:#8ac700; #if($!{IconDataMap.hehe_price}) height:$!{IconDataMap.hehe_price}%;  #else height:0%; #end"></b></span> <span class="rcomment_img"> #if($!user) <a href="javascript:void(0)" onclick="info_icon('hehe')"> #else </a><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g"> #end <img src="$!webPath/resources/style/system/front/default/images/cms/rcomment01.png" /> </a></span> <span class="rcomment_price">呵呵</span> </li>
+            <li> <span class="rcomment_price">$!IconDataMap.kaixin_count</span> <span class="rcomment_columnar"><b style="background:#8ac700; #if($!{IconDataMap.kaixin_price}) height:$!{IconDataMap.kaixin_price}%;  #else height:0%; #end"></b></span> <span class="rcomment_img"> #if($!user) <a href="javascript:void(0)" onclick="info_icon('kaixin')"> #else </a><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g"> #end <img src="$!webPath/resources/style/system/front/default/images/cms/rcomment02.png" /></a></span> <span class="rcomment_price">开心</span> </li>
+            <li> <span class="rcomment_price">$!IconDataMap.deyi_count</span> <span class="rcomment_columnar"><b style="background:#8ac700;  #if($!{IconDataMap.deyi_price}) height:$!{IconDataMap.deyi_price}%;  #else height:0%; #end "></b></span> <span class="rcomment_img"> #if($!user) <a href="javascript:void(0)" onclick="info_icon('deyi')"> #else </a><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g"> #end <img src="$!webPath/resources/style/system/front/default/images/cms/rcomment03.png" /></a></span> <span class="rcomment_price">得意</span> </li>
+            <li> <span class="rcomment_price">$!IconDataMap.nanguo_count</span> <span class="rcomment_columnar"><b style="background:#8ac700; #if($!{IconDataMap.nanguo_price}) height:$!{IconDataMap.nanguo_price}%;  #else height:0%; #end"></b></span> <span class="rcomment_img"> #if($!user) <a href="javascript:void(0)" onclick="info_icon('nanguo')"> #else </a><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g"> #end <img src="$!webPath/resources/style/system/front/default/images/cms/rcomment04.png" /></a></span> <span class="rcomment_price">难过</span> </li>
+            <li> <span class="rcomment_price">$!IconDataMap.fennu_count</span> <span class="rcomment_columnar"><b style="background:#8ac700; #if($!{IconDataMap.fennu_price}) height:$!{IconDataMap.fennu_price}%; #else height:0%; #end"></b></span> <span class="rcomment_img"> #if($!user) <a href="javascript:void(0)" onclick="info_icon('fennu')"> #else </a><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g"> #end <img src="$!webPath/resources/style/system/front/default/images/cms/rcomment05.png" /></a></span> <span class="rcomment_price">愤怒</span> </li>
+            <li> <span class="rcomment_price">$!IconDataMap.gandong_count</span> <span class="rcomment_columnar"><b style="background:#8ac700; #if($!{IconDataMap.gandong_price}) height:$!{IconDataMap.gandong_price}%; #else height:0%; #end"></b></span> <span class="rcomment_img"> #if($!user) <a href="javascript:void(0)" onclick="info_icon('gandong')"> #else </a><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g"> #end <img src="$!webPath/resources/style/system/front/default/images/cms/rcomment06.png" /></a></span> <span class="rcomment_price">感动</span> </li>
+            <li> <span class="rcomment_price">$!IconDataMap.henzan_count</span> <span class="rcomment_columnar"><b style="background:#8ac700; #if($!{IconDataMap.henzan_price}) height:$!{IconDataMap.henzan_price}%; #else height:0%; #end"></b></span> <span class="rcomment_img"> #if($!user) <a href="javascript:void(0)" onclick="info_icon('henzan')"> #else </a><a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g"> #end <img src="$!webPath/resources/style/system/front/default/images/cms/rcomment07.png" /></a></span> <span class="rcomment_price">很赞</span> </li>
+          </ul>
+        </div>
+        <div class="information_detail_left_reply">
+          <div class="information_detail_left_reply_top"> <b><img src="$!webPath/resources/style/system/front/default/images/cms/inf_top_left_reply.png" /></b> <span>已经有<strong>$!{count}</strong>人评论</span> </div>
+          <div class="information_detail_left_reply_center">
+            <textarea id="reply_content" cols="" rows=""></textarea>
+            <div class="information_nothing" style="display:none"></div>
+          </div>
+          <div class="information_detail_left_reply_button"> #if($!user) <a href="javascript:void(0)" onclick="reply_save()">回 复</a> #else <a href="javascript:void(0);" dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="add_atonce_buy" id="buy_g">回复</a> #end </div>
+        </div>
+        <div class="rcomment_reply" id="rcomment_reply"> #foreach($reply in $replies)
+          <div class="rcomment_reply_one">
+            <div class="rcomment_reply_one_l"><a href="$!webPath/sns/other_sns.htm?id=$!{reply.userId}" target="_blank"><img src="$!imageWebServer/$!reply.userPhoto" /></a></div>
+            <div class="rcomment_reply_one_r">
+              <div class="rcomment_reply_one_r_t"><a href="$!webPath/sns/other_sns.htm?id=$!{reply.userId}" target="_blank">$!reply.userName</a><span>发表时间：$!CommUtil.formatLongDate($!reply.addTime)</span></div>
+              <div class="rcomment_reply_one_r_c">$!reply.content</div>
+            </div>
+          </div>
+          #end
+          <div class="cms_page"> <span>
+            <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+            <input name="id" type="hidden" id="id" value="$!id" />
+            <input name="orderBy" type="hidden" id="orderBy" value="$!orderBy" />
+            <input name="orderType" type="hidden" id="orderType" value="$!orderType" />
+            $!gotoPageAjaxHTML</span> </div>
+        </div>
+      </div>
+    </div>
+    <div class="information_list_right">
+      <div class="information_list_right_top">
+        <div class="information_list_right_top_til">
+          <h3>热门话题</h3>
+        </div>
+        <div class="information_list_right_top_list">
+          <ul>
+            #foreach($hot_infor in $hot_infors)
+            <li><a href="$!webPath/cms/detail_$!{hot_infor.id}.htm">$!hot_infor.title</a></li>
+            #end
+          </ul>
+        </div>
+      </div>
+      <div class="information_list_right_top">
+        <div class="information_list_right_top_til">
+          <h3>品牌商品</h3>
+        </div>
+        <div class="information_list_right_brand_list">
+          <ul>
+            #foreach($goods in $ztc_goods)
+            #if($!goods.goods_main_photo)
+            #set($goods_photo="$!imageWebServer/$!goods.goods_main_photo.path/$!goods.goods_main_photo.name")
+            #else
+            #set($goods_photo="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+            #end
+            #set($goods_url="$!webPath/goods_$!{goods.id}.htm")
+            <li><a href="$!goods_url"><img src="$!goods_photo" /></a><span><a href="$!goods_url">$!goods.goods_name</a><a href="$!goods_url">￥$!{goods.goods_price}</a></span></li>
+            #end
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- footer -->
+$!httpInclude.include("/cms/footer.htm")
+</body>
+</html>

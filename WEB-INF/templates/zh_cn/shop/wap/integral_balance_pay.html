@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>预存款支付 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+function order_pay(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>预存款支付<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="info_form">
+  <form action="$!webPath/wap/integral/order_pay_balance.htm" method="post" id="theForm">
+  <input name="integral_order_id" type="hidden" id="integral_order_id" value="$!integral_order_id" />
+    <input name="integral_pay_session" type="hidden" id="integral_pay_session" value="$!integral_pay_session" />
+  <div class="mt50" style="height:49px;"></div>
+  <ul>
+    <li><span>积分兑换预存款支付</span><p><span class="red">$!paymentTools.queryShopPayment("outline").get("content")</span></p></li>
+    <li>
+    	<span class="form_left">付款留言:</span>
+        <span class="form_right"><b class="form_area">
+      	<textarea name="pay_msg" cols="" rows=""></textarea>
+      	</b></span>
+    </li>
+    <li>
+    	<div class="notice">
+        	&nbsp;&nbsp;&nbsp;&nbsp;预存款留言有利于商家迅速辨别买家。
+        </div>
+    </li>
+     <div class="red_submit"><a href="javascript:void(0);" onClick="order_pay();">支付</a></div>
+  </ul>
+  </form>
+</div>
+</body>
+</html>

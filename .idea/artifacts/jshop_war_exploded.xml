@@ -1,0 +1,108 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="jshop:war exploded">
+    <output-path>$PROJECT_DIR$/classes/artifacts/jshop_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="jshop" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="activation.jar" module-name="jshop" />
+          <element id="library" level="module" name="antlr-2.7.6.jar" module-name="jshop" />
+          <element id="library" level="module" name="aopalliance.jar" module-name="jshop" />
+          <element id="library" level="module" name="aspectjweaver-1.6.12.jar" module-name="jshop" />
+          <element id="library" level="module" name="avalon-logkit-2.0.dev-0.jar" module-name="jshop" />
+          <element id="library" level="module" name="baidu-push-core.jar" module-name="jshop" />
+          <element id="library" level="module" name="cglib-2.1.3.jar" module-name="jshop" />
+          <element id="library" level="module" name="com.springsource.org.apache.commons.beanutils-1.7.0.jar" module-name="jshop" />
+          <element id="library" level="module" name="com.springsource.org.apache.velocity.tools.view-2.0.0.beta3.jar" module-name="jshop" />
+          <element id="library" level="module" name="common-annotations.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-codec-1.4.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-collections-1.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-dbcp-1.2.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-digester-1.6.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-fileupload-1.2.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-httpclient-3.0.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-io-1.3.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-lang-2.5.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-logging-1.1.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-net-3.3.jar" module-name="jshop" />
+          <element id="library" level="module" name="commons-pool-1.3.jar" module-name="jshop" />
+          <element id="library" level="module" name="dom4j-1.6.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="ehcache-2.9.0.jar" module-name="jshop" />
+          <element id="library" level="module" name="ehcache-web-2.0.4.jar" module-name="jshop" />
+          <element id="library" level="module" name="filterbuilder.jar" module-name="jshop" />
+          <element id="library" level="module" name="hibernate3.6.6.jar" module-name="jshop" />
+          <element id="library" level="module" name="htmllexer.jar" module-name="jshop" />
+          <element id="library" level="module" name="htmlparser.jar" module-name="jshop" />
+          <element id="library" level="module" name="httpclient-4.1.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="httpcore-4.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="IKAnalyzer2012FF_u1.jar" module-name="jshop" />
+          <element id="library" level="module" name="IKAnalyzer3.2.8.jar" module-name="jshop" />
+          <element id="library" level="module" name="imageinfo-1.9.jar" module-name="jshop" />
+          <element id="library" level="module" name="ios_push_apn.jar" module-name="jshop" />
+          <element id="library" level="module" name="jackson-all-1.6.0.jar" module-name="jshop" />
+          <element id="library" level="module" name="jackson-core-2.5.0.jar" module-name="jshop" />
+          <element id="library" level="module" name="jackson-databind-2.5.0.jar" module-name="jshop" />
+          <element id="library" level="module" name="jakarta-regexp-1.4.jar" module-name="jshop" />
+          <element id="library" level="module" name="javacsv.jar" module-name="jshop" />
+          <element id="library" level="module" name="javassist-3.12.0.GA.jar" module-name="jshop" />
+          <element id="library" level="module" name="javax.persistence_2.0.0.jar" module-name="jshop" />
+          <element id="library" level="module" name="jaxen-1.1-beta-4.jar" module-name="jshop" />
+          <element id="library" level="module" name="jboss-archive-browsing-5.0.0alpha-200607201-119.jar" module-name="jshop" />
+          <element id="library" level="module" name="jcifs-1.3.17.jar" module-name="jshop" />
+          <element id="library" level="module" name="jdom.jar" module-name="jshop" />
+          <element id="library" level="module" name="json_simple-1.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="jsoup-1.6.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="jstl.jar" module-name="jshop" />
+          <element id="library" level="module" name="jta-1.0.1B.jar" module-name="jshop" />
+          <element id="library" level="module" name="junit-4.4.jar" module-name="jshop" />
+          <element id="library" level="module" name="log4j-1.2.15.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-analyzers-common-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-core-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-grouping-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-highlighter-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-memory-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-queries-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-queryparser-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="lucene-sandbox-4.10.2.jar" module-name="jshop" />
+          <element id="library" level="module" name="mail.jar" module-name="jshop" />
+          <element id="library" level="module" name="mysql-connector-java-5.0.5.jar" module-name="jshop" />
+          <element id="library" level="module" name="nutz-1.b.40-jdk5.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.aop-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.asm-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.beans-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.context-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.context.support-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.core-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.expression-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.jdbc-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.orm-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.transaction-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.web-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="org.springframework.web.servlet-3.1.2.RELEASE.jar" module-name="jshop" />
+          <element id="library" level="module" name="poi-3.7.jar" module-name="jshop" />
+          <element id="library" level="module" name="quartz-all-1.6.1.jar" module-name="jshop" />
+          <element id="library" level="module" name="sitecapturer.jar" module-name="jshop" />
+          <element id="library" level="module" name="slf4j-api-1.7.7.jar" module-name="jshop" />
+          <element id="library" level="module" name="slf4j-jdk14-1.7.7.jar" module-name="jshop" />
+          <element id="library" level="module" name="spring-security-core-2.0.4.jar" module-name="jshop" />
+          <element id="library" level="module" name="spring-security-core-tiger-2.0.4.jar" module-name="jshop" />
+          <element id="library" level="module" name="taobao-sdk-java-online_standard-20131119.jar" module-name="jshop" />
+          <element id="library" level="module" name="thumbelina.jar" module-name="jshop" />
+          <element id="library" level="module" name="urlrewritefilter-4.0.3.jar" module-name="jshop" />
+          <element id="library" level="module" name="velocity-1.5.jar" module-name="jshop" />
+          <element id="library" level="module" name="velocity-dep-1.5.jar" module-name="jshop" />
+          <element id="library" level="module" name="xstream-1.4.3.jar" module-name="jshop" />
+          <element id="library" level="module" name="zxing-2.2.jar" module-name="jshop" />
+        </element>
+      </element>
+      <element id="library" level="module" name="servlet-api.jar" module-name="jshop" />
+      <element id="library" level="module" name="jasper.jar" module-name="jshop" />
+      <element id="library" level="module" name="jsp-api.jar" module-name="jshop" />
+      <element id="library" level="module" name="el-api.jar" module-name="jshop" />
+      <element id="library" level="module" name="annotations-api.jar" module-name="jshop" />
+      <element id="javaee-facet-resources" facet="jshop/web/Web" />
+    </root>
+  </artifact>
+</component>

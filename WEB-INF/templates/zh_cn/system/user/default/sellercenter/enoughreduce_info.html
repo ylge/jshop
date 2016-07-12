@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-满就减-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+<div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=enoughreduce")
+  <div class="seller_right">
+    <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>促销推广</b>><b>满就减</b></span></div>
+    <div class="seller_list">
+      <div class="seller_list_title">
+        <ul class="seller_title_ul">
+          <li ><a href="$!webPath/seller/enoughreduce_list.htm"><i></i>满就减列表</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_add.htm"><i></i>新增满就减</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_meal.htm"><i></i>套餐购买</a></li>
+          <li ><a href="$!webPath/seller/enoughreduce_meal_log.htm"><i></i>购买日志</a></li>
+          <li class="this" ><a href="javascript:void(0)"><i></i>满就减详情</a></li>
+        </ul>
+      </div>
+      <div class="edit">
+        <div class="editul setcont" >
+          <div class="editul_center_c">
+            <div class="orderul">
+              <ul>
+                <li style="line-height:25px;width:50%;float:left;height:25px;"><span class="ordertitle">满就减标题:</span><span>$!er.ertitle</span></li>
+                <li style="line-height:25px;width:50%;float:left;height:25px;"><span class="ordertitle">满减金额:</span><span>$!er.ertag</span></li>
+                <li style="line-height:25px;width:50%;float:left;height:25px;"><span class="ordertitle">开始时间:</span><span>$!CommUtil.formatShortDate($!er.erbegin_time)</span></li>
+                <li style="line-height:25px;width:50%;float:left;height:25px;"><span class="ordertitle">结束时间:</span><span>$!CommUtil.formatShortDate($!er.erend_time)</span></li>
+                <li style="line-height:25px;width:50%;float:left;height:25px;"><span class="ordertitle">满就减状态:</span><span>#if($!er.erstatus==0)未提交审核#elseif($!er.erstatus==5)审核中#elseif($!er.erstatus==10)审核通过，进行中#elseif($!er.erstatus==20)已结束#elseif($!er.erstatus==-10)审核未通过#end </span></li>
+                <li style="line-height:25px;width:50%;float:left;height:25px;"><span class="ordertitle">活动说明:</span><span>$!er.ercontent</span></li>
+                #if($!obj.erstatus==-10)
+                <li style="line-height:25px;width:50%;float:left;height:25px;"><span class="ordertitle">审核失败原因:</span><span>$!er.failed_reason</span></li>
+                #end
+              </ul>
+            </div>
+          </div>
+        </div>
+        <form action="$!webPath/seller/enoughreduce_info.htm" method="post" name="ListForm" id="ListForm">
+          <div class="seller_list_box">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" id="opertable" class="user_order_table" >
+              <tr id="opertitle">
+                <th width="3%"></th>
+                <th width="30%">商品名称</th>
+                <th width="25%">商品分类</th>
+                <th width="15%">商品价格</th>
+                <th align="center">操作</th>
+              </tr>
+              #if($objs.size()>0)
+              #foreach($obj in $objs)
+              <tr>
+                <td align="center">#if($!obj.goods_main_photo)
+                    #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+                    #else
+                    #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+                    #end <img src="$!img" width="60" height="63" /> #set($goods_url="$!webPath/goods_$!{obj.id}.htm")
+                    #if($!config.second_domain_open)
+                    #set($goods_url="http://$!{obj.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.id}.htm")
+                    #end </td>
+                <td valign="middle"><dl class="return_goods">
+                    <a href="$!goods_url" target="_blank">$!obj.goods_name</a>
+                  </dl></td>
+                <td align="center">#if($!obj.gc.parent.parent)$!obj.gc.parent.parent.className >#end #if($!obj.gc.parent)$!obj.gc.parent.className >#end $!obj.gc.className</td>
+                <td align="center">$!obj.goods_current_price</td>
+                <td align="center"><a href="$!webPath/goods_$!{obj.id}.htm" target="_blank" class="blue">查看</a></td>
+              </tr>
+              #end
+              #else
+              <tr>
+                <td colspan="6" align="center"><div class="seller_center_nothing">
+                    <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+                    <div class="seller_center_nothing_right">暂时没有数据</div>
+                  </div></td>
+              </tr>
+              #end
+            </table>
+          </div>
+          <div class="userlist_allop">
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">
+                <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+                <input name="mulitId" type="hidden" id="mulitId" />
+                <input name="goods_name" type="hidden" id="goods_name" value="$!goods_name" />
+                <input name="user_class_id" type="hidden" id="user_class_id" value="$!user_class_id" />
+                $!gotoPageFormHTML</div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

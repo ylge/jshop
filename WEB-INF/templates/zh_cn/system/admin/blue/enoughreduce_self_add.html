@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	#if($!obj.er_json)
+   var json = $!obj.er_json;
+        for(var index in json){
+			var num=jQuery("#ertable tr").length;            
+			var str="<tr><td><span class='enough_ip'> 满 <input name='enoughMoney_count' class='size100' type='text' id='enoughMoney_count' value="+index+"> 减 <input name='reduceMoney_count'  class='size100'  type='text' id='reduceMoney_count' value="+json[index]+"> </span></td></tr>";
+			jQuery("#addermoney").before(str.replace(/count/g,num));
+        }
+		#end
+	
+  jQuery("#theForm").validate({
+    rules:{
+	 ertitle:{required:true},
+	 erbegin_time:{required:true},
+	 erend_time:{required:true}
+	 },
+    messages:{
+	 ertitle:{required:"满就减标题不能为空"},	
+	 erbegin_time:{required:"开始时间不能为空"},
+	 erend_time:{required:"结束时间不能为空"}
+	}
+  });
+ 	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+  //
+  jQuery('#erbegin_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#erend_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  //
+});
+
+function saveForm(){
+	var num=jQuery("#ertable tr").length-1;
+	jQuery("#count").val(num);
+	jQuery("#theForm").submit();	
+}
+function addermoney(){
+	var num=jQuery("#ertable tr").length;
+	var now=num-1;
+	if(parseFloat(jQuery("#enoughMoney_"+now).val())>parseFloat(jQuery("#reduceMoney_"+now).val())){
+	var str="<tr><td><span class='enough_ip'> 满 <input name='enoughMoney_count'  class='size100'  type='text' id='enoughMoney_count'/> 减 <input name='reduceMoney_count'  class='size100'  type='text' id='reduceMoney_count'/> </span></td></tr>";
+	jQuery("#addermoney").before(str.replace(/count/g,num));
+	}
+	else{
+	alert("减免金额必须小于需满金额");
+	}
+}
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/enoughreduce_self_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+  	<input name="count" type="hidden" id="count" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+    <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/enoughreduce_self_list.htm" />
+    <input name="add_url" type="hidden" id="add_url" value="$!webPath/admin/enoughreduce_self_add.htm" />
+  <div class="cont">
+    <h1 class="seth">满就减管理</h1>
+    <div class="nav_list">
+      <ul>
+        <li> <a href="$!webPath/admin/enoughreduce_self_list.htm"><b>所有满就减</b></a></li>
+        <li><a href="$!webPath/admin/enoughreduce_self_add.htm" #if(!$!edit) class="this" #end><b>新增满就减</b></a></li>
+        #if($!edit)
+        <li><a href="javascript:void(0);" class="this"><b>编辑</b></a></li>
+        #end
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" >
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>满就减标题
+            <input name="id" type="hidden" id="id" value="$!obj.id" />
+          </li>
+          <li><span class="webname">
+            <input name="ertitle" type="text" id="ertitle" value="$!obj.ertitle" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>开始时间</li>
+          <li> <span class="webname">
+            <input name="erbegin_time" type="text" id="erbegin_time" value="$!CommUtil.formatShortDate($!obj.erbegin_time)" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>结束时间</li>
+          <li> <span class="webname">
+            <input name="erend_time" type="text" id="erend_time" value="$!CommUtil.formatShortDate($!obj.erend_time)" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">满就减序号</li>
+          <li> <span class="webname">
+            <input name="ersequence" type="text" id="ersequence" value="$!obj.ersequence" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>减免金额</li>
+          <li>
+            <table class="enough_table" width="100%" border="0" cellspacing="0" cellpadding="0" id="ertable">
+              #if(!$!obj.er_json)
+              <tr >
+                <td><span class="enough_ip"> 满
+                  <input class="size100" name="enoughMoney_1" type="text" id="enoughMoney_1"  />
+                  减
+                  <input class="size100" name="reduceMoney_1" type="text" id="reduceMoney_1"  />
+                  </span></td>
+              </tr>
+              #end
+              <tr id="addermoney">
+                <td><span class="webname"><a href="javascript:void(0);" onclick="addermoney()" class="blue" >继续添加</a></span></td>
+              </tr>
+            </table>
+          </li>
+        </ul>
+       
+        <ul class="set1">
+          <li class="setcont_bg">满就减说明</li>
+          <li><span class="webtj">
+            <textarea name="ercontent" cols="4" rows="6" id="ercontent">$!obj.ercontent</textarea>
+            </span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

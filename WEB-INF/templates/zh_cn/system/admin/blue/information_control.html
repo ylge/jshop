@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/cms.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+});
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">资讯首页管理</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/information_control.htm" class="this"><b>首页楼层管理</b></a></li>
+      <li><a href="$!webPath/admin/information_control_add.htm"><b>首页楼层添加</b></a></li>
+    </ul>
+  </div>
+  <div class="operation">
+      <h3>友情提示</h3>
+      <ul>
+        <li>置顶资讯将显示在资讯页面的顶部，其中有封面的最多4个，无封面的最多3个。</li>
+        <li>点击量最多的资讯将显示在资讯页面的右侧，其中有封面的最多6个，无封面的最多15个进行轮播。</li>
+      </ul>
+    </div>
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th align="center" width="50%">资讯楼层</th>
+          <th align="center" width="10%"><span class="form_btna">序号</span></th>
+          <th align="center" width="20%"><span class="form_btna">是否使用</span></th>
+          <th align="center"><span class="form_btna">操作</span></th>
+        </tr>
+        <tr>
+          <td align="center">首页头部 #if($!information) 标题：$!information.title #end</td>
+          <td align="center">默认显示最上层</td>
+          <td align="center">默认显示</td>
+          <td align="center"><a href="$!webPath/admin/information_head_list.htm">编辑</a></td>
+        </tr>
+        #foreach($obj in $cmsIndexTemplates)
+		<tr>
+          <td>$!obj.title</td>
+          <td>$!obj.sequence</td>
+          <td>#if($!obj.show==0) 否 #elseif($!obj.show==1) 是 #end</td>
+          <td><a href="$!webPath/admin/information_control_edit.htm?id=$!{obj.id}">编辑</a></td>
+        </tr>
+        #end
+      </table>
+    </div>
+    
+    
+    
+</div>
+</body>
+</html>

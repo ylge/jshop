@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+//options为编辑配置属性
+var options = {
+        cssPath : '$!webPath/resources/editor/themes/default/default.css',
+        filterMode : true,
+		uploadJson:'$!webPath/upload.htm',
+		width : '700px',
+		height:'400px',
+		syncType:"form",
+		afterCreate : function() {
+							var self = this;
+							self.sync();
+						},
+		afterChange : function() {
+							var self = this;
+							self.sync();
+						},
+		afterBlur : function() {
+							var self = this;
+							self.sync();
+						},
+		items:['source', '|', 'fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste',
+			'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+			'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+			'superscript', '|', 'selectall', 'clearhtml','quickformat','|',
+			'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+			'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'emoticons', 'link', 'unlink', '|', 'about']
+};
+jQuery(document).ready(function(){	
+//
+  jQuery("#theForm").validate({
+	ignore: "",						  
+    rules:{
+	  gf_name:{ required :true},
+	  gf_type:{required:true},
+	  gf_content:{required:true}
+	 },
+	messages:{
+	  gf_name:{required:"版式名称不能为空"},
+	  gf_type:{required:"版式位置不能为空"},
+	  gf_content:{required:"版式内容不能为空"}
+	 }
+  });
+  //
+  editor = KindEditor.create('#gf_content',options); 
+  jQuery("#gf_type").val("$!obj.gf_type"); 	
+});
+
+function saveForm(method){
+   editor.sync();
+   jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">商品版式</h1>
+  <div class="nav_list">
+ <ul>
+  <li><a href="$!webPath/admin/goods_format_list.htm"><b>管理</b></a> </li>
+ <li> <a href="$!webPath/admin/goods_format_add.htm" #if(!$!edit) class="this" #end><b>新增</b></a> </li>
+  #if($!edit)<li> <a href="javascript:void(0);" class="this"><b>编辑</b></a></li> #end 
+  </span> 
+  </ul>
+  </div>
+  <form name="theForm" id="theForm" action="$!webPath/admin/goods_format_save.htm" method=post>
+    <input name="id" type="hidden" id="id" value="$!obj.id" />
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+   <div class="edit">
+    <div class="editul setcont">
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>版式名称</li>
+        <li><span class="webname">
+          <input name="gf_name" type="text" id="gf_name" value="$!obj.gf_name" size="40" />
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>版式位置</li>
+        <li><span class="webnamesec sizese">
+          <select name="gf_type" id="gf_type">
+            <option value="">请选择...</option>
+            <option value="0">顶部版式</option>
+            <option value="1">底部版式</option>
+          </select>
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg"><strong class="sred">*</strong>版式内容</li>
+        <li><span class="webname">
+          <textarea name="gf_content" cols="40" id="gf_content">$!obj.gf_content</textarea>
+          </span></li>
+      </ul>
+    </div>
+    </div>
+  </form>
+  <div class="submit">
+   <span class="pad120"><input name="save" type="button" value="提交" onclick="saveForm()" /></span>
+  </div>
+</div>
+</body>
+</html>

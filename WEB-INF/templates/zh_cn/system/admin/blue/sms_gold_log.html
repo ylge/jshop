@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+ #if($!log_status)
+ jQuery("#log_status").val($!log_status);
+ #end
+ 
+  //
+});
+</script>
+</head>
+<body>
+<div class="cont"> #if($!type)
+  <h1 class="seth">邮件购买记录</h1>
+  #else
+  <h1 class="seth">短信购买记录</h1>
+  #end
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/sms_set.htm"><b>短消息设置</b></a></li>
+      <li><a href="$!webPath/admin/sms_gold_log.htm" #if(!$!log_type) class="this" #end><b>短信购买记录</b></a></li>
+      <li> <a href="$!webPath/admin/sms_gold_log.htm?log_type=email" #if($!log_type) class="this" #end><b>邮件购买记录</b></a></li>
+    </ul>
+  </div>
+  <form method="post" id="ListForm">
+    <div class="search"> <span>店铺名称</span> <span class="size100">
+      <input name="store_name" type="text" id="store_name" value="$!store_name" />
+      </span> <span>支付状态</span> <span>
+      <select name="log_status" id="log_status">
+        <option value="">支付状态</option>
+        <option value="0">未支付</option>
+        <option value="5">已支付</option>
+      </select>
+      </span>
+      <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+      </span> </div>
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="10%"><span class="form_btna">名称</span></th>
+          <th width="15%"><span class="form_btna">店铺名称</span></th>
+          <th width="10%"><span class="form_btna">提交时间</span></th>
+          <th width="10%"><span class="form_btna">成交单价</span></th>
+          <th width="10%"><span class="form_btna">成交数量</span></th>
+          <th width="10%"><span class="form_btna">成交总金额</span></th>
+          <th width="10%"><span class="form_btna">支付状态</span></th>
+          <th ><span class="form_btna">描述</span></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+          <td align="center">$!obj.title</td>
+          <td align="center">$!obj.store_name</td>
+          <td align="center">$!CommUtil.formatLongDate($!obj.addTime)</td>
+          <td align="center">$!obj.gold</td>
+          <td align="center">$!obj.count</td>
+          <td align="center">$!obj.all_gold</td>
+          #set($status="未支付")
+          #if($!obj.log_status==5)
+          #set($status="已支付")
+          #end
+          <td align="center">$!status</td>
+          #set($all = 100*$!{obj.count})
+          #if($!obj.log_type=="sms")
+          <td align="center">包含$!{all}条短信</td>
+          #else
+          <td align="center">包含$!{all}封邮件</td>
+          #end </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        $!gotoPageFormHTML</div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

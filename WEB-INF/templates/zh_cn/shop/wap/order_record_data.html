@@ -1,0 +1,10 @@
+
+                #foreach($obj in $order_objs)
+                <tr>
+                	<td align="center">$!{obj.evaluate_user.userName}</td>
+                    <td align="center">¥$!{obj.goods_price}</td>
+                    <td align="center">$!obj.goods_spec</td>
+                    <td align="center">$!obj.goods_num</td>
+                    <td align="center">$!CommUtil.formatLongDate($!obj.addTime)</td>
+                </tr>
+                #end

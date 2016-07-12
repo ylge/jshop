@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>退货列表</title>
+<link href="../../../../../../resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+	var currentPage = 2;
+	var  ret = 1;
+	var totalPage = "$!totalPage";
+	
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&ret==1) {
+		if(currentPage<=totalPage){
+		jQuery("#loading").hide();
+		jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/buyer/order_complaint_list.htm',
+				  data:{"currentPage":currentPage,"beginTime":"$!{beginTime}","endTime":"$!endTime","order_id":"$!order_id"},
+				beforeSend:function(){
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  ret = 2;
+				},
+			   success:function(data){
+				   currentPage = currentPage+1;
+				 
+				 ret = 1;
+	             if(data){ 
+				  jQuery(".goods_resturn").append(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	 }else{
+		jQuery("#loading_none").show();
+	}
+	});
+	
+});<!--end-->
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/service_center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">商品投诉</span></div>
+<div class="phone_main">
+	
+    <div class="order_return_list">
+    	<ul class="resturn_tab">
+        	<li class="this" style="width:48%"><a href="#">商品列表</a></li>
+            <li style="width:48%"><a href="$!webPath/wap/buyer/complaint.htm">查看返修/退换货记录</a></li>	
+        </ul>
+        <!--商品退货-->
+        #if($!objs.size()>0)
+        <div class="goods_resturn" style="display:;">
+        #foreach($obj in $objs)
+        	#foreach($map in $!orderFormTools.queryGoodsInfo("$!obj.goods_info"))
+            #set($goods_id = "$!{map.get('goods_id')}")	
+            #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+            #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+            #set($goods_return_status="$!{map.get('goods_return_status')}")
+            #set($goods_choice_type="$!{map.get('goods_choice_type')}")
+            #set($goods_gsp_ids="$!{map.get('goods_gsp_ids')}")
+            #set($goods_complaint_status="$!{map.get('goods_complaint_status')}") 
+            #if($!{goods_complaint_status}==1||$!{obj.order_form}==1)
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">投诉</a></span></dd>
+            </dl>
+            #else
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr"><a href="$!webPath/wap/buyer/complaint_handle.htm?order_id=$!obj.id&currentPage=$!currentPage&goods_id=$!goods_id">投诉</a></span></dd>
+            </dl>
+            #end
+            
+            #if($!obj.child_order_detail)
+            #foreach($child_map in $!orderFormTools.queryGoodsInfo("$!obj.child_order_detail"))
+                 #set($child_order=$!orderFormTools.query_order("$!child_map.get('order_id')"))
+                 #set($order_total_price=$order_total_price+$child_order.totalPrice)
+                 #set($order_total_ship_price=$order_total_ship_price+$child_order.ship_price)
+                 #set($order_id=$!child_map.get('order_id'))
+                 #foreach($map in $!orderFormTools.queryGoodsInfo("$!child_order.goods_info"))
+                     #set($goods_id = "$!{map.get('goods_id')}")	
+                     #set($goods_name = "$!{map.get('goods_name')}")
+                     #set($goods_count = $!{map.get('goods_count')})
+                     #set($goods_price = $!{map.get('goods_price')})
+                     #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+                     #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+                     #set($store=$!orderFormTools.goods_second_domain("$!{goods_id}","goods"))
+                     #set($goods_domainPath="$!webPath/goods_$!{goods_id}.htm")
+                     #if($!store&&$!config.second_domain_open && $!store.store_second_domain!="")
+                     #set($goods_domainPath="http://$!{store.store_second_domain}.$!{domainPath}/goods_$!{goods_id}.htm")
+                     #end
+                     #set($goods_return_status="$!{map.get('goods_return_status')}")
+                     #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+                     #set($goods_choice_type="$!{map.get('goods_choice_type')}")
+                      #set($goods_complaint_status="$!{map.get('goods_complaint_status')}") 
+            #if($!{goods_complaint_status}==1||$!{child_order.order_form}==1)
+            <dl>
+            	<dt>订单编号：$!obj.order_id</dt>
+                <dd><span class="fl"><a href="$!webPath/wap/goods.htm?id=$!{goods_id}"><img src="$!img" width="60" height="60" /></a><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr gray"><a href="javascript:void(0);">投诉</a></span></dd>
+            </dl>
+            #else
+                <dl>
+                    <dt>订单编号：$!obj.order_id</dt>
+                    <dd><span class="fl"><img src="$!img" width="60" height="60" /><p>$!map.get('goods_name')</p><p class="gray">$!CommUtil.formatLongDate($!obj.addTime)</p></span><span class="fr"><a href="$!webPath/wap/buyer/complaint_handle.htm?order_id=$!order_id&currentPage=$!currentPage&goods_id=$!goods_id">投诉</a></span></dd>
+            	</dl>
+
+            #end
+            #end
+            #end
+            #end
+            #end
+        #end
+
+        </div>
+        #else
+        <div class="main">
+          <div class="mt50" style="height:49px;"></div>
+          <div class="error_page1">
+            <span class="error_img"><img src="$!webPath/resources/style/system/front/default/images/nothing.png" /></span>
+            <p>暂无记录！</p>
+          </div>
+        </div>
+        #end
+        
+        <!--查看返修/退换货记录-->
+<div class="loading" id="loading" style="display:none">
+<ul>
+  <li><img src="$!webPath/resources/style/system/front/default/images/nothing.gif" width="16" height="16" /></li>
+  <li>正在加载....</li>
+</ul>
+</div>
+<div class="loading" id="loading_none" style="display:none">
+<ul>
+  <li>没有更多了....</li>
+</ul>
+</div>        
+    </div>
+    
+    
+    
+    $!httpInclude.include("/wap/footer.htm?op=center")
+        $!httpInclude.include("/wap/layer.htm")
+</div>
+</body>
+</html>

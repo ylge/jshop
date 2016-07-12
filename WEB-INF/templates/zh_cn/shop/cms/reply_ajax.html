@@ -1,0 +1,17 @@
+#foreach($reply in $replies)
+    <div class="rcomment_reply_one">
+        <div class="rcomment_reply_one_l"> <img src="$!imageWebServer/$!reply.userPhoto" /> </div>
+        <div class="rcomment_reply_one_r">
+        <div class="rcomment_reply_one_r_t">$!reply.userName<span>发表时间：$!reply.addTime</span></div>
+        <div class="rcomment_reply_one_r_c">$!reply.content</div>
+        </div>
+    </div>
+#end
+    <div class="cms_page">
+    <span>
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        <input name="orderBy" type="hidden" id="orderBy" value="$!orderBy" />
+        <input name="orderType" type="hidden" id="orderType" value="$!orderType" />
+    	$!gotoPageAjaxHTML
+    </span>
+</div>

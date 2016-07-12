@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes">
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+    jQuery(".pay_style").click(function(){
+		jQuery(".pay_style").removeClass("this");
+		jQuery(this).addClass("this");
+		var index = jQuery(this).index(".pay_style");
+		jQuery(" input[name=payType]").get(index).checked=true;
+	})
+});<!--end-->
+function order_pay(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>订单支付<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="pd5">
+  <div class="payment">
+    <div class="pay_detail">
+      <dl>
+        <dt><img src="$!webPath/resources/style/system/front/wap/images/dun.png" width="62"></dt>
+        <dd>
+          <ul>
+            <li style="font-size:20px; margin-bottom:10px;">订单支付</li>
+            <li>应付金额：<span class="red">¥$!{all_of_price}</span></li>
+            <li></li>
+          </ul>
+        </dd>
+      </dl>
+    </div>
+    <form id="theForm" method="post" action="$!webPath/wap/order_pay.htm">
+    <div class="payfor">
+      <h1>请选择支付方式：</h1>
+      #set($alipay_wap_install=$!paymentTools.queryShopPayment("alipay_wap").get("install"))
+      #set($paypal_install=$!paymentTools.queryShopPayment("paypal").get("install"))
+      #set($tenpay_install=$!paymentTools.queryShopPayment("tenpay").get("install"))
+      #set($chinabank_install=$!paymentTools.queryShopPayment("chinabank").get("install"))
+      #set($bill_install=$!paymentTools.queryShopPayment("bill").get("install"))
+      #if($!alipay_wap_install==true||$!paypal_install==true||$!tenpay_install==true||$!chinabank_install==true||$!bill_install==true)
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">在线支付</span></td>
+          </tr>
+        #if($!alipay_wap_install==true)
+        <tr>
+          <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="alipay_wap"></td>
+          <td><div class="pay_style"><a href="javascript:void(0)">支付宝</a></div></td>
+        </tr>
+        #end
+        #if($!paypal_install==true)
+        <tr>
+          <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="paypal"></td>
+          <td><div class="pay_style"><a href="javascript:void(0)">Paypal</a></div></td>
+        </tr>
+        #end
+        #if($!tenpay_install==true)
+        <tr>
+          <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="tenpay"></td>
+          <td><div class="pay_style"><a href="javascript:void(0)">财付通</a></div></td>
+        </tr>
+        #end
+        #if($!chinabank_install==true)
+        <tr>
+          <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="chinabank"></td>
+          <td><div class="pay_style"><a href="javascript:void(0)">网银支付</a></div></td>
+        </tr>
+        #end
+        #if($!bill_install==true)
+        <tr>
+          <td  width="12%" align="center"><input type="radio" name="payType" id="payType" value="bill"></td>
+          <td><div class="pay_style"><a href="javascript:void(0)">快钱支付</a></div></td>
+        </tr>
+        #end
+          
+        
+      </table>
+      #end
+      #set($install=$!paymentTools.queryShopPayment("payafter").get("install"))
+      #if($!install==true)
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">货到付款</span></td>
+          </tr>
+          <tr>
+            <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="payafter"></td>
+            <td><div class="pay_style"><a href="javascript:void(0)">货到付款</a></div></td>
+          </tr>
+        </tbody>
+      </table>
+      #end
+      #set($install=$!paymentTools.queryShopPayment("balance").get("install"))
+      #if($!install==true)
+      <table class="pay_table">
+        <tbody>
+          <tr>
+            <td colspan="2"><span style="border-bottom:1px solid #F00">预存款支付</span></td>
+          </tr>
+          <tr>
+            <td width="12%" align="center"><input type="radio" name="payType" id="payType" value="balance"></td>
+            <td><div class="pay_style"><a href="javascript:void(0)">预存款</a></div></td>
+          </tr>
+        </tbody>
+      </table>
+      #end </div>
+        <input name="order_id" type="hidden" id="order_id" value="$!{order.id}" />
+    </form>
+    <div class="pay_btn"><a href="javascript:void(0)" onClick="order_pay()">马上支付</a></div>
+  </div>
+</div>
+
+$!httpInclude.include("/mobile/footer_new.htm?op=cart")
+</body>
+</html>

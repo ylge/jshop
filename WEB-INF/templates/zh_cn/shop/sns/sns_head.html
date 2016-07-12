@@ -1,0 +1,102 @@
+<script>
+if($!{otherUser.whether_attention}==0){
+	var id = "$!{otherUser.id}";
+	window.location.href="$!webPath/sns/other_sns_lock.htm?id="+id;		
+}
+#if($!currentUser)
+function attention_save(){
+	var id = "$!{otherUser.id}";
+	if(id=='$!{currentUser.id}'){
+		showDialog("msg_info","","你不能关注自己！",2,"error",3,function(){window.location.href="$!webPath/buyer/my_sns_index.htm"});
+	}else{
+		jQuery.post("$!webPath/sns/attention_save.htm",{"id":id},function(data){
+			if(data==0){
+				showDialog("msg_info","","关注成功！",2,"succeed",3,function(){location.reload()}); 
+		 	}
+		 	if(data==1){
+		   		showDialog("msg_info","","关注失败！",2,"warning",3,function(){location.reload()});
+		 	}
+	  	},"text");
+	}
+}
+function attention_cancel(){
+	var id = "$!{otherUser.id}";
+	jQuery.post("$!webPath/sns/attention_cancel.htm",{"id":id},function(data){
+		 if(data==0){
+			 showDialog("msg_info","","取消关注成功！",2,"succeed",3,function(){location.reload()});
+		 }
+		 if(data==1){
+		   showDialog("msg_info","","取消关注失败！",2,"warning",3,function(){location.reload()});
+		 }
+	  },"text");
+	}
+#end
+</script>
+
+<div class="sns_hd">
+  <div class="sns_top_logo">
+    #if($!config.websiteLogo)
+    #set($img="$!imageWebServer/$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+    #else
+    #set($img="$!webPath/resources/style/system/front/default/images/logo.jpg")
+    #end
+    <div class="sns_top_logo_left">
+      		<a href="$!webPath" target="_blank"><span><img src="$!img" /></span></a>
+            <a href="$!webPath/sns/other_sns.htm?id=$!{otherUser.id}" target="_blank"><b><img src="$!webPath/resources/style/system/front/default/images/logo_right.png" /></b></a>
+    </div>
+  </div>
+  <div class="sns_main">
+    <div class="sns_main_top_c">
+      <div class="sns_main_top_c_tp">
+        <div class="sns_hd_left"> 
+          #if($!otherUser.photo)
+            #set($user_photo="$!imageWebServer/$!otherUser.photo.path/$!otherUser.photo.name")
+          #else 
+            #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+          #end
+          <dl>
+            <dt><a href="$!webPath/sns/other_sns_$!{otherUser.id}.htm"><img src="$!user_photo" width="130" height="130" /></a></dt>
+            <dd class="name_dd">
+            	<span class="name">$!otherUser.userName</span>                
+            <strong> 
+            #if($!currentUser)
+          		#if($!snsTools.whetherAttention("$!{currentUser.id}","$!{otherUser.id}"))
+            	<a href="javascript:void(0);" onClick="attention_cancel();" class="sns_att_btn">取消关注</a> 
+           		#else
+            	<a href="javascript:void(0);" onClick="attention_save();" class="sns_att_btn">关注</a>
+            	#end
+          	#else
+            	<a href="javascript:void(0);" dialog_uri="$!webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" class="sns_att_btn">关注</a> 
+            #end
+            </strong>
+            </dd>
+            #if($!otherUser.sex==1)
+              #set($user_sex="sns_boy.png")
+            #end 
+            
+            #if($!otherUser.sex==0)
+              #set($user_sex="sns_girl.png")
+            #end
+            <dd>#if($!otherUser.area)$!otherUser.area.parent.parent.areaName $!otherUser.area.parent.areaName #else 暂未填写居住地 #end
+              #if($!user_sex)<i><img src="$!webPath/resources/style/system/front/default/images/$!user_sex" width="12" height="12" /></i>#end</dd>
+          </dl>
+        </div>
+        <div class="sns_hd_right">
+          <ul style="cursor:pointer" onclick="window.location.href='$!webPath/sns/other_sns_atts.htm?other_id=$!{otherUser.id}'">
+            <li><strong>$!attsCount</strong></li>
+            <li>关注</li>
+          </ul>
+          <ul style="cursor:pointer" onclick="window.location.href='$!webPath/sns/other_sns_fans.htm?other_id=$!{otherUser.id}'">
+            <li><strong>$!fansCount</strong></li>
+            <li>粉丝</li>
+          </ul>
+          <ul style="cursor:pointer" onclick="window.location.href='$!webPath/sns/other_sns_fav.htm?other_id=$!{otherUser.id}'">
+            <li><strong>$!favsCount</strong></li>
+            <li>收藏</li>
+          </ul>
+        </div>
+      </div>
+      <div class="sns_main_top_c_bg"> </div>
+    </div>
+  </div>
+</div>

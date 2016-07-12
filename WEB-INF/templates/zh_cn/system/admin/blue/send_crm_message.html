@@ -1,0 +1,33 @@
+<link href="$!webPath/resources/style/common/css/window.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+function save_form(){
+		var message=jQuery("#messages").val();
+          var ids=jQuery("#ids").val();
+		  jQuery("#button").attr("disabled",true).val("提交中");
+          jQuery.post("$!webPath/admin/send_message_save.htm",{"ids":ids,"message":message},function(data){
+              if(data=="success"){
+	             window.location.reload();
+	          }
+             },"text");
+}
+</script>
+  <form action="$!webPath/admin/send_message_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+   <input id="ids" name="ids" type="hidden" value="$!ids"/>
+   <table style="float:left;" width="490" border="0" cellspacing="0" cellpadding="0" class="box_table">
+      <tr>
+        <td width="100" align="right" valign="top">短信内容：</td>
+        <td class="px10" align="left"><textarea name="messages" cols="40" rows="6" id="messages"></textarea></td>
+      </tr>
+      <td colspan="2" align="center"><span class="setsub">
+      <input class="choose_btn" name="按钮" type="button" style="cursor:pointer;" value="确定"  onclick="save_form();" id="button"/>
+      </span></td>
+    </table>
+  </form>

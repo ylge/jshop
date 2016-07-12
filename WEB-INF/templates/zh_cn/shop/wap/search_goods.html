@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>商品列表 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+   jQuery("#top_$!{orderBy}").addClass("this");
+   if("$!{orderBy}"=="store_price"){
+	  if("$!{orderType}"=="desc"){
+		  jQuery("#top_store_price img").attr("src","$!webPath/resources/style/system/front/wap/images/goodsclass_down.png");
+	  }else{
+	  	  jQuery("#top_store_price img").attr("src","$!webPath/resources/style/system/front/wap/images/goodsclass_up.png");
+	  }
+   }else{
+   	  jQuery("#top_$!{orderBy} img").attr("src","$!webPath/resources/style/system/front/wap/images/goodsclass_down.png");
+   }
+   #if($!objs.size()>=24)
+   var currentPage = 2;
+   var ret = 1;
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()&&ret==1) {
+		 jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/search_ajax.htm',
+				  data:{"currentPage":currentPage,
+		  				"keyword":"$!{keyword}",
+						"orderBy":"$!{orderBy}",
+						"orderType":"$!{orderType}"},
+				beforeSend:function(){
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				  ret=2;
+				},
+			   success:function(data){
+				   ret=1;
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".group_list").find("a").last().after(data);
+				  currentPage=currentPage+1;
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		
+   #end
+	jQuery(".group_top li").click(function(){
+		var orderBy = jQuery(this).attr("id").substring(4);
+		if(orderBy=="store_price"){
+			if("$!{orderType}"=="asc"){
+				window.location.href="$!webPath/wap/search.htm?keyword=$!{keyword}&&orderBy="+orderBy+"&&orderType=desc";
+			}else{
+				window.location.href="$!webPath/wap/search.htm?keyword=$!{keyword}&&orderBy="+orderBy+"&&orderType=asc";
+			}	
+		}else{
+			window.location.href="$!webPath/wap/search.htm?keyword=$!{keyword}&&orderBy="+orderBy;
+		}
+	}) 	  
+});<!--end-->
+</script>
+</head>
+
+<body class="index_bg">
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>商品搜索<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<div class="main">
+  <div class="mt50"></div>
+    <form name="theForm" id="theForm" action="$!webPath/wap/search.htm" method="post">
+    <div class="search_line"><span>
+      <input type="text"  placeholder="搜索商品" name="keyword" id="keyword" value="$!keyword" />
+      </span><b><img src="$!webPath/resources/style/system/front/wap/images/search_icon.png" width="30" height="30" /></b></div>
+  </form>
+  <div class="group_top">
+    <ul>
+      <li id="top_goods_salenum"><a href="javascript:void(0)"><span><b><img src="$!webPath/resources/style/system/front/wap/images/group_down.png"></b>销量</span></a></li>
+      <li id="top_goods_collect"><a href="javascript:void(0)"><span><b><img src="$!webPath/resources/style/system/front/wap/images/group_down.png"></b>人气</span></a></li>
+      <li id="top_store_price"><a href="javascript:void(0)"><span><b><img src="$!webPath/resources/style/system/front/wap/images/group_sort.png"></b>价格</span></a></li>
+    </ul>
+  </div>
+  <div class="group_list">
+  	#if($!objs.size()>0)
+  	#foreach($obj in $objs) <a href="$!webPath/wap/goods.htm?id=$!{obj.vo_id}">
+    <dl>
+      <dt><img width="90" height="90" src="$!imageWebServer/$!obj.vo_main_photo_url"></dt>
+      <dd>
+        <h3><b>$!obj.vo_title#if($!goodsViewTools.query_activity_status("$!obj.vo_id","group_buy")=="true")<i>团购</i>#end
+                  #if($!goodsViewTools.query_activity_status("$!obj.vo_id","activity_status")=="true")<i>促销</i>#end
+                  #if($!goodsViewTools.query_activity_status("$!obj.vo_id","combin_status")=="true")<i>组合</i>#end
+                  #if($!goodsViewTools.query_activity_status("$!obj.vo_id","order_enough_give_status")=="true")<i>满送</i>#end
+                  #if($!goodsViewTools.query_activity_status("$!obj.vo_id","enough_reduce")=="true")<i>满减</i>#end
+                  #if($!goodsViewTools.query_activity_status("$!obj.vo_id","f_sale_type")=="true")<i>F码</i>#end
+                  #if($!goodsViewTools.query_activity_status("$!obj.vo_id","advance_sale_type")=="true")<i>预售</i>#end</b>
+                  </h3>
+        <span><strong>¥$!obj.vo_store_price</strong></span> <em>$!{obj.vo_goods_evas}人评价，$!{obj.vo_goods_salenum}人已购买</em> </dd>
+    </dl>
+    </a>
+    #end
+    #else
+    <div class="loading">
+    <ul>
+      <li>暂无数据....</li>
+    </ul>
+    </div>
+    #end
+  </div>
+  <div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16"></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+  <div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+  </div>
+$!httpInclude.include("/wap/footer.htm?op=index") </div>
+$!httpInclude.include("/wap/layer.htm")
+</body>
+</html>

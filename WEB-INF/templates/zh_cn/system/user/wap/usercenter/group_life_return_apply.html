@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>生活购退款申请</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+jQuery(document).ready(function(){
+  jQuery("#theForm").validate({
+	   rules:{
+		   return_group_content:{required:true}
+		   },
+	   messages:{
+		   return_group_content:{required:"请填写说明"}
+	   }
+	});
+});
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href=""><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">申请退货</span></div>
+<div class="phone_main">
+#if($!obj.status==3)
+<form action="$!webPath/wap/buyer/grouplife_return_apply_cancel.htm" method="post" id="theForm">
+<input id="id" name="id" type="hidden" value="$!obj.id"/>	
+    <div class="order_return_list">
+    	<div class="apply_return">
+        	<h2 class="explain">提交申请后请及时与商家联系，商家同意退货后可填写退货物流信息</h2>
+            <table cellpadding="0" cellspacing="0">
+            	<tbody>
+                	<tr>
+                    #set($img="$!imageWebServer/$!obj.lifeGoods.group_acc.path/$!obj.lifeGoods.group_acc.name")
+                    	<td width="15%"><img src="$!img" width="60" height="60" /></td>
+                        <td>$!{obj.lifeGoods.gg_name}</td>
+                    </tr>
+                    <tr>
+                    	<td>团购码：</td>
+                        <td>
+                        	$!{obj.group_sn}
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td colspan="2">申请说明: $!obj.refund_reasion</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="red_submit"><a href="javascript:void(0);" onclick="saveForm()">取消退款</a></div>
+        </div>
+    </div>
+</form>
+#else   
+<form action="$!webPath/wap/buyer/grouplife_return_apply_save.htm" method="post" id="theForm">
+<input id="id" name="id" type="hidden" value="$!obj.id"/> 
+    <div class="order_return_list">
+    	<div class="apply_return">
+        	<h2 class="explain">提交申请后请及时与商家联系，商家同意退货后可填写退货物流信息</h2>
+            <table cellpadding="0" cellspacing="0">
+            	<tbody>
+                	<tr>
+                    #set($img="$!imageWebServer/$!obj.lifeGoods.group_acc.path/$!obj.lifeGoods.group_acc.name")
+                    	<td width="25%"><img src="$!img" width="60" height="60" /></td>
+                        <td>$!{obj.lifeGoods.gg_name}</td>
+                    </tr>
+                    <tr>
+                    	<td>消费码：</td>
+                        <td>$!{obj.group_sn}</td>
+                    </tr>
+                    <tr>
+                    	<td>退款原因：</td>
+                        <td>
+                        	<input name="reasion" type="radio" value="1" checked="checked" /> 买错了/重新买<br />
+                            <input name="reasion" type="radio" value="2" /> 计划有变，没时间消费<br />
+                            <input name="reasion" type="radio" value="3" /> 预约不上<br />
+                            <input name="reasion" type="radio" value="4" /> 去过了，不太满意<br />
+                            <input name="reasion" type="radio" value="5" /> 其他<br />
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td>申请说明：</td>
+                    	<td><textarea name="return_group_content" id="return_group_content"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="red_submit"><a href="javascript:void(0);" onclick="saveForm();">提交</a></div>
+        </div>
+    </div>
+</form>
+#end    
+    
+</div>
+</body>
+</html>

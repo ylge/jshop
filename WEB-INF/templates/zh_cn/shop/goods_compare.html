@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商品信息对比 - $!config.title - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(function(){ 
+   jQuery(window).scroll(function(){
+	   var top = jQuery(".contrast_main_center_nav").offset().top;
+	   if(top>=500){
+		   jQuery(".contrast_main_center_nav").css({"position":"fixed"}).show();
+	   }else{
+	       jQuery(".contrast_main_center_nav").css({"position":"relative"}).hide();
+	   }
+   });
+})
+function hide_info(){
+  jQuery(".contrast_main_center_one_center dl").each(function(index){
+     var first_val=jQuery(this).find("dd:first").html();
+	 var hide=true;
+	 jQuery(this).find("dd:gt(0)").each(function(i){
+		if(i+1<$!goods_compare_list.size()){										 
+	     var the_val=jQuery(this).html();//alert(i+"行"+first_val+","+the_val);
+		 if(first_val!=the_val){//只要存在一个不相同值则认为不同
+		   hide=false;
+	     } 
+		} 
+	 });
+    if(hide){
+	   jQuery(".contrast_main_center_one_center dl:eq("+index+")").hide();
+	}	 
+  });
+  jQuery("a[id^=hide_info_]").hide();
+  jQuery("a[id^=show_all_]").show();
+ }  
+ function show_all(){
+   jQuery(".contrast_main_center_one_center dl").show();
+   jQuery("a[id^=hide_info_]").show();
+   jQuery("a[id^=show_all_]").hide();
+ }
+ function light_info(){
+  jQuery(".contrast_main_center_one_center dl").each(function(index){
+     var first_val=jQuery(this).find("dd:first").html();
+	 var hide=false;
+	 jQuery(this).find("dd:gt(0)").each(function(i){
+		if(i+1<$!goods_compare_list.size()){										 
+	     var the_val=jQuery(this).html();//alert(i+"行"+first_val+","+the_val);
+		 if(first_val!=the_val){//只要存在一个不相同值则认为不同
+		   hide=true;
+	     } 
+		} 
+	 });
+    if(hide){
+	   jQuery(".contrast_main_center_one_center dl:eq("+index+")").addClass("this");
+	}	 
+  }); 
+   jQuery("a[id^=light_info_]").hide();
+   jQuery("a[id^=light_cancle_]").show();  
+ }
+ function light_cancle(){
+    jQuery(".contrast_main_center_one_center dl").removeClass("this");	 
+    jQuery("a[id^=light_info_]").show();
+    jQuery("a[id^=light_cancle_]").hide();
+ }
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm") 
+$!httpInclude.include("/head.htm") 
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <!-- 对比 start -->
+  <div class="contrast_main"> #if($!goods_compare_list.size()==0)
+    <div class="contrast_main_nothing">还没有对比数据！</div>
+    #end
+    #if($!goods_compare_list.size()==1)
+    <div class="contrast_main_nothing">一件商品无法对比哦！</div>
+    #end
+    #if($!goods_compare_list.size()>1)
+    <div class="contrast_header_top">
+      <ul>
+        <li class="contrast_header_top_left">商品对比</li>
+      </ul>
+    </div>
+    <div class="contrast_main_center">
+      <div class="contrast_main_center_top">
+        <dl>
+          <dd> <span class="contrast_main_center_nav_left_top">商品图片</span>
+            <!--侧导航 -->
+            <div class="side_nav"> <a id="hide_info_1" href="javascript:void(0);" onclick="hide_info();">隐藏相同项</a> <a  id="show_all_1" style="display:none;" href="javascript:void(0);" onclick="show_all();">显示相同项</a> <a id="light_info_1" href="javascript:void(0);" onclick="light_info();">高亮不同项</a> <a style="display:none;" id="light_cancle_1" onclick="light_cancle();" href="javascript:void(0);">取消高亮项</a> </div>
+          </dd>
+          #foreach($goods in $goods_compare_list)
+          <dt>
+            <div class="contrast_main_center_top_img"><img src="$!goods.goods_img" /></div>
+            <div class="contrast_main_center_top_word"><a href="$!goods.goods_url" target="_blank">$!goods.goods_name</a></div>
+            <div class="contrast_main_center_top_edit"><a href="$!webPath/remove_goods_compart.htm?goods_id=$!{goods.goods_id}">删除</a></div>
+          </dt>
+          #end
+          #if($!goods_compare_list.size()<4)
+          #set($remain_count=4-$!goods_compare_list.size())
+          #end
+          #foreach($i in [1..$remain_count])
+          <dt>
+            <div class="contrast_main_center_top_img"><img src="$!webPath/resources/style/system/front/default/images/contrast_nothing.png" /></div>
+            <div class="contrast_main_center_top_word"><a href="$!webPath/store_goods_list_$!{gc.id}.htm">马上添加商品</a></div>
+            <div class="contrast_main_center_top_edit"></div>
+          </dt>
+          #end
+        </dl>
+      </div>
+      <!--当页面滑过 contrast_main_center_top 以后 style="display:block;  删除 position:relative-->
+      <div class="contrast_main_center_nav" style="display:none; position:position:relative">
+        <div class="contrast_main_center_nav_left"> <span class="contrast_main_center_nav_left_t">商品信息</span>
+         <span class="contrast_main_center_nav_left_r">
+         <a href="javascript:void(0);" id="hide_info_2" onclick="hide_info();">隐藏相同项</a>
+         <a href="javascript:void(0);" id="show_all_2" onclick="show_all();" style="display:none;">显示相同项</a>
+         </span> 
+         <span class="contrast_main_center_nav_left_r">
+         <a href="javascript:void(0);" id="light_info_2" onclick="light_info();">高亮不同项</a>
+         <a href="javascript:void(0);" id="light_cancle_2" onclick="light_cancle();" style="display:none;">取消高亮项</a>
+         </span> 
+         </div>
+        #foreach($goods in $goods_compare_list)
+        <div class="contrast_main_center_nav_one">
+          <div class="contrast_main_center_top_word"><a href="$!goods_url" target="_blank">$!goods.goods_name</a></div>
+          <div class="contrast_main_center_top_edit"><a href="$!webPath/remove_goods_compart.htm?goods_id=$!{goods.goods_id}">删除</a></div>
+        </div>
+        #end
+        #if($!goods_compare_list.size()<4)
+        #set($remain_count=4-$!goods_compare_list.size())
+        #end
+        #foreach($i in [1..$remain_count])
+        <div class="contrast_main_center_nav_one">
+          <div class="contrast_main_center_top_word">暂无商品</div>
+          <div class="contrast_main_center_top_edit"></div>
+        </div>
+        #end </div>
+      <!--详细对比 start -->
+      <div class="contrast_main_center_main">
+        <!--左侧导航 左侧跟随页面滑动 -->
+        <div class="contrast_main_center_one">
+          <div class="contrast_main_center_one_center">
+            <dl>
+              <dt>商品价格</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>¥$!goods.goods_price</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            <dl>
+              <dt>商品品牌</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>$!goods.goods_brand</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            <dl>
+              <dt>增值税发票</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>#if($!goods.tax_invoice==0)不支持 #else 支持 #end</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            <dl>
+              <dt>货到付款</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>#if($!goods.goods_cod==0)支持 #else 不支持 #end</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            <dl>
+              <dt>商品重量</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>$!CommUtil.null2Double($!goods.goods_weight)Kg</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            <dl>
+              <dt>好评率</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>$!{goods.well_evaluate}</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            <dl>
+              <dt>中评率</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>$!{goods.middle_evaluate}</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            <dl>
+              <dt>差评率</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>$!{goods.bad_evaluate}</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            #foreach($gtp in $gtps)
+            <dl>
+              <dt>$!gtp.name</dt>
+              #foreach($goods in $goods_compare_list)
+              <dd>$!{goods.props.get("$!gtp.name")}</dd>
+              #end
+              #if($!goods_compare_list.size()<4)
+              #set($remain_count=4-$!goods_compare_list.size())
+              #end
+              #foreach($i in [1..$remain_count])
+              <dd></dd>
+              #end
+            </dl>
+            #end </div>
+        </div>
+      </div>
+      <!--详细对比 end -->
+      #end </div>
+  </div>
+  <!-- 对比 end -->
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自提点申请 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/delivery.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function() {
+	jQuery("input[name='da_service_type']").click(function() {
+        var type = jQuery(this).val();
+		if(type=='1'){
+			jQuery("#da_begin_time").parent().show();
+			jQuery("#da_end_time").parent().show();
+			jQuery("#da_time_zhi").show();
+		}else{
+			jQuery("#da_begin_time").parent().hide();
+			jQuery("#da_end_time").parent().hide();
+			jQuery("#da_time_zhi").hide();
+		}
+    });
+	jQuery("select").change(function(){
+    	var level=jQuery(this).attr("level");
+		var id=jQuery(this).val();
+		jQuery("#sa_area_id").val("");
+	 	for(var i=4;i>level;i--){
+	  		jQuery("#area"+i).empty();
+	  		jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 	}
+	 if(id!=""){
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	     jQuery("#area"+level).empty();
+		  jQuery("#area"+level).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+level).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }else{
+	   for(var i=level;i<=4;i++){
+	    jQuery("#area"+i).empty();
+	   }
+	 }
+  	});
+	jQuery("#theForm").validate({	
+	errorPlacement: function(error, element) {
+				element.parent().parent().find("b").html("");
+					error.appendTo(element.parent().parent().find("b"));
+				},					  
+    rules:{
+	  da_name:{required :true},
+	  da_contact_user:{required:true},
+	  da_tel:{required:true},
+	  area3:{required:true},
+	  da_address:{required:true},
+	  da_service_day:{required:true}
+	 },
+	messages:{
+	  da_name:{required :"自提点名称不得为空"},
+	  da_contact_user:{required:"联系人姓名不得为空"},
+	  da_tel:{required:"联系人电话不得为空"},
+	  area3:{required:"所在区域不得为空"},
+	  da_address:{required:"详细地址不得为空"},
+	  da_service_day:{required:"请选择服务时间"}
+	 }
+  });
+})<!--end-->
+function save(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body background="$!imageWebService/resources/style/system/front/default/images/map.png">
+<div class="main" >
+	<div class="map_bg"></div> 
+	<!--自提点--填表 -->
+    <div class="self_input_protocol">
+    <h4>自提点申请单</h4>
+    <form action="$!webPath/delivery_apply3.htm" method="post" name="theForm" id="theForm">
+    <input type="hidden" name="delivery_session" id="delivery_session" value="$!{delivery_session}" />
+    <input type="hidden" name="id" id="id" value="$!{obj.id}" />
+    <div class="self_input">
+    	<div class="self_input_left">
+    		<ul>
+        	<li><i>自提点名称：</i><span><input name="da_name" type="text" placeholder="自提点名称（必填）" id="da_name" value="$!{obj.da_name}"/></span><b></b></li>
+            <li><i>联系人姓名：</i><span><input name="da_contact_user" type="text" placeholder="联系人姓名（必填）" id="da_contact_user" value="$!{obj.da_contact_user}"/></span><b></b></li>
+            <li><i>联系人电话：</i><span><input name="da_tel" type="text" placeholder="联系人电话（必填）" id="da_tel" value="$!{obj.da_tel}" /></span><b></b></li>
+            <li><i>自提点说明：</i><span><textarea name="da_content" cols="" rows="" id="da_content">$!{obj.da_content}</textarea></span><b></b></li>
+            <li><i>所在区域：</i><span>
+            <select name="area1" id="area1" level="2">
+              <option>省份/自治区</option>
+              #foreach($area in $areas)           
+              <option value="$!area.id" >$!area.areaName</option>                             
+	          #end 
+            </select>
+            <select name="area2" id="area2" level="3">
+              <option value="">市/区</option>
+            </select>
+            <select name="area3" id="area3" level="4">
+              <option value="">县/区</option>
+            </select>
+            </span><b></b></li>
+            <li><i>详细地址：</i><span><input name="da_address" id="da_address" type="text" placeholder="详细地址（必填）" value="$!{obj.da_address}" /></span><b></b></li>
+            <li style="position:relative;">
+            	<i>服务时间：</i>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="1" checked="checked" />星期一</label><b style="position:absolute; right:0px; text-align:left; top:0px; height:10px; width:170px; display:block;"></b></span>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="2" checked="checked" />星期二</label></span>
+            	<span><label style="cursor:pointer"><input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="3" checked="checked" />星期三</label></span>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="4" checked="checked" />星期四</label><b style="float:right;"></b></span>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="5" checked="checked" />星期五</label></span>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="6" />星期六</label></span>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_day" id="da_service_day" type="checkbox" value="7" />星期日</label></span>
+            </li>
+            <li>
+            	<i>具体时间：</i>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_type" id="da_service_type" type="radio" value="0" checked="checked" />全天</label></span>
+                <span><label style="cursor:pointer"><input class="time" name="da_service_type" id="da_service_type" type="radio" value="1" />非全天</label></span>
+                <span style="display:none; width:77px"><select name="da_begin_time" id="da_begin_time">
+                  <option value="6">早上6点</option>
+                  <option value="7">早上7点</option>
+                  <option value="8">早上8点</option>
+                  <option value="9">早上9点</option>
+                  <option value="10">上午10点</option>
+                  <option value="11">上午11点</option>
+            	</select></span><span name="da_time_zhi" id="da_time_zhi" style="display:none;">至</span>
+                <span style="display:none"><select name="da_end_time" id="da_end_time">
+                  <option value="16">下午16点</option>
+                  <option value="17">下午17点</option>
+                  <option value="18">下午18点</option>
+                  <option value="19">晚上19点</option>
+                  <option value="20">晚上20点</option>
+                  <option value="21">晚上21点</option>
+                  <option value="22">晚上22点</option>
+                  <option value="23">晚上23点</option>
+            	</select></span>
+            </li>
+         </ul>
+        </div>
+        <div class="self_input_right">
+        	<h3>自提点的申请流程</h3>
+            <div class="self_input_right_center">
+提交申请表->等待审核->线下沟通->实地考察->合同签订->正式营业，申请表提交之后，商城将对您所在的自提点进行实地考核，以最快的速度给您回复！ 
+            </div>
+        </div>
+        <div class="self_help_protocol_agree"><a href="javascript:void(0)" onclick="save()">我同意</a></div>
+    </div>
+    </form>
+    </div>
+</div>
+</body>
+</html>

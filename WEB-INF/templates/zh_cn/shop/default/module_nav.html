@@ -1,0 +1,30 @@
+<script>
+jQuery(document).ready(function(){
+	var mark="$!{obj.mark}";
+	jQuery(".store_nav ul li a[mark="+mark+"]").hover(function(){
+		jQuery(this).css("background-color","$!{obj.hover_color}");										
+		},function(){
+		jQuery(this).css("background-color","");			
+			});
+});
+</script>
+<div class="store_nav_width" style="background-color:$!{obj.back_color}">
+  <div class="main">
+    <div class="store_nav" style="background-color:$!{obj.nav_color}; height:$!{obj.height}px; line-height:$!{obj.height}px;">
+      <ul>
+    #set($store_url="$!webPath/store_$!{store.id}.htm")
+    #if($!config.second_domain_open)
+    #set($store_url="$!current_webPath")
+    #end
+        <li><a href="$!store_url" mark="$!{obj.mark}" style="font-size:$!{obj.font_size}px; color:$!{obj.font_color}">店铺首页</a></li>
+        #foreach($nav in $navs)
+        	#set($url="$!webPath/store_url.htm?id=$!{nav.id}")
+    		#if($!{nav.url}&&$!{nav.url}!="") 
+      			#set($url="$!nav.url")
+    		#end
+        	<li  id="$!nav.id" ><a href="$!url" mark="$!{obj.mark}" style="font-size:$!{obj.font_size}px;color:$!{obj.font_color}" #if($!nav.win_type=="new_win") target="_blank" #end>$!nav.title</a></li>
+        #end
+      </ul>
+    </div>
+  </div>
+</div>

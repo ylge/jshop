@@ -1,0 +1,150 @@
+<script>
+jQuery.validator.addMethod("mobile_telephone",function(value,element){
+  if(jQuery("#telephone").val()==""&&jQuery("#mobile").val()==""){
+     return false;
+	 
+  }else return true;
+});
+jQuery(function(){ 
+   jQuery("#addr_form").validate({
+	ignore: "",
+    rules:{
+	  trueName:{required :true},
+	  area_id:{required :true},
+	  area_info:{required :true},
+	  zip:{required :true,isZipCode:true},
+	  mobile:{mobile_telephone:true,isMobile:true},
+	  telephone:{isTel:true}
+	 },
+	messages:{
+	  trueName:{required :"收货人不能为空"},
+	  area_id:{required :"请选择详细区域"},
+	  area_info:{required :"详细地址不能为空"},
+	  zip:{required :"邮政编码不能为空",isZipCode:"请正确填写邮政编码"},
+	  mobile:{mobile_telephone :"联系电话、手机至少填写一项",isMobile:"请正确填写手机号码"},
+	  telephone:{isTel:"请正确填写电话号码"}
+	},
+	errorPlacement: function(error, element){ 
+	  if(jQuery(error[0]).html()!=""){
+		 element.parent().parent().remove(".shopping_address_first_add_name_left_error");
+		 element.parent().parent().append("<div class='shopping_address_first_add_name_left_error'></div>");
+         error.appendTo(element.parent().parent().find(".shopping_address_first_add_name_left_error"));
+	  }
+    },
+	success:function(label){
+	    jQuery(label).parent().parent().remove(".shopping_address_first_add_name_left_error");
+	},
+	submitHandler:function(){
+	     var params = jQuery("#addr_form").serialize();
+		 jQuery.ajax({type:'POST',url:'$!webPath/cart_address_save.htm',data:params,
+					  success:function(ret){
+						  jQuery('.shopping_address_first').parent().remove();
+						  jQuery(".shopping_address").empty();
+						  jQuery(".shopping_address").append(ret);
+						}
+				     });
+	}
+  });
+  //
+   jQuery("select").change(function(){
+     var level=jQuery(this).attr("level");
+	 var id=jQuery(this).val();
+	 jQuery("#area_id").val("");
+	 for(var i=4;i>level;i--){
+	  jQuery("#area"+i).empty();
+	  jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 }
+	 if(id!=""){
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	     jQuery("#area"+level).empty();
+		  jQuery("#area"+level).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+level).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }else{
+	   for(var i=level;i<=4;i++){
+	    jQuery("#area"+i).empty();
+	   }
+	 }
+  });
+      //
+  jQuery("#area3").change(function(){
+   var id=jQuery(this).val();
+   jQuery("#area_id").val(id);
+ });
+//
+ jQuery(".shopping_address_bottom_no a").click(function(){
+     jQuery("#addr_form").submit();
+ });
+ //
+})
+</script>
+<form method="post" id="addr_form">
+  <div class="shopping_address_first">
+    <div class="shopping_address_first_top">使用新地址</div>
+    <div class="shopping_address_first_add">
+      <div class="shopping_address_first_add_name">
+        <div class="shopping_address_first_add_name_left">收货人姓名：</div>
+        <div class="shopping_address_first_add_name_left_input">
+          <input name="trueName" type="text" id="trueName"  placeholder="请输入收货人姓名"  />
+        </div>
+      </div>
+      <div class="shopping_address_first_add_name">
+        <div class="shopping_address_first_add_name_left">收货人电话：</div>
+        <div class="shopping_address_first_add_name_left_input">
+          <input name="telephone" type="text" id="telephone"  placeholder="请输入收货人电话"  />
+        </div>
+      </div>
+      <div class="shopping_address_first_add_name">
+        <div class="shopping_address_first_add_name_left">收货人手机：</div>
+        <div class="shopping_address_first_add_name_left_input">
+          <input name="mobile" type="text" id="mobile"   placeholder="请输入收货人手机号码"  />
+        </div>
+      </div>
+      <div class="shopping_address_first_add_addrees">
+        <div class="shopping_address_first_add_name_left">收货人地址：</div>
+        <div class="shopping_address_first_add_addrees_left_input">
+          <select name="area1" id="area1" level="2">
+            <option value="">省份/自治区</option>
+             #foreach($area in $areas)           
+             <option value="$!area.id">$!area.areaName</option>
+             #end 
+            </select>
+          <select name="area2" id="area2" level="3">
+           <option value="">市级</option> 
+             #foreach($area in $obj.area.parent.parent.childs)                     
+               <option value="$!area.id">$!area.areaName</option>
+             #end                    
+          </select>
+          <select name="area3" id="area3" level="4">
+          <option value="">县/区</option>  
+            #foreach($area in $$obj.area.parent.childs)                     
+             <option value="$!area.id">$!area.areaName</option>            
+            #end                    
+             </select>
+          <input id="area_id" name="area_id" type="hidden"  />
+        </div>
+      </div>
+      <div class="shopping_address_first_add_xx">
+        <div class="shopping_address_first_add_name_left">街道地址：</div>
+        <div class="shopping_address_first_add_xx_input">
+          <textarea name="area_info" cols="2" rows="" id="area_info" placeholder="路名或街道地址，门牌号"></textarea>
+          </textarea>
+        </div>
+      </div>
+      <div class="shopping_address_first_add_name">
+        <div class="shopping_address_first_add_name_left">邮政编码：</div>
+        <div class="shopping_address_first_add_name_left_input">
+          <input name="zip" type="text" id="zip" placeholder="邮政编码"  />
+        </div>
+      </div>
+      <div class="shopping_address_bottom">
+        #if($!addrs.size()>0)<div class="shopping_address_bottom_yes"><a href="javascript:void(0);" onclick="jQuery('.shopping_address_first').parent().remove();">取消地址</a></div>#end
+        <div class="shopping_address_bottom_no"><a href="javascript:void(0);">保存地址</a>
+          <input name="op_type" type="hidden" id="op_type" value="address_create" />
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

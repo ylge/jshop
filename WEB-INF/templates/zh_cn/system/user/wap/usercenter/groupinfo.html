@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>用户中心 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(){ 
+var status = "$!status";
+   jQuery(" li[id^=status_]").each(function(index, element) {
+    jQuery(element).removeClass("this");
+	});
+	jQuery("#status_"+status).addClass("this");
+	var begin_count =12;
+   jQuery(window).scroll(function(){								  
+	 if (jQuery(document).scrollTop() >= jQuery(document).height() - jQuery(window).height()) {
+		 jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/buyer/groupinfo.htm',
+				  data:{"begin_num":begin_count,"status":"$!status"},
+				beforeSend:function(){
+				  begin_count = begin_count +6;
+				  jQuery("#loading_none").hide();
+				  jQuery("#loading").show();
+				},
+			   success:function(data){
+				 jQuery("#loading").hide();
+	             if(data){ 
+				  jQuery(".group_code").append(data);
+			 	 }else{
+				 jQuery("#loading_none").show();
+				  }    
+              	}
+	    });
+	 }
+	});		  
+});
+</script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">团购消费码</span></div>
+<div class="phone_main">
+<div class="mt50"></div>
+<div class="order_hd">
+    <ul>
+      <li id="status_"><a href="$!webPath/wap/buyer/groupinfo.htm">全 部</a></li>
+      <li id="status_0"><a href="$!webPath/wap/buyer/groupinfo.htm?status=0">未使用</a></li>
+      <li id="status_1"><a href="$!webPath/wap/buyer/groupinfo.htm?status=1">已使用</a></li>
+      <li id="status_-1"><a href="$!webPath/wap/buyer/groupinfo.htm?status=-1">已过期</a></li>
+      <li id="status_357"><a href="$!webPath/wap/buyer/groupinfo.htm?status=357">退款</a></li>
+    </ul>
+    <input type="hidden" name="url" id="url" />
+</div>
+	<div class="group_code">
+    
+    #if($!objs.size()>0)
+    #foreach($obj in $objs)
+    #if($!obj.status==0)
+    #set($class=1)
+    #set($status="未使用")
+    #end
+    #if($!obj.status==1)
+    #set($class=2)
+    #set($status="已使用")
+    #end
+    #if($!obj.status==-1)
+    #set($class=2)
+    #set($status="已到期")
+    #end
+    #if($!obj.status==3)
+    #set($class=3)
+    #set($status="申请退款")
+    #end
+    #if($!obj.status==5)
+    #set($class=3)
+    #set($status="退款中")
+    #end
+    #if($!obj.status==7)
+    #set($class=3)
+    #set($status="退款完成")
+    #end
+    	<dl #if($!class==2) class="gray_bg" #elseif($!class==3) #end>
+        	<dt>
+            	<ul>
+                	<li><span class="fl">消费码：</span><span class="fr">$!obj.group_sn</span></li>
+                    <li><span class="fl">团购名称：</span><span class="fr">$!obj.lifeGoods.gg_name</span></li>
+                    <li><span class="fl">到期时间：</span><span class="fr">$!obj.lifeGoods.endTime</span></li>
+                </ul>
+            </dt>
+            <dd><p class="price">¥ $!{obj.lifeGoods.group_price}</p><p>$!status</p></dd>
+        </dl>
+    #end 
+    #else
+    <div class="main">
+          <div class="mt50" style="height:49px;"></div>
+          <div class="error_page1">
+            <span class="error_img"><img src="$!webPath/resources/style/system/front/default/images/nothing.png" /></span>
+            <p>暂无记录！</p>
+          </div>
+        </div>
+    #end   
+    </div>
+ <div class="loading" id="loading" style="display:none">
+    <ul>
+      <li><img src="$!webPath/resources/style/system/front/wap/images/loading.gif" width="16" height="16" /></li>
+      <li>正在加载....</li>
+    </ul>
+  </div>
+ <div class="loading" id="loading_none" style="display:none">
+    <ul>
+      <li>没有更多了....</li>
+    </ul>
+  </div>     
+</div>$!httpInclude.include("/wap/footer.htm?op=center")
+</body>
+</html>

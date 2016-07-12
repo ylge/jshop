@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="$!webPath/resources/editor/themes/default/default.css" />
+<script src="$!webPath/resources/js/jquery.shop.base.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.imgareaselect.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){	
+#if($!edit)
+jQuery("#pid").val("$!obj.ic_pid");
+#else
+jQuery("#pid").val("$!id");
+#end
+  jQuery("#theForm").validate({
+    rules:{
+	 ic_name:{required:true},
+	 },
+    messages:{
+	 ic_name:{required:"资讯分类标题不能为空"},
+	}
+  });
+ 	//改变系统提示的样式
+  jQuery("span .w").mousemove(function(){
+	var id=jQuery(this.parentNode).attr("id");
+	if(id="nothis"){
+	   jQuery(this.parentNode).attr("id","this")
+	}
+  }).mouseout(function(){
+     var id=jQuery(this.parentNode).attr("id");
+	 if(id="this"){
+	   jQuery(this.parentNode).attr("id","nothis")
+	 }
+  });
+  //
+});
+
+function saveForm(){
+	jQuery("#theForm").submit();	
+}
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/information_class_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+  <input name="id" type="hidden" id="id" value="$!obj.id" />
+  <div class="cont">
+    <h1 class="seth">资讯分类添加</h1>
+    <div class="nav_list">
+      <ul>
+        <li><a href="$!webPath/admin/information_class_list.htm"><b>所有分类</b></a></li>
+        <li><a href="$!webPath/admin/information_class_add.htm"  #if(!$!edit) class="this" #end><b>新增分类</b></a></li>
+        #if($!edit)
+        <li><a href="javascript:void(0);" class="this"><b>编辑</b></a></li>
+        #end
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" >
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>分类标题</li>
+          <li><span class="webname">
+            <input name="ic_name" type="text" id="ic_name" value="$!obj.ic_name" />
+          </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg">上级分类</li>
+          <li><span>
+            <select name="pid" id="pid">
+            <option value="">请选择上级资讯分类...</option>   
+            #foreach($informationClass in $informationClasses)
+              <option value="$!informationClass.id">$!informationClass.ic_name</option>   
+            #end          
+            </select>
+            </span><span id="nothis"><strong class="q"></strong><strong class="w">如果选择上级分类，那么新增的分类则为被选择上级分类的子分类</strong><strong class="c"></strong></span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">分类序号</li>
+          <li><span class="webname">
+            <input name="ic_sequence" type="text" id="ic_sequence" value="$!obj.ic_sequence" />
+            </span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="保存" style="cursor:pointer;" onclick="saveForm();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

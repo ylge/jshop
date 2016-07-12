@@ -1,0 +1,83 @@
+<link href="$!webPath/resources/style/common/css/window.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+
+
+<script>
+jQuery(document).ready(function(){
+  //								
+ jQuery("#theForm").validate({
+	ignore: "",
+    rules:{
+	  album_name:{required :true}
+	 },
+	messages:{
+	  album_name:{required :"相册名称不能为空"}  
+	},
+	submitHandler:function(){
+	
+			var params = jQuery("#theForm").serializeArray();
+			var formData= {};
+			jQuery.each(params, function(i, param){
+				 formData[param.name] = param.value;
+			});
+				
+			jQuery.ajaxFileUpload({url:'$!webPath/seller/album_save.htm',
+								  dataType:'text',
+								  fileElementId:'news_pic',
+								  data:formData,
+								  success:function(data){	
+					var da=jQuery(data).html();
+								if(da==null){
+									}else{			
+window.location.href="$!webPath/seller/album.htm?currentPage=$!currentPage&album_name=$!album_name1";
+										}				
+								 }
+			});
+		}
+  });
+ jQuery("#pid").val("$!obj.parent.id");
+ jQuery(":radio[id=display][value=$!obj.display]").attr("checked",true);
+});
+function save(){
+	
+	jQuery("#theForm").submit();
+	
+	}
+	
+	/*function saveForm(){
+	
+	var album_name=jQuery("#album_name").val();
+	var album_sequence=jQuery("#album_sequence").val();
+	var id=$!obj.id;	
+		jQuery.post("/seller/album_save.htm",{"album_name":album_name,"album_sequence":album_sequence,"id":id},function(data){
+			
+			
+			})
+		
+		}
+	*/
+</script>
+<form action="$!webPath/seller/album_save.htm" method="post" id="theForm">
+<input name="news_pic" id="news_pic" type="hidden" />
+<table style="float:left;" width="100%" border="0" cellspacing="0" cellpadding="0" class="box_table">
+    <tr>
+      <td width="120" align="right" class="hui_table"><input name="id" type="hidden" id="id" value="$!obj.id" />
+      相册名称:</td>
+      <td align="left"><span class="dia_txt">
+        <input name="album_name" type="text" id="album_name" value="$!obj.album_name" />
+      </span></td>
+    </tr>
+    <tr>
+      <td width="120" align="right" class="hui_table">相册序号:</td>
+      <td align="left"><span class="dia_txt">
+        <input name="album_sequence" type="text" id="album_sequence" value="$!obj.album_sequence" />
+      </span></td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center"><span class="inputbtn">
+        <input name="" type="button" id="" onclick="save();" value="提交" style="cursor:pointer;"/>
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        </span></td>
+    </tr>
+  </table>
+</form>

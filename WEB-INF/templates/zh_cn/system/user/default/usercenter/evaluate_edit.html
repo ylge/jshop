@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>订单商品评价 -  $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery.rating.css" type="text/css" rel="stylesheet"/>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.metadata.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script>
+jQuery(document).ready(function() {
+	 #set($map=$obj)
+     #set($goods_id = "$!{map.get('goods_id')}")
+	 jQuery("input[id*='evaluate_photos_a_']").live("change",function(){
+		    var goods_id=jQuery(this).attr("gid");
+			 var len =jQuery("#eva_imgsdl_"+goods_id).find("dd img").length;
+			 if(len>3){
+				 showDialog("msg_info","","已经上传4张图片,请先删除图片！",2,"warning",3,function(){});
+			 }else{
+			  var eid=this.id;
+			  jQuery.ajaxFileUpload({
+				url:'/buyer/upload_evaluate.htm?jsessionid=$!jsessionid&goods_id='+goods_id,
+                 fileElementId:[eid],   
+				 fileFilter:".jpg,.gif,.png,.tbi,.bmp,.jpeg",   
+                 dataType: 'json',                
+                 success: function (data){   
+				 if(data.ret){
+					 jQuery('#eva_imgsdl_'+goods_id).append("<dd  id='dd_"+data.id+"'><img id='evaluate_image_"+data.id+"' src="+data.url+" />                     <span id='del_"+data.id+"' onclick='delimg("+data.id+")' style='display:none'><a href='javascript:void(0)'>删除</a></span></dd>");
+					 var str=jQuery("#evaluate_photos_"+goods_id).val()+","+data.id;	  
+		             jQuery("#evaluate_photos_"+goods_id).val(str);
+					 
+					  jQuery("#evaluate_image_"+data.id).hover(function(){
+			         jQuery("#del_"+data.id).show();
+			          },function(){});
+					  
+		            jQuery("#del_"+data.id).hover(function(){},function(){
+			           jQuery("#del_"+data.id).hide();
+		              });
+					  
+		         jQuery("#del_"+data.id).click(function (){
+			       var str=jQuery("#evaluate_photos_$!goods_id").val();
+			       str=str.replace(""+data.id,"");
+			       jQuery("#evaluate_photos_$!goods_id").val(str);
+			       jQuery("#dd_"+data.id).remove();
+				    });
+					 
+				}else{
+				    showDialog("msg_info","",data.msg,2,"warning",3,function(){});
+				}}
+				
+			});}
+				  
+
+	  });
+
+	  #set($eva_imgs=$!imageTools.queryImgs($!evaluate.evaluate_photos))
+	  
+	  #foreach($img in $eva_imgs)
+	  jQuery("#evaluate_image_"+$img.id).hover(function(){
+			jQuery("#del_"+$img.id).show();
+			},function(){});
+		jQuery("#del_"+$img.id).hover(function(){},function(){
+			jQuery("#del_"+$img.id).hide();
+		});
+	
+		
+		jQuery("#del_"+$img.id).click(function (){
+			var str=jQuery("#evaluate_photos_$!{goods_id}").val();
+			str=str.replace(""+$img.id,"");
+			jQuery("#evaluate_photos_$!{goods_id}").val(str);
+			jQuery("#dd_"+$img.id).remove();
+			});
+		#end
+
+});
+function save_form(){
+	showDialog("msg_info","","修改评价后不可修改，是否确定修改评价？",1,"question",3,function(){					
+    jQuery("#theForm").submit();
+	});
+}
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm")
+<div class="main">
+  <form action="$!webPath/buyer/evaluate_save.htm" method="post" id="theForm">
+    <div class="order_evaluate">
+      <input name="id" type="hidden" id="id" value="$!evaluate.id" />
+      <input name="ofid" type="hidden" id="ofid" value="$!ofid" />
+      <input name="goods_id" type="hidden" id="goods_id" value="$!goods_id" />
+      <input name="evaluate_session" type="hidden" id="evaluate_session" value="$!evaluate_session" />
+      <h3><span><strong>商品评价</strong></span></h3>
+      #set($map=$obj)
+      #set($goods_id = "$!{map.get('goods_id')}")	
+      #set($goods_name = "$!{map.get('goods_name')}")
+      #set($goods_count = "$!{map.get('goods_count')}")
+      #set($goods_price = "$!{map.get('goods_price')}")
+      #set($goods_type = "$!{map.get('goods_type')}")
+      #set($goods_gsp_val = "$!{map.get('goods_gsp_val')}")
+      #set($goods_mainphoto_path = "$!{map.get('goods_mainphoto_path')}")
+      #set($goods_domainPath = "$!{map.get('goods_domainPath')}")
+      #set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+      #set($combin_suit_info = "$!{map.get('combin_suit_info')}")
+      #set($suit_map=$!orderFormTools.query_order_suitinfo("$!{combin_suit_info}"))
+      <div class="order_evaluate_box">
+        <table width="920" border="0" cellpadding="0" cellspacing="0" class="order_evaluate_table">
+          <tr>
+            <th width="70%">商品名称</th>
+            <th width="10%">数量</th>
+            <th>价格</th>
+          </tr>
+          <tr>
+            <td><dl class="order_eval_dl">
+                <dt><a href="$!goods_domainPath" target="_blank"><img width="55" height="55" src="$!img" /></a></dt>
+                <dd>
+                  <h4><a href="$!goods_domainPath" target="_blank">$!goods_name</a>#if($!{goods_type}=="combin")
+                    <div style="color:#F00;">【组合套装】 </div>
+                    #end</h4>
+                  <span> $!{goods_gsp_val}</span></dd>
+              </dl></td>
+            <td  align="center">$!goods_count</td>
+            <td  align="center"><strong class="red">#if($!{goods_type}=="combin")¥$!{suit_map.get('suit_all_price')} #else ¥$!goods_price #end</strong></td>
+          </tr>
+        </table>
+        <div class="my_evaluate">
+          <div class="eval_star"><span class="eval_three"></span>
+            <ul class="eval_star_ul">
+            <li><span class="eval_star_left"><b>描述相符：</b><i>*</i></span>
+                <div class="eval_star_right"> <span class="eval_star_sp">
+                  <label>
+                    <input name="description_evaluate$!{goods_id}" type="radio" value="a" #if($!evaluate.description_evaluate==1) checked="checked" #end />
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star1.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="description_evaluate$!{goods_id}" type="radio" value="b" #if($!evaluate.description_evaluate==2) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star2.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="description_evaluate$!{goods_id}" type="radio" value="c" #if($!evaluate.description_evaluate==3) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star3.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="description_evaluate$!{goods_id}" type="radio" value="d" #if($!evaluate.description_evaluate==4) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star4.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="description_evaluate$!{goods_id}" type="radio" value="e" #if($!evaluate.description_evaluate==5) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star5.png" width="90" height="18" /></i></label>
+                  </span> </div>
+              </li>
+              <li> <span class="eval_star_left"><b>服务态度：</b><i>*</i></span>
+                <div class="eval_star_right"> <span class="eval_star_sp">
+                  <label>
+                    <input name="service_evaluate$!{goods_id}" type="radio" value="a" #if($!evaluate.service_evaluate==1) checked="checked" #end />
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star1.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="service_evaluate$!{goods_id}" type="radio" value="b" #if($!evaluate.service_evaluate==2) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star2.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="service_evaluate$!{goods_id}" type="radio" value="c" #if($!evaluate.service_evaluate==3) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star3.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="service_evaluate$!{goods_id}" type="radio" value="d" #if($!evaluate.service_evaluate==4) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star4.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="service_evaluate$!{goods_id}" type="radio" value="e" #if($!evaluate.service_evaluate==5) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star5.png" width="90" height="18" /></i></label>
+                  </span> </div>
+              </li>
+              <li><span class="eval_star_left"><b>发货速度：</b><i>*</i></span>
+                <div class="eval_star_right"> <span class="eval_star_sp">
+                  <label>
+                    <input name="ship_evaluate$!{goods_id}" type="radio" value="a" #if($!evaluate.ship_evaluate==1) checked="checked" #end />
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star1.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="ship_evaluate$!{goods_id}" type="radio" value="b" #if($!evaluate.ship_evaluate==2) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star2.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="ship_evaluate$!{goods_id}" type="radio" value="c" #if($!evaluate.ship_evaluate==3) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star3.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="ship_evaluate$!{goods_id}" type="radio" value="d" #if($!evaluate.ship_evaluate==4) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star4.png" width="90" height="18" /></i></label>
+                  </span> <span class="eval_star_sp">
+                  <label>
+                    <input name="ship_evaluate$!{goods_id}" type="radio" value="e" #if($!evaluate.ship_evaluate==5) checked="checked" #end/>
+                    <i><img src="$!webPath/resources/style/system/front/default/images/usercenter/eval_star5.png" width="90" height="18" /></i></label>
+                  </span> </div>
+              </li>
+              <li><span class="eval_star_left"><b>修改评语：</b></span>
+                <div class="eval_star_right">
+                  <div class="my_evaluate_txt">
+                    <textarea name="evaluate_info_$!{goods_id}" cols="" rows="" id="evaluate_info_$!{goods_id}">$!evaluate.evaluate_info</textarea>
+                  </div>
+                  <div class="my_evaluate_right">
+                    <h5 style="color:#F00">注意：</h5>
+                    <p style="margin-top:0px">请您根据本次交易，给予真实、客观、仔细地评价。
+                      您的评价将是其他买家的参考，也将影响商家的综合评分。
+                      累积评分规则：
+                      中评不计分，但会影响该商品的好评率，请慎重本次评价。</p>
+                  </div>
+                </div>
+              </li>
+              <input type="hidden" name="evaluate_photos_$!goods_id" id="evaluate_photos_$!goods_id" value="$!evaluate.evaluate_photos" autocomplete="off"/>
+              <li> <span class="bask_star_left"> <b>晒单：</b> </span>
+                <div class="bask_product_right">
+                  <dl id="eva_imgsdl_$!goods_id">
+                    <style>
+                  	.swfupload{ height:29px; width:90px; float:left;}
+                  </style>
+                    <dt><span class="upload_button">
+                <span class="upload_button_up"><input style="cursor:pointer;"  name="evaluate_photos_a_$!goods_id" id="evaluate_photos_a_$!goods_id" gid="$!goods_id"  type="file" /></span>
+                <span class="upload_button_b"><a href=""><img src="$!webPath/resources/style/system/front/default/images/upload.png" /></a></span> </span></dt>
+                    #foreach($img in $eva_imgs)
+                    <dd id="dd_$!img.id"><img id="evaluate_image_$!img.id" src="$!imageWebServer/$!img.path/$!img.name" /><span id="del_$!img.id" onclick="delimg($!img.id)"   style='display:none'><a href='javascript:void(0)'>删除</a></span></dd>
+                    #end
+                  </dl>
+                </div>
+              </li>
+              <li><span class="eval_star_left"><b>评价：</b><i>*</i></span>
+                <div class="eval_star_right">
+                  <div class="my_evaluate_details">
+                    <label><span class="my_eval_red">
+                      <input name="evaluate_buyer_val$!{goods_id}" type="radio" value="a"  checked="checked" />
+                      <strong>好评</strong>(加一分)</span></label>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="order_evaluate_btn">
+        <input name="按钮" type="button" value="评价" onclick="save_form();" style="cursor:pointer;" class="order_evaluate_ok" />
+        <input name="" type="button" value="以后再评" onclick="showDialog('msg_info','','确认以后再评论该订单吗?',1,'question',3,function(){window.location.href='$!webPath/buyer/order.htm'});" class="order_evaluate_cancel" />
+      </div>
+    </div>
+  </form>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

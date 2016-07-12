@@ -1,0 +1,58 @@
+
+<div class="fiit_module_layout">
+  <!--自定义模块-->
+  <div class="fiit_module_box" style="display:;">
+        <h2>请选择您想要编辑的模块类型</h2>
+        <div class="fiit_notice"><i></i>由于布局模块大小限制，部分类型不可选择</div>
+        #if($!layout=="layout0" || $!layout=="layout1")
+        <ul>
+       		 <li><a href="javascript:void(0);" onclick="module_set(this)" mark="$!{mark}" div="$!{div}" type="nav"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_07.jpg" width="88" height="88" /></span><span class="name">导航模块</span></a></li>
+             <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_slide.htm?mark=$!{mark}&div=$!{div}" dialog_top="200" dialog_title="幻灯模块" dialog_width="640" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_06.jpg" width="88" height="88" /></span><span class="name">幻灯模块</span></a></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_02.jpg" width="88" height="88" /></span><span class="name">分类模块</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_04.jpg" width="88" height="88" /></span><span class="name">热销排行</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_03.jpg" width="88" height="88" /></span><span class="name">店铺信息</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_05.jpg" width="88" height="88" /></span><span class="name">自定义商品</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_hotspot.htm?mark=$!{mark}&div=$!{div}" dialog_top="200" dialog_title="热点模块" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_01.jpg" width="88" height="88" /></span><span class="name">热点模块</span></a></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_defined.htm?mark=$!{mark}" dialog_top="150" dialog_title="自定义模块编辑" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_08.jpg" width="88" height="88" /></span><span class="name">自定义模块</span></a></li>
+        </ul>
+        #end
+        #if($!layout=="layout2")
+        <ul>
+       		 <li><a href="javascript:void(0);" onclick="module_set(this)" mark="$!{mark}" div="$!{div}" type="nav"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_07.jpg" width="88" height="88" /></span><span class="name">导航模块</span></a></li>
+             <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_slide.htm?mark=$!{mark}&div=$!{div}" dialog_top="200" dialog_title="幻灯模块" dialog_width="640" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_06.jpg" width="88" height="88" /></span><span class="name">幻灯模块</span></a></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_02.jpg" width="88" height="88" /></span><span class="name">分类模块</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_04.jpg" width="88" height="88" /></span><span class="name">热销排行</span></a><span class="gray_span"><i></i><b></b></span></li>
+              <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_03.jpg" width="88" height="88" /></span><span class="name">店铺信息</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_goods.htm?mark=$!{mark}&position=$!{position}" dialog_top="200" dialog_title="自定义商品" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_05.jpg" width="88" height="88" /></span><span class="name">自定义商品</span></a></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_hotspot.htm?mark=$!{mark}&div=$!{div}" dialog_top="200" dialog_title="热点模块" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_01.jpg" width="88" height="88" /></span><span class="name">热点模块</span></a></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_defined.htm?mark=$!{mark}" dialog_top="150" dialog_title="自定义模块编辑" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_08.jpg" width="88" height="88" /></span><span class="name">自定义模块</span></a></li>
+        </ul>
+        #end
+         #if($!layout=="layout3" ||$!layout=="layout4")
+         #if($!{div}=="div1")
+        <ul>
+       		 <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_07.jpg" width="88" height="88" /></span><span class="name">导航模块</span></a><span class="gray_span"><i></i><b></b></span></li>
+             <li><a href="javascript:void(0);" ><span class="img"><img src="$!webPath/resources/style/decorate/images/module_06.jpg" width="88" height="88" /></span><span class="name">幻灯模块</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);" onclick="module_set(this)" mark="$!{mark}" div="$!{div}" type="class"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_02.jpg" width="88" height="88" /></span><span class="name">分类模块</span></a></li>
+            <li><a href="javascript:void(0);" onclick="module_set(this)" mark="$!{mark}" div="$!{div}" type="goods_sale"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_04.jpg" width="88" height="88" /></span><span class="name">热销排行</span></a></li>
+              <li><a href="javascript:void(0);" onclick="module_set(this)" mark="$!{mark}" div="$!{div}" type="store_info"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_03.jpg" width="88" height="88" /></span><span class="name">店铺信息</span></a></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_05.jpg" width="88" height="88" /></span><span class="name">自定义商品</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_hotspot.htm?mark=$!{mark}&div=div1" dialog_top="200" dialog_title="热点模块" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_01.jpg" width="88" height="88" /></span><span class="name">热点模块</span></a></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_defined.htm?mark=$!{mark}&div=$!{div}" dialog_top="150" dialog_title="自定义模块编辑" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_08.jpg" width="88" height="88" /></span><span class="name">自定义模块</span></a></li>
+        </ul>
+         #end
+          #if($!{div}=="div2")
+        <ul>
+       		 <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_07.jpg" width="88" height="88" /></span><span class="name" >导航模块</span></a><span class="gray_span"><i></i><b></b></span></li>
+             <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_slide.htm?mark=$!{mark}&div=$!{div}" dialog_top="200" dialog_title="幻灯模块" dialog_width="640" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_06.jpg" width="88" height="88" /></span><span class="name">幻灯模块</span></a></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_02.jpg" width="88" height="88" /></span><span class="name">分类模块</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_04.jpg" width="88" height="88" /></span><span class="name">热销排行</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_03.jpg" width="88" height="88" /></span><span class="name">店铺信息</span></a><span class="gray_span"><i></i><b></b></span></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_goods.htm?mark=$!{mark}&position=$!{position}" dialog_top="200" dialog_title="自定义商品" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_05.jpg" width="88" height="88" /></span><span class="name">自定义商品</span></a></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_hotspot.htm?mark=$!{mark}&div=$!{div}" dialog_top="200" dialog_title="热点模块" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_01.jpg" width="88" height="88" /></span><span class="name">热点模块</span></a></li>
+            <li><a href="javascript:void(0);" dialog_uri="$!webPath/seller/decorate_module_defined.htm?mark=$!{mark}&div=$!{div}" dialog_top="150" dialog_title="自定义模块编辑" dialog_width="700" dialog_height="100" dialog_id="module_edit"><span class="img"><img src="$!webPath/resources/style/decorate/images/module_08.jpg" width="88" height="88" /></span><span class="name">自定义模块</span></a></li>
+        </ul>
+         #end
+        #end
+    </div>
+</div>

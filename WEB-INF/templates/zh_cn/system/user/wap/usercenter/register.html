@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>完善资料</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery.validator.addMethod("verify",function(value,element){
+	    var re =  /^([0-9a-zA-Z]|[\u4E00-\u9FA5])+$/;
+        if(re.test(jQuery("#userName").val())){		
+			return true;
+		} 
+		else {	
+		    return false;
+		}		  
+  });
+  jQuery("#theForm").validate({
+	errorPlacement: function(error, element) {  
+					   element.parent().addClass("bd_red");
+        			 error.appendTo(element.parent().next());  
+   					 },	
+	success:function(label) {
+     						 label.parent().prev().removeClass("bd_red");
+						},
+	rules: {
+		userName:{
+					required:true,
+					verify:true,
+					rangelength:[10,12],
+					remote:{
+						url: "$!webPath/verify_username.htm",     //后台处理程序
+						type: "post",               //数据发送方式
+						dataType: "json",           //接受数据格式   
+						data: {                     //要传递的数据
+							"userName": function(){return jQuery("#userName").val();}
+						}
+					}
+				},
+				password:{
+					required:true,
+					minlength:6,
+					maxlength:20  
+				}#if($!config.securityCodeRegister),
+		code:{
+		  required:true,
+		  remote:{
+		    url: "$!webPath/verify_code.htm",     //后台处理程序
+            type: "post",               //数据发送方式
+            dataType: "json",           //接受数据格式   
+            data: {                     //要传递的数据
+                  "code": function(){return jQuery("#code").val();}
+		     }
+		  }
+		}
+		#end
+				
+			},
+	messages: {
+				userName:{
+					required:"用户名不能为空",
+					rangelength:"请输入正确的手机号",
+					verify:"存在特殊字符",
+					remote:"用户名已存在"
+				},
+				password:{
+					required:"密码不能为空",
+					minlength:"密码不能小于{0}个字符",
+					maxlength:"密码不能大于{0}个字符" 
+				}#if($!config.securityCodeRegister),
+					code:{
+		  		required:"验证码不能为空",
+		  		remote:"验证码不正确"
+		}
+		#end
+			  },
+  });
+});
+</script>
+</head>
+<body>
+<div class="user_bar"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">返回</span></div>
+<div class="phone_main">
+  <!--注册页-->
+  <form action="$!webPath/wap/buyer/datum2.htm" method="post" name="theForm" id="theForm">
+    <div class="phone_login">
+      <ul>
+        <li class="ip ">
+          <input name="userName" type="text" id="userName" placeholder="请输入手机号" />
+        </li>
+        <li class="yz"></li>
+        <li class="ip">
+          <input name="password" type="password" id="password" placeholder="请输入密码" />
+        </li><li class="yz"></li>
+        <li class="yz"></li>
+        #if($!config.securityCodeRegister)
+        <script>
+                 function refreshCode(){
+	                 jQuery("#code_img").attr("src","$!webPath/verify.htm?d"+new Date().getTime());
+                 }
+             </script>
+        <li class="yzm">
+          <input name="code" type="text"  id="code" placeholder="请输入验证码" />
+          <img id="code_img" src="$!webPath/verify.htm" width="73" height="27" /><a href="javascript:void(0);" onClick="refreshCode();" ><img src="$!webPath/resources/style/system/front/wap/images/refresh.png" width="32" height="32" /></a></li><li class="yz"></li> #end
+        <li class="yz">
+        <li class="ip_btn">
+          <input name="" type="submit"   value="提交"/>
+        </li>
+        
+      </ul>
+    </div>
+  </form>
+  <!--底部-->
+  $!httpInclude.include("/wap/footer.htm") </div>
+</body>
+</html>

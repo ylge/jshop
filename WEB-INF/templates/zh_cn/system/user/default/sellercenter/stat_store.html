@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-商品统计-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css"type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/charts/highcharts.js"></script>
+<script src="$!webPath/resources/js/charts/modules/exporting.js"></script>
+<script>
+jQuery(function(){ 
+	Highcharts.theme = {
+		colors: ["#7cb5ec", "#f7a35c", "#90ee7e", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+			"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+		chart: {
+			style:{fontFamily: "Dosis, sans-serif"}
+		},
+		xAxis: {gridLineWidth:1},
+		yAxis: {minorTickInterval: 'auto'}
+	};
+	Highcharts.setOptions(Highcharts.theme);		
+  	var chart;
+  	chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'stat_result',
+                type: 'line',
+				marginLeft: 38,
+                marginRight: 0,
+                marginBottom: 40
+            },
+            title: {
+            	text: '<div class="stat_store_title_line"><h3>订单统计</h3></div>',
+				useHTML:true,
+                margin:30,
+			},
+            xAxis: {
+				title: {
+                    text: '日期'
+                },
+                categories:[$!formTimeData],
+				labels: {
+				step: 1
+				}
+            },
+            yAxis: {
+                title: {
+                    text: '数量(个/张)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            legend: {
+               
+                align: 'right',
+                verticalAlign: 'top',
+                x: 0,
+                y: 325,
+                borderWidth: 0
+            },
+			credits:{enabled:false},exporting:{enabled:false},
+            series: [
+				{name: '下单订单数',
+                 data: [$!addFormCountData]},
+				{name: '付款订单数',
+                 data: [$!payFormCountData]},
+				{name: '成交订单数',
+				 data: [$!finishFormCountData]}
+			]
+        });
+	chart = new Highcharts.Chart({
+        chart: {
+			renderTo: 'formType',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '<div class="stat_store_title"><h3>订单来源</h3></div>',
+			useHTML:true,
+			y :50
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage}%</b>'
+        },
+        plotOptions: {
+           pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+        },
+		credits:{enabled:false},exporting:{enabled:false},
+        series: [{
+            type: 'pie',
+            name: '所占比例',
+            data: [$!orderType],
+        }]
+    });
+	chart = new Highcharts.Chart({
+        chart: {
+			renderTo: 'formArea',
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '<div class="stat_store_title"><h3>点击来源</h3></div>',
+			useHTML:true,
+			y :50
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage}%</b>'
+        },
+        plotOptions: {
+           pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+        },
+		credits:{enabled:false},exporting:{enabled:false},
+        series: [{
+            type: 'pie',
+            name: '所占比例',
+            data: [$!clickFrom],
+        }]
+    });
+});<!--end-->
+</script>
+</head><body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center">
+    <div class="seller_center_left"> $!httpInclude.include("/seller/nav.htm?op=stats") </div>
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>商家统计</b>><b>店铺统计</b></span></div>
+      <div class="seller_list">
+      	<div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href='javascript:void(0)' ><i></i>近期统计</a></li>
+            <li><a href="$!webPath/seller/stat_formArea.htm" ><i></i>地域分布</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="cont">
+        <div class="operation_store">
+         <div class="stat_store">
+          	<span>订单成交金额:<i>￥$!{of_totalPrice}</i></span>
+            <span>订单成交总数:<i>$!orderFormAllCount</i></span>
+            <span>商品期间总销量:<i>$!{goods_salenumAll}</i></span>
+            <span>商品期间收藏量:<i>$!{goods_collectAll}</i></span>
+            <span>店铺期间收藏量:<i>$!{storeFavCount}</i></span>
+          </div>
+          <ul>
+          <h3>提示</h3>
+            <li>统计数据为最近30天订单和商品的统计数据（不包括今天）</li>
+          </ul>
+        </div>      
+        <div id="stat_result" class="stat_store_title_line"></div>
+        <div id="formType" class="stat_store_title"></div>
+        <div id="formArea" class="stat_store_title"></div>
+        <div class="stat_store_pie">
+        	<h3 style="text-align:center">点击量TOP10（近30天）</h3>          
+        	<dl>
+            	<dt><span>商品名称</span><i>点击量</i></dt>
+                #if($!click_desc_List.size()>0)
+                #foreach($goods_click in $click_desc_List)
+                <dd><span>$!{goods_click.goods_name}</span><i>$!{goods_click.click_count}</i></dd>
+                #end
+                #else
+                <dd><span>暂无数据</span><i>0</i></dd>
+                #end        
+            </dl>
+        </div>
+        <div class="stat_store_pie">
+        	<h3 style="text-align:center">点击量后10名（建议推广）</h3>          
+        	<dl>
+            	<dt><span>商品名称</span><i>点击量</i></dt>
+                #if($!click_asc_List.size()>0)
+                #foreach($goods_click in $click_asc_List)
+                <dd><span>$!{goods_click.goods_name}</span><i>$!{goods_click.click_count}</i></dd>
+                #end
+                #else
+                <dd><span>暂无数据</span><i>0</i></dd>
+                #end        
+            </dl>
+        </div>
+        <div class="stat_store_pie">
+        	<h3 style="text-align:center">收藏量TOP10（近30天）</h3>
+        	<dl>
+            	<dt><span>商品名称</span><i>收藏量</i></dt>
+                #if($!collect_desc_List.size()>0)
+                #foreach($goods_collect in $collect_desc_List)
+                <dd><span>$!{goods_collect.goods_name}</span><i>$!{goods_collect.collect_count}</i></dd>
+                #end
+                #else
+                <dd><span>暂无数据</span><i>0</i></dd>
+                #end
+            </dl>
+        </div>
+        <div class="stat_store_pie">
+        	<h3 style="text-align:center">收藏量后10名</h3>
+        	<dl>
+            	<dt><span>商品名称</span><i>收藏量</i></dt>
+                #if($!collect_asc_List.size()>0)
+                #foreach($goods_collect in $collect_asc_List)
+                <dd><span>$!{goods_collect.goods_name}</span><i>$!{goods_collect.collect_count}</i></dd>
+                #end
+                #else
+                <dd><span>暂无数据</span><i>0</i></dd>
+                #end
+            </dl>
+        </div>
+        <div class="stat_store_pie">
+        	<h3 style="text-align:center">销售量TOP10（近30天）</h3>
+        	<dl>
+            	<dt><span>商品名称</span><i>销量</i></dt>
+                #if($!salenum_desc_List.size()>0)
+                #foreach($goods_salenum in $salenum_desc_List)
+                <dd><span>$!{goods_salenum.goods_name}</span><i>$!{goods_salenum.sale_num}</i></dd>
+                #end
+                #else
+                <dd><span>暂无数据</span><i>0</i></dd>
+                #end
+            </dl>
+        </div>
+        <div class="stat_store_pie">
+        	<h3 style="text-align:center">销售量后10名</h3>
+        	<dl>
+            	<dt><span>商品名称</span><i>销量</i></dt>
+                #if($!salenum_asc_List.size()>0)
+                #foreach($goods_salenum in $salenum_asc_List)
+                <dd><span>$!{goods_salenum.goods_name}</span><i>$!{goods_salenum.sale_num}</i></dd>
+                #end
+                #else
+                <dd><span>暂无数据</span><i>0</i></dd>
+                #end
+            </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

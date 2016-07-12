@@ -1,0 +1,71 @@
+<script>
+jQuery(document).ready(function(){
+	jQuery("#theForm").validate({
+       rules: {
+		       acc:{required:true,accept:"$!config.imageSuffix"},
+			   acc_url:{required:true}
+	          },
+		messages: {
+			   acc:{required:"幻灯图片不能为空",accept:"幻灯格式不正确"},
+			   acc_url:{required:"链接地址不能为空"}
+			 },
+		errorPlacement: function(error, element){
+            var error_li = element.parent().parent().parent().find(".enjoy_bg_center_img_p_error");
+			error_li.html("");
+            error_li.append(error);
+        },	 
+		 submitHandler:function(){
+			var acc_url = jQuery("#acc_url").val();		
+			jQuery("#save").removeAttr("onclick");	
+			jQuery.ajaxFileUpload({url:'$!webPath/seller/store_slide_save.htm',
+								  dataType:'json',
+								  fileElementId:['acc'],
+								  data:{acc_url:acc_url,index:"$!index"},
+								  success:function(data){		
+				 					var lin = ""+data.url;	
+				 					if(data.ret==true){
+										jQuery("#store_slide_upload").remove();
+			 		 					showDialog("msg_info","",data.op_title,0,"succeed",3,function(){window.location.reload();});
+		  						   	}
+								 },
+								 error:function(){
+									jQuery("#save").attr("onclick","jQuery('#theForm').submit();"); 
+								 } 
+			});
+		 }
+  });	
+//
+jQuery("#acc").change(function(){
+  jQuery("#acc_path").val(jQuery(this).val());
+});
+//
+});
+</script>
+
+<form action="$!webPath/seller/store_slide_save.htm" method="post" id="theForm">
+  <div class="seller_banner_edit">
+    <!-- banner 上传弹出 -->
+    <div class="enjoy_bg_center_c">
+      <div class="enjoy_bg_center_top_word">
+        <div class="enjoy_bg_center_img_p">请选择上传的图片：</div>
+        <span class="water_upload"> <b class="opacity_txt">
+        <input name="acc_path" type="text" id="acc_path" readonly />
+        </b> <b class="opacity_submit">
+        <input name="" type="button" value="浏览..." />
+        </b> <b class="opacity_up">
+        <input name="acc" type="file"  size="32" id="acc"/>
+        </b> </span>
+        <div class="enjoy_bg_center_img_p_error"> <b style="color:#999">最佳尺寸为：1920px * 330px</b></div>
+      </div>
+      <div class="enjoy_bg_center_top_word">
+        <div class="enjoy_bg_center_img_p">请选择图片的URL：</div>
+        <span class="water_upload"> <b class="opacity_txt">
+        <input name="acc_url" type="text" style="width:240px;" id="acc_url"/>
+        </b> </span>
+        <div class="enjoy_bg_center_img_p_error"> </div>
+      </div>
+      <div class="enjoy_b"><a href="javascript:void(0);" onclick="jQuery('#theForm').submit();" id="save">确定</a></div>
+    </div>
+    <div class="enjoy_bg_input"></div>
+  </div>
+</form>

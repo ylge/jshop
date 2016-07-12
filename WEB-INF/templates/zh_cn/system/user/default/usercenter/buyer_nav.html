@@ -1,0 +1,83 @@
+<script src="$!webPath/resources/js/jquery.cookie.js"></script>
+<script>		  
+jQuery(document).ready(function(){
+  jQuery(".user_menu>span>b").click(function(){
+     var child_show=jQuery(this).parent().attr("child_show");
+	 if(child_show=="true"){
+		 jQuery(this).parent().find("ul").hide();
+	     jQuery(this).parent().find("i").removeClass("active");
+		 jQuery(this).parent().attr("child_show","false");
+	 }else{
+	    jQuery(this).parent().find("ul").show();
+		jQuery(this).parent().find("i").addClass("active");
+		jQuery(this).parent().attr("child_show","true");
+	 }
+	 var nav_status="";
+	 jQuery(".user_menu>span>b").each(function(){
+		nav_status=nav_status+jQuery(this).parent().attr("id")+","+jQuery(this).parent().attr("child_show")+";";
+	 }); 
+	 jQuery.cookie("buyer_nav",nav_status);
+  });
+  jQuery(".user_menu ul li a").removeClass("this");						
+  jQuery(".user_menu ul li a[op='$!{op}']").addClass("this");	
+  //
+  if(jQuery.cookie("buyer_nav")!=null){
+      var nav_status=jQuery.cookie("buyer_nav");
+	  jQuery.each(nav_status.split(";"), function(index,item){
+	     var list=item.split(",");
+		 jQuery("#"+list[0]).attr("child_show",list[1]);
+		 if(list[1]=="true"){
+	       jQuery("#"+list[0]+" ul").show();
+		 }else{
+		   jQuery("#"+list[0]).find("i").removeClass("active");	 
+		   jQuery("#"+list[0]+" ul").hide(); 	 
+		 }
+	  });
+   }
+   //
+});
+</script>
+<div class="usercenter_left">
+<h3><a href="$!webPath/buyer/index.htm">用户中心</a></h3>
+      <div class="user_menu">
+        <span child_show="true" id="trade_menu"><b>交易中心<i class="active"></i></b>
+          <ul>
+            <li><a href="$!webPath/buyer/order.htm" op="order">实物交易订单</a></li>
+            <li><a href="$!webPath/buyer/group.htm" op="group">生活购订单</a></li>
+            <li><a href="$!webPath/buyer/evaluate_list.htm" op="evaluate">我的评价</a></li>
+            <li><a href="$!webPath/buyer/favorite_goods.htm" op="favorite">我的收藏</a></li>
+            <li><a href="$!webPath/buyer/integral_order_list.htm" op="integral">我的积分兑换</a></li>
+            <li><a href="$!webPath/buyer/recharge_card_add.htm" op="card">充值卡充值</a></li>
+          </ul>
+        </span>
+        <span child_show="true" id="server_menu"><b>服务中心<i class="active"></i></b>
+          <ul>
+            <li><a href="$!webPath/buyer/order_return_list.htm" op="return">退货/退款</a></li>
+            <li><a href="$!webPath/buyer/order_complaint_list.htm" op="complaint">我的投诉</a></li>
+            <li><a href="$!webPath/buyer/consult.htm" op="consult">我的咨询</a></li>
+            <li><a href="$!webPath/buyer/message.htm" op="message">站内信<strong style="color:#F00;">（$!{msg_size}）</strong></a></li>
+          </ul>
+        </span>
+        <span child_show="true" id="user_menu"><b>会员中心<i class="active"></i></b>
+          <ul>
+            <li><a href="$!webPath/buyer/account.htm" op="account">账户信息</a></li>
+            <li><a href="$!webPath/buyer/predeposit.htm" op="predeposit" >账户充值</a></li>
+            <li><a href="$!webPath/buyer/predeposit_log.htm" op="predeposit_log">收支明细</a></li>
+            <li><a href="$!webPath/buyer/buyer_cash.htm" op="buyer_cash">提现管理</a></li>
+            <li><a href="$!webPath/buyer/address.htm" op="address">收货地址</a></li>
+            <li><a href="$!webPath/buyer/coupon.htm" op="coupon">优惠劵</a></li>
+            <li><a href="$!webPath/buyer/foot_point.htm" op="foot">我的足迹</a></li>
+          </ul>
+        </span>
+        <span child_show="true" id="app_menu"><b>应用管理<i class="active"></i></b>
+          <ul>
+            #if($!config.sina_login==true||$!config.qq_login==true)
+            <li><a href="$!webPath/buyer/account_bind.htm" op="account_bind">账户绑定</a></li>
+            #end
+            <li><a href="$!webPath/buyer/my_sns_index.htm" op="sns" target="_blank">个人主页</a></li>
+            <li><a href="$!webPath/buyer/my_sns_circle.htm?type=my_circle" op="my_sns_circle" target="_blank">我的圈子</a></li>
+            <li><a href="$!webPath/buyer/freeapply_logs.htm" op="free">0元试用</a></li>
+          </ul>
+        </span>
+      </div>
+    </div>

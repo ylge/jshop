@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+
+	});
+
+</script>
+<body>
+<div class="cont">
+  <h3 class="seth">圈子管理</h3>
+  <div class="nav_list">
+    <ul>
+     <li><a href="$!webPath/admin/circle_set.htm"><b>圈子设置</b></a></li>
+      <li><a href="$!webPath/admin/circle_list.htm" class="this"><b>管理列表</b></a></li>
+      <li><a href="$!webPath/admin/circle_list.htm?status=0"><b>待审核列表</b></a></li>
+    </ul>
+  </div>
+  <form action="$!webPath/admin/circle_invitation.htm" id="ListForm" name="ListForm" method="post">
+    <div class="search"> <span>帖子标题</span> <span class="size250">
+      <input name="title" type="text" id="title"  value="$!title" />
+      </span> 
+      <span>发表人</span> <span class="size150">
+      <input name="user_name" type="text" id="user_name"  value="$!user_name" />
+      </span> 
+      
+      <span class="btn_search">
+      <input name="" type="submit"  value="搜索" style="cursor:pointer;"  class="search_btn"/>
+      </span> </div>
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="4%">&nbsp;</th>
+          <th width="40%"><span class="form_btna">帖子标题</span></th>
+          <th width="11%"><span class="form_btna">发布时间</span></th>
+           <th width="11%"><span class="form_btna">发布人</span></th>
+          <th width="8%"><span class="form_btna">回复人数</span></th>
+          <th width="8%"><span class="form_btna">赞数量</span></th>
+          <th><b class="form_btnb">操作</span></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+          <td class="check_position"><input name="checkbox" type="checkbox" id="checkbox" value="$!obj.id" /></td>
+          <td align="center">$!obj.title</td>
+          <td align="center">$!CommUtil.formatLongDate($!obj.addTime)</td>
+          <td align="center">$!obj.userName</td>
+          <td align="center">$!obj.reply_count</td>
+          <td align="center">$!obj.praise_count</td>
+          <td class="hui oprate_con" align="center"><a href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank" class="blue">详情</a>|<a href="javascript:void(0);" onclick="if(confirm('删除后不可恢复，是否继续?'))window.location.href='$!webPath/admin/circle_invitation_delete.htm?mulitId=$!obj.id&currentPage=$!currentPage&cid=$!{obj.circle_id}'" class="blue">删除</a></td>
+        </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input type="hidden" name="currentPage" id="currentPage" value="$!currentPage" />
+         <input type="hidden" name="cid" id="cid" value="$!cid" />
+        <input name="mulitId" type="hidden" id="mulitId" />
+        $!gotoPageFormHTML </div>
+      <div class="oper_sp"> <span class="oper_check">
+      <label>
+        <input type="checkbox" name="all" id="all" onclick="selectAll(this)" value="" />
+        全部
+       </label> </span> <span class="oper_del">
+        <input name="" type="button" value="删除" style="cursor:pointer;" onclick="cmd('$!webPath/admin/circle_invitation_delete.htm?currentPage=$!currentPage')"/>
+        </span> </div>
+    </div>
+  </FORM>
+</div>
+</body>
+</html>

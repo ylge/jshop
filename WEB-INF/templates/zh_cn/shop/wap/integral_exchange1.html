@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>积分商城购物车</title>
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-wap-web-app-capable" content="yes" />
+<meta name="apple-wap-web-app-status-bar-style" content="black-translucent" />
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+function integral_adjust_count(goods_id,count){
+   jQuery.post("$!webPath/wap/integral/adjust_count.htm",{"goods_id":goods_id,"count":count},function(data){
+	  jQuery("#ic_"+goods_id).text(data.integral+"积分");
+	  jQuery("#total_integral").text(data.total_integral);
+	  jQuery("#count_"+goods_id).val(data.count);
+	  jQuery("#count_"+goods_id).attr("goods_count",data.count);	  
+	},"json");
+}
+jQuery(function(){
+	jQuery("input[id^=count_]").keyup(function(){
+      var count=jQuery(this).val().replace(/\D/g,'');
+	  var goods_id=jQuery(this).attr("goods_id");
+	  if(count==""){
+	    count=1;
+	  }
+	  if(count==0){
+	    count=1;
+	  }
+	  jQuery(this).val(count);
+	  jQuery(this).attr("goods_count",count);
+	  integral_adjust_count(goods_id,count)
+   });
+	jQuery("#cut_num").click(function(){
+	  var goods_id=jQuery(this).attr("goods_id");
+	  var count=jQuery("#count_"+goods_id).attr("goods_count");
+	  if(count>1){
+	    count=parseInt(count)-1;
+		jQuery("#count_"+goods_id).val(count);
+		jQuery("#count_"+goods_id).attr("goods_count",count);
+		integral_adjust_count(goods_id,count)
+	  }
+   });
+    jQuery("#add_num").click(function(){
+	  var goods_id=jQuery(this).attr("goods_id");
+	  var count=jQuery("#count_"+goods_id).attr("goods_count");
+	  count=parseInt(count)+1;
+      jQuery("#count_"+goods_id).val(count);
+	  jQuery("#count_"+goods_id).attr("goods_count",count);
+	  integral_adjust_count(goods_id,count)
+   });
+	});
+</script>
+</head>
+
+<body>
+<div class="phone_hd"><a class="back" href="$!webPath/wap/integral/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>已选择兑换的礼品</div>
+
+    <!--积分商城-确认订单-->
+    <div class="integral_order">
+    	<ul>
+        #foreach($obj in $integral_cart)
+        	<li>
+                #if($!obj.goods.ig_goods_img)
+                #set($img="$!imageWebServer/$!{obj.goods.ig_goods_img.path}/$!{obj.goods.ig_goods_img.name}_small.$!{obj.goods.ig_goods_img.ext}")
+                #else
+                #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+                #end
+            	<span class="check"></span>
+                <span class="img"><img src="$!img" width="65" height="65" /></span>
+                <div class="infro"><p>$!obj.goods.ig_goods_name</p><p class="num"><a class="plus" href="javascript:void(0);" id="cut_num" goods_id="$!obj.goods.id">-</a><input name="count_$!{obj.goods.id}" type="text" id="count_$!{obj.goods.id}" value="$!{obj.count}" goods_count="$!obj.count" goods_id="$!obj.goods.id" /><a class="plus" href="javascript:void(0);" id="add_num" goods_id="$!obj.goods.id">+</a></p></div>
+            	<div class="fr"><span class="score" id="ic_$!{obj.goods.id}">$!{obj.integral}积分</span>
+                <span class="del"><a href="javascript:void(0);" onclick="integral_cart_remove('$!obj.id',this)"><img src="$!webPath/resources/style/system/front/wap/images/del.png" width="20" height="20" /></a></span></div>
+                #if($!obj.ig_transfee_type==1)
+            	<p class="ems">邮费：$!{obj.ig_transfee}元</p>
+                #end
+            </li>
+        #end
+        #foreach($obj in $integral_cart_false)
+        	<li class="this">
+                #if($!obj.goods.ig_goods_img)
+                #set($img="$!imageWebServer/$!{obj.goods.ig_goods_img.path}/$!{obj.goods.ig_goods_img.name}_small.$!{obj.goods.ig_goods_img.ext}")
+                #else
+                #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+                #end
+            	<span class="check"></span>
+                <span class="img"><img src="$!img" width="65" height="65" /></span>
+                <div class="infro"><p>$!obj.goods.ig_goods_name</p><p class="num"><a class="plus" href="javascript:void(0);" goods_id="$!obj.goods.id">-</a><input name="count_$!{obj.goods.id}" type="text" id="count_$!{obj.goods.id}" value="$!{obj.count}" goods_count="$!obj.count" goods_id="$!obj.goods.id" readonly="readonly"/><a class="plus" href="javascript:void(0);" goods_id="$!obj.goods.id">+</a></p></div>
+            	<div class="fr"><span class="score" id="ic_$!{obj.goods.id}">$!{obj.integral}积分</span>
+                <span class="del"><a href="javascript:void(0);" onclick="integral_cart_remove('$!obj.id',this)"><img src="$!webPath/resources/style/system/front/wap/images/del.png" width="20" height="20" /></a></span></div>
+                #if($!obj.ig_transfee_type==1)
+            	<p class="ems">邮费：$!{obj.ig_transfee}元</p>
+                #end
+                <span class="over"><img src="$!webPath/resources/style/system/front/wap/images/stop_shop1.png" width="120" height="68" /></span>
+            </li>
+        #end
+        <script>
+        function integral_cart_remove(id,obj){
+		     jQuery.post("$!webPath/wap/integral/cart_remove.htm",{"id":id},function(data){
+				if(data.status==100){
+					jQuery(obj).parent().parent().parent().remove();
+				    jQuery("#total_integral").text(data.total_integral);
+					jQuery("#ship_price").text("总邮费："+data.ship_price);
+				}else alert("删除失败，请尝试重新操作！");															   
+			 },"json");
+		  }
+		  </script>
+        </ul>
+    </div>
+    
+    <div class="car_pay">
+    	
+        <div class="total" style=" padding-left:15px;">
+        <p class="price" style="font-size:14px;">总积分：<strong id="total_integral">$!{total_integral}</strong>分</p>
+        <p><span id="ship_price">总邮费：$!ship_price</span></p>
+        <p style="line-height:20px;">您当前积分：$!user.integral 分</p></div>
+        <a class="paymen_btn" href="$!webPath/wap/integral/exchange2.htm">兑换</a>
+        $!httpInclude.include("/wap/footer.htm?op=index") 
+    </div>
+    	
+</body>
+</html>

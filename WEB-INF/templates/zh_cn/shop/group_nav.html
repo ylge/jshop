@@ -1,0 +1,142 @@
+<script>
+jQuery(document).ready(function(){
+	var type = "$!{type}";
+	if(type=="goods"||type==""){
+		jQuery("#nav_goods").addClass("this");
+		}else{
+			jQuery("#nav_life").addClass("this");
+			}
+
+   jQuery("#navul li").each(function(){
+    var original_url=jQuery(this).attr("original_url");
+	if("$!{current_url}".indexOf(original_url)>=0){
+	   jQuery(this).addClass("this");	
+	}
+  });
+ //鼠标经过左侧分类							
+  jQuery(".left_menu_dl").mouseover(function(){	
+	var child_count = jQuery(this).attr("child_count");
+	if(child_count>0){
+	 var id=jQuery(this).attr("id");
+	  jQuery("#dts_"+id).addClass("left_menu_this").removeClass("left_menu_dt");	
+      jQuery("#child_"+id).show();			
+	}
+	var gc_id=jQuery(this).attr("id");
+	var gc_color=jQuery(this).attr("gc_color");
+	jQuery("#dts_"+gc_id).attr("style","border:1px solid "+gc_color+"; border-left:3px solid "+gc_color+";border-right:none");
+	jQuery("#left_menu_con_"+gc_id).attr("style","border:1px solid "+gc_color+"; border-left:1px solid "+gc_color+";").find(".menu_con_right_top").css("background-color",gc_color);					 	var max_height=0;
+	jQuery("#child_"+gc_id).find(".left_menu_con_center_left").each(function(){
+	var	height = jQuery(this).height();																																																																						 	if(height>max_height){
+		max_height = height;
+	}
+	});
+	jQuery("#child_"+gc_id).find(".left_menu_con_center_left").css("height",max_height);
+	var top=jQuery("#child_"+gc_id).offset().top;
+	var scroll_top = jQuery(document).scrollTop();
+	var height=jQuery("#left_menu_con_"+gc_id).height();
+	var all_h=top-scroll_top+height;
+	var doc_h=jQuery(window).height();
+	var margin_top=doc_h-all_h;
+	if(margin_top<0){
+		margin_top=margin_top-20;
+	   jQuery("#left_menu_con_"+gc_id).css('margin-top',margin_top+'px');
+	}else{
+	   jQuery("#left_menu_con_"+gc_id).css('margin-top','0px');
+	}
+  }).mouseleave(function(){
+	 jQuery("dt[id^=dts_]").removeAttr("style");
+	jQuery("div[id^=left_menu_con_]").removeAttr("style"); 
+	 var child_count = jQuery(this).attr("child_count");
+	if(child_count>0){ 
+     var id=jQuery(this).attr("id");
+	  jQuery("#dts_"+id).removeClass("left_menu_this").addClass("left_menu_dt");	
+      jQuery("#child_"+id).hide();
+	}
+  });
+ //
+  jQuery(".nav_left").mouseover(function(){
+	  jQuery("#other_menu").show();
+   });
+  jQuery(".nav_left").mouseleave(function(){
+	  jQuery("#other_menu").hide();	  
+   }); 
+});
+</script>
+<div class="nav">
+<div class="nav_center">
+  <div class="nav_left">
+    <h2><a href="$!webPath/goods_class.htm"><span>全部商品分类<em><img src="$!webPath/resources/style/system/front/default/images/nav_top.gif" width="7" height="4" /></em></span></a>
+    <div class="other_menu" style="display:none" id="other_menu">
+      <div class="left_menu" id="left_menu">
+      #foreach($gc in $!gcs)
+      #set($icon_img="$!webPath/resources/style/common/images/icon/default_icon.png")
+        <dl #if($!velocityCount%2==0)class="left_menu_dl double"  #else class="left_menu_dl" #end child_count="$!gc.childs.size()" #if($!{gc.gc_color}) gc_color="$!{gc.gc_color}" #else gc_color="#E60012" #end id="$!gc.id" style="position:relative;">
+            <!--left_menu_this经过状态，和left_menu_dt不经状态过交换-->
+            #if($!gc.icon_type==0)
+            #if($!gc.icon_sys!="")
+            #set($icon_img="$!webPath/resources/style/common/images/icon/icon_$!{gc.icon_sys}.png")
+            #end
+            #else
+            #if($!gc.icon_acc)
+            #set($icon_img="$!imageWebServer/$!gc.icon_acc.path/$!gc.icon_acc.name")
+            #end
+            #end
+             <!-- 鼠标经过父级时添加style="border:1px solid #F00; border-left:3px solid #F00;"添加底层颜色-->
+            <dt class="left_menu_dt" id="dts_$!gc.id"><i class="left_menu_i"><img src="$!icon_img" width="16" height="16" /></i><strong class="left_menu_str"><a href="$!webPath/store_goods_list_$!{gc.id}.htm">$!gc.className</a></strong><b class="left_menu_str_b">#foreach($child_gc in $gcViewTools.query_third_rec("$!gc.id",4))<a href="$!webPath/store_goods_list_$!{child_gc.id}.htm">$!{child_gc.className}</a>  #end</b></dt>
+            <dd class="left_menu_dd" style="display:none" id="child_$!gc.id">
+            <!--存在广告时left_menu_con this   鼠标经过父级时添加style="border:1px solid #F00; border-left:3px solid #F00;"添加底层颜色-->
+             #set($adv_map=$!gcViewTools.query_gc_advert("$!gc.id","$!webPath"))
+              <div class="left_menu_con #if($!adv_map.get('advert_img')!="") this #end" id="left_menu_con_$!{gc.id}">
+              #set($gbs=$gcViewTools.query_gc_brand("$!gc.id"))
+              #if($!gbs.size()>0)
+              <div class="menu_con_right_top">
+                	<dl>
+                    	<dt>
+                        #foreach($map in $gbs)
+                            <span><a href="$!webPath/store_goods_list_$!{gc.id}.htm?brand_ids=$!{map.get('id')}">$!{map.get('name')}</a></span>
+                    	#end	
+                       </dt>  
+                    </dl>
+                </div>
+              #end  
+              <span class="left_menu_sp">
+                 	
+                <div class="left_menu_con_center">
+                 #foreach($gc1 in $gc.childs)
+                	<div class="left_menu_con_center_left">
+                    	<dl>
+                        	<dt><a href="$!webPath/store_goods_list_$!{gc1.id}.htm">$!gc1.className</a></dt>
+                            #foreach($gc2 in $!gc1.childs)
+                            <dd><a href="$!webPath/store_goods_list_$!{gc2.id}.htm">$!gc2.className</a></dd>
+                  			#end
+                        </dl>
+                    </div>
+                    #end 
+                    <script>
+                    jQuery(document).ready(function(){
+					var height =jQuery(".left_menu_con_center_left").height();
+					
+						});
+                    </script>
+                </div>
+                #if($!adv_map.get('advert_img')!="" && $!adv_map.get('advert_img')!='null')
+                <div class="right_menu_con_right_img">
+                #set($adv_url=$!adv_map.get('advert_url'))
+                	<a #if($!{adv_url}!="") href="$!adv_map.get('advert_url')" target="_blank" #else href="javascript:void(0);" #end><img src="$!adv_map.get('advert_img')"/></a>
+                </div>
+                #end
+                </span> 
+             </div>
+            </dd>
+          </dl>
+      #end
+      </div>
+    </div></h2>
+  </div>
+  <ul id="navul">
+  <li ><a href="$!webPath/index.htm"><span>商城首页</span></a></li>
+    <li id="nav_goods" ><a href="$!webPath/group/index.htm?type=goods"><span>商品惠</span></a></li>
+      <li id="nav_life"><a href="$!webPath/group/index.htm?type=life"><span>生活惠</span></a></li>
+  </ul>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+﻿<script>
+jQuery(document).ready(function(){
+  jQuery("#go_top").click(function(){
+		var sTop = jQuery(document).height()
+       jQuery('body,html').animate({scrollTop:0},1000);
+    });
+});
+</script>
+    <div class="circle_head_nav">
+    	<div class="circle_head_nav_center">
+        	<h3><a href="$!webPath/circle/index.htm">首页</a></h3>
+           <div class="circle_head_nav_center_list">
+           	<ul>
+                #foreach($class in $class_list)
+                	<li><a href="$!webPath/circle/list.htm?class_id=$!class.id">$!class.className</a></li>
+                 #end
+                    <li class="top"><a href="javascript:void(0);" id="go_top">TOP</a></li>
+                </ul>
+           </div>   
+        </div>
+    </div>

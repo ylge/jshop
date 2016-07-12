@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>站内信 - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+jQuery(document).ready(function(){	
+  jQuery("#theForm").validate({
+     rules: {
+			 content:{
+			    required:true
+			 }
+			},
+     messages: {
+			content:{
+			    required:"站内信内容不能为空"
+				}
+		  },
+  submitHandler:function(){
+	  var content=jQuery("#content").val();
+	  jQuery.post("$!webPath/buyer/message_reply.htm",{"pid":"$!obj.id","content":content},function(data){
+		  if(data=="true"){
+			  jQuery("#content").val("");
+			  showDialog("msg_info","","站内信回复成功！",0,"succeed",3,function(){
+				      window.location.href="$!webPath/buyer/message_info.htm?id=$!{obj.id}";
+		   });
+		 }else{
+			  showDialog("error","","系统信息不可回复！",0,"error",3,function(){
+				      window.location.href="$!webPath/buyer/message.htm";
+					 });  
+			 }
+	  },"text"); 
+	}		  
+  }); 
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+  $!httpInclude.include("/head.htm")
+  $!httpInclude.include("/nav1.htm")
+<div class="main">
+  <div class="usercenter"> $!httpInclude.include("/buyer/nav.htm?op=message")
+    <div class="usercenter_right">
+      <div class="myorder">
+        <h4><span class="myorder_fright"></span><strong>站内短信</strong></h4>
+      </div>
+      <div class="user_list">
+        <div class="user_list_title"> <span class="user_list_t_btn"><a href="$!webPath/buyer/message_send.htm" class="newadd"><b><i class="newadd_i"></i>发送站内短信</b></a></span>
+          <ul class="user_title_ul">
+            <li><i></i><a href="$!webPath/buyer/message.htm">收到消息（<strong class="red">$!{user_msgs.size()}</strong>）</a></li>
+            <li><i></i><a href="$!webPath/buyer/message.htm?type=my">已发送消息（<strong class="red">$!{reply_msgs.size()}</strong>）</a></li>
+            <li><i></i><a href="$!webPath/buyer/message.htm?type=sys">系统消息（<strong class="red">$!{sys_msgs.size()}</strong>）</a></li>
+            <li class="this"><a href="#">查看站内信</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="user_list">
+        <div class="user_list_box">
+          <!-- 站内信详细 start -->
+          <div class="add_usercenter">
+            <div class="usercenter_mail">
+              <div class="usercenter_mail_one"> #if($!obj.fromUser.photo)
+                #set($user_photo="$!imageWebServer/$!obj.fromUser.photo.path/$!obj.fromUser.photo.name")
+                #else 
+                #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+                #end
+                <div class="usercenter_mail_one_left"><img src="$!user_photo" /></div>
+                <div class="usercenter_mail_one_right">
+                  <div class="usercenter_mail_one_right_top">#if($!obj.fromUser.userRole=="ADMIN")系统管理员 #else $!obj.fromUser.userName #end<i> 说：</i><span>$!CommUtil.formatLongDate($!obj.addTime)</span></div>
+                  <div class="usercenter_mail_one_right_center">$!obj.content</div>
+                </div>
+              </div>
+              <form method="post" id="ListForm" name="ListForm" action="$!webPath/buyer/message_info.htm" >
+                #foreach($reply in $objs)
+                   #if($!reply.fromUser.photo)
+                     #set($user_photo="$!imageWebServer/$!reply.fromUser.photo.path/$!reply.fromUser.photo.name")
+                   #else 
+                     #set($user_photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+                   #end
+                <div class="usercenter_mail_one_r">
+                  <div class="usercenter_mail_one_left"><img src="$!user_photo" /></div>
+                  <div class="usercenter_mail_one_right_r">
+                    <div class="usercenter_mail_one_right_top">$!{reply.fromUser.userName}<i> 回复：</i><span>$!CommUtil.formatLongDate($!reply.addTime)</span></div>
+                    <div class="usercenter_mail_one_right_center_r">$!reply.content</div>
+                  </div>
+                </div>
+                #end
+                #if($!objs.size()>0)
+                <div class="userlist_allop">
+                  <div class="user_list_page"><span class="user_page_sp">$!gotoPageFormHTML</span> </div>
+                </div>
+                #end
+                <input name="id" id="id" type="hidden" value="$!obj.id" />
+                <input name="currentPage" id="currentPage" type="hidden" value="$!currentPage" />
+              </form>
+              <form action="$!webPath/buyer/message_reply.htm" method="post" name="theForm" id="theForm">
+                <div class="usercenter_reply"> <strong>回复：</strong>
+                  <textarea name="content" cols="" rows="" id="content"></textarea>
+                  <div class="usercenter_button"><a href="javascript:void(0);" onclick="jQuery('#theForm').submit();">提交</a></div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <!-- 站内信详细 end -->
+        </div>
+      </div>
+    </div>
+  </div>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

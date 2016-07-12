@@ -1,0 +1,14 @@
+##set ($domain = $!domainName.toLowerCase())
+<!-- $!{domain}Dao -->
+<bean id="$!{domain}Dao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>$!{packageName}.dao.I$!{domainName}DAO</value>
+		</property>
+		<property name="target">
+			<bean parent="baseDAO">
+				<constructor-arg>
+					<value>$!{packageName}.domain.$!{domainName}</value>
+				</constructor-arg>
+			</bean>
+		</property>
+</bean>

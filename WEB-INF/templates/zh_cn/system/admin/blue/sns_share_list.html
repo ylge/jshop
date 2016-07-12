@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+function del_share(share_id){
+	if(window.confirm("是否确认删除？")){
+		window.location.href="$!webPath/admin/sns_share_del.htm?currentPage=$!{currentPage}&&share_id="+share_id;
+	}
+};
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">分享列表</h3>
+  <form method="post" id="ListForm" action="$!webPath/admin/sns_share_list.htm">
+  <div class="fshoptb">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+      <tr>
+      	<th width="5%"><span class="form_btna">序号</span></th>
+        <th width="10%"><span class="form_btna">用户名</span></th>
+        <th width="15%"><span class="form_btna">分享时间</span></th>
+        <th width="15%" ><span class="form_btna">分享商品</span></th>
+        <th width="15%"><span class="form_btna">分享图片</span></th>
+        <th width="35%"><span class="form_btna">分享内容</span></th>
+        <th width="5%"><span class="form_btna">操作</span></th>
+      </tr>
+      #foreach($obj in $objs)
+      <tr>
+      	<td align="center">$!{velocityCount}</td> 
+        <td align="center">$!{obj.user_name}</td>     
+        <td align="center">$!CommUtil.formatLongDate($!obj.addTime)</td>
+        <td align="center"><a href="$!webPath/goods_dynamic.htm?id=$!obj.share_goods_id" target="_blank">$!{obj.share_goods_name}</a></td>
+        <td align="center"><span class="tpborder"><a href="$!webPath/goods_dynamic.htm?id=$!obj.share_goods_id" target="_blank"><img src="$!imageWebServer/$!{obj.share_goods_photo}" width="100" height="100" /></a></span></td>
+        <td align="center">#if($!{obj.share_content}!="") $!{obj.share_content} #else 他什么也没有说 #end</td>
+        <td align="center"><a href="javascript:void(0)" onclick="del_share($!{obj.id})" class="blue">删除</a></td>
+      </tr>
+      #end
+    </table>
+  </div>
+  <div class="operate_bar">
+    <div class="fenye">
+  	 <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+     $!gotoPageFormHTML
+    </div>             
+ </div>
+  </form>
+</div>
+</body>
+</html>

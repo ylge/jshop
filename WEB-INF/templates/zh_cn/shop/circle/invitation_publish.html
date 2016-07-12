@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>帖子发布 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/circle.css" rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script>
+//options为编辑配置属性
+var options = {
+    cssPath: '$!webPath/resources/editor/plugins/code/prettify.css',
+    filterMode: true,
+    uploadJson: '$!webPath/upload.htm',
+    width: '900px',
+    height: '375px',
+    resizeType: 0,
+    allowImageUpload: true,
+    allowFlashUpload: true,
+    allowMediaUpload: false,
+    allowFileManager: false,
+    syncType: "form",
+    afterCreate: function() {
+        var self = this;
+        self.sync();
+    },
+    afterChange: function() {
+        var self = this;
+        self.sync();
+    },
+    afterBlur: function() {
+        var self = this;
+        self.sync();
+    },
+    items: ['source', 'undo', 'redo', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', 'clearhtml', 'quickformat', 'formatblock', 'fontname', 'fontsize', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', 'image', 'flash', 'media', 'table', 'hr', 'emoticons', 'link', 'unlink', 'about']
+};
+
+jQuery(document).ready(function() {
+    //
+    jQuery("#item_ids").val("");
+    editor = KindEditor.create('#content', options);
+    //
+    jQuery("li[id^=edit_img_list_]").click(function() {
+        jQuery("li[id^=edit_img_list_]").removeClass("this");
+        jQuery(this).addClass("this");
+        jQuery(".edit_img_list_intimg").hide();
+        var target_id = jQuery(this).attr("target_id");
+        jQuery("#" + target_id).show();
+    });
+    //
+    jQuery("a[item_data^=file_]").live("click",
+    function() {
+        var img_path = jQuery(this).attr("img_path");
+        var img_url = jQuery(this).attr("img_url");
+        var add_type = jQuery(this).attr("add_type");
+        var img_type = jQuery(this).attr("img_type");
+        var item_id = add_type + "-" + jQuery(this).attr("item_id");
+        var size = jQuery(".edit_img_list_intimg_b_one").length + jQuery(".circle_logo_y").length;
+        if (size < 7) {
+            if (jQuery("div[img_type=" + img_type + "][item_id=" + item_id + "]").attr("item_id") == undefined) {
+                if (img_type == "goods") {
+                    var s = "<div item_id='" + item_id + "' img_path='" + img_path + "' img_url='" + img_url + "' img_type='" + img_type + "'  class='edit_img_list_intimg_b_one'><span><img src='" + img_path + "' /></span><i><a href='javascript:void(0);' onclick='remove_item(this);'>-</a></i></div>";
+                }
+                if (img_type == "store") {
+                    var s = "<div item_id='" + item_id + "' img_path='" + img_path + "' img_url='" + img_url + "' img_type='" + img_type + "' class='circle_logo_y'><span><img src='" + img_path + "' /></span><i><a href='javascript:void(0);' onclick='remove_item(this);'>-</a></i></div>";
+                }
+                jQuery(".edit_img_list_intimg_b").show();
+                jQuery(".edit_img_list_intimg_b_c").append(s);
+            } else {
+                showDialog("warning", "", "该信息已经存在！", 2, "warning", 2);
+            }
+        } else {
+            showDialog("warning", "", "最多允许插入7个商品、店铺！", 2, "warning", 2);
+        }
+    });
+    //
+    jQuery("#invitation_item").click(function() {
+        var item_show = jQuery(".edit_img_list").attr("item_show");
+        if (item_show == "false") {
+            jQuery('.edit_img_list').show();
+            jQuery(".edit_img_list").attr("item_show", "true");
+        } else {
+            jQuery('.edit_img_list').hide();
+            jQuery(".edit_img_list").attr("item_show", "false")
+        }
+    });
+    //
+});
+function confirm_item() {
+    jQuery("#item_ids").val("");
+    jQuery(".circle_main_create_center_center_img>ul").empty();
+    jQuery(".circle_main_create_center_center_img").show();
+    jQuery(".edit_img_list_intimg_b_c div").each(function() {
+        var item_id = jQuery(this).attr("item_id");
+        var item_ids = jQuery("#item_ids").val();
+        var img_type = jQuery(this).attr("img_type");
+        var img_url = jQuery(this).attr("img_url");
+        var add_type = jQuery(this).attr("add_type");
+        var img_path = jQuery(this).attr("img_path");
+        if (img_type == "store") {
+            var s = "<li class='circle_logo' item_id='" + item_id + "' add_type='" + add_type + "'><span><a href='" + img_url + "' target='_blank'><img src='" + img_path + "' /></a></span><i><a href='javascript:void(0);' onclick='remove_file(this);'>x</a></i></li>";
+        }
+        if (img_type == "goods") {
+            var s = "<li  item_id='" + item_id + "' add_type='" + add_type + "'><span><a href='" + img_url + "' target='_blank'><img src='" + img_path + "' /></a></span><i><a href='javascript:void(0);' onclick='remove_file(this);'>x</a></i></li>";
+        }
+        jQuery(".circle_main_create_center_center_img>ul").append(s);
+        item_ids = item_ids + "," + item_id;
+        jQuery("#item_ids").val(item_ids);
+    });
+    jQuery(".edit_img_list").hide();
+    jQuery(".edit_img_list").attr("item_show", "false")
+}
+function remove_item(obj) {
+    jQuery(obj).parent().parent().remove();
+    if (jQuery(".edit_img_list_intimg_b_one").length == 0) {
+        jQuery(".edit_img_list_intimg_b").hide();
+    }
+}
+function remove_file(obj) {
+    jQuery(obj).parent().parent().remove();
+    var item_ids = "";
+    jQuery(".circle_main_create_center_center_img>ul>li").each(function() {
+        var item_id = jQuery(this).attr("item_id");
+        item_ids = item_id + "," + item_ids
+    });
+    jQuery("#item_ids").val(item_ids);
+    if (jQuery(".circle_main_create_center_center_img>ul>li").length == 0) {
+        jQuery(".circle_main_create_center_center_img").hide();
+    }
+}
+function saveForm() {
+    var code = 100;
+    var title = jQuery("#title").val();
+    title = jQuery.trim(title);
+    var content = jQuery("#content").val();
+    content = jQuery.trim(content);
+
+    if (content.length == 0) {
+        code = -200;
+    }
+    if (title.length == 0) {
+        code = -100;
+    }
+    if (title.length >= 50) {
+        code = -150;
+    }
+
+    if (code == 100) {
+        editor.sync(); //同步编辑器的数据到texterea
+        jQuery("#theForm").submit();
+    } else {
+        if (code == -100) {
+            showDialog("warning", "", "请填写帖子标题！", 2, "warning", 2);
+        }
+        if (code == -150) {
+            showDialog("warning", "", "帖子标题不能超出50个字符！", 2, "warning", 2);
+        }
+        if (code == -200) {
+            showDialog("warning", "", "请填写帖子内容！", 2, "warning", 2);
+        }
+    }
+};
+</script>
+</head>
+<body background="$!webPath/resources/style/circle/images/circle_bg.jpg">
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/circle/head.htm")
+<div class="circle_main">
+	$!httpInclude.include("/circle/nav.htm")
+    
+    <div class="circle_main_center">
+    <div class="circle_main_create_top"> <span><b>发表到：</b>
+      <input name="" type="text"  value="$!cir.title" readonly="readonly" placeholder="请选择您要发帖的圈子"/>
+     </div>
+    <form id="theForm" name="theForm" action="$!webPath/circle/invitation_publish_save.htm" enctype="multipart/form-data" method="post">
+    <div class="circle_main_create_center">
+      <div class="circle_main_create_center_center">
+      	<div class="circle_main_create_center_center_left">
+         <div class="circle_main_create_center_center_t">
+      			<b>类型：</b>
+      			<select name="type" id="type">
+      			  <option value="原创">原创</option>
+      			  <option value="转载">转载</option>
+   			  </select>
+      		</div>
+        	<div class="circle_main_create_center_center_top">
+          <input name="title" type="text" placeholder="请输入您的标题..." id="title" />
+        </div>
+        	<div class="circle_main_create_center_center_c">
+          <textarea name="content"  placeholder="请输入正文..." cols="" rows="" id="content"></textarea>
+        </div>
+        <div class="circle_main_create_center_center_img" style="display:none;">
+        	<ul>
+                
+            </ul>
+        </div>
+        </div>
+        <div class="circle_main_create_center_center_right">
+        	<h3>发布说明：</h3>
+            <span>选择“商品/店铺”可以使用商品链接、店铺链接或者收藏商品、店铺发布到帖子中，商品/店铺信息会在帖子内容下方显示，所有用户均可以打开对应的商品/店铺信息，每次发帖商品、店铺链接总数不超过7个。</span>
+        </div>
+        <div class="circle_main_create_center_center_b">
+        	<div class="edit_img"><a id="invitation_item" href="javascript:void(0);">商品/店铺</a>
+            	<!-- 向上弹出 -->
+            	<div class="edit_img_list" item_show="false" style="display:none;">
+                    <!-- 关闭按钮 -->
+                	<div class="edit_img_list_close"><a href="javascript:void(0);" onclick="jQuery('.edit_img_list').hide();jQuery('.edit_img_list').attr('item_show','false')">x</a></div>
+                	<ul>
+                    	<li class="this" id="edit_img_list_goods_link" target_id="goods_link"><a href="javascript:void(0);" >商品链接</a></li>
+                        <li id="edit_img_list_store_link" target_id="store_link"><a href="javascript:void(0);" >店铺链接</a></li>
+                        <li id="edit_img_list_goods_fav" target_id="goods_fav"><a href="javascript:void(0);" >收藏商品</a></li>
+                        <li id="edit_img_list_store_fav" target_id="store_fav"><a href="javascript:void(0);" >收藏店铺</a></li>
+                    </ul>
+                    <!--商品链接 -->
+                    <script>
+					function parse_goods(){
+				       var goods_url=jQuery("#goods_url").val();
+					   jQuery.ajax({type:'POST',url:'$!webPath/circle/invitation_goods_parse.htm',data:{"goods_url":goods_url},dataType:"json",
+								  success:function(data){
+								    if(data.error==0){
+										 var size=jQuery(".edit_img_list_intimg_b_one").length+jQuery(".circle_logo_y").length;
+	                                         if(size<7){
+		                                         if(jQuery("div[img_type='goods'][item_id="+data.id+"]").attr("item_id")==undefined){
+	                                               var img_path=data.img_path;
+												   var img_url=data.img_url;
+	                                               var s="<div item_id='goods_url-"+data.id+"' img_path='"+img_path+"' img_url='"+img_url+"' img_type='goods'  class='edit_img_list_intimg_b_one'><span><img src='"+img_path+"' /></span><i><a href='javascript:void(0);' onclick='remove_item(this);'>-</a></i></div>";
+	                                               jQuery(".edit_img_list_intimg_b").show();
+	                                               jQuery(".edit_img_list_intimg_b_c").append(s);
+		                                           item_ids=item_ids+","+data.id;
+		                                           jQuery("#item_ids").val(item_ids);
+												   jQuery("#goods_url").val("");
+                                                }
+											 }else{
+										          showDialog("warning","","最多允许插入7个商品、店铺！",2,"warning",2);
+											 }
+									}else{
+									   showDialog("warning","","商品解析错误！",2,"warning",2);
+									   jQuery("#goods_url").val("");
+									}
+								  }
+					   });
+					}
+					function parse_store(){
+						var store_url=jQuery("#store_url").val();
+					   jQuery.ajax({type:'POST',url:'$!webPath/circle/invitation_store_parse.htm',data:{"store_url":store_url},dataType:"json",
+								  success:function(data){
+								    if(data.error==0){
+										 var size=jQuery(".edit_img_list_intimg_b_one").length+jQuery(".circle_logo_y").length;
+	                                         if(size<7){
+		                                         if(jQuery("div[img_type='store'][item_id="+data.id+"]").attr("item_id")==undefined){
+	                                               var img_path=data.img_path;
+												   var img_url=data.img_url;
+	                                                var s="<div item_id='store_url-"+data.id+"' img_path='"+img_path+"' img_url='"+img_url+"' img_type='store' class='circle_logo_y'><span><img src='"+img_path+"' /></span><i><a href='javascript:void(0);' onclick='remove_item(this);'>-</a></i></div>";
+	                                               jQuery(".edit_img_list_intimg_b").show();
+	                                               jQuery(".edit_img_list_intimg_b_c").append(s);
+		                                           item_ids=item_ids+","+data.id;
+		                                           jQuery("#item_ids").val(item_ids);
+												   jQuery("#store_url").val("");
+                                                }
+											 }else{
+										          showDialog("warning","","最多允许插入7个商品、店铺！",2,"warning",2);
+											 }
+									}else{
+									   showDialog("warning","","店铺解析错误！",2,"warning",2);
+									   jQuery("#store_url").val("");
+									}
+								  }
+					   });
+				    }
+					</script>
+                    <div class="edit_img_list_intimg" id="goods_link" style="display:;">
+                    	<div class="edit_img_list_intimg_top">
+                    		<span class="water_upload">
+                        		<b class="opacity_txt"><input name="goods_url" type="text" placeholder="请输入商品链接..." id="goods_url"/></b>
+                       		<b class="opacity_submit"><input name="" type="button" value="添加..." onclick="parse_goods();" /></b>
+                       	  </span>
+                      </div>
+                    </div>
+                    <!--店铺链接 -->
+                     <div class="edit_img_list_intimg" id="store_link" style="display:none;">
+                    	<div class="edit_img_list_intimg_top">
+                    		<span class="water_upload">
+                        		<b class="opacity_txt"><input name="store_url" type="text" placeholder="请输入店铺链接..." id="store_url"/></b>
+                       		<b class="opacity_submit"><input name="" type="button" value="添加..." onclick="parse_store();" /></b>
+                        	</span>
+                        </div>
+                    </div>
+                    <!--收藏的商品 -->
+                    <div class="edit_img_list_intimg" id="goods_fav" style="display:none;">
+                    	<div class="edit_img_list_intimg_top" id="goods_fav_list">
+                    		<div class="edit_img_list_intimg_top_c">
+                            	#foreach($goods in $goods_objs)
+                                 #if($!goods.goods_photo)
+                                   #set($img="$!imageWebServer/$!{goods.goods_photo}_small.$!{goods.goods_photo_ext}")
+                                #else
+                                   #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+                                #end
+                                #set($goods_url="$!webPath/goods_$!{goods.goods_id}.htm")
+                                #if($!config.second_domain_open && $!goods.goods_type==1 && $!goods.goods_store_second_domain!="")
+                                    #set($goods_url="http://$!{goods.goods_store_second_domain}.$!{domainPath}/goods_$!{goods.goods_id}.htm")
+                                #end
+                                <span><a item_data="file_goods_$!goods.id" href="javascript:void(0);" item_id="$!goods.id" img_type="goods" add_type="goods_fav" img_path="$!img" img_url="$!goods_url"><img src="$!img" /></a></span>
+                                #end
+                            </div>
+                            <div class="fenye_circle" target_id="goods_fav_list">
+                            	<span>
+                                	$!{goods_gotoPageAjaxHTML}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--收藏的店铺-->
+                    <div class="edit_img_list_intimg" id="store_fav" style="display:none;">
+                    	<div class="edit_img_list_intimg_top" id="store_fav_id">
+                    		<div class="edit_img_list_intimg_top_c">
+                               #foreach($store in $store_objs)
+                                #if($!store.store_photo)
+                                  #set($store_logo="$!imageWebServer/$!{store.store_photo}")
+                               #else
+                                  #set($store_logo="$!imageWebServer/$!config.storeImage.path/$!config.storeImage.name")
+                               #end
+                  
+			                   #set($store_url="$!webPath/store_$!{store.store_id}.htm")
+       		                   #if($!config.second_domain_open && $!store.store_second_domain!="")
+         	                     #set($store_url="http://$!{store.store_second_domain}.$!{domainPath}")
+       		                   #end
+                            	<span style="width:74px; height:28px;"><a item_data="file_store_$!store.id" item_id="$!store.id" add_type="store_fav" href="javascript:void(0);" img_type="store" img_path="$!store_logo" img_url="$!store_url"><img style="width:74px; height:28px;" src="$!store_logo"  /></a></span>
+                                #end
+                            </div>
+                            <div class="fenye_circle" target_id="store_fav_id">
+                            	<span>
+                                	$!{store_gotoPageAjaxHTML}
+                                </span>
+                            </div>
+                        </div>
+                    </div>      
+                    <div class="edit_img_list_intimg_b" style="display:none;">
+                        	<h3>已选：</h3>
+                            <div class="edit_img_list_intimg_b_c">
+                            	
+                            </div>
+                            <div class="edit_img_list_intimg_b_b">
+                            	<a href="javascript:void(0);" onclick="confirm_item();">插入帖子</a>
+                            </div>
+                            
+                        </div>              
+              <!--箭头位置 -->
+                    <div class="edit_img_list_b"></div>
+                </div>
+            </div>
+            
+            <div class="circle_main_create_center_button"><a href="javascript:void(0);" onclick="saveForm();">发表</a></div>
+        </div>
+      </div>
+    </div>
+     <input name="cid" id="cid" type="hidden" value="$!cir.id"/>
+        <input name="invitation_publish_session" id="invitation_publish_session" type="hidden" value="$!invitation_publish_session"/>
+      <input type="hidden" name="item_ids" id="item_ids" />
+    </form>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

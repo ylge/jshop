@@ -1,0 +1,25 @@
+<!--悬浮层-->
+<script>
+function click_layer(){
+	var ret = jQuery("#show").attr("mark");
+	if(ret=="show"){
+		jQuery("#show").hide();
+		jQuery("#show").attr("mark","hide");
+		}else{
+		jQuery("#show").show();
+		jQuery("#show").attr("mark","show");	
+			}
+	}
+</script>
+<div class="layer">
+	<a class="layer_menu" href="javascript:void(0);" onclick="click_layer();"><img src="$!webPath/resources/style/system/front/wap/images/layer_05.png" width="35" height="35" /><span class="black_bg"></span></a>
+    <div class="layer_show" id="show" mark="hide" style="display:none">
+    	<ul>
+        	<li><a href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/layer_01.png" width="20" height="20" /><p>首页</p></a></li>
+            <li><a href="$!webPath/wap/buyer/order_list.htm"><img src="$!webPath/resources/style/system/front/wap/images/layer_02.png" width="20" height="20" /><p>订单</p></a></li>
+            <li><a href="$!webPath/wap/goods_cart1.htm"><img src="$!webPath/resources/style/system/front/wap/images/layer_03.png" width="20" height="20" /><p>购物车</p></a></li>
+            <li><a href="$!webPath/wap/buyer/center.htm"><img src="$!webPath/resources/style/system/front/wap/images/layer_04.png" width="20" height="20" /><p>用户中心</p></a></li>
+        </ul>
+        <div class="show_bg"></div>
+    </div>
+</div>

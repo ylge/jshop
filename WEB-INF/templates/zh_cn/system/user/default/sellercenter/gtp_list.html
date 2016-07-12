@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台 - 商家属性新增-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+function ajax_update(id,fieldName,obj){
+   var val=jQuery(obj).val();
+   if(val==""){
+     alert("值不能为空！");
+	 return;
+   }
+    jQuery.ajax({type:'POST',
+	              url:'$!webPath/seller/gtp_update_ajax.htm',
+				  data:{"id":id,"fieldName":fieldName,"value":val}
+	    });
+}
+ function remove_gtp(obj,id){
+	   jQuery.post("$!webPath/seller/gtp_delete.htm",{"id":id},function(data){
+            if(data=="true"){
+	          jQuery(obj).remove();
+	        }else alert("规格值删除失败！");
+          },"text");
+	   }
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=goods_type_list")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>商品管理</b> > <b>属性列表</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href="$!webPath/seller/gtp_list.htm"><i></i>属性列表</a></li>
+            <li><a href="$!webPath/seller/gtp_add.htm"><i></i>新增属性</a></li>
+          </ul>
+        </div>
+        <div class="operation_n">
+    <h3>友情提示</h3>
+    <ul>
+      <li>商品属性值填写时，各个值之间使用半角逗号分隔，如：红色,白色,蓝色,粉色，发布商品时可以选择属性值，只用于商品详情页显示，不用于列表筛选。</li>
+    </ul>
+  </div>
+        
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/gtp_list.htm" method="post" enctype="multipart/form-data" name="ListForm" id="ListForm">
+            <input name="id" type="hidden" id="id"  value="$!obj.id"/>
+            <input name="count" type="hidden" id="count" />
+            <div class="specification" style="padding-top:0">
+              <h2>新增属性值</h2>
+              <div class="fshoptb2 ">
+                <table width="100%" border="1" bordercolor="#eee" cellspacing="0" cellpadding="0" class="fshop_table2">
+                  <tr id="goods_type_property_">
+                    <th width="5%"></th>
+                    <th width="10%"><span class="form_btna"><strong>排序</strong></span></th>
+                    <th width="15%"><span class="form_btna"><strong>属性名</strong></span></th>
+                    <th width="60%"><span class="form_btna"><strong>属性值</strong></span></th>
+                    <th  align="center">操作</th>
+                  </tr>
+          #if($objs.size()>0)
+          #foreach($gtp in $objs)
+    
+          <tr id="goods_type_property_">
+          <td align="center"><span class="checkpro"> <input name="id" id="id" type="checkbox" value="$!gtp.id" /></span></td>
+            <td><span class="size70">
+              <input name="gtp_sequence_$!velocityCount" type="text" id="gtp_sequence_$!velocityCount" value="$!gtp.sequence" onblur="ajax_update('$!gtp.id','sequence',this)"/>
+              <input name="gtp_id_$!velocityCount" type="hidden" id="gtp_id_$!velocityCount" value="$!gtp.id" />
+              </span></td>
+            <td><span class="size200">
+              <input name="gtp_name_$!velocityCount" type="text" id="gtp_name_$!velocityCount" value="$!gtp.name" style="width:125px; margin-left:10px;" onblur="ajax_update('$!gtp.id','name',this)"/>
+              </span></td>  
+              <td><span class="size250">
+              <input name="gtp_value_$!velocityCount" type="text" id="gtp_value_$!velocityCount" value="$!gtp.value" style="width:590px; margin-left:10px;" onblur="ajax_update('$!gtp.id','value',this)"/>
+              </span></td>
+            <td class="del_operate" align="center"><a style=" padding:2px 15px" href="javascript:void(0);" onclick="showDialog('msg_info','','确认删除该条数据吗？',1,'question',3,function(){window.location.href='$!webPath/seller/gtp_del.htm?mulitId=$!gtp.id'});" class="del_a">删除</a></td>
+          </tr>
+          #end
+          #else
+          <tr>
+          	<td colspan="4"><div class="seller_center_nothing">
+          	<div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+            <div class="seller_center_nothing_right">暂时没有数据</div>
+          </div></td>
+          </tr>
+          #end
+                </table>
+                 #if($objs.size()>0)
+           <div class="userlist_allop">
+            <div class="seller_list_page">
+              <div  class="seller_page_sp">$!gotoPageFormHTML</div>              
+              <div class="user_listoper_p"> <i>
+                 <label><input name="all1" type="checkbox" id="all1" onclick="selectAll(this)" value="" />
+               全选</label>
+                </i> <a  href="javascript:void(0);" onclick="cmd('$!webPath/seller/gtp_del.htm','')" class="seller_oper_all">删除</a> </div>               
+            </div>
+          </div>
+           #end
+           <input id="currentPage" name="currentPage" type="hidden" value="$!currentPage"/>
+           <input name="mulitId" type="hidden" id="mulitId" />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

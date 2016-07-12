@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+jQuery(document).ready(function(){
+  
+});
+</script>
+</head>
+<body>
+  <div class="cont">
+    <h1 class="seth">自营满就送管理</h1>
+    <div class="nav_list">
+   <ul>
+	<li><a href="$!webPath/admin/buygift_self_list.htm" ><b>自营满就送管理</b></a></li>
+    <li><a href="$!webPath/admin/buygift_self_add.htm"><b>自营满就送添加</b></a></li>
+    <li><a href="javascript:void(0);" class="this"><b>自营满就送详情</b></a></li>
+   </ul>
+    </div>
+    <div class="edit">
+    <div class="editul setcont" id="base">
+      <ul class="set1">
+        <li class="setcont_bg">开始时间:
+          <input name="id" type="hidden" id="id" value="$!obj.id" />
+        </li>
+        <li><span class="webname">
+       			$!CommUtil.formatShortDate($!obj.beginTime)
+          </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">结束时间:</li>
+        <li> <span class="webname">
+          $!CommUtil.formatShortDate($!obj.endTime)
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">满足条件:</li>
+        <li> <span class="webname">
+          $!obj.condition_amount元
+        </span></li>
+      </ul>
+      <ul class="set1">
+        <li class="setcont_bg">状态:</li>
+        <li> <span class="webname">
+          #if($!obj.gift_status==10) 进行中 #elseif($!obj.gift_status==20) 已结束 #elseif($!obj.gift_status==-10) 审核未通过 #end
+        </span></li>
+        </ul>
+        <ul class="set1">
+            <li class="setcont_bg">促销商品:</li>
+            <li>
+            	#foreach($map in $!CommUtil.Json2List("$!obj.goods_info"))
+                #set($goods_id = "$!{map.get('goods_id')}")	
+            	#set($goods_name = "$!{map.get('goods_name')}")
+            	#set($goods_price = "$!{map.get('goods_price')}")
+            	#set($goods_mainphoto_path = "$!{map.get('goods_main_photo')}")
+            	#set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+             	#set($goods_domainPath = "$!{map.get('goods_domainPath')}")
+            	<a href="$!goods_domainPath" target="_blank"><dl class="buygift_self_dl">
+                	<dt><img src="$!img" /></dt>
+                    <dd>$!goods_name</dd>
+                    <dd><strong>¥$!goods_price元</strong></dd>
+                </dl></a>
+                #end
+            </li>
+      	</ul>
+        <ul class="set1">
+            <li class="setcont_bg">促销赠品:</li>
+            <li>
+            #foreach($map in $!CommUtil.Json2List("$!obj.gift_info"))
+                #set($goods_id = "$!{map.get('goods_id')}")	
+            	#set($goods_name = "$!{map.get('goods_name')}")
+            	#set($goods_price = "$!{map.get('goods_price')}")
+            	#set($goods_mainphoto_path = "$!{map.get('goods_main_photo')}")
+            	#set($img="$!imageWebServer/$!{goods_mainphoto_path}")
+             	#set($goods_domainPath = "$!{map.get('goods_domainPath')}")
+            	<a href="$!goods_domainPath" target="_blank"><dl class="buygift_self_dl">
+                	<dt><img src="$!img" /></dt>
+                    <dd>$!goods_name</dd>
+                    <dd><strong>¥$!goods_price元</strong></dd>
+                </dl></a>
+                #end
+            </li>
+      	</ul>
+    </div>
+    </div>
+    <div class="submit">
+  </div>
+  </div>
+</body>
+</html>

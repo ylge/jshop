@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.imgareaselect.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){								
+	jQuery('img[id^=bigImg_]').imgAreaSelect({
+			onSelectEnd: function (img, selection) {
+						jQuery("#AreaSelect_win").remove();
+							var img_id =jQuery(img).attr("img_id");
+							var x1 =selection.x1;
+							var y1 =selection.y1;
+							var x2 =selection.x2;
+							var y2 =selection.y2;
+								if(x1!=x2||y1!=y2){
+									var coord = "'"+x1+"_"+y1+"_"+x2+"_"+y2+"'";	
+									AreaSelectInfo(coord,img_id);	
+								}
+					}		
+	   });
+		//设置屏蔽热点z-index
+		jQuery(".imgareaselect-outer").each(function(){
+		   jQuery(this).css("z-index","5");										 
+		});
+		jQuery(".imgareaselect-outer").mouseup(function(){
+			jQuery("#AreaSelect_win").remove();										  
+		});
+		//菜单显示隐藏								
+		jQuery(".subject_one,.subject_center").live("mouseover",function(){
+			jQuery(".subject_one_nav").each(function(){
+			jQuery(this).hide();									 
+			});										 									 
+			jQuery(this).find(".subject_one_nav").show();							  						  
+		});
+		
+		//选择图片样式
+		jQuery("#img").live("change",function(){				
+			var val =jQuery(this).val();	
+			jQuery("#show_img").val(val).css("color","#B6B6B6");
+		});
+		//点击其他位置取消热点状态
+		jQuery(".subject_box").live("click",function(){
+			jQuery(".subject_one").each(function(){
+					var z =jQuery(this).css("z-index");
+					var img_id = jQuery(this).attr("obj_id");
+					if(z==2){
+						jQuery(".subject_box").remove();
+						jQuery(".subject_box_center").remove();
+						jQuery("div[obj_id="+img_id+"]").removeAttr("style").find(".subject_tbox_no").show();
+						jQuery("b[id^=hot_dele_"+img_id+"_]").hide();
+						jQuery("a[id^=hot_edit_"+img_id+"_]").hide();
+						}					 
+				  });
+		  });
+
+});////
+
+	//划分区域显示链接		
+	function AreaSelectInfo(coords,img_id){
+		 var url=arguments[2];//编辑热点时热点链接
+			 var text ='<div class="subject_tbox" id="AreaSelect_win"><div class="subject_box_center" style="z-index:100"><div class="subject_box_center_img"><input name="img_href" id="img_href" placeholder="请输入热点区域链接..." type="text" class="file_name" style="width:290px"/></div> <div class="subject_box_center_button"><a href="javascript:void(0);" onclick="SetAreaInfo('+coords+','+img_id+',this);">提交</a><a href="javascript:void(0);" onclick="close_dialog(this);">取消</a></div></div></div>';
+			jQuery("body").append(text);
+			if(url!=undefined && !url==""){
+				jQuery("#img_href").val(url);
+				}
+	};
+//划分区信息保存	
+	function SetAreaInfo(coords,img_id,obj){
+		var coords_url = jQuery("#img_href").val();
+		if(coords_url!=""){
+			if(coords_url.indexOf("&")>=0){
+					coords_url = coords_url.replace(/&/g,"]") 
+				}
+			var params="id=$!{obj.id}&img_id="+img_id+"&coords="+coords+"&coords_url="+coords_url;
+			 jQuery.ajax({type:'POST',url:'$!webPath/admin/subject_img_coords.htm',data:params,
+				 success:function(ret){
+					 window.location.href="$!webPath/admin/subject_set.htm?id=$!{obj.id}"
+				  }	
+		 		});	
+			}else{
+				jQuery("#img_href").css("color","#E71616");
+				}
+	};	
+	//上传图片弹出框
+	function show_add_img(){
+		  var img_id=arguments[0];//编辑图片时图片id
+		  var text ='<div class="subject_tbox"><div class="subject_box"></div><div class="subject_box_center"><div class="subject_box_center_img"><input name="img" id="img" type="file" style="opacity: 0; background:#000; width:300px; height:32px; position:absolute; top:0; z-index:3" /><input name="show_img" id="show_img" value="还未选择图片..." type="text" class="file_name"/><input name="" value="选择文件" type="button" class="file_sele" /></div> <div class="subject_box_center_button"><a href="javascript:void(0);" onclick="upload_img('+img_id+');">提交</a><a href="javascript:void(0);" onclick="close_dialog(this);">取消</a></div></div></div>';
+	      jQuery("body").append(text);
+	};
+		//图片链接弹出框
+	function img_href_edit(){
+		  var img_id=arguments[0];//图片id
+		  var url=arguments[1];//图片id
+		  var text ='<div class="subject_tbox"><div class="subject_box"></div><div class="subject_box_center"><div class="subject_box_center_img"><input name="img_href" id="img_href" placeholder="请输入图片链接..." type="text" class="file_name" style="width:290px"/></div> <div class="subject_box_center_button"><a href="javascript:void(0);" onclick="set_href('+img_id+');">提交</a><a href="javascript:void(0);" onclick="close_dialog(this);">取消</a></div></div></div>';
+	      jQuery("body").append(text);
+		  if(url!=undefined && !url==""){
+				jQuery("#img_href").val(url);
+				}
+		};
+	
+	
+	//Ajax上传图片		
+	function upload_img(img_id){
+			var img_val = jQuery("#img").val();
+			if(img_val!=""){
+			 	 jQuery.ajaxFileUpload({
+					 url:'$!webPath/admin/subject_img_upload.htm?id=$!{obj.id}&img_id='+img_id,
+					 fileElementId:['img'],      
+					 dataType: 'text',                
+					 success: function (data){
+						window.location.href="$!webPath/admin/subject_set.htm?id=$!{obj.id}"
+						}
+				 });
+			}else{
+				jQuery("#show_img").css("color","#ED6B6B");
+			}
+		};
+	function set_href(img_id){
+		var img_href = jQuery("#img_href").val();
+		if(img_href!=""){
+		 jQuery.ajax({type:'POST',url:'$!webPath/admin/subject_img_href.htm?id=$!{obj.id}&img_id='+img_id+"&img_href="+img_href,
+			 success:function(ret){
+			 window.location.href="$!webPath/admin/subject_set.htm?id=$!{obj.id}"
+			  }	
+		 });
+		}else{
+			jQuery("#img_href").css("color","#E71616");
+			}
+		};	
+			
+//关闭上传图片弹出框
+	function close_dialog(obj){
+	jQuery(obj).parent().parent().parent().remove();
+	};
+
+//删除专题详情
+	function dele_div(dele_id,type){
+		if(type=="img"){
+					if(confirm("删除后不可恢复，是否删除？")){
+					   jQuery.ajax({type:'POST',url:'$!webPath/admin/subject_img_dele.htm',data:"dele_id="+dele_id+"&type="+type+"&id=$!{obj.id}",
+							 success:function(ret){
+								 window.location.href="$!webPath/admin/subject_set.htm?id=$!{obj.id}"  	 
+							 }
+						});	
+					}
+		}else{
+				   if(confirm("删除后不可恢复，是否删除？")){
+					   jQuery.ajax({type:'POST',url:'$!webPath/admin/subject_goods_dele.htm',data:"goods_ids="+dele_id+"&type="+type+"&id=$!{obj.id}",
+							 success:function(ret){
+								 window.location.href="$!webPath/admin/subject_set.htm?id=$!{obj.id}"  	 
+							 }
+						});	
+					}
+			
+			}
+		};	
+//热点显示
+function show_hot_area(img_id){
+		var z =jQuery("div[obj_id="+img_id+"]").css("z-index");
+		if(z==2){
+			jQuery(".subject_box").remove();
+			jQuery("div[obj_id="+img_id+"]").removeAttr("style").find(".subject_tbox_no").show();
+			jQuery("b[id^=hot_dele_"+img_id+"_]").hide();
+			jQuery("a[id^=hot_edit_"+img_id+"_]").hide();
+			}else{
+			var text ='<div class="subject_box"></div>';
+			jQuery("body").append(text);
+			jQuery("div[obj_id="+img_id+"]").css("z-index","2").find(".subject_tbox_no").hide();
+			jQuery("b[id^=hot_dele_"+img_id+"_]").show();
+			jQuery("a[id^=hot_edit_"+img_id+"_]").show();
+		  }
+	}
+//删除热点区域	
+function dele_hot_area(coords,url,obj){
+			if(confirm("删除后不可恢复，是否删除？")){
+				 jQuery.ajax({type:'POST',url:'$!webPath/admin/subject_img_coords_dele.htm',data:"id=$!{obj.id}&coords="+coords+"&url="+url,
+			     success:function(ret){
+			     			if(ret=="true"){
+									jQuery(obj).parent().remove();
+								}
+						}
+				});	
+			}
+	};
+	
+//编辑热点区域	
+function edit_hot_area(coords,url,obj){
+	coords = coords.replace(/,/g,"_");
+	coords = "'"+coords+"'";
+	var img_id =jQuery(obj).parent().parent().parent().find("img").attr("img_id");
+	AreaSelectInfo(coords,img_id,url);
+	};		
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">专题设计</h1>
+  <div class="about_box">
+    <!-- 专题 start -->
+    <div class="subject">
+    
+
+      <!--商品div-->
+        #foreach($obj_goods in $objs)
+          #if($!obj_goods.type=="goods")
+      <div class="subject_center">
+         	#foreach($goods in $!SubjectTools.getGoodsInfos("$!obj_goods.goods_ids"))
+        <div class="subject_center_one">
+          <div class="subject_center_one_img"><img src="$!imageWebServer/$!{goods.img}" width="232px" height="232px"/></div>
+          <div class="subject_center_one_name">$!{goods.name}</div>
+          <div class="subject_center_one_price">价格：￥$!{goods.price}</div>
+        </div>
+             #end
+        <div class="subject_one_nav" style="display:none; width:140px">   <span style="cursor:pointer"><a href="javascript:void(0);" dialog_uri="$!webPath/admin/subject_goods.htm?id=$!{obj.id}&goods_ids=$!{obj_goods.goods_ids}" dialog_title="专题商品" dialog_width="735" dialog_top="120" dialog_height="200" dialog_id="subject_goods"><img src="$!webPath/resources/style/system/manage/blue/images/edit.png"/></a></span> <span style="cursor:pointer" onclick="dele_div('$!{obj_goods.goods_ids}','$!obj_goods.type');"><a href="javascript:void(0);"><img src="$!webPath/resources/style/system/manage/blue/images/del.png"/></a></span></div>
+      </div>
+            #end
+        #end
+      
+      #foreach($obj in $objs) 
+      #if($!obj.type=="img")
+      <!--图片div-->
+      #set($width=$!SubjectTools.getImageWidth("$!obj.id"))
+      <div class="subject_one" obj_id="$!obj.id" style="width:$!{width}px; float:none; margin:0 auto;">
+        <div class="subject_one_m">
+          <div style="position:relative; background-color:#999; margin:0 auto;"> 
+          <div class="subject_one_nav" style="display:none"> <span style="cursor:pointer" onclick="show_hot_area('$!obj.id');"><a href="javascript:void(0);"><img src="$!webPath/resources/style/system/manage/blue/images/hotspot.png"/></a></span> <span style="cursor:pointer" onclick="img_href_edit('$!obj.id','$!obj.img_href');"><a href="javascript:void(0);" #if($!obj.img_href)title="当前链接：$!{obj.img_href}"#else title="编辑图片链接"#end><img src="$!webPath/resources/style/system/manage/blue/images/url.png"/></a></span> <span style="cursor:pointer" onclick="show_add_img('$!{obj.id}');"><a href="javascript:void(0);"><img src="$!webPath/resources/style/system/manage/blue/images/edit.png"/></a></span> <span style="cursor:pointer" onclick="dele_div('$!{obj.id}','$!obj.type');"><a href="javascript:void(0);"><img src="$!webPath/resources/style/system/manage/blue/images/del.png"/></a></span> </div>
+          
+          
+          <span><img style="max-width:100%" src="$!imageWebServer/$!{obj.img_url}" id="bigImg_$!{obj.id}" img_id="$!{obj.id}" usemap="#map_$!{obj.id}"/></span> #if($!obj.areaInfo)
+            #foreach($area in $!SubjectTools.getAreaInfo("$!{obj.areaInfo}"))
+            <div class="subject_one_map_center" style="top:$!{area.top}px;left:$!{area.left}px;width:$!{area.width}px; height:$!{area.height}px"><b onclick="dele_hot_area('$!{area.coords}','$!{area.url}',this);" style="display:none" id="hot_dele_$!{obj.id}_$!{velocityCount}">X</b><div class="subject_one_edit"><a style="display:none" href="javascript:void(0);" onclick="edit_hot_area('$!{area.coords}','$!{area.url}',this);" id="hot_edit_$!{obj.id}_$!{velocityCount}">编辑</a></div></div>
+            #end
+            #end </div>
+   <!--       <script>
+		  jQuery(document).ready(function(){
+			     jQuery("img[id^='bigImg_']").each(function(){
+				  var width = jQuery(this).width();									   
+				  jQuery(this).parent().parent().width(width);
+				});							  
+										  
+			 });
+            </script>-->
+          <div class="subject_tbox_no"></div>
+          
+        </div>
+      </div>
+      #end
+      #end
+      <div class="subject_select">
+      <a href="javascript:void(0);" dialog_uri="$!webPath/admin/subject_goods.htm?id=$!obj.id" dialog_title="专题商品" dialog_width="735" dialog_top="120" dialog_height="200" dialog_id="subject_goods">
+        <div class="subject_select_left"></div>
+        </a>
+        <div class="subject_select_right" onclick="show_add_img();"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

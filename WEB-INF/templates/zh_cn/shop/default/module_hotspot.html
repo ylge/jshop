@@ -1,0 +1,22 @@
+<script>
+jQuery(document).ready(function(){
+	var width =jQuery(window).width();	
+		jQuery("area").each(function(){
+				var id =jQuery(this).parent().attr("j_id");
+				var count=jQuery(this).attr("count");
+				var coords =jQuery(this).attr("coords");
+				jQuery.post("$!webPath/generic_coords.htm",
+							{"coords":coords,"img_id":id,"screen_width":width},
+							function(data){						
+							jQuery("area[j_id="+id+"][count="+count+"]").attr("coords",data.coords);
+							 },"json");
+			   });
+	});
+</script>
+<img src="$!{obj.src}" usemap="#Map_$!{obj.id}" border="0" mark="$!coors_list"/>
+ <map name="Map_$!{obj.id}" id="Map_$!{obj.id}" j_id="$!{obj.id}">
+#foreach($area in $coors_list)
+<area target="_blank" href="$!{area.url}" coords="$!{area.coor}" j_id="$!{obj.id}" shape="rect" count="$!velocityCount">
+</area>
+#end
+</map>

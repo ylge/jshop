@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>选择地址 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+    jQuery(".fl").click(function(){;
+		var id = jQuery(this).attr("mark");
+		jQuery("#addr_id").attr("value",id);
+		jQuery.post("$!webPath/wap/set_default_addr.htm",{"id":id},function(data){
+			jQuery(".fl i img").attr("src","$!webPath/resources/style/system/front/wap/images/tick_no.png");
+		jQuery(this).find("img").attr("src","$!webPath/resources/style/system/front/wap/images/tick.png");
+		jQuery("#cart_form").submit();
+			
+			})
+		
+	})
+});<!--end-->
+function remove_addr(id){
+	if(confirm('是否删除此地址?')){
+		jQuery.ajax({type:'POST',
+	              url:'$!webPath/wap/buyer/ajax_address_del.htm',
+				  data:{"id":id
+						},
+			   success:function(data){
+				   if(data=="success"){
+					   jQuery("#addr_"+id).remove();
+					   }
+              	}
+	    });
+		}
+	}
+</script>
+</head>
+
+<body class="order_bg">
+<div class="phone_hd"><a class="back" href="javascript:history.go(-1);"><img src="$!webPath/resources/style/system/front/wap/images/back.png" width="25" height="25" /></a>选择地址<a class="menu home" href="$!webPath/wap/index.htm"><img src="$!webPath/resources/style/system/front/wap/images/home.png" width="25" height="25" /></a></div>
+<form method="post"  name="cart_form" id="cart_form" action="$!type">
+<div class="add_address"><a href="$!webPath/wap/buyer/address_add.htm?type=$!type&giftids=$!giftids">+添加收货地址</a></div>
+    <!--积分商城-确认收货地址-->
+    #foreach($addr in $addrs)
+    <div class="phone_address" id="addr_$!addr.id">
+    	<ul>
+        	<li class="tel">$!addr.trueName<span>$!addr.mobile</span></li>
+            <li class="site bd">$!{addr.area.parent.parent.areaName}$!{addr.area.parent.areaName}$!{addr.area.areaName}$!addr.area_info</li>
+            <li class="check"><span class="fl" mark="$!addr.id"><i><img #if($!addr.id==$!addr_id)  src="$!webPath/resources/style/system/front/wap/images/tick.png" #else  src="$!webPath/resources/style/system/front/wap/images/tick_no.png"    #end width="20" height="20" /></i>到这里去</span><span class="fr"><a href="$!webPath/wap/buyer/address_edit.htm?id=$!addr.id&type=$!type"><i><img  src="$!webPath/resources/style/system/front/wap/images/mod.png" width="20" height="20" /></i>修改</a><a href="javascript:void(0);" onClick="remove_addr($!addr.id);"><i><img  src="$!webPath/resources/style/system/front/wap/images/del.png" width="20" height="20" /></i>删除</a></span></li>
+        </ul>
+    </div>
+     #end
+<input type="hidden" name="gcs" id="gcs" value="$!gcs"/>
+<input name="gifts" type="hidden" id="gifts" value="$!giftids" />
+<input type="hidden" name="addr_id" id="addr_id"/>
+<input name="cart_session" type="hidden" id="cart_session" value="$!cart_session" />
+<input name="type" type="hidden" id="type" value="$!type" />
+</form>
+$!httpInclude.include("/mobile/footer_new.htm?op=car")
+</body>
+</html>

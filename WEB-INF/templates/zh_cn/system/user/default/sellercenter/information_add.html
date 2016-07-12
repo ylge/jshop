@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-资讯管理-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link rel="stylesheet" href="$!webPath/resources/editor/themes/default/default.css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.base.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/kindeditor-min.js"></script>
+<script charset="utf-8" src="$!webPath/resources/editor/lang/zh_CN.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/ajaxfileupload.js"></script>
+<script src="$!webPath/resources/js/jquery.imgareaselect.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery.validator.addMethod("cl",
+function(value, element) {
+    var level = jQuery(" option:selected").attr("level");
+    if (level == 1 || level == "1") {
+        return false;
+    } else {
+        return true;
+    }
+});
+jQuery(document).ready(function() {
+    jQuery("#logoShow").mouseover(function() {
+        jQuery("#logoImg").css('display', 'block');
+    }).mouseout(function() {
+        jQuery("#logoImg").css('display', 'none');
+    });
+
+    jQuery("#theForm").validate({
+        rules: {
+            title: {
+                required: true
+            },
+            classid: {
+                required: true,
+                cl: true
+            },
+            infoSource: {
+                required: true
+            },
+            synopsis: {
+                required: true,
+                maxlength: 200
+            }
+        },
+        messages: {
+            title: {
+                required: "标题不能为空"
+            },
+            classid: {
+                required: "请选择资讯分类",
+                cl: "请选择二级分类"
+            },
+            infoSource: {
+                required: "来源不能为空"
+            },
+            synopsis: {
+                required: "资讯导读不能为空",
+                maxlength: "资讯导读最多200字"
+            }
+        }
+
+    });
+    var options = {
+        cssPath: '$!webPath/resources/editor/plugins/code/prettify.css',
+        filterMode: true,
+        uploadJson: '$!webPath/upload.htm',
+        width: '900px',
+        height: '400px',
+        resizeType: 1,
+        allowImageUpload: false,
+        allowFlashUpload: false,
+        allowMediaUpload: false,
+        allowFileManager: false,
+        syncType: "form",
+        afterCreate: function() {
+            var self = this;
+            self.sync();
+        },
+        afterChange: function() {
+            var self = this;
+            self.sync();
+        },
+        afterBlur: function() {
+            var self = this;
+            self.sync();
+        },
+        items: ['source', '|', 'fullscreen', 'undo', 'redo', 'print', 'cut', 'copy', 'paste', 'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript', 'superscript', '|', 'selectall', 'clearhtml', 'quickformat', '|', 'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'flash', 'media', 'table', 'hr', 'emoticons', 'link', 'unlink', '|', 'about']
+    };
+
+    editor = KindEditor.create('#article', options);
+});
+function saveForm() {
+    editor.sync();
+    jQuery("#theForm").submit();
+}
+function editor_add(obj, id) {
+    var html = "<a href='$!webPath/goods_" + id + ".htm' target='_blank'><img src='" + obj + "' width='200' heigh='200'/></a>";
+    editor.insertHtml(html);
+}
+function switch_editor_album(mark) {
+    var dis = jQuery("#info_goods").css("display");
+    var dis2 = jQuery("#info_goods_imgs").css("display");
+    if (dis == "none" && dis2 == "none") {
+        jQuery.post("$!webPath/seller/information_goods.htm", {},
+        function(text) {
+            jQuery("#info_goods").empty();
+            jQuery("#info_goods").append(text);
+        },
+        "text");
+        jQuery("#info_goods").show();
+        jQuery("#good_button").html("关闭商品图片");
+    } else {
+        jQuery("#info_goods").hide();
+        jQuery("#info_goods_imgs").hide();
+        jQuery("#good_button").html("添加商品图片");
+    }
+}
+function information_goods_load() {
+    var gc_id = jQuery("#gc_id").val();
+    var goods_name = jQuery("#goods_name").val();
+    jQuery.post("$!webPath/seller/information_goods.htm", {
+        "gc_id": gc_id,
+        "goods_name": goods_name
+    },
+    function(text) {
+        jQuery("#info_goods").empty();
+        jQuery("#info_goods").append(text);
+    },
+    "text");
+}
+function photo_switch(id, obj) {
+    jQuery.post("$!webPath/seller/information_goods_imgs.htm", {
+        "goods_id": id
+    },
+    function(text) {
+        jQuery("#info_goods").hide();
+        jQuery("#info_goods_imgs").empty();
+        jQuery("#info_goods_imgs").append(text);
+    },
+    "text");
+    jQuery("#info_goods_imgs").show();
+}
+/*Ajax分页*/
+function ajaxPage(url, currentPage, obj) {
+    var gc_id = jQuery("#gc_id").val();
+    var goods_name = jQuery("#goods_name").val();
+    jQuery.post("$!webPath/seller/information_goods.htm", {
+        "currentPage": currentPage,
+        "gc_id": gc_id,
+        "goods_name": goods_name
+    },
+    function(text) {
+        jQuery("#info_goods").empty();
+        jQuery("#info_goods").append(text);
+    },
+    "text");
+}
+function show_goods() {
+    jQuery("#info_goods").show();
+    jQuery("#info_goods_imgs").hide();
+}
+</script>
+</head>
+<body>
+<style>
+.user_base_table td{ width:100px;}
+</style>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=information")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>其他管理</b> ><b>咨询管理</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li><a href="$!webPath/seller/information_list.htm"><i></i>资讯列表</a></li>
+            <li #if(!$!edit)class="this"#end><a href="$!webPath/seller/information_add.htm"><i></i>资讯添加</a></li>
+            #if($!edit)
+            <li class="this"><a href="javascript:void(0)"><i></i>资讯编辑</a></li>
+            #end
+          </ul>
+        </div>
+        <div class="add_usercenter">
+          <form action="$!webPath/seller/information_save.htm" method="post" enctype="multipart/form-data" name="theForm" id="theForm">
+            <input id="id" name="id" value="$!obj.id" type="hidden" />
+            <input name="goods_session" type="hidden" id="goods_session" value="$!goods_session" />
+            </td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="user_base_table">
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>资讯标题：</td>
+                <td class="px10"><input name="title" type="text" id="title" value="$!obj.title" class="base_txt"/></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>资讯来源：</td>
+                <td class="px10"><input name="infoSource" type="text" id="infoSource" value="$!obj.infoSource" class="base_txt"/></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>资讯分类：</td>
+                <td class="px10"><select name="classid" id="classid" >
+                    <option value="">请选择资讯分类</option>
+          #foreach($class in $infoclass)              
+                    <option value="$!class.id" level="1" #if($!obj.classid==$!class.id) selected="selected" #end>$!class.ic_name</option>
+              #if(!$!class.ic_pid)
+              	#foreach($ob in $cmsTools.queryChildClass("$!class.id"))
+                    <option value="$!ob.id" level="2" #if($!obj.classid==$!ob.id) selected="selected" #end>----$!ob.ic_name</option>
+                #end
+              #end
+          #end
+                  </select></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top">资讯封面：</td>
+                <td class="px10"><span style="position:relative; width:50px; margin-right:5px; line-height:22px; height:22px; color:#333; float:left; border:1px solid #ccc; padding:2px 5px; border-radius:3px;">选择图片
+                  <input type="file" id="cover" style="opacity: 0;top:0;left:1px;position:absolute; z-index:100;width:60px; " name="cover" />
+                  </span> </span><span class="preview"> <img src="$!webPath/resources/style/system/manage/blue/images/preview.jpg" width="25" height="25"  id="logoShow" style="cursor:help"/>#set($img=$!imageTools.queryImg($!obj.cover))
+                  <div class="bigimgpre" id="logoImg"><img src="$!imageWebServer/$!img.path/$!img.name" style="border:3px solid #60AFFF"width="200" height="200" id="coverimg"/> </div> </span><span id="nothis"><strong class="w" style="float:left;  height:22px; margin-top:5px; margin-left:8px;">封面用于和标题一起来展示资讯的核心内容（可选）</strong></span> #if($!obj.cover)
+                  
+                  #end </td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>资讯导读：</td>
+                <td class="px10"><textarea id="synopsis" name="synopsis" style="width:320px; height:70px; padding:5px;border-radius: 3px;border: 1px solid #eee;">$!obj.synopsis</textarea></td>
+              </tr>
+              <tr>
+                <td align="right" valign="top"><strong class="redstr">*</strong>资讯内容：</td>
+                <td class="px10"><textarea name="article" rows="6" cols="40" id="article">$!obj.article</textarea></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td class="px10"><span style=" clear:both; margin-left:135px;"> <a id="good_button" class="eidt_li_a" href="javascript:void(0);" onclick="switch_editor_album('');">添加商品图片</a> </span></td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+                <td class="px10"><div id="info_goods" class="editor_photo_detail" style="display:none;"> </div>
+                  <div id="info_goods_imgs" class="editor_photo_detail" style="display:none;"> </div></td>
+              </tr>
+              #if($!obj.status==-10)
+              <tr>
+                <td align="right" valign="top">审核失败原因：</td>
+                <td class="px10">$!obj.failreason</td>
+              </tr>
+              #end
+              <tr>
+                <td>&nbsp;</td>
+                <td class="px10"><span class="setsub" >
+                  <input type="button" style="margin-left:0;" onclick="saveForm()" value="保存"  style="cursor:pointer;" class="seller_save"/>
+                  </span></td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

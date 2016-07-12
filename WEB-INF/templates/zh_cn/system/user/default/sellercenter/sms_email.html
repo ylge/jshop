@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商家后台-邮件短信-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/user.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("input[id^=count_]").keyup(function(){										 
+	var count=jQuery(this).val().replace(/\D/g,'');
+	if(count=="" || count==0){
+       count=1;
+	}
+	jQuery(this).val(count);
+  });
+});
+
+function saveForm(type){
+	jQuery("#type").val(type);
+	jQuery("#count").val(jQuery("#count_"+type).val());
+	jQuery("#theForm").submit();
+	}
+</script>
+</head>
+<body>
+$!httpInclude.include("/seller/top.htm")
+<div class="main">
+  <div class="seller_center"> $!httpInclude.include("/seller/nav.htm?op=sms")
+    <div class="seller_right">
+      <div class="seller_position"><span><b><a href="$!webPath/seller/index.htm">商家中心</a></b>><b>其他管理</b> ><b>短信邮件</b></span></div>
+      <div class="seller_list">
+        <div class="seller_list_title">
+          <ul class="seller_title_ul">
+            <li class="this"><a href='$!webPath/seller/sms_email.htm'><i></i>邮件短信</a></li>
+            <li><a href='$!webPath/seller/sms_email_log.htm'><i></i>购买记录</a></li>
+            <li><a href='$!webPath/seller/sms_email_set.htm'><i></i>功能设置</a></li>
+          </ul>
+        </div>
+    <form action="$!webPath/seller/sms_email_buy.htm" method="post" name="theForm" id="theForm">
+    <input id="sms_email_session" name="sms_email_session" value="$!sms_email_session" type="hidden" />
+    <input id="type" name="type" type="hidden" />
+    <input id="count" name="count" type="hidden" />
+      <div class="buy_service">
+          #if($!config.sms_buy==1)
+          <div class="buy_service_note">
+          	<div class="buy_service_note_img"><img src="$!webPath/resources/style/system/front/default/images/buy_note.png" /></div>
+            <div class="buy_service_note_count"><input id="count_sms" name="count_sms" type="text" value="1"/></div>
+            <div class="buy_service_note_yes"><a href="javascript:void(0);" onclick="saveForm('sms');">购  买</a></div>
+          </div>
+           #end 
+          #if($!config.email_buy==1)
+          <div class="buy_service_note">
+          	<div class="buy_service_note_img"><img src="$!webPath/resources/style/system/front/default/images/buy_mail.png" /></div>
+            <div class="buy_service_note_count"><input id="count_email" name="count_email" type="text" value="1"/></div>
+            <div class="buy_service_note_yes"><a href="javascript:void(0);" onclick="saveForm('email');">购  买</a></div>
+          </div>
+          #end
+		  <div class="buy_service_notice">
+          	<ul>
+              #if($!config.sms_buy==1)
+            	<li>短信价格：<i style="color:#F60">$!{config.sms_buy_cost}</i> 金币（含100条）</li>
+              #end 
+               #if($!config.email_buy==1) 
+               	<li>邮件价格：<i style="color:#F60">$!{config.email_buy_cost}</i> 金币（含100封）</li>
+               #end
+                <li>当前账户金币：<i style="color:#F60">$!{account_gold}</i> 金币</li>
+                <li>当前账户短信：<i style="color:#F60">$!{account_sms}</i> 条</li>
+                <li>当前账户邮件：<i style="color:#F60">$!{account_email}</i> 封</li>
+                <li><p>特别提醒：</p>购买短信和邮件时均以100为单位，例如：当前短信价格为56金币，购买1份短信需要花费56金币，您将获得100条短信的使用权，您也可以进入<a href="$!webPath/seller/sms_email_set.htm">功能设置</a>中设置相关项。</li>
+            </ul>
+          </div>
+        </div>
+    </form>    
+      </div>
+    </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

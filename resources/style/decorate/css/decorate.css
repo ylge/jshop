@@ -1,0 +1,290 @@
+@charset "utf-8";
+/* CSS Document */
+* { padding:0px; margin:0px;}
+body { font-size:12px; line-height:24px; color:#333; font-family:"Microsoft Yahei";}
+img { border:none;}
+li { list-style-type:none;}
+a { color:#333; text-decoration:none; border:medium;}
+h1,h2,h3,h4,h5 { font-size:14px; font-weight:normal;}
+
+/*通用*/
+.f_top_left,.f_top_right .pre i,.f_top_right .pepeal i,.f_edit i,.f_del i,.fiit_layout_add i,.fiit_shop_name i,.fiit_layout ul li span.bt,.fiit_module ul li .plus,.fiit_module ul li.this .plus,.fiit_module ul li .mod_edit,.fiit_module ul li .mod_del,.fiit_module_edit h1 a i,.f_set i {background:url(../images/shop_fiit.png) no-repeat}
+.main { width:1002px; margin:0px auto;}
+/*操作块*/
+.f_edit,.f_del,.f_set { position:absolute; top:0px; right:60px; background-color:#333; color:#fff; padding:0px 5px; height:24px; border-radius:2px; z-index:1;}
+.f_edit i,.f_del i,.fiit_layout_add i,.f_set i { width:16px; height:16px; float:left; background-position:-32px -38px; margin-top:3px; margin-right:3px;}
+.f_del { right:0px;}
+.f_set { right:120px;}
+.f_del i { background-position:-48px -38px; margin-top:5px;}
+.f_set i {background-position:-98px -38px; margin-top:4px;}
+.f_edit:hover,.f_del:hover { background-color:#252525;}
+.f_edit_box { width:200px; position:absolute; top:0px; left:50%; margin-left:300px;}
+/*顶部*/
+.fiit_top { width:100%; height:218px; background-color:#ddd; border-bottom:1px solid #bbb; position:fixed; top:0px; left:0px; z-index:100;}
+.fiit_top_box { width:100%; background-color:#333; color:#fff; padding-top:5px; overflow:hidden;}
+.f_top_left { width:85px; height:30px; background-position:0px 0px; float:left;}
+.f_top_nav { width:500px; float:left; margin-left:10px;}
+.f_top_nav ul li { width:95px; height:30px; line-height:30px; display:block; float:left; margin-right:5px; background-color:#4c5358; border:1px solid #545b60; border-bottom:0px; border-radius:4px 4px 0px 0px;}
+.f_top_nav ul li a { width:95px; float:left; text-align:center; color:#fff; font-size:14px;}
+.f_top_nav ul li a:hover { background-color:#697178;border-radius:4px 4px 0px 0px;}
+.f_top_nav ul li.this { background-color:#e6e6e6;}
+.f_top_nav ul li.this a { color:#333;}
+.f_top_nav ul li.this a:hover {background-color:#e6e6e6;}
+.f_top_right { width:400px; float:right;}
+.f_top_right a { color:#fff; float:right; margin-left:20px;}
+.f_top_right a i { width:16px; height:16px; margin-top:5px; margin-right:3px; float:left;}
+.f_top_right .pre i { background-position:0px -38px;}
+.f_top_right .pepeal i {background-position:-16px -38px;}
+.f_top_right .exit,.f_top_right .save { width:50px; height:24px; line-height:24px; border-radius:2px; background-color:#62696f; text-align:center; border:1px solid #495159;}
+.f_top_right .save { width:100px; background-color:#23a9db; border-collapse:#4c92c6;}
+.f_top_right .save:hover { background-color:#2fc4fb;}
+.fiit_height { width:100%; height:220px;}
+/*颜色下拉*/
+.fiit_tab { width:100%; float:left; margin-top:10px;}
+.fiit_tab b { margin-left:20px; float:left; padding-right:10px;}
+.fiit_tab ul { float:left;}
+.fiit_tab ul li { width:80px; height:24px; float:left; margin-right:5px; }
+.fiit_tab ul li a { width:80px; float:left;text-align:center; border-radius:2px;}
+.fiit_tab ul li.this a { background-color:#ccc;}
+.fiit_top_down { width:1002px; margin:0px auto; background-color:#e6e6e6; height:182px; position:relative;}
+.fiit_color { width:100%; float:left;}
+.fiit_color_ul ul li { width:117px; float:left; display:block; margin-left:20px; margin-top:20px; text-align:center; cursor:pointer}
+.fiit_color_ul ul li a { width:117px; float:left; color:#999;}
+.fiit_color_ul ul li span { width:100%; display:block; float:left;}
+.fiit_color_ul ul li span.img { width:111px; height:77px; border:3px solid #fff;}
+.fiit_color_ul ul li span.name { height:24px;}
+.fiit_color_ul ul li a:hover .img,.fiit_color_ul li.this .img { border-color:#50B2E7;}
+.fiit_color_ul ul li.this .name { color:#50B2E7;}
+.fiit_bg { width:100%; float:left;}
+/*布局下拉*/
+.fiit_layout { width:100%; float:left;}
+.fiit_layout ul li { width:106px; margin-left:20px; margin-top:20px; text-align:center; display:block; float:left; margin-bottom:5px;}
+.fiit_layout ul li a { width:106px; float:left;}
+.fiit_layout ul li span { width:100%; display:block; float:left;}
+.fiit_layout ul li span.img { width:100px; border:3px solid #fff;}
+.fiit_layout ul li span.bt { width:106px; height:6px; background-position:0px -84px;}
+.fiit_layout ul li.this .img,.fiit_layout ul li a:hover .img { border-color:#50B2E7;}
+.fiit_layout ul li.this .name { color:#50B2E7;}
+/*基础模块下拉*/
+.fiit_module { width:100%; float:left;}
+.fiit_module ul li { width:80px; position:relative; display:block; float:left; margin-left:25px; margin-top:25px; text-align:center; margin-bottom:5px;}
+.fiit_module ul li  { width:80px; float:left;}
+.fiit_module ul li  .img { width:70px; height:70px; float:left; display:block; border:5px solid #a2aab1;}
+.fiit_module ul li .plus { width:25px; height:25px; background-position:0px -163px; position:absolute; right:0px; top:-1px; z-index:1;}
+.fiit_module ul li span.name { width:100%; float:left; margin-top:5px;}
+.fiit_module ul li .on,.fiit_module ul li .off { width:61px; height:21px; background:url(../images/shop_fiit.png) no-repeat 0px -200px; float:left; margin-left:10px; margin-top:5px;}
+.fiit_module ul li .off { background-position:-62px -200px;}
+/*新增模块下拉*/
+.fiit_module ul li .mod_edit,.fiit_module ul li .mod_del { width:15px; height:15px; position:absolute; top:0px; right:-17px; background-position:0px -97px; display:block;}
+.fiit_module ul li .mod_del { top:20px;background-position:0px -112px;}
+.fiit_module ul li .mod_edit:hover { background-position:-15px -97px;}
+.fiit_module ul li .mod_del:hover { background-position:-15px -112px;}
+.fiit_module ul li.mod_add .mod_edit,
+.fiit_module ul li.mod_add .mod_del { display:none;}
+/*布局-1*/
+.layout_one { width:100%; position:relative; margin-top:10px; float:left;}
+.fiit_shop_name { width:100%; line-height:30px; font-size:16px; font-family:"Microsoft Yahei"; padding:30px 0px;}
+.fiit_shop_name i { width:30px; height:30px; background-position:0px -54px; float:left; margin-right:5px;}
+.module_wide {border-top:1px dashed #afd9ff;border-bottom:1px dashed #afd9ff; background-color:#eaf8ff; padding:20px 10px;}
+.module_wide:hover {border-top-style:solid;border-bottom-style:solid;}
+.fiit_wide { width:100%;}
+/*布局-2*/
+.layout_two { width:1002px; margin-top:5px; position:relative; float:left;}
+.layout_two img,.layout_one img,.layout_three img,.layout_four img { max-width:100%;}
+.module_big { width:980px; border:1px dashed #afd9ff; background-color:#eaf8ff; padding:20px 10px; float:left;}
+.module_big:hover,.module_small:hover,.module_mid:hover { border-style:solid;}
+.layout_two .fiit_edit { right:0px;}
+/*布局-3*/
+.module { width:100%; margin-top:5px; position:relative; float:left;}
+.layout_three { width:100%; float:left;}
+.layout_three .fl { width:205px; float:left;}
+.layout_three .fr { width:790px; float:right;}
+.module_small { width:183px;border:1px dashed #afd9ff; background-color:#eaf8ff; padding:20px 10px; float:left;}
+/*布局-4*/
+.layout_four { width:100%; float:right;}
+.layout_four .fl {width:790px; float:left;}
+.layout_four .fr {width:205px; float:right;}
+.module_mid { width:768px;border:1px dashed #afd9ff; background-color:#eaf8ff; padding:20px 10px; float:left;}
+/*自定义模块弹出层*/
+.fiit_module_layout { width:450px; float:left; padding-left:20px;}
+.fiit_module_box { width:100%; float:left;}
+.fiit_module_box h2 { height:30px; line-height:30px;}
+.fiit_notice { width:420px; padding:5px; border:1px dashed #cc4f35; line-height:24px; background-color:#fff3f0; margin-bottom:5px; text-align:left;}
+.fiit_notice i { width:14px; height:14px; background:url(../images/shop_fiit.png) no-repeat 0px -278px; float:left; margin-top:5px; margin-right:3px;}
+.fiit_module_box ul li { width:100px; display:block; float:left; margin-right:10px;margin-bottom:10px; position:relative;}
+.fiit_module_box ul li a { width:88px; float:left; padding:5px; background-color:#fafafa; border:1px solid #eee;}
+.fiit_module_box ul li a:hover { background-color:#fef4d6; border-color:#f0dab0;}
+.fiit_module_box ul li .img { width:88px; height:88px; float:left;}
+.fiit_module_box ul li .name {width:88px; height:24px; float:left; text-align:center; overflow:hidden;}
+.fiit_module_box ul li .gray_span { width:100px; height:124px; position:absolute; top:0px; left:0px; }
+.fiit_module_box ul li .gray_span i {width:100px; height:124px; position:absolute; top:0px; left:0px;background-color:#000;filter:alpha(opacity=5);  -moz-opacity:0.05;  -khtml-opacity: 0.05; opacity: 0.05; z-index:1;}
+.fiit_module_box ul li .gray_span b { width:37px; height:37px; background:url(../images/shop_fiit.png) no-repeat 0px -230px; position:absolute; top:40px; left:30px; z-index:2;}
+.fiit_module_edit { width:410px; float:left;margin-bottom:20px; margin-left:20px;}
+.fiit_module_edit h1 a { height:30px; line-height:30px;color:#45A5DA; font-size:12px;}
+.fiit_module_edit h1 a i { width:16px; height:16px; background-position:-80px -38px; float:left; margin-top:7px; margin-right:3px;}
+.fiit_module_edit table { width:100%; border:1px solid #eee;}
+.fiit_module_edit table td { padding:5px; background-color:#fafafa; line-height:28px;}
+.ip300,.ip180,.ip100,.ip70 { width:300px; height:26px; line-height:26px; border:1px solid #ddd; padding-left:5px; float:left; margin-right:5px;}
+.ip180 { width:180px;}
+.ip100 { width:100px;}
+.ip70 { width:70px;}
+.file_box{ position:relative;width:300px;}
+.file_box input { float:left; margin-right:10px;}
+.file_box .btn{ background-color:#eff6fb; border:1px solid #d3e4f3;height:30px; width:80px; border-radius:4px; cursor:pointer;
+	background-image: linear-gradient(top, #eff6fb, #d3e4f3 68%);
+	background-image: -webkit-linear-gradient(top, #eff6fb, #d3e4f3 68%);
+	background-image: -moz-linear-gradient(top, #eff6fb, #d3e4f3 68%);
+	background-image: -o-linear-gradient(top, #eff6fb, #d3e4f3 68%);
+	background-image: -ms-linear-gradient(top, #eff6fb, #d3e4f3 68%);
+}
+.file_box .file{ position:absolute; left:0px; height:30px; filter:alpha(opacity:0);opacity: 0;width:280px;cursor:pointer; }
+.pic_size { width:100%; float:left;}
+.pic_size li { width:150px; float:left; margin-bottom:5px;}
+.pic_size li span { float:left; padding:0px 5px;}
+.fiit_save_box { width:100%; float:left; padding-top:10px; text-align:center;}
+.fiit_save_box input { width:80px; height:30px; background-color:#23a9db; color:#fff; margin:0px 5px; border:none; cursor:pointer;}
+.fiit_save_box input.del { background-color:#eee; color:#333;}
+.bg_style { width:100%; float:left;}
+.bg_style li { margin-right:15px; float:left;}
+.bg_style li input { float:left; margin-top:6px; margin-right:5px;}
+.bg_style li span { float:left; white-space:nowrap;}
+/*背景设置*/
+.fiit_bg_edit { width:100%; padding-top:15px;}
+.fiit_bg_edit table { width:100%;}
+.fiit_bg_edit table td { padding:5px;}
+/*自定义幻灯*/
+.fiit_side_box { width:600px; float:left; padding:0px 20px;}
+.fiit_side_tab { width:600px; height:30px; line-height:30px; border-bottom:1px solid #ddd; float:left; margin-bottom:5px;position:relative;}
+.fiit_side_tab ul { float:left;}
+.fiit_side_tab ul li { width:80px; float:left; text-align:center;}
+.fiit_side_tab ul li a { width:79px; height:29px; float:left; border:1px solid #eee; border-bottom:0px; background-color:#fafafa;}
+.fiit_side_tab ul li.this a { position:relative; height:31px; z-index:1; top:-2px; background-color:#fff; border-top:2px solid #23A9DB;border-left:1px solid #ddd; border-right:1px solid #ddd;}
+.fiit_side_tab ul li.this a { color:#23A9DB;}
+.fiit_add_side { width:90px; height:28px; line-height:28px; float:left; margin-left:5px; background-color:#23A9DB; color:#fff; text-align:center; border-radius:4px;}
+.fiit_add_side:hover { background-color:#38c3f7; color:#fff;}
+.fiit_add_side b { font-size:14px; font-weight:bold;}
+.fiit_banner { width:598px; float:left; border:1px solid #eee; background-color:#fafafa;}
+.fiit_banner dl { width:578px; padding:5px 10px; float:left; display:block; border-bottom:1px solid #eee;}
+.fiit_banner dl dt,.fiit_banner dl dd { width:100%; display:block; float:left; padding:3px 0px;}
+.fiit_banner dl dt .fl { float:left; font-weight:bold;}
+.fiit_banner dl dt .fr { float:right;}
+.fiit_banner dl dt .fr a { color:#45A5DA;}
+.fiit_banner dl dt .fr a i { width:16px; height:16px; background:url(../images/shop_fiit.png) no-repeat 0px -298px; float:left; margin-top:3px;}
+.fiit_banner dl dd .fl { width:100px; float:left; display:block;}
+.fiit_banner dl dd .fr { width:478px; float:left; display:block;}
+.fiit_banner dl dd .img { width:470px; height:100px; border:2px solid #eee; background:url(../images/layout_05.jpg) no-repeat center center #fff; text-align:center;}
+.fiit_banner dl dd .img img { max-width:470px; max-height:100px;}
+.fiit_banner dl dd .open_ul li { margin-right:15px; display:block; float:left;}
+.fiit_banner dl dd .open_ul li input { float:left; margin-top:5px; margin-right:2px;}
+/*导航编辑*/
+.nav_edit { width:100px; border:1px solid #ddd; padding:2px; font-family:Arial; position:relative;}
+.color_block { width:20px; height:20px; float:left; margin-left:5px; border:1px solid #ddd; margin-top:3px; background-color:#fff;}
+.fiit_bg_prew { width:150px; height:150px; border:3px solid #fff; position:absolute; top:10px; right:150px; overflow:hidden;}
+.fiit_bg_prew img { max-width:150px; max-height:150px;}
+/*热点模块*/
+.fiit_hot_box { width:680px; float:left; padding:0px 10px;}
+.fiit_hot_hd { width:100%; float:left;}
+.fiit_hot_img { width:100%; float:left; margin-top:10px; position:relative;}
+.fiit_hot_img .balck_bg { width:100%; position:absolute; top:0px; left:0px; background-color:#000;filter:alpha(opacity=0);  -moz-opacity:0;  -khtml-opacity: 0;  opacity: 0; z-index:1;}
+.fiit_hot_img .choose { width:80px; height:80px; background-color:#fff;filter:alpha(opacity=40);  -moz-opacity:0.4;  -khtml-opacity: 0.4;  opacity: 0.4; z-index:2; border:1px solid #23A9DB;}
+.fiit_hot_img img { max-width:680px;}
+.fiit_hot_img span { position:relative;clear: both;display: block;margin: 0px auto; max-width:680px;}
+.fiit_hot_tab { width:100%; float:left; border-bottom:1px solid #ddd;}
+.fiit_hot_tab ul li { width:100px; height:30px; line-height:30px; float:left; display:block; text-align:center; background-color:#f8f8f8; border:1px solid #eee; border-bottom:0px; font-size:14px;  margin-right:3px;}
+.fiit_hot_tab ul li a { width:100px; float:left;}
+.fiit_hot_tab ul li.this { background-color:#23A9DB; border:1px solid #23A9DB; border-bottom:0px;}
+.fiit_hot_tab ul li.this a { color:#fff;}
+.fiit_hot_upload { width:100%; float:left; border-bottom:1px dotted #ccc; padding:10px 0px;}
+.fiit_hot_upload dt,.fiit_hot_upload dd { display:block; float:left;}
+.fiit_hot_upload dt { width:80px; line-height:26px; font-size:14px;}
+.fiit_hot_upload dt b { color:#F00;}
+.fiit_hot_upload .hot_btn { width:70px; height:30px; background-color:#23A9DB; color:#fff; float:left; margin-left:5px; text-align:center; border:none;}
+.add_hotpints { width:100%; float:left; padding:10px 0px; border-bottom:1px dotted #ccc;}
+.add_hotpints_btn { width:90px; height:32px; line-height:32px; text-align:center; background-color:#23A9DB; font-size:14px; color:#fff; float:left; margin-bottom:5px;}
+.add_hotpints_btn:hover { background-color:#109cd1; color:#fff;}
+.add_hotpints_btn b { padding-right:5px; font-size:16px;}
+.add_hotpints ul { width:590px; float:left; display:block;}
+.add_hotpints ul li { width:80px; height:32px; text-align:center; float:left; display:block; white-space:nowrap; margin-left:15px; margin-bottom:5px; position:relative;}
+.add_hotpints ul li i { width:15px; height:15px; position:absolute; top:0px; right:0px; z-index:1; background:url(../images/shop_fiit.png) no-repeat -15px -112px; cursor:pointer}
+.add_hotpints ul li a { width:78px; height:30px; line-height:30px; border:1px solid #109cd1; float:left;}
+.add_hotpints ul li.this a,.add_hotpints ul li a:hover { background-color:#C9EDFF; color:#23A9DB;}
+.hotpints_link { width:100%; padding:10px 0px; float:left;}
+.imgareaselect-border1 {
+	background: url(../images/border-v.gif) repeat-y left top;
+}
+.imgareaselect-border2 {
+    background: url(../images/border-h.gif) repeat-x left top;
+}
+.imgareaselect-border3 {
+    background: url(../images/border-v.gif) repeat-y right top;
+}
+.imgareaselect-border4 {
+    background: url(../images/border-h.gif) repeat-x left bottom;
+}
+.imgareaselect-border1, .imgareaselect-border2,
+.imgareaselect-border3, .imgareaselect-border4 {
+    filter: alpha(opacity=50);
+	opacity: 0.5;
+}
+.imgareaselect-handle {
+    background-color: #fff;
+    border: solid 1px #000;
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+}
+.imgareaselect-outer {
+    background-color: #000;
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+}
+.imgareaselect-selection {  
+}
+/*商品自定义编辑*/
+.box_floor_six{ width:660px; float:left; padding-left:20px;}
+.floor_choose{ width:680px; float:left;font-weight:bold;color:#666}
+.floor_choose_box{ width:635px; float:left; margin-top:10px; border:1px solid #ddd; padding:10px; padding-bottom:5px;}
+.floor_choose_sp{ width:635px; float:left; display:block;}
+.floor_choose_sp select{ margin-right:10px;}
+.floor_search_sp{ float:left; display:block;}
+.floor_search_sp input{ margin-right:10px; float:left; border:1px solid #ccc;}
+.floor_sear_btn{ background-color:#ccc; border-radius:2px; width:52px; height:28px;border:0px; float:left;cursor:pointer; margin-left:5px;}
+.floor_search_sp b{ line-height:28px; float:left; color:#666}
+.floor_sear_pro{ width:100%; float:left; overflow:hidden; margin-top:10px;}
+.floor_sear_pro li{ width:80px; float:left; display:inline; position:relative; border:1px solid #ddd; margin-top:5px; margin-right:10px; margin-left:10px; }
+.floor_sear_a{ width:70px; padding:5px; overflow:hidden; display:block}
+.floor_sear_img{ width:70px; height:70px; float:left;}
+.floor_sear_name{ float:left; width:70px; height:24px; margin-top:5px;color:#000; overflow:hidden; }
+.floor_sear_pro li input{ position:absolute; top:2px; left:2px;}
+.floor_sear_a:hover{ background:#eee;}
+.floor_sear_a.this{ background:#ff7878}
+.floor_warning { float:left;  padding:5px; color:#F60; background:#FFFFD9 url(../images/czts.jpg) no-repeat 5px center; padding-left:25px; font-style:normal; border:1px solid #FFC1A4; margin-top:1px;}
+.floor_page{ width:100%; float:left; margin-top:10px; text-align:center; margin-bottom:5px;}
+.floor_page a{ color:#666; background:#f1f1f1; border:1px solid #ccc; padding:2px 5px; margin-right:7px;}
+.floor_page .this{ color:#fff; background:#009DFE; border:1px solid #2593FF}
+.floor_page a:hover{color:#fff; background:#1283C9; border:1px solid #2593FF}
+.floor_advertisment{ width:560px; float:left;  padding-left:20px; padding-top:0px;}
+.floor_adv{ width:700px; float:left; overflow:hidden}
+.floor_adv li{ float:left; width:700px; border-bottom:1px solid #D8D8D8; padding-top:20px; padding-bottom:10px;}
+.floor_adv li b{ display:block; float:left; width:120px; line-height:25px;}
+.floor_adv li .floor_adv_sp{ display:block; float:left;}
+.floor_adv li .floor_adv_sp input{ margin-right:5px;}
+.floor_adv li .floor_adv_sp i{ margin-right:20px; font-style:normal; font-weight:bold; margin-top:10px; float:left}
+.floor_adv_node{ float:left; line-height:25px; margin-top:5px; color:#999;}
+.box_floor_prodel{ float:left; width:640px; overflow:hidden; margin-top:10px; border:1px dashed #FFC7AC;  padding:5px 10px; margin-right:20px; margin-bottom:5px; }
+.floor_box_pls{ width:auto; float:left; clear:both;}
+.floor_pro{ width:95px; float:left; margin-left:2px; margin-right:3px; display:inline-block; background:#fff; position:relative; cursor:pointer; overflow:hidden; border:1px solid #ccc; padding:2px; margin-top:5px;}
+.floor_pro:hover{ filter:alpha(opacity=70);-moz-opacity:0.70;opacity:0.70;background:#FFC7AC;}
+.floor_pro_img{ width:95px; float:left; height:95px; overflow:hidden}
+.floor_pro_name{ color:#333; margin-top:5px; float:left; width:100px; height:20px; overflow:hidden;}
+.floor_pro_del{ width:100px; height:100px; float:left;  line-height:20px;text-align:center; color:#999; position:absolute; top:0px; left:0px; margin-left:10px; margin-top:10px; line-height:100px;}
+.floor_pro:hover .floor_pro_del{ color:#f00; font-weight:bold;filter:alpha(opacity=70);
+-moz-opacity:0.70;
+opacity:0.70;
+background:#FFC7AC;
+} 
+.fiit_hot_img .this { border-color:#db2353; background-color:#FFA9C1;}
+/*没有装修*/
+.no_decorate { width:1002px; padding:90px 0px; overflow:hidden; margin:0px auto;}
+.no_decorate table { width:100%;}
+.no_decorate table td { font-size:14px; color:#666;}
+

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type=text/css rel=stylesheet>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+   jQuery("#info_id").focus();
+   jQuery(".import_key a").click(function(){
+	   var key_val=jQuery(this).attr("key_val");
+	   jQuery("#info_id").val(jQuery("#info_id").val()+key_val);
+   });
+
+});
+function clear_code(){
+  jQuery("#info_id").val("");
+}
+function back_code(){
+  var val=jQuery("#info_id").val();
+  if(val!=""){
+     val=val.substring(0,val.length-1);
+     jQuery("#info_id").val(val);
+   }
+}
+function check_info(){
+	var val = jQuery("#info_id").val();
+	var id = $!{user.id};
+	jQuery.ajax({type:'POST',
+	              url:'$!webPath/admin/check_group_code.htm',
+				  data:{"value":val},
+				success:function(data){
+					jQuery("#info_id").val("");
+	                if(data=="100"){
+						showDialog("msg_info","","消费码使用成功！",2,"succeed",3);
+					 }
+					  if(data=="-30"){
+						showDialog("msg_info","","消费码已被使用！",2,"warning",3);
+					 }
+					 if(data=="-50"){
+						showDialog("msg_info","","消费码已过期！",2,"warning",3);
+					 }
+					 if(data=="-100"){
+						showDialog("msg_info","","消费码申请退款中，不可使用！",2,"warning",3);
+					 }
+					 if(data=="-150"){
+						showDialog("msg_info","","消费码平台退款中，不可使用！",2,"warning",3);
+					 }
+					 if(data=="-200"){
+						showDialog("msg_info","","消费码已退款，不可使用！",2,"warning",3);
+					 }
+					  if(data=="0"){
+						showDialog("msg_info","","该消费码不存在！",2,"warning",3);
+					 }
+              	}
+		});
+	}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h1 class="seth">团购码管理</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a class="this" href="$!webPath/admin/group_code.htm"><b>团购码管理</b></a> </li>
+      <li><a href="$!webPath/admin/grouplife_selfinfo.htm"><b>团购码列表</b></a></li>
+    </ul>
+  </div>
+  <div class="fshoptb2">
+    <div class="import">
+          <div class="import_top">输入兑换码</div>
+          <div class="import_input">
+            <input name="info_id" onBlur="focus();" type="text"placeholder="请输入买家提供的电子兑换券..." id="info_id" />
+          </div>
+          <div class="import_key">
+            <ul>
+              <li><a href="javascript:void(0);" key_val="1">1</a></li>
+              <li><a href="javascript:void(0);" key_val="2">2</a></li>
+              <li><a href="javascript:void(0);" key_val="3">3</a></li>
+              <li><a href="javascript:void(0);" key_val="4">4</a></li>
+              <li><a href="javascript:void(0);" key_val="5">5</a></li>
+              <li><a href="javascript:void(0);" key_val="6">6</a></li>
+              <li><a href="javascript:void(0);" key_val="7">7</a></li>
+              <li><a href="javascript:void(0);" key_val="8">8</a></li>
+              <li><a href="javascript:void(0);" key_val="9">9</a></li>
+              <li><a href="javascript:void(0);" key_val="0">0</a></li>
+            </ul>
+          </div>
+          <div class="import_eidt">
+            <dl>
+              <dt><a href="javascript:void(0);" onclick="clear_code();">清除</a></dt>
+              <dt><a href="javascript:void(0);" onclick="back_code();">后退</a></dt>
+              <dd><a href="javascript:void(0);" onclick="check_info();">提交验证</a></dd>
+            </dl>
+          </div>
+        </div>
+  </div>
+</div>
+</body>
+</html>

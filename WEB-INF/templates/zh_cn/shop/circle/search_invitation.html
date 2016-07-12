@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>搜索结果-$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/circle.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery("#login_theForm").validate({
+    errorPlacement: function(error, element){
+             element.parent().find(".error_c").html("");
+        },
+	rules: {
+			username: "required",
+			password: "required"#if($!config.securityCodeLogin),
+			code:"required"#end},
+		messages: {
+			username: "请输入用户名",
+			password: "请输入密码"#if($!config.securityCodeLogin),
+			code:"请输入验证码"#end
+					}
+  });
+});
+function login_submit(){
+		jQuery("#login_theForm").submit();
+	}
+</script>
+</head>
+
+<body>
+$!httpInclude.include("/top.htm")
+$!httpInclude.include("/circle/head.htm")
+<div class="circle_main">
+	$!httpInclude.include("/circle/nav.htm")
+  <div class="circle_main_center_m">
+ 		 <form id="ListForm" name="ListForm" action="" method="post">
+    	<div class="circle_main_left">
+         <h4>关键词：" $!{keyword} " 搜索结果</h4>
+         #if($!objs && $!objs.size()>0)
+            #foreach($obj in $objs)
+            <div class="circle_main_left_one">
+            	<div class="circle_main_left_one_l">
+                	<h3><a href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></h3>
+                     #set($con=$!circleViewTools.clearImages("$!obj.content"))
+                    <span><a href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank" id="con_$!{obj.id}">$!con</a></span>
+                </div>
+                <div class="circle_main_left_one_r">
+                	<div class="circle_main_left_one_r_l">
+                    	<span><em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_rp.png" /></em><i>$!obj.reply_count</i></span>
+                	</div>
+                    <div class="circle_main_left_one_r_r">
+                    	<span>$!CommUtil.formatLongDate($!obj.addTime)</span>
+                    </div>
+                </div>
+            </div>
+            #end
+         #else
+        <div class="nothing">
+            <div class="nothing_left"><img src="$!webPath/resources/style/system/front/default/images/nothing.png"></div>
+            <div class="nothing_right">很遗憾，暂无任何相关数据。</div>
+          </div>
+        #end   
+             <div class="fenye"><span>$!gotoPageFormHTML</span></div>
+        </div>
+          <input id="currentPage" name="currentPage" value="$!currentPage" type="hidden">
+         <input id="type" name="type" value="$!type" type="hidden">
+          <input id="keyword" name="keyword" value="$!keyword" type="hidden">
+         </form>
+        <div class="circle_main_center_right">
+         #if($!user)
+        <div class="circle_main_center_right_login_gone">
+            	<dl>
+                #set($photo="$!imageWebServer/$!config.memberIcon.path/$!config.memberIcon.name")
+                #if($!user.photo)  
+                #set($photo="$!imageWebServer/$!user.photo.path/$!user.photo.name")
+                #end
+                	<dt><a href="$!webPath/buyer/my_sns_index.htm" target="_blank"><img src="$!{photo}" /></a></dt>
+                    <dd> <b>Hi<a href="$!webPath/buyer/my_sns_index.htm" target="_blank">$!user.userName</a></b><a href="$!webPath/iskyshop_logout.htm">退出</a></dd>
+                    <dd>
+                    	<span><strong><a href="$!webPath/buyer/my_sns_invitation.htm" target="_blank">$!{invi_count}</a></strong><i>我的帖子</i></span>
+
+                        <span style="border-right:none;"><strong><a href="$!webPath/buyer/my_sns_circle.htm" target="_blank">$!{circle_atten_count}</a></strong><i>我的关注</i></span>
+                    </dd>
+                </dl>
+            </div>	
+        #else  
+         <form action="$!webPath/iskyshop_login.htm" method="post" name="login_theForm" id="login_theForm">
+         <div class="circle_main_center_right_login_search">
+            	<dl>
+                	<dt><img src="$!webPath/resources/style/system/front/default/images/circle/circle_img.png" /></dt>
+                    <dd>
+                    	<ul>
+                        	<li class="name"><input name="username" id="username" type="text" placeholder="请输入用户名..." />
+                            <span class="error_c"></span>
+                            </li>
+                            <li class="passworld"><input name="password" id="password" type="password" placeholder="请输入密码..." />
+                            <span class="error_c"></span>
+                            </li>
+                              #if($!config.securityCodeLogin)
+                              <script>
+                 function refreshCode(){
+	                 jQuery("#code_img").attr("src","$!webPath/verify.htm?d"+new Date().getTime());
+                 }
+             </script>
+                             <li class="code"><input name="code" id="code" autocomplete="off" class="cirle_code" type="text" placeholder="请输入验证码..." />
+                            #if($!config.securityCodeType=='voice')
+							<script>
+                                   function readCode(id){
+                                         var  s = "<embed id='sound_play' name='sound_play' src='$!webPath/resources/flash/soundPlayer.swf?" + (new Date().getTime()) + "' FlashVars='url=$!webPath"+ "' width='0'   height='0' allowScriptAccess='always' type='application/x-shockwave-flash' pluginspage='http://www.macromedia.com/go/getflashplayer' /></embed>";
+                                    jQuery("#"+id).html(s);
+                                    }
+                             </script>
+                              <img id="code_img" src="$!webPath/verify.htm" width="59" height="27" style="display:none;" />
+                             <a href="javascript:void(0);" onclick="readCode('player')" title="朗读验证码" class="code_speech"></a>
+                             <span id="player"></span>
+                            #else
+                             <b style="float:left;">
+                           <a href="javascript:void(0);" onclick="refreshCode();" class="code_refresh">
+                            <img id="code_img" src="$!webPath/verify.htm" width="59" height="30px" />
+                             </a>
+                            </b>
+                            #end
+                            </li>
+                              #end
+                            <li class="login"><a href="javascript:void(0);" onclick="login_submit();">登 录</a></li>
+                            <li class="register"><a href="$!webPath/register.htm">没有帐号？立即注册</a></li>
+                        </ul>
+                    </dd>
+                </dl>
+            </div>   
+         </form>   
+        #end  
+            <div class="circle_main_center_right_b">
+            	<h3>热门讨论帖子</h3>
+				<div class="circle_main_center_right_b_list">
+                	<ul>
+                    #foreach($obj in $hots)
+                    	<li><a href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank">$!obj.title</a></li>
+                     #end  
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

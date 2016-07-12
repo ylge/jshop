@@ -1,0 +1,141 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*  自提点  */
+.self_help_nav{ background:#1f96cf; width:100%;height:35px;position:relative; clear:both; *height:auto; _height:35px; border:1px solid #004c70}
+.self_help_nav_ul{width:1200px;zoom:1; margin-left:auto; margin-right:auto}
+.self_help_nav_ul li{ float:left; _overflow:hidden; height:35px; line-height:35px; }
+.self_help_nav_ul li a{padding:0 40px; display:block; color:#FFF; float:left; display:block; }
+.self_help_nav_ul li.this { background:#0076af;  line-height:35px; height:35px; }
+.self_help_nav_ul li a:hover{padding:0 40px; background:#0076af;  color:#fff; }
+.self_help{ width:1200px; margin-top:50px; float:left;}
+.self_help_protocol{ width:1160px; max-height:808px; padding:20px; border-top:3px solid #0076af; float:left; margin-top:15px; border-left:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc; background:url(../images/self_input_bg_to.png);}
+.self_help_protocol h3{ font-size:20px; float:left; text-align:center; clear:both; width:100%; line-height:40px; margin-bottom:10px; height:40px;}
+.self_help_protocol_center{background:url(../images/self_input_bg.png); float:left; width:1120px;background:#FFF; max-height:673px;padding:20px; line-height:25px;overflow-x: hidden;overflow-y: auto;}
+.self_help_protocol_agree{ width:600px; float:left; margin-left:300px;height:30px; line-height:30px; text-align:center; margin-top:15px;}
+.self_help_protocol_agree a{ display:block;border:1px solid #0073c0;background:#1f96cf; border-radius:3px; color:#fff;transition: all 0.5s ease 0s}
+.self_help_protocol_agree a:hover{ border:1px solid #0073c0;background:#0073c0; color:#fff }
+.self_input_protocol{ width:1160px; max-height:808px; padding:20px; border-top:3px solid #0076af; float:left; margin-top:130px; border-left:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc; background:url(../images/self_input_bg_to.png);}
+.self_input_protocol h4{ font-size:20px; float:left; text-align:center; clear:both; width:100%; line-height:40px; margin-bottom:10px; height:40px;}
+.self_eidt_search_tipe{ clear:both;width:410px; height:35px; line-height:35px; text-align:center; float:left;}
+.self_eidt_search_input{ clear:both; width:160px; margin:0 auto;}
+.self_eidt_search_input input{ border:1px solid #ccc; border-radius:3px; text-align:center;}
+.self_eidt_search_error{ clear:both; height:20px; line-height:20px; width:160px; margin:0 auto; color:#f00; }
+.self_eidt_search_botton{ width:410px; clear:both; float:left;}
+
+/* 自提点--填表 */
+.self_input{ width:1119px; padding:20px; border:1px solid #ccc; float:left; background:url(../images/self_input_bg.png); }
+.self_input li{ float:left; width:700px; margin-top:10px; margin-bottom:10px; clear:both;}
+.self_input li span input{ border:1px solid #e6e6e6; border-top:2px solid #e6e6e6; border-radius:3px; height:30px; width:435px; float:left;}
+.self_input li i{ width:74px; float:left; text-align:right; margin-right:5px; height:30px; line-height:34px;}
+.self_input li h3{ height:8px; width:8px; color:#f00; float:left; margin-top:10px; margin-left:5px; margin-right:5px: font-size:16px;}
+.self_input li b{ float:left; height:30px; line-height:34px; color:#f00}
+.self_input li span textarea{ padding:5px; border:1px solid #e6e6e6; border-top:2px solid #e6e6e6; border-radius:3px; height:120px; width:429px; float:left;}
+.self_input li span select{ float:left;  margin-right:20px; border:1px solid #ccc; height:30px; line-height:30px; border-radius:3px;}
+.self_input li span { float:left; margin-right:10px; line-height:34px;}
+.self_input li input.time{ width:12px; height:12px; margin-top:11px;float:left; margin-right:5px;}
+.self_input li h4{ font-size:12px; font-weight:100; height:30px; line-height:34px;}
+.self_input_left{ float:left; width:700px;}
+.self_input_right{ float:right; width:387px; border:1px solid #eaeaea; padding:10px;}
+.self_input_right h3{ height:35px; line-height:35px; width:100%; text-align:center;}
+.self_input_right_center{ line-height:30px; padding:10px;}
+/* 自提点--入口查询 */
+
+
+.self_place{ width:100%; background:url(../images/self_place_all_box_bg.png); height:345px; float:left; position:relative;}
+.self_place_banner{ width:1200px; height:345px; margin:0 auto;}
+.self_place_banner img{ width:1200px; height:345px; position:absolute; z-index:2;}
+.self_place_banner_b{ width:100%; position:absolute; z-index:1; background:url(../images/self_place_all_box_b.png) repeat-x; height:57px; bottom:0; left:0;}
+.self_place_main{ height:auto; width:1200px; margin:0 auto;}
+.self_place_main_top{ width:1200px; float:left; height:50px; line-height:50px;  border:1px solid #e3e3e3; color:#333; text-align:center; font-size:18px; border-left:none; border-right:none; margin-top:20px; background:#f9f9f9}
+.self_place_main_center{ width:1200px; float:left; margin-top:15px; padding-bottom:20px;border-bottom:1px dotted #e3e3e3;}
+.self_place_main_center li{ float:left;}
+.self_place_main_center li a{ display:block;padding:2px 10px; color:#333; font-size:14px;}
+.self_place_main_center li a:hover{ color:#fff}
+.self_place_main_center li:hover{ background:#1f96cf; color:#333; }
+.self_place_main_center li.this a{ background:#1f96cf; color:#fff;}
+.self_place_main_center_b{ width:1200px; float:left; margin-top:15px; padding-bottom:30px; border-bottom:1px dotted #e3e3e3;}
+.self_place_main_center_b li{ float:left; }
+.self_place_main_center_b li a{ display:block;padding:2px 10px; color:#333; font-size:12px;}
+.self_place_main_center_b li a:hover{ color:#fff}
+.self_place_main_center_b li:hover{ background:#1f96cf; color:#333; }
+.self_place_main_center_b li.this a{ background:#1f96cf; color:#fff;}
+.self_place_main_center_particular{ width:1200px; float:left; margin-top:15px;}
+.self_place_main_center_particular h3{ height:30px; width:100%; font-size:16px; color:#333; font-weight:100;}
+.main_center_particular_place{ width:1200px; float:left;}
+.main_center_particular_place li{ border-bottom:1px solid #ccc; width:400px; float:left; padding:20px 100px;transition: all 0.5s ease 0s;}
+.main_center_particular_place li:hover{ background:#daf0ff; border-bottom:1px solid #0073c0}
+.main_center_particular_place li h3{height:40px; line-height:40px; width:450px; color:#333; font-size:18px;}
+.main_center_particular_place li span{ width:400px; float:left; overflow:hidden; height:20px; line-height:20px; color:#6d6d6d;}
+.main_center_particular_join{ height:60px; width:1200px; float:left; margin-top:20px;}
+.main_center_particular_join a{ display:block; background:#1f96cf; margin-left:20px;float:right; padding:0 40px; font-size:14px; height:40px; line-height:40px; color:#fff; text-align:center;transition: all 0.5s ease 0s;}
+.main_center_particular_join a:hover{ background:#0073c0; color:#fff;}
+.map_bg{position:fixed; z-index:-1; height:357px; width:714px; right:0; bottom:-11px; background:url(../images/map_bg.png) no-repeat;}
+/***自提点查询分页*****/
+.self_eidt_fy{ height:25px; clear:both; float:left; margin-top:15px;}
+.self_eidt_fy span{ width:600px; float:left; margin-left:350px;display: block; float: right; padding-top: 5px;padding-bottom: 5px;}
+.self_eidt_fy span a{color: #005AA0;background: none repeat scroll 0% 0% #FFF;padding: 3px 10px;border: 1px solid #DDD;border-radius: 4px;margin-right: 10px;transition: all 0.5s ease 0s}
+.self_eidt_fy span a:hover{ color:#fff;background:#1b7dab;}
+.self_eidt_fy i{ width:120px; float:right; }
+.self_eidt_fy i a{ width:80px; float:left; color:#b6b6b6; text-align:center; height:30px; line-height:30px;border-radius: 3px; border:1px solid #ccc;transition: all 0.5s ease 0s}
+.self_eidt_fy i a:hover{ background:#1f96cf; color:#fff}
+.self_eidt_fy span a.this{ border:none;}
+.self_eidt_fy span a:Hover.this{ background:none; color:#1f96cf}
+
+/* 自提点--后台 */
+.self_eidt_protocol{ width:1160px; max-height:808px; padding:20px; border-top:3px solid #0076af; float:left; margin-top:15px; border-left:1px solid #ccc;border-right:1px solid #ccc;border-bottom:1px solid #ccc; background:url(../images/self_input_bg_to.png);}
+.self_eidt_protocol h3{ font-size:20px; float:left; text-align:center; clear:both; width:100%; line-height:40px; margin-bottom:10px; height:40px;}
+.self_eidt_protocol_center{background:url(../images/self_input_bg.png); float:left; width:1120px;background:#FFF; max-height:673px;padding:20px; line-height:25px;overflow-x: hidden;overflow-y: auto;}
+.self_eidt{ width:1200px; margin:0 auto; background:url(../images/self_input_bg_to.png); height:645px; padding:40px; margin-top:100px;}
+.self_eidt_input{ width:1160px; position:relative;padding:20px; float:left; background:#FFF; }
+.self_eidt_input li{ float:left; width:540px; margin-top:10px;margin-bottom:10px; clear:both;}
+.self_eidt_input li span input.self_eidt_inp{ top:0; left:79px; border:1px solid #e6e6e6; border-top:2px solid #e6e6e6; border-radius:3px; height:30px; width:240px; float:left;}
+.self_eidt_input li i{ width:74px; float:left; text-align:right; margin-right:5px; height:30px; line-height:34px;}
+.self_eidt_input li h3{ height:20px; width:130px; color:#cfcfcf; font-weight:100; float:left; margin-top:10px; margin-left:5px; margin-right:5px;font-size:12px;}
+.self_eidt_input_right strong{ color:#9b9b9b}
+.self_eidt_input li b{ float:left; height:30px; line-height:34px; color:#f00}
+.self_eidt_input li span textarea{ border:1px solid #e6e6e6; border-top:2px solid #e6e6e6; border-radius:3px; height:80px; width:244px; float:left;}
+.self_eidt_input li span select{ float:left;  margin-right:20px; border:1px solid #ccc; height:30px; line-height:30px; border-radius:3px;}
+.self_eidt_input li span { float:left; margin-right:10px; line-height:34px;}
+.self_eidt_input li input.time{ width:12px; height:12px; margin-top:11px;float:left; margin-right:5px;}
+.self_eidt_input li h4{ font-size:12px; font-weight:100; height:30px; line-height:34px;}
+.self_eidt_input_right{ position:absolute; top:3px; right:10px;float:right; width:515px; padding:20px; background:#FFF;box-shadow:0px 0px 13px 2px #1f96cf; border:1px solid #1f96cf; z-index:2}
+.self_eidt_protocol_agree{ width:600px; float:left; margin-left:300px;height:30px; line-height:30px; text-align:center; margin-top:15px;}
+.self_eidt_protocol_agree a{ display:block;border:1px solid #0073c0;background:#1f96cf; border-radius:3px; color:#fff;transition: all 0.5s ease 0s}
+.self_eidt_protocol_agree a:hover{ border:1px solid #0073c0;background:#0073c0; color:#fff }
+.self_eidt_input_right h4{ font-size:16px; width:500px; text-align:center; height:50px; line-height:50px;}
+.self_eidt_input li a.self_eidt_input_open{ height:38px; width:36px; float:left;}
+.self_eidt_input_left{ float:left; height:560px; overflow:hidden; width:100%;}
+.self_eidt_input_left dl{ float:left;width:99%; border:1px solid #eee;}
+.self_eidt_input_left dt{ width:100%; float:left; border-bottom:1px solid #ccc;background:#f5f5f5;}
+.self_eidt_input_left dt span{ height:35px; line-height:35px; width:16%; text-align:center;  float:left;}
+.self_eidt_input_left dd i{ height:35px; line-height:35px; width:16%; text-align:center; background:#fff; float:left;}
+.self_eidt_input_left dd { width:99%; float:left; border-bottom:1px dotted #ccc;}
+.self_eidt_input_left h4{font-size:16px; width:150px; text-align:left; float:left; height:50px; line-height:50px;}
+.self_eidt_input_left dd i.edit{ width:17%; float:left;}
+.self_eidt_input_left dd i.edit a{padding: 0px 10px;float: left;border: 1px solid rgba(194, 194, 194, 1);height: 20px;display: block;margin-top: 7px;line-height: 20px;margin-left:20px;border-radius: 3px;background: none repeat scroll 0% 0% #FFF;}
+.self_eidt_input_left dd i.edit a:hover{ background:#1f96cf; border:1px solid #1f96cf;color:#fff;}
+.right_nav{ position:absolute; right:555px; height:92px; width:23px;top:246px;background:url(../images/right_nav.png);cursor:pointer;}
+.right_nav:hover{ position:absolute; right:555px; height:106px; width:30px;top:239px;background:url(../images/right_navhover.png)}
+.right_nav_open{ position:absolute; right:0px; height:92px; width:23px;top:246px; background:url(../images/right_nav_open.png);cursor:pointer;}
+.right_nav_open:hover{ position:absolute;right:0px; height:106px; width:30px;top:239px;background:url(../images/right_nav_open_hover.png) }
+.self_eidt_protocol_yes{ width:200px; margin:0 auto; clear:both;height:30px; line-height:30px; text-align:center; margin-top:15px;}
+.self_eidt_protocol_yes a{ display:block;border:1px solid #0073c0;background:#1f96cf; border-radius:3px; color:#fff;transition: all 0.5s ease 0s}
+.self_eidt_protocol_yes a:hover{ border:1px solid #0073c0;background:#0073c0; color:#fff }
+.self_eidt_search{ height:40px; width:400px; float:right; margin-right:10px;}
+.self_eidt_search input{ border:2px solid #1f96cf; float:left; height:36px; line-height:34px; width:313px; text-indent:5px;}
+.self_eidt_search span{ float:right; background:#1f96cf; height:40px; width:80px; line-height:40px; text-align:center;}
+.self_eidt_search span a{ display:block; color:#fff; font-size:14px;}
+.delivery_code{ position:fixed; top:0; left:0; width:100%; height:100%; background:url(../images/self_input_bg_to.png); z-index:3;}		.delivery_code_center{ padding:30px; height:50px; width:212px; float:left; top:37%; left:44%; position:absolute; background:#fff; border:5px solid #329ADD; z-index:4;}
+.delivery_code_center i{ width:150px; margin:17px 0 0 28px; float:left;height:30px; line-height:30px; text-align:center;}
+
+/**提示**/
+.self_place_all{width:1200px; height:315px;}
+.self_place_all_box{ height:150px; width:350px; position:absolute; left:38%; top:29%; border:2px solid #1f96cf; background:#fff;float:left;box-shadow:0px 0px 12px 0px #1f96cf;}
+.self_place_all_box h3{ width:300px; float:right; height:35px; line-height:35px; text-align:center; font-size:16px; color:#333; margin-top:20px;}
+.self_place_all_box_left{ background:url(../images/self_place_all_box_left.png) no-repeat; bottom:0; left:0; height:244px; width:85px; position:absolute;}
+.self_place_all_box_b{ width:260px; float:right; clear:both; margin-top:30px; height:35px; text-align:center; margin-right:20px;}
+.self_place_all_box_b a{ padding:8px 20px; color:#fff;transition: all 0.5s ease 0s; display:block; margin:0 auto;background:#1f96cf; text-align:center;}
+.self_place_all_box_b a:hover{color:#fff;background:#1F7FAD;}
+.bg_fixed{position:fixed; height:100%; width:100%;top:0; left:0; z-index:1}
+

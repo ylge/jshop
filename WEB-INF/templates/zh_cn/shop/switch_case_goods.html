@@ -1,0 +1,20 @@
+<div class="index_sale_con" id="index_sale_con_like">
+        #foreach($!obj in $goods)
+          <ul class="index_sale_two">
+              #if($!obj.goods_main_photo)
+              #set($img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_middle.$!{obj.goods_main_photo.ext}")
+              #else
+              #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+              #end
+              #set($goods_url="$!webPath/goods_$!{obj.id}_gcase.htm")
+              #if($!config.second_domain_open)
+              #set($goods_url="http://$!{obj.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.id}.htm")
+              #end
+            <li class="sale_two_img"><a href="$!goods_url" target="_blank"><span class="img_cspan">
+              <p><img src="$!img" width="170" height="170" /></p>
+              </span></a></li>
+            <li class="sale_two_name"><a href="$!goods_url" target="_blank">$!obj.goods_name</a></li>
+            <li class="sale_two_price">售价：<strong>¥$!obj.goods_current_price</strong></li>
+          </ul>
+          #end
+</div>

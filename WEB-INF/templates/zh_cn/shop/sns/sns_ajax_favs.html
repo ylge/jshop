@@ -1,0 +1,19 @@
+#if($!favorites.size()>0)
+#foreach($obj in $favorites)
+#if($!obj.goods.goods_main_photo)
+#set($img="$!imageWebServer/$!{obj.goods.goods_main_photo.path}/$!{obj.goods.goods_main_photo.name}_middle.$!{obj.goods.goods_main_photo.ext}")
+#else
+#set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+#end
+#set($goods_url="$!webPath/goods_$!{obj.goods.id}.htm")
+#if($!config.second_domain_open && $!obj.goods.goods_type==1 && $!obj.goods.goods_store.store_second_domain!="")
+#set($goods_url="http://$!{obj.goods.goods_store.store_second_domain}.$!{domainPath}/goods_$!{obj.goods.id}.htm")
+#end<a href="$goods_url" target="_blank">
+<ul class="item">
+<li class="img"><img src="$!img" width="223" /><span class="pri">¥$!{obj.goods.store_price}</span></li>
+<li class="name">$!{obj.goods.goods_name}</li>
+<li class="like"><span class="love"><i></i>喜欢<b>$!obj.goods.favs.size()</b></span><span class="num">销量($!obj.goods.goods_salenum)</span></li>
+</ul>
+</a>
+#end
+#end

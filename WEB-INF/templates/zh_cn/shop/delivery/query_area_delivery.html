@@ -1,0 +1,16 @@
+<form id="ListForm" name="ListForm" method="post" >
+#if($!objs.size()>0)
+<ul>
+#foreach($obj in $objs)
+#set($service_day=$!DeliveryAddressTools.query_service_day("$!obj.da_service_day"))
+<li><h3>$!obj.da_name</h3><span>$!obj.da_address</span><span>$!obj.da_contact_user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$!obj.da_tel</span><span>营业时间： $!{service_day} </span><span>具体时间： #if($!obj.da_service_type==0) 全天 #else $!obj.da_begin_time点到$!obj.da_end_time点#end</span></li>
+ #end
+</ul>
+    <div class="self_eidt_fy">
+      	<span>$!gotoPageAjaxHTML</span>
+      </div>
+#else
+<span style="width:1200px;float:left; font-size:16px; color:#333; text-align:center; padding-top:50px">该区域内暂无自提点信息！</span>
+#end
+
+ </form>               

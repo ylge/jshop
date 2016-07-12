@@ -1,0 +1,33 @@
+﻿<span></span><!--后台商品日志选商品列表 --> 
+#if($goodslog_list.size()>0)
+<div class="seller_goods_list">
+  <div class="pro_list" id="goods_list"> #foreach($obj in $goodslog_list)
+    <div class="pro_list_one" onclick="stat_select($!obj.goods_id)" id="selectlog_$!obj.goods_id">
+      <ul class="" >
+        #if($!obj.img_id)
+        #set($img1=$!imageTools.queryImg("$!obj.img_id"))          
+        #set($img="$!imageWebServer/$!img1.path/$!img1.name")
+        #else
+        #set($img="$!imageWebServer/$!config.goodsImage.path/$!config.goodsImage.name")
+        #end
+        <li class="pro_list_img"> <img width="127" height="127" src="$!img" alt="商品图片"/> </li>
+        <li class="pro_list_name" id="goods_$!obj.goods_id">$!CommUtil.substring($!obj.goods_name,10)</li>
+        <li class="pro_list_name" id="logtype_$!obj.goods_id">#if($obj.log_form==0)自营#else $!obj.store_name #end</li>
+      </ul>
+    </div>
+    #end </div>
+</div>
+<div class="operate_bar">
+  <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+  <div class="fenye"><span target_id="goods_list">$!goodslog_list_gotoPageAjaxHTML</span></div>
+</div>
+#else
+<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+  <tr>
+    <td colspan="4" align="center"><div class="seller_center_nothing">
+        <div class="seller_center_nothing_left"><img src="$!webPath/resources/style/system/front/default/images/seller_center_nothing.png" /></div>
+        <div class="seller_center_nothing_right">暂时没有数据</div>
+      </div></td>
+  </tr>
+</table>
+#end

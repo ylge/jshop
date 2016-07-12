@@ -1,0 +1,68 @@
+<script>
+jQuery(document).ready(function(){
+		jQuery("div[id^=reply_others_list_]").each(function(){
+				var count =jQuery(this).attr("count");
+				if(count!=0){
+					var pid =jQuery(this).attr("pid");
+					reply_others_load(pid);	
+					}
+			});						
+});////
+function reply_others(obj_id,name){
+	jQuery("div[id^=reply_others_box_]").hide();
+	jQuery("#reply_others_content_"+obj_id).val("回复"+name+":");
+	jQuery("#reply_others_box_"+obj_id).show();
+	}
+function reply_others_load(pid){
+		jQuery.post("$!webPath/circle/invitation_reply_others.htm",
+			{"pid":pid},
+			function(data){
+				jQuery("#reply_others_list_"+pid).html(data).show().focus();
+				},
+				"text");
+	}
+//回复他人信息	
+function reply_others_save(obj_id){
+	var reply_content = jQuery("#reply_others_content_"+obj_id).val();
+	if(reply_content!=""){
+	jQuery.post("$!webPath/circle/invitation_reply_others_save.htm",
+			{"pid":obj_id,"reply_content":reply_content},
+			function(data){
+				if(data.code==100){
+					jQuery("#reply_others_box_"+obj_id).hide();
+					reply_others_load(obj_id);	
+					}
+				if(data.code==-100){
+					 showDialog("msg_info","","未知错误，请刷新页面重试！",2,"warning",2);
+					}	
+				},
+				"json");
+		}else{
+			 showDialog("msg_info","","请填写回复内容！",2,"warning",2);
+			}
+	}	
+</script>
+#foreach($obj in $objs)
+<div class="circle_main_left_reply_b">
+          <div class="circle_main_left_reply_b_top">
+            <div class="circle_main_left_reply_top_l"><a href="$!webPath/sns/other_sns_$!{obj.user_id}.htm" target="_blank"><img src="$!imageWebServer/$!obj.user_photo" /></a></div>
+            <div class="circle_main_left_reply_b_top_r">
+              <div class="circle_main_left_reply_b_top_r_title">
+                <div class="circle_main_left_reply_b_top_r_title_l"><b>$!obj.user_name #if($!{obj.user_id}==$!{inv.user_id})（楼主）#end</b>$!CommUtil.formatLongDate($!obj.addTime)</div>
+                <div class="circle_main_left_reply_b_top_r_title_r">$!{obj.level_count}楼</div>
+              </div>
+              <div class="circle_main_left_reply_b_top_r_reply">$!obj.content </div>
+              <div class="circle_main_left_reply_b_top_r_praise"><span></span><span><a href="javascript:void(0);" onclick="reply_others('$!obj.id','$!{obj.user_name}')">回复（$!obj.reply_count）</a></span></div>
+              <!--回复他人信息列表-->
+              <div id="reply_others_list_$!{obj.id}" count="$!{obj.reply_count}" pid="$!{obj.id}">
+              </div>
+                <!--回复他人信息窗口-->
+              <div class="reply_main_one_name_r" id="reply_others_box_$!{obj.id}" style="display:none">
+                <textarea name="reply_others_content_$!{obj.id}" id="reply_others_content_$!{obj.id}" cols="" rows=""></textarea>
+                <span><a href="javascript:void(0);" #if($!user) onclick="reply_others_save('$!{obj.id}');" #else dialog_uri="$!current_webPath/user_dialog_login.htm" dialog_title="会员登录" dialog_width="430" dialog_height="100" dialog_id="user_login" #end>发表</a></span> </div>
+            </div>
+          </div>
+        </div>
+ #end 
+ 
+<div class="fenye"><span>$!gotoPageAjaxHTML</span></div>      

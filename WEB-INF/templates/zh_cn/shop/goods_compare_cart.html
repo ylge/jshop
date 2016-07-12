@@ -1,0 +1,26 @@
+<!--右侧对比 -->
+
+<div class="contrast_center" style="display:;">
+  <div class="contrast_center_top"><span>对比栏<i><a href="javascript:void(0);" onclick="jQuery('.contrast_center').hide();jQuery('.contrast_center_nothing').show();">隐藏</a></i></span></div>
+  <div class="contrast_center_center">
+    <div id="goods_compare_cart"> #foreach($obj in $objs)
+      <dl>
+        #if($!obj.goods_main_photo)
+        #set($small_img="$!imageWebServer/$!{obj.goods_main_photo.path}/$!{obj.goods_main_photo.name}_small.$!{obj.goods_main_photo.ext}")
+        #else
+        #set($small_img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+        #end
+        <dt><a href="$!webPath/goods_$!{obj.id}.htm" target="_blank"><img src="$!small_img" /></a></dt>
+        <span class="contrast_center_center_cloes"></span>
+        <dd><a href="$!webPath/goods_$!{obj.id}.htm" target="_blank">$!obj.goods_name</a></dd>
+      </dl>
+      #end </div>
+    <!--没有数据 display:none -->
+    <div class="contrast_b" style="display:">
+      <div class="contrast_b_yes"><a href="$!webPath/goods_compare.htm">对比</a></div>
+      <div class="contrast_b_clear"><a href="">清空</a></div>
+    </div>
+  </div>
+</div>
+<!--对比隐藏 -->
+<div class="contrast_center_nothing" style="display:none;"><a href="javascript:void(0);" onclick="jQuery('.contrast_center').show();jQuery('.contrast_center_nothing').hide();">对比窗</a></div>

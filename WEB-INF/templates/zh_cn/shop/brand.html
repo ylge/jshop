@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>商城品牌 - $!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+#if($!config.website_ico)
+<link rel="shortcut icon" href="$!webPath/$!config.website_ico.path/$!config.website_ico.name" type="image/x-icon"/>
+#end
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/goods.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.SuperSlide.2.1.1.js"></script>
+<script>
+jQuery(document).ready(function(e) {	
+	jQuery(".recommend_center").slide({titCell:".recommend_center_hd ul",mainCell:".recommend_center_bd_m ul",autoPage:true,effect:"left",autoPlay:true,trigger:"click",delayTime:700,easing:"easeOutCirc"});	
+	jQuery("a[id^='name_']").mouseover(function() {
+        jQuery("span[id^='logo_']").hide()
+		var id = jQuery(this).attr("id").substring(5);
+		jQuery("#logo_"+id).fadeIn(200);
+    });
+	jQuery("a[id^='name_']").mouseout(function() {
+        jQuery("span[id^='logo_']").hide();
+    });
+	jQuery("div[class^='brand_one_']").first().addClass("this");
+	jQuery("div[class^='brand_one_']").mouseover(function(){
+		jQuery("div[class^='brand_one_']").removeClass("this");
+        jQuery(this).addClass("this");
+    });
+	var top= jQuery("#float_box").offset().top;
+  	jQuery(window).scroll(function(){
+		var scrolla=jQuery(window).scrollTop();
+		if(top<scrolla){
+			jQuery("#float_box").removeClass();
+			jQuery("#float_box").addClass("brand_list_nav_f");
+		}
+		if(top>scrolla){
+			jQuery("#float_box").removeClass();
+			jQuery("#float_box").addClass("brand_list_nav");
+		}
+		
+//		var i=top-scrolla;
+//		if(i<=0){
+//		var height =jQuery("#float_box").css("height"); 
+//		   jQuery("#remain_box").show().css("height",height);		 
+//		   jQuery(".brand_sear_bar").addClass("brand_sear_bar_fix");  
+//		}
+//		if(scrolla<brand_list_cls){
+//		   jQuery("#remain_box").hide().css("height","0px");
+//		   jQuery(".brand_sear_bar").removeClass("brand_sear_bar_fix");
+//		}
+  	});
+  
+  jQuery("a[id^='ReturnWord_']").click(function(){
+	var mark = jQuery(this).attr("mark");
+	var status = jQuery("#brand_"+mark).attr("status");
+	if(status=="0"){
+	  var t= jQuery("#float_box").offset().top;		
+	  var top = jQuery("#brand_"+mark).offset().top;	  
+	  var scrolla=jQuery(window).scrollTop(); 
+	  var i=t-scrolla;
+	  if(i>0){
+		 top = top-60;
+	 }
+	  var height =jQuery("#float_box").height(); 
+	  var i=top-height-30;
+	   jQuery(window).scrollTop(i);
+	}
+  });
+
+});
+</script>
+</head>
+<body>
+$!httpInclude.include("$!webPath/top.htm")
+$!httpInclude.include("/head.htm")
+$!httpInclude.include("/nav1.htm?op=brand") 
+<!--品牌 推荐 -->
+<div class="recommend">
+  <div class="recommend_top"><span><img src="$!webPath/resources/style/system/front/default/images/recommend_brand.png"  /></span></div>
+  <div class="recommend_center">
+    <div class="recommend_center_bd_m">
+      <ul>
+        #if($!gbs1)
+        <li> #foreach($gb in $gbs1) <a href="$!webPath/brand_goods_$!{gb.id}.htm" target="_blank"><img src="$!imageWebServer/$!gb.brandLogo.path/$!gb.brandLogo.name"/></a> #end </li>
+        #end
+        #if($!gbs2)
+        <li> #foreach($gb in $gbs2) <a href="$!webPath/brand_goods_$!{gb.id}.htm" target="_blank"><img src="$!imageWebServer/$!gb.brandLogo.path/$!gb.brandLogo.name"/></a> #end </li>
+        #end
+        #if($!gbs3)
+        <li> #foreach($gb in $gbs3) <a href="$!webPath/brand_goods_$!{gb.id}.htm" target="_blank"><img src="$!imageWebServer/$!gb.brandLogo.path/$!gb.brandLogo.name"/></a> #end </li>
+        #end
+      </ul>
+    </div>
+    <div class="recommend_center_hd">
+      <ul>
+        #if($!gbs1)
+        <li class="on"></li>
+        #end
+        #if($!gbs2)
+        <li></li>
+        #end
+        #if($!gbs3)
+        <li></li>
+        #end
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="main">
+  <div class="recommend_top"><span><img src="$!webPath/resources/style/system/front/default/images/brand_company.png"  /></span></div>
+  <!--品牌 nav -->
+  <div class="brand_list_nav" id="float_box"> <span>BRANDS A-Z ：</span> #foreach($list in $all_list) <a href="javascript:void(0);" id="ReturnWord_$!{list.id}" mark="$!{list.get('word')}">$!list.get("word")</a> #end </div>
+  <div class="brand_list_main">
+  	#foreach($list in $all_list)
+    #if($!list.get("brand_list").size()>0)
+    <dl>
+      <dt id="brand_$!{list.get('word')}" status="0">$!list.get("word")</dt>
+      <dd>
+        <ul>
+          #foreach($gb in $!list.get("brand_list"))
+          #if($!gb.recommend)
+          <li class="this">
+          	<a href="$!webPath/brand_goods_$!{gb.id}.htm" id="name_$!{gb.id}" target="_blank">$!gb.name</a>
+            <b><img src="$!webPath/resources/style/system/front/default/images/hot_c.png" /></b>
+            <span class="brand_list_main_hot" style="display:none" id="logo_$!{gb.id}">
+                <div class="brand_list_main_top">$!gb.name<em><img src="$!webPath/resources/style/system/front/default/images/hot.png" /></em></div>
+                <div class="brand_list_main_left"><img src="$!imageWebServer/$!gb.brandLogo.path/$!gb.brandLogo.name"/></div>
+                <div class="brand_list_main_right">$!gb.remark</div>
+            </span>
+          </li>
+          #else
+          <li>
+          	<a href="$!webPath/brand_goods_$!{gb.id}.htm" id="name_$!{gb.id}" target="_blank">$!gb.name</a>
+            <span class="brand_list_main_nomall" style="display:none" id="logo_$!{gb.id}">
+                <div class="brand_list_main_top" >$!gb.name</div>
+                <div class="brand_list_main_left"><img src="$!imageWebServer/$!gb.brandLogo.path/$!gb.brandLogo.name"/></div>
+                <div class="brand_list_main_right">$!gb.remark</div>
+            </span>
+          </li>
+          #end
+          #end
+        </ul>
+      </dd>
+    </dl>
+    #end
+    #end
+  </div>
+  <div class="recommend_top"><span><img src="$!webPath/resources/style/system/front/default/images/brand_Label.png"  /></span></div>
+  <div class="brand"> #foreach($map in $list)
+    <div class="brand_one_$!{velocityCount}">
+      <div class="brand_one_top_$!{velocityCount}">$!map.name</div>
+      #set($index=$!velocityCount)
+      <div class="brand_one_b">
+        <div class="brand_one_b_list"> #foreach($brand in $map.brands)
+          #if($!velocityCount< 4) <a href="$!webPath/brand_goods_$!{brand.id}.htm" target="_blank"><img src="$!imageWebServer/$!brand.logo"/></a> #end 
+          #end </div>
+        <div class="brand_one_b_list"> #foreach($brand in $map.brands)
+          #if($!velocityCount>3&&$!velocityCount<7) <a href="$!webPath/brand_goods_$!{brand.id}.htm" target="_blank"><img src="$!imageWebServer/$!brand.logo"/></a> #end 
+          #end </div>
+        <div class="brand_one_b_list"> #foreach($brand in $map.brands)
+          #if($!velocityCount>6) <a href="$!webPath/brand_goods_$!{brand.id}.htm" target="_blank"><img src="$!imageWebServer/$!brand.logo"/></a> #end 
+          #end </div>
+      </div>
+    </div>
+    #end </div>
+  $!httpInclude.include("/footer.htm") </div>
+</body>
+</html>

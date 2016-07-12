@@ -1,0 +1,66 @@
+﻿##set ($domain = $!domainName.toLowerCase())
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		\#parse("/include/meta.html")
+		<script type="text/javascript" src="script/easyjweb-util.js"></script>
+		<script type="text/javascript">		
+		function doCheck()
+		{
+			v=new Validate();
+			#foreach($field in $!fields)
+			  if(!v.validateNotEmpty($("$!field.getName()").value,"$!field.getName()")) {$("$!field.getName()").focus();return false;}	
+			#end		
+			return true;
+		}
+		function init(){
+			F=new FORM("$!{domain}.ejf","EditForm");
+			windowInit();
+		}
+		window.onload=init;
+		</script>		
+	<title>$!{domainName}-录入</title>				
+	</head>
+	<body>
+
+		<div align="center">
+			$!{domainName}信息录入界面
+		</div>
+		<form name="EditForm" id="EditForm" method="post" action="${domain}.ejf">
+			<input type="hidden" name="easyJWebCommand" value="$\!easyJWebCommand" />
+			<input type="hidden" name="id" value="$\!id" />
+			<table width="99%" border="1" align="center">
+				
+				#foreach($field in $!fields)
+				<tr>
+					<td width="30%" align="right">
+						$!field.getName()
+					</td>
+					<td>
+						<input name="$!field.getName()" type="text" id="$!field.getName()" value="$!$!field.getName()" />
+						<font color="red">*</font>
+					</td>
+				</tr>
+				#end
+				<tr align="center">
+					<td colspan="2">
+						<input type="button" name="Submit2" value="保存" onclick="F.doSave(doCheck);" />
+						<input type="reset" name="Submit" value="返回" onclick="javascript:history.go(-1);" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		<script type="text/javascript">
+<!--
+\#if($errors)
+\#foreach($error in $errors)
+	alert('$\!error');
+\#end
+\#end
+//-->
+</script>
+	</body>
+</html>
+

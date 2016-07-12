@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+  jQuery('#erbegin_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  jQuery('#erend_time').attr("readonly","readonly").datepicker({
+	  dateFormat:"yy-mm-dd",
+	  changeMonth: true,
+	  changeYear: true
+  });
+  //
+});
+function ajax_update(id,fieldName,obj){
+   var val=jQuery(obj).val();
+   jQuery.ajax({type:'POST',
+	              url:'$!webPath/admin/enoughreduce_self_ajax.htm',
+				  data:{"id":id,"fieldName":fieldName,"value":val},
+				beforeSend:function(){
+				  
+				},
+			   success:function(data){
+	             if(val==""){
+				   jQuery(obj).attr("src","$!webPath/resources/style/system/manage/blue/images/"+data+".png");
+				 }else{
+				   jQuery(obj).val(val);
+				 }      
+              }
+	    });
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">满就减管理</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/enoughreduce_self_list.htm" class="this"><b>所有满就减</b></a></li>
+      <li><a href="$!webPath/admin/enoughreduce_self_add.htm"><b>新增满就减</b></a></li>
+    </ul>
+  </div>
+  <form method="post" id="ListForm" action="$!webPath/admin/enoughreduce_self_list.htm">
+    <div class="search">
+      <ul>
+        <li><span>满就减标题</span> <span class="size150">
+          <input name="ertitle" type="text" id="ertitle" value="$!ertitle" />
+          </span> <span>
+          <select name="erstatus" id="erstatus">
+            <option value="">满就减状态</option>
+            <option value="10" #if($!erstatus==10) selected="selected" #end>审核通过</option>
+            <option value="20" #if($!erstatus==20) selected="selected" #end>已结束</option>
+          </select>
+          </span> <span>有效期</span> <span class="size100">
+          <input name="erbegin_time" type="text" id="erbegin_time" value="$!erbegin_time"/>
+          </span><span>—</span><span class="size100">
+          <input name="erend_time" type="text" id="erend_time" value="$!erend_time"/>
+          </span><span>
+          <input name="" type="submit"  value="搜索" style="cursor:pointer;" class="search_btn"/>
+          </span> </li>
+      </ul>
+    </div>
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="30"></th>
+          <th width="8%"><span class="form_btna">排序</span></th>
+          <th width="20%"><span class="form_btna">满就减标题</span></th>
+          <th width="20%" ><span class="form_btna">满减金额</span></th>
+          <th width="14%" align="center"><span class="form_btna">开始时间</span></th>
+          <th align="center" width="14%"><span class="form_btna">结束时间</span></th>
+          <th  align="center" width="10%"><span class="form_btna">状态</span></th>
+          <th  align="center"><span class="form_btna">操作</span></th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr id="column_$!{obj.id}">
+          <td class="check_position"><input name="checkbox" type="checkbox" id="checkbox" value="$!obj.id" /></td>
+          <td ><span class="size70">
+            <input name="ersequence" type="text" id="ersequence" title="可编辑" onblur="ajax_update('$!obj.id','ersequence',this)" value="$!obj.ersequence" size="20" />
+            </span></td>
+          <td align="center">$!obj.ertitle</span></td>
+          <td align="center">$!obj.ertag</span></td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.erbegin_time)</td>
+          <td align="center">$!CommUtil.formatShortDate($!obj.erend_time)</td>
+          
+          #if($!obj.erstatus==10)
+          #set($status="审核通过")
+          #end
+          #if($!obj.erstatus==20)
+          #set($status="已结束")
+          #end
+          <td align="center">$!status</td>
+          <td  align="center" class="hui oprate_con">#if($!obj.erstatus!=20)<a href="$!webPath/admin/enoughreduce_self_edit.htm?id=$!obj.id&currentPage=$!currentPage" class="blue">编辑</a>|#end<a href="$!webPath/admin/enoughreduce_self_goods_list.htm?er_id=$!obj.id" class="blue">活动商品</a>|<a href="javascript:void(0);" onclick="if(confirm('删除后不可恢复，是否继续？'))window.location.href='$!webPath/admin/enoughreduce_self_del.htm?mulitId=$!obj.id&currentPage=$!currentPage'" class="blue">删除</a></td>
+        </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input type="hidden" name="mulitId" id="mulitId" />
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        $!gotoPageFormHTML </div>
+      <div class="shopbtn shopfx"><span class="oper_check" >
+        <label onclick="selectAll(jQuery('#all'))">
+          <input type="checkbox" name="all" id="all" value="" />
+          全部</label>
+        </span></div>
+      <div class="shop_btn_del shopbtn"><span class="oper_del">
+        <input name="" type="button" value="删除" onclick="cmd('$!webPath/admin/enoughreduce_self_del.htm');"/>
+        </span></div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

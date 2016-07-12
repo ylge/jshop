@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">自提点管理</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/delivery_address_list.htm"><b>自提点列表</b></a></li>
+      <li><a href="$!webPath/admin/delivery_address_add.htm" ><b>新增自提点</b></a></li>
+      <li><a href="$!webPath/admin/delivery_apply_list.htm" class="this" ><b>自提点申请列表</b></a></li>
+    </ul>
+  </div>
+  <form method="post" id="ListForm" action="$!webPath/admin/delivery_apply_list.htm">
+    <div class="fshoptb">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+        <tr>
+          <th width="3%"></th>
+          <th width="8%">自提点类型</th>
+          <th width="14%">自提点名称</th>
+          <th width="10%">联系人</th>
+          <th width="10%">联系电话</th>
+          <th width="25%">详细地址</th>
+          <th width="10%">自提点状态</th>
+          <th width="10%">服务时间</th>
+          <th>操作</th>
+        </tr>
+        #foreach($obj in $objs)
+        <tr>
+          <td class="check_position"></td>
+          <td align="center">#if($!obj.da_type==0) 商城自提点 #else 第三方自提点 #end</td>
+          <td align="center">$!obj.da_name</td>
+           <td align="center">$!obj.da_contact_user</td>
+          <td align="center">$!obj.da_tel</td>
+          <td align="center">$!areaManageTools.generic_area_info($!obj.da_area) $!{obj.da_address}</td>
+          #if($!{obj.da_status}=='0')
+          #set($status="待审核")
+          #end
+          #if($!{obj.da_status}=='4')
+          #set($status="审核未通过")
+          #end
+          #if($!{obj.da_status}=='5')
+          #set($status="暂停服务")
+          #end
+          #if($!{obj.da_status}=='10')
+          #set($status="正常服务")
+          #end
+          <td align="center">$!status</td>
+          <td align="center">#if($!obj.da_service_type=="0") 全天 #else 上午$!{obj.da_begin_time}点至下午$!{obj.da_end_time}点#end</td>
+          <td  align="center"><a href="$!webPath/admin/delivery_apply_audit.htm?id=$!{obj.id}&&currentPage=$!{currentPage}" class="blue" >审核</a></td>
+        </tr>
+        #end
+      </table>
+    </div>
+    <div class="operate_bar">
+      <div class="fenye">
+        <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+        $!gotoPageFormHTML </div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

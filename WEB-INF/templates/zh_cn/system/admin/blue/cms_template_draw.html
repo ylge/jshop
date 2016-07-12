@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script src="$!webPath/resources/js/jquery.poshytip.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script>
+jQuery(document).ready(function(){
+	jQuery("#whether_show_img").click(function(){
+	   var whether_show=jQuery("#whether_show").val();
+	   if(whether_show=="1"){
+	      jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+		  jQuery("#whether_show").val("0");
+	   }else{
+	      jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+		  jQuery("#whether_show").val("1");
+	   }
+	});	
+	
+	jQuery("#type").change(function(){
+			jQuery(".preview_img").hide();
+			var i = jQuery(this).val();
+			jQuery("#img_"+i).show();
+									});
+	
+	#if($!obj.whether_show==1)
+	jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/$!{config.websiteCss}/images/yes.jpg");
+	#else
+	jQuery("#whether_show_img").attr("src","$!webPath/resources/style/system/manage/blue/images/no.jpg");
+	#end
+	#if($!obj)
+	jQuery("#type").val("$!{obj.type}");
+	#end
+	
+	  jQuery("#theForm").validate({
+    rules:{
+	 title:{required:true},
+	 sequence:{digits:true}
+	 },
+    messages:{
+	 title:{required:"标题不能为空"},
+	 sequence:{digits:"请输入正确数字"}
+	}
+  });
+
+});
+function saveForm(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">资讯楼层管理</h3>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/cms_template_list.htm"><b>资讯楼层管理</b></a></li>
+      <li><a href="$!webPath/admin/cms_template_add.htm"><b>资讯楼层添加</b></a></li>
+       <li><a href="$!webPath/admin/cms_template_draw.htm?id=$!obj.id" class="this"><b>资讯楼层编辑</b></a></li>
+    </ul>
+  </div>
+  #if($!obj.type=="info-info")  
+     <div class="information_main_left_one">
+        <div class="information_main_left_one_top">
+          <h3>$!obj.title</h3>
+          </div>
+        <div class="information_main_left_one_center_01">
+        
+            
+          <div class="information_main_left_one_center_left"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_info.htm?id=$!{obj.id}&count=5&type=floor_info1" dialog_title="编辑资讯" dialog_width="620" dialog_height="100" dialog_top="100"  dialog_id="goods_floor_cat" class="floor_edit_a">编辑</a></div>
+           #set($map=$!gf_tools.generic_info_list("$!obj.floor_info1"))
+          #if($!map.get("info1"))
+           	#set($info=$!map.get("info1"))
+            <div class="information_main_left_one_center_left_t"><a href="$!webPath/cms/detail_$!{info.id}.htm">
+            #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+    <img src="$!imageWebServer/$!img.path/$!img.name" width="70" height="70" /> 
+    #end        
+    #end</a><span>$!info.title</span></div>
+    
+            <div class="information_main_left_one_center_left_b">
+              <ul>
+              #if($!map.get("info2"))
+           		#set($info=$!map.get("info2"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info3"))
+           		#set($info=$!map.get("info3"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info4"))
+           		#set($info=$!map.get("info4"))
+                 <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info5"))
+           		#set($info=$!map.get("info5"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+              </ul>
+            </div> #end
+          </div>
+         
+           
+          <div class="information_main_left_one_center_right">
+            <div class="information_main_left_one_center_right_t"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_info.htm?id=$!{obj.id}&count=1&type=floor_info2" dialog_title="编辑资讯" dialog_width="620" dialog_height="100" dialog_top="100"  dialog_id="goods_floor_cat" class="floor_edit_a">编辑</a></div>
+            #set($map=$!gf_tools.generic_info_list("$!obj.floor_info2"))
+          	#if($!map.get("info1"))
+           	#set($info=$!map.get("info1"))
+              <div class="information_main_left_one_center_right_t_l"> #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))<img src="$!imageWebServer/$!img.path/$!img.name" />#end#end</div>
+              <div class="information_main_left_one_center_right_t_r">
+                <h3><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></h3>
+                <p><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.synopsis</a></p>
+              </div>
+              #end
+            </div>
+            <div class="information_main_left_one_center_right_b"  style="height:174px"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_info.htm?id=$!{obj.id}&count=4&type=floor_info3" dialog_title="编辑资讯" dialog_width="620" dialog_height="100" dialog_top="100"  dialog_id="goods_floor_cat" class="floor_edit_a">编辑</a></div>
+              <ul>
+               #set($map=$!gf_tools.generic_info_list("$!obj.floor_info3"))
+              #if($!map.get("info1"))
+           		#set($info=$!map.get("info1"))
+                <li><a href="$!webPath/cms/detail.htm?id=$!info_id">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                </a><span>$!info.title</span></li>
+               #end
+                #if($!map.get("info2"))
+           		#set($info=$!map.get("info2"))
+                <li><a href="$!webPath/cms/detail.htm?id=$!info_id">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                </a><span>$!info.title</span></li>
+               #end
+                #if($!map.get("info3"))
+           		#set($info=$!map.get("info3"))
+                <li><a href="$!webPath/cms/detail.htm?id=$!info_id">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                </a><span>$!info.title</span></li>
+               #end
+                #if($!map.get("info4"))
+           		#set($info=$!map.get("info4"))
+                <li><a href="$!webPath/cms/detail.htm?id=$!info_id">
+                #if("$!info.cover"!="")
+    #foreach($img in $!imageTools.queryImgs("$!info.cover"))
+                <img src="$!imageWebServer/$!img.path/$!img.name" />
+                #end
+                #end
+                </a><span>$!info.title</span></li>
+               #end
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="information_main_right">
+      <div class="information_main_right_img">
+      <div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_info.htm?id=$!{obj.id}&count=11&type=floor_info4" dialog_title="编辑资讯" dialog_width="620" dialog_height="100" dialog_top="100"  dialog_id="goods_floor_cat" class="floor_edit_a">编辑</a></div>
+      <ul>
+         #foreach($info in $gf_tools.generic_info("$!obj.floor_info4"))
+        	<li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+         #end
+        </ul></div>
+      
+    </div>
+      </div>
+  #end
+  
+  #if($!obj.type=="goods-class") 
+<div class="information_main_left_one">
+        <div class="information_main_left_one_top">
+          <h3>$!obj.title</h3>
+           </div>
+        <div class="information_main_left_one_center">
+          <div class="information_main_left_like"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_goods.htm?id=$!{obj.id}&count=5" dialog_title="编辑楼层商品" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+            <ul>
+            #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info1"))
+             #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm"><img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" /></a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm"><img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" /></a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm"><img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" /></a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm"><img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" /></a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+             #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+              <li><img src="$!img" /><span><em><a href="$!webPath/brand_goods_$!{goods.goods_brand.id}.htm"><img src="$!imageWebServer/$!goods.goods_brand.brandLogo.path/$!goods.goods_brand.brandLogo.name" /></a></em><i><a href="$!webPath/goods_$!{goods.id}.htm">新品</a></i></span></li>
+             #end
+            </ul>
+          </div>
+        </div>
+        <div class="information_main_right_nav"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_class.htm?id=$!{obj.id}" dialog_title="编辑分类" dialog_width="620" dialog_height="100" dialog_top="100"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+        <h3><a href="$!webPath/index.htm"><img src="$!webPath/resources/style/system/front/default/images/cms/inf_right_nav.png" /></a></h3>
+        #foreach($c_gc in $gf_tools.generic_gf_gc("$!obj.floor_info2"))
+        <dl>
+          <dt><a href="$!webPath/store_goods_list_$!{c_gc.id}.htm">$!c_gc.className</a></dt>
+         #foreach($c_c_gc in $c_gc.childs) 
+          <dd><a href="$!webPath/store_goods_list_$!{c_c_gc.id}.htm">$!c_c_gc.className</a></dd>
+          #end
+        </dl>
+        #end
+      </div>
+      </div>
+  #end
+    
+    #if($!obj.type=="goods") 
+  <div class="information_main_center">
+    <div class="information_main_center">
+      <div class="information_main_left_one_top">
+        <h3>$!obj.title</h3>
+         </div>
+      <div class="information_main_center_top"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_goods.htm?id=$!{obj.id}&count=10" dialog_title="编辑楼层商品" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+        <ul>
+        #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info1"))
+        #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods6"))
+           			 #set($goods=$!map.get("goods6"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods7"))
+           			 #set($goods=$!map.get("goods7"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods8"))
+           			 #set($goods=$!map.get("goods8"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods9"))
+           			 #set($goods=$!map.get("goods9"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        #if($!map.get("goods10"))
+           			 #set($goods=$!map.get("goods10"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+          <li><img src="$!img" /><i><b>￥$!goods.goods_current_price</b><em><a href="$!webPath/goods_$!{goods.id}.htm">立即购买</a></em></i></li>
+        #end
+        </ul>
+      </div>
+    </div>
+  </div>
+  #end
+    
+     #if($!obj.type=="info-info-goods-brand") 
+  <div class="information_main_recommend">
+    <div class="information_main_left_one_top">
+      <h3>$!obj.title</h3>
+       </div>
+    <div class="information_main_recommend_center">
+          <div class="information_main_left_one_center_left"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_info.htm?id=$!{obj.id}&count=5&type=floor_info1" dialog_title="编辑资讯" dialog_width="620" dialog_height="100" dialog_top="100"  dialog_id="goods_floor_cat" class="floor_edit_a">编辑</a></div>
+           #set($map=$!gf_tools.generic_info_list("$!obj.floor_info1"))
+          #if($!map.get("info1"))
+           	#set($info=$!map.get("info1"))
+            <div class="information_main_left_one_center_left_t"><a href="$!webPath/cms/detail_$!{info.id}.htm">#if("$!info.cover"!="")#foreach($img in $!imageTools.queryImgs("$!info.cover"))
+    <img src="$!imageWebServer/$!img.path/$!img.name" width="70" height="70" /> 
+    #end        
+    #end</a><span>$!info.title</span></div>
+            #end
+            <div class="information_main_left_one_center_left_b">
+              <ul>
+               #if($!map.get("info2"))
+           		#set($info=$!map.get("info2"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info3"))
+           		#set($info=$!map.get("info3"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info4"))
+           		#set($info=$!map.get("info4"))
+                 <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+               #if($!map.get("info5"))
+           		#set($info=$!map.get("info5"))
+                <li><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></li>
+               #end
+              </ul>
+            </div>
+           
+          </div>
+      <div class="information_main_recommend_center_c">
+        <div class="information_main_recommend_center_c_t"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_info.htm?id=$!{obj.id}&count=14&type=floor_info2" dialog_title="编辑楼层商品" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+          <dl>
+             #foreach($info in $gf_tools.generic_info("$!obj.floor_info2"))
+            <dd><a href="$!webPath/cms/detail_$!{info.id}.htm">$!info.title</a></dd>
+            #end
+          </dl>
+        </div>
+      </div>
+      <div class="information_main_left_one_center_right_r">
+        <div class="information_main_left_one_center_right_r_t"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_goods.htm?id=$!{obj.id}&count=5" dialog_title="编辑楼层商品" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+          <ul>
+          #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info3"))
+          #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+             #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm"><span><img src="$!img" /></span><i>$!goods.goods_name</i><b>￥$!goods.goods_current_price</b></a></li>
+             #end
+          </ul>
+        </div>
+        <div class="information_main_left_one_center_right_r_b"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_brand.htm?id=$!{obj.id}&count=8" dialog_title="编辑楼层品牌" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+          <ul>
+           #foreach($brand in $gf_tools.generic_brand("$!obj.floor_info4"))
+            <li><img src="$!imageWebServer/$!brand.brandLogo.path/$!brand.brandLogo.name" /><span style="display:none;"><a href="$!webPath/brand_goods_$!{brand.id}.htm">$!brand.name</a></span></li>
+             #end
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  #end
+  
+   #if($!obj.type=="goods-free-circle") 
+  <div class="information_main_collect">
+    <div class="information_main_left_one_top">
+      <h3>$!obj.title</h3>
+       </div>
+    <div class="information_main_collect_center">
+      <div class="information_main_collect_center_left">
+        <h3>新品上市</h3>
+        <div class="information_main_collect_center_left_new"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_goods.htm?id=$!{obj.id}&count=8" dialog_title="编辑楼层商品" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+          <ul>
+          #set($map=$!gf_tools.generic_goods_list("$!obj.floor_info1"))
+          #if($!map.get("goods1"))
+           			 #set($goods=$!map.get("goods1"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods2"))
+           			 #set($goods=$!map.get("goods2"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods3"))
+           			 #set($goods=$!map.get("goods3"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods4"))
+           			 #set($goods=$!map.get("goods4"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+            #if($!map.get("goods5"))
+           			 #set($goods=$!map.get("goods5"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+             #if($!map.get("goods6"))
+           			 #set($goods=$!map.get("goods6"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+             #if($!map.get("goods7"))
+           			 #set($goods=$!map.get("goods7"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+             #if($!map.get("goods8"))
+           			 #set($goods=$!map.get("goods8"))
+           			 #if($!goods.goods_main_photo)                   
+                     #set($img="$!imageWebServer/$!{goods.goods_main_photo.path}/$!{goods.goods_main_photo.name}_small.$!{goods.goods_main_photo.ext}")
+           		 #else
+             		 #set($img="$!imageWebServer/$!{config.goodsImage.path}/$!{config.goodsImage.name}")
+           		 #end
+            <li><a href="$!webPath/goods_$!{goods.id}.htm" class="left_img"><img src="$!img" /></a><a href="$!webPath/goods_$!{goods.id}.htm" class="name">$!goods.goods_name</a></li>
+            #end
+          </ul>
+        </div>
+      </div>
+      <div class="information_main_collect_center_left">
+        <h3>0元试用</h3>
+        <div class="information_main_collect_center_left_free"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_free.htm?id=$!{obj.id}&count=6" dialog_title="编辑0元试用楼层" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+          <ul>
+           #foreach($free in $gf_tools.generic_free("$!obj.floor_info2"))
+            <li><img src="$!imageWebServer/$!free.free_acc.path/$!free.free_acc.name" /><span><a class="name" href="$!webPath/free/view_$!{free.id}.htm">$!free.free_name</a><a href="$!webPath/free/view_$!{free.id}.htm" class="botton">立即试用</a></span></li>
+            #end
+          </ul>
+        </div>
+      </div>
+      <div class="information_main_collect_center_left">
+        <h3>推荐圈子</h3>
+        <div class="information_main_collect_center_left_circle"><div class="information_eidt"><a href="javascript:void(0);"  dialog_uri="$!webPath/admin/cms_template_circle.htm?id=$!{obj.id}&count=8" dialog_title="编辑楼层圈子" dialog_width="735" dialog_height="100" dialog_top="80"  dialog_id="goods_floor_cat" class="floor_edit_a"> 编辑</a></div>
+          <ul>
+           #foreach($circle in $gf_tools.generic_circle("$!obj.floor_info3"))
+           #set($img=$!circleViewTools.genercircleImage("$!circle.id"))
+            <li><a href="$!webPath/circle/detail_$!{circle.id}.htm" target="_blank"><img src="$!imageWebServer/$!img.src" /></a><span><a href="$!webPath/circle/detail_$!{circle.id}.htm" target="_blank">$!circle.title</a></span></li>
+            #end
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  #end
+</div>
+</body>
+</html>

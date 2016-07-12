@@ -1,0 +1,36 @@
+<link href="$!webPath/resources/style/common/css/window.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/common/css/overlay_blue.css" type="text/css" rel="stylesheet" />
+<script>
+function save_form(){
+		  var reply=jQuery("#reply").val();
+          var id=jQuery("#id").val();
+		  if(reply==""){
+			  alert("回复内容不能为空！")
+			  }else{
+		  jQuery("#button").attr("disabled",true).val("提交中");
+          jQuery.post("$!webPath/admin/self_evaluate_reply_save.htm",{"id":id,"reply":reply},function(data){
+	             window.location.reload();
+             },"text");
+				  }
+		  
+}
+</script>
+  #if($!evl.reply_status==1)
+  $!evl.reply
+  #else
+  <form action="$!webPath/admin/self_evaluate_reply_save.htm" method="post" name="theForm" id="theForm">
+   <input id="id" name="id" type="hidden" value="$!id"/>
+     <table style="float:left;" width="390" border="0" cellspacing="0" cellpadding="0" class="box_table">
+      <tr>
+        <td width="70" align="right" valign="top">回复：</td>
+        <td class="px10 message" align="left"><textarea name="reply" cols="40" rows="6" id="reply"></textarea></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><span class="setsub">
+          <input class="choose_btn" name="按钮" type="button" style="cursor:pointer;" value="确定"  onclick="save_form();" id="button"/>
+          </span></td>
+      </tr>
+    </table>
+  </form>
+  #end
+

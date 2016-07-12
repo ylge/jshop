@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script>
+jQuery(document).ready(function() {
+	#if($!{obj.da_service_type}=='1')
+		jQuery("#da_begin_time").parent().show();
+		jQuery("#da_end_time").parent().show();
+		jQuery("#da_begin_time").val($!{obj.da_begin_time});
+		jQuery("#da_end_time").val($!{obj.da_end_time});
+	#end
+	var temp = "$!{obj.da_service_day}";
+	if(temp!=""){
+		jQuery("input[name='da_service_day']").each(function(index, element) {
+            jQuery(this).removeAttr("checked");
+        });
+		jQuery.each(temp.split(","),function(index,item){
+			jQuery("input[name='da_service_day'][value='"+item+"']").attr("checked","checked");
+		});
+	}
+	#if($!obj)
+	jQuery("#area1").val("$!obj.da_area.parent.parent.id");
+	jQuery("#area2").html("<option>$!obj.da_area.parent.areaName</option>");
+	jQuery("#area3").html("<option value='$!obj.da_area.id'>$!obj.da_area.areaName</option>");
+	#end
+	jQuery("input[name='da_service_type']").click(function() {
+        var type = jQuery(this).val();
+		if(type=='1'){
+			jQuery("#da_begin_time").parent().show();
+			jQuery("#da_end_time").parent().show();
+		}else{
+			jQuery("#da_begin_time").parent().hide();
+			jQuery("#da_end_time").parent().hide();
+		}
+    });
+	jQuery("select").change(function(){
+    	var level=jQuery(this).attr("level");
+		var id=jQuery(this).val();
+		jQuery("#sa_area_id").val("");
+	 	for(var i=4;i>level;i--){
+	  		jQuery("#area"+i).empty();
+	  		jQuery("#area"+i).append("<option value=''>请选择</option>");
+	 	}
+	 if(id!=""){
+	  jQuery.post("$!webPath/load_area.htm",{"pid":id},function(data){
+	     jQuery("#area"+level).empty();
+		  jQuery("#area"+level).append("<option value=''>请选择</option>");
+	      jQuery.each(data, function(index,item){
+		    jQuery("#area"+level).append("<option value='"+item.id+"'>"+item.areaName+"</option>");
+		  });
+	  },"json");
+	 }else{
+	   for(var i=level;i<=4;i++){
+	    jQuery("#area"+i).empty();
+	   }
+	 }
+  	});
+    jQuery("#theForm").validate({						  
+    rules:{
+	  da_name:{required :true},
+	  da_tel:{required:true},
+	  da_contact_user:{required:true},
+	  area3:{required:true},
+	  da_address:{required:true},
+	  da_service_day:{required:true}
+	 },
+	messages:{
+	  da_name:{required :"自提点名称不得为空"},
+	  da_tel:{required:"自提点联系电话不得为空"},
+	  da_contact_user:{required:"自提点联系人不得为空"},
+	  area3:{required:"自提点所在区域不得为空"},
+	  da_address:{required:"自提点详细地址不得为空"},
+	  da_service_day:{required:"请选择服务时间"}
+	 }
+  });
+});
+function save(){
+	jQuery("#theForm").submit();
+}
+</script>
+</head>
+<body>
+<form action="$!webPath/admin/delivery_address_save.htm" method="post" name="theForm" id="theForm">
+  <input name="id" id="id" type="hidden" value="$!obj.id"/>
+  <input name="list_url" type="hidden" id="list_url" value="$!webPath/admin/delivery_address_list.htm" />
+  <input name="add_url" type="hidden" id="add_url" value="$!webPath/admin/delivery_address_add.htm" />
+  <div class="cont">
+    <h1 class="seth">自提点管理</h1>
+    <div class="nav_list">
+      <ul>
+        <li><a href="$!webPath/admin/delivery_address_list.htm"><b>自提点列表</b></a></li>
+        #if($!edit)
+        <li><a href="javascript:void(0);" class="this"><b>自提点编辑</b></a></li>
+        <li><a href="$!webPath/admin/delivery_address_add.htm"><b>新增自提点</b></a></li>
+        #else
+        <li><a href="$!webPath/admin/delivery_address_add.htm"  class="this"><b>新增自提点</b></a></li>
+        #end
+        <li><a href="$!webPath/admin/delivery_apply_list.htm" ><b>自提点申请列表</b></a></li>
+      </ul>
+    </div>
+    <div class="edit">
+      <div class="editul setcont" id="base"> 
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>自提点类型</li>
+          <li><span class="webname">
+            <select name="da_type" id="da_type">
+              <option value="0" #if($!{obj.da_type}=='0') selected="selected" #end>商城自提点</option>             
+              <option value="1" #if($!{obj.da_type}=='1') selected="selected" #end >第三方自提点</option>          
+            </select>
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>自提点名称</li>
+          <li><span class="webname">
+            <input name="da_name" type="text" id="da_name" value="$!obj.da_name" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>自提点联系人</li>
+          <li><span class="webname">
+            <input name="da_contact_user" type="text" id="da_contact_user" value="$!obj.da_contact_user" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>自提点联系电话</li>
+          <li><span class="webname">
+            <input name="da_tel" type="text" id="da_tel" value="$!obj.da_tel" />
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">自提点说明</li>
+          <li><span class="webname">
+            <textarea name="da_content" cols="40" rows="6" id="da_content">$!obj.da_content</textarea>
+            </span></li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>自提点所在地区</li>
+          <li><span class="webname">
+            <select name="area1" id="area1" level="2">
+              <option value="">省份/自治区</option>
+                        
+         	#foreach($area in $areas)           
+              
+              <option value="$!area.id" >$!area.areaName</option>
+                             
+	        #end            
+            
+            </select>
+            <select name="area2" id="area2" level="3">
+              <option value="">市/区</option>
+            </select>
+            <select name="area3" id="area3" level="4">
+              <option value="">县/区</option>
+            </select>
+            </span> </li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>自提点详细地址</li>
+          <li><span class="webname">
+            <input name="da_address" type="text" id="da_address" value="$!obj.da_address" />
+            </span> </li>
+        </ul>
+        <ul class="set1">
+          <li  class="setcont_bg"><strong class="sred">*</strong>自提点状态</li>
+          <li><span class="webname">
+            <select name="da_status" id="da_status">
+              <option value="10" #if($!{obj.da_status}=='10') selected="selected" #end>正常服务</option>
+              <option value="5" #if($!{obj.da_status}=='5') selected="selected" #end>暂停服务</option>
+            </select>
+            </span> </li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>自提点服务时间</li>
+          <li class="radiosp" style="position:relative; width:600px;">
+			 <label style="cursor:pointer"> <span>
+             <input style="border:none; height:16px; width:16px;" name="da_service_day" id="da_service_day"  type="checkbox" value="1" checked="checked"/>
+             <label for="da_service_day" generated="true" class="error" style="position:absolute; right:-60px; text-align:left; top:3px; height:10px; width:170px; display:block;"></label>
+             </span><span>星期一</span></label>
+             <label style="cursor:pointer"> <span>
+             <input style="border:none; height:16px; width:16px;" name="da_service_day" id="da_service_day"  type="checkbox" value="2" checked="checked"/>
+             </span><span>星期二</span></label>
+             <label style="cursor:pointer"> <span>
+             <input style="border:none; height:16px; width:16px;" name="da_service_day" id="da_service_day"  type="checkbox" value="3" checked="checked"/>
+             </span><span>星期三</span></label>
+             <label style="cursor:pointer"> <span>
+             <input style="border:none; height:16px; width:16px;" name="da_service_day" id="da_service_day"  type="checkbox" value="4" checked="checked"/>
+             </span><span>星期四</span></label>
+             <label style="cursor:pointer"> <span>
+             <input style="border:none; height:16px; width:16px;" name="da_service_day" id="da_service_day"  type="checkbox" value="5" checked="checked"/>
+             </span><span>星期五</span></label>
+             <label style="cursor:pointer"> <span>
+             <input style="border:none; height:16px; width:16px;" name="da_service_day" id="da_service_day"  type="checkbox" value="6"/>
+             </span><span>星期六</span></label>
+             <label style="cursor:pointer"> <span>
+             <input style="border:none; height:16px; width:16px;" name="da_service_day" id="da_service_day"  type="checkbox" value="7"/>
+             </span><span>星期日</span></label>
+          </li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg"><strong class="sred">*</strong>具体时间</li>
+          <li class="radiosp">
+            <label style="cursor:pointer"> <span>
+              <input style="border:none; height:16px; width:16px;" name="da_service_type" id="da_service_type"  type="radio" value="0" checked="checked"/>
+              </span> <span>全天</span> </label>
+            <label style="cursor:pointer"> <span>
+              <input style="border:none; height:16px; width:16px;"type="radio" id="da_service_type" name="da_service_type" value="1" #if($!{obj.da_service_type}=='1') checked="checked" #end />
+              </span> <span>非全天</span> </label>
+            <span class="webname" style="display:none">上午
+            <select name="da_begin_time" id="da_begin_time">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+            </select>
+            </span> <span class="webname" style="display:none">下午
+            <select name="da_end_time" id="da_end_time">
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+            </select>
+            </span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="submit"> <span class="pad120">
+      <input name="" type="button" value="提交" onclick="save();"/>
+      </span> </div>
+  </div>
+</form>
+</body>
+</html>

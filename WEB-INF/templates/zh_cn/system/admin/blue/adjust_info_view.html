@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css"/>
+<link  href="$!webPath/resources/style/common/css/jquery-ui-1.8.22.custom.css" type="text/css" rel="stylesheet">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+jQuery(document).ready(function(e) {
+    var mapStr = eval("("+$!{adjustInfo.adjust_gc_info}+")");
+	jQuery.map(mapStr,function(value,key){
+		jQuery(".class_settle table").append("<tr><td align='left' style='clear:both; float:left; width:200px; height:25px; line-height:30px; margin-left:-5px;'>"+value.parent_name+"&nbsp;&nbsp;->&nbsp;&nbsp;"+value.gc_name+"</td></tr>");
+	})
+});
+function saveForm(type){
+	window.location.href="$!webPath/admin/adjust_info_audit.htm?currentPage=$!{currentPage}&&id=$!{adjustInfo.id}&&type="+type;
+}
+function go_back(){
+	window.location.href="$!webPath/admin/adjust_info.htm?currentPage=$!{currentPage}";
+}
+</script>
+
+</head><body>
+<div class="cont">
+  <h1 class="seth">调整申请</h1>
+  <div class="nav_list">
+    <ul>
+      <li><a href="$!webPath/admin/adjust_info.htm" ><b>列表</b></a> </li>
+      <li><a href="javascript:void(0)" class="this"><b>审核</b></a></li>
+    </ul>
+  </div>
+  <form name="theForm" id="theForm" action="$!webPath/admin/store_save.htm" method="post">
+    <input name="currentPage" type="hidden" id="currentPage" value="$!currentPage" />
+    <div class="edit">
+      <div class="editul setcont"> 
+        <ul class="set1">
+          <li class="setcont_bg">店铺名称：</li>
+          <li><span class="webname"> $!adjustInfo.store_name</span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">调整类型：</li>
+          #if($!adjustInfo.adjust_type=="gc")
+        	#set($type="类目调整")
+          #end
+          <li><span class="webname">$!type</span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">申请店铺类型：</li>
+          <li><span class="webname">$!adjustInfo.adjust_store_grade</span></li>
+        </ul>
+        <ul class="set1">
+          <li class="setcont_bg">申请主营类目：</li>
+          <li><span class="webname">$!adjustInfo.adjust_gc_main</span></li>
+        </ul>        
+        <ul class="set1">
+          <li class="setcont_bg">申请详细类目：</li>
+          <li>
+			<div class="class_settle">
+			<table width="200" border="0" cellpadding="0" cellspacing="0">
+  			</table>
+			</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </form>
+  <div class="submit">
+  	<span class="pad120">
+    <input name="save" type="button" value="通过" onclick="saveForm('succeed')" />
+    <input name="save" type="button" value="拒绝" onclick="saveForm('defeat')" />
+    <input name="save" type="button" value="返回" onclick="go_back()" />
+    </span>
+  </div>
+</div>
+</body>
+</html>

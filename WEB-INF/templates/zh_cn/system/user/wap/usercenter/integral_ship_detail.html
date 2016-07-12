@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>物流信息 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href="$!webPath/wap/buyer/integral_order_list.htm">
+<img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">物流信息</span></div>
+#if($!transInfo)
+<div class="order_page">
+	<!--交易成功-->
+	<table class="trade_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	
+                <td>
+                	<ul>
+                    	<li class="big"><span class="fl">物流公司：$!transInfo.express_company_name</span></li>
+                        <li>运单编号：$!transInfo.express_ship_code</li>
+                        <li>物流状态：
+                        #if($!transInfo.status=="0")
+                        物流单暂无结果
+                        #elseif($!transInfo.status=="1")
+                        查询成功
+                        #elseif($!transInfo.status=="2")
+                        接口出现异常
+                        #end
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+#if($!order.igo_status==0)
+#set($status="待付款")
+#end
+#if($!order.igo_status==20)
+#set($status="已付款")
+#end
+#if($!order.igo_status==30)
+#set($status="已发货")        
+#end                
+#if($!order.igo_status==40)
+#set($status="已收货")
+#end
+#if($!order.igo_status==-1)
+#set($status="已取消")                                              
+#end
+#set($count = 0)
+	<div class="order_page_box">
+    	<h1><span class="fl">订单号：$!order.igo_order_sn</span><span class="fr">$!status</span></h1>
+        <div class="order_goods">
+        #foreach($obj in $!order.igo_gcs)
+        #set($img = "$!imageWebServer/$!obj.goods.ig_goods_img.path/$!obj.goods.ig_goods_img.name")
+        	<div class="dt"><a href=""><img src="$!img" width="50" height="50" /></a></div>
+            <ul>
+            	<li><b>积分： $!obj.integral</b></li>
+                <li>X $!obj.count</li>
+                #set($count = $!count + $!obj.count)
+            </ul>
+            <div class="dd"><a href="">$!obj.goods.ig_goods_name</a></div>
+        #end    
+        </div>
+        <div class="order_total">共 $!count 件商品 实付运费：<b>¥ $!{order.igo_trans_fee}</b></div>
+    </div>    
+    <!--物流详情-->
+    <div class="order_log">
+    	<h1><span>物流信息</span></h1>
+        <div class="order_log_list">
+        #foreach($info in $transInfo.data)
+        	<dl>
+            	<dt><img src="$!webPath/resources/style/system/front/wap/images/order_info_06.png" width="20" height="20" /></dt>
+                <dd>
+                	<ul>
+                    	<li>$!info.context</li>
+                        <li class="gray">$!info.time</li>
+                    </ul>
+                </dd>
+            </dl>
+        #end 
+            
+        </div>
+    </div>
+    
+    
+</div>
+#else
+<div class="order_page">
+<table class="trade_table" cellpadding="0" cellspacing="0">
+    	<tbody>
+        	<tr>
+            	
+                <td>
+                	<ul>
+                        <li>物流状态：暂无物流信息，请稍后再试</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>    
+#end
+</body>
+</html>

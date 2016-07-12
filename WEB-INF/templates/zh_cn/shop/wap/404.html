@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>$!config.title - $!{config.poweredby}</title>
+<meta name="keywords" content="$!config.keywords" />
+<meta name="description" content="$!config.description" />
+<meta name="generator" content="$!{config.meta_generator}" />
+<meta name="author" content="$!{config.meta_author}">
+<meta name="copyright" content="$!{config.copyRight}">
+<link href="$!webPath/resources/style/system/front/default/css/public.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/index.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/error.css" type="text/css" rel="stylesheet" />
+<link href="$!webPath/resources/style/system/front/default/css/public_auto.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script>
+	  var count=3;
+	  window.setInterval(go,1000);
+	  function go(){
+	    count--;
+	  		if(count<0){
+			count=3;
+			}
+		jQuery(".error_ul_bottom strong").html(count);
+	    if(count==0) window.location.href="$!webPath/index.htm";
+	  }
+	</script>
+</head>
+<body>
+$!httpInclude.include("/top.htm")
+<!--head-->
+<div class="head_width" id="head_h">
+  <div class="head"> #if($!config.websiteLogo)
+    #set($img="$!imageWebServer/$!{config.websiteLogo.path}/$!{config.websiteLogo.name}")
+    #else
+    #set($img="$!webPath/resources/style/system/front/default/images/logo.jpg")
+    #end
+    <h1 class="logo"><span>
+      <p><a href="$!webPath/index.htm"> <img src="$!img" border="0" /> </a></p>
+      </span></h1>
+    <form action="$!webPath/search.htm" method="post" target="_blank" id="searchForm">
+      <input name="type" type="hidden" id="type" value="$!type" />
+      <div class="head_search" id="head_search" style="width:705px; margin-left:0px;"> <span class="head_seartxt">
+        <input style="width:618px;" name="keyword" type="text" id="keyword" placeholder="试试搜索，更加方便！" x-webkit-speech lang="zh-CN" onwebkitspeechchange="jQuery('#searchForm').submit()" class="h_sear_txt" style="padding-left:5px;" autocomplete="off"/>
+        <input name="" type="submit"  class="h_sear_btn" value="搜索"/>
+        </span><span class="head_searstr">#if($!config.hotSearch!="")热门搜索：#foreach($info in $CommUtil.splitByChar("$!config.hotSearch",",")) <a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a> #end #end</span>
+      	<!--搜索历史 -->
+    	<div class="head_search_history" id="head_search_history" style="display:none">
+    	<dl>
+        	<dt>
+            	<ul>
+                	<li class="head_search_history_top"><span>搜索历史</span><i ><a href="javascript:void(0)" onclick="search_data_del_all()">清除全部</a></i></li>
+                </ul>
+            </dt>
+            <dd><span  class="head_search_history_hot">热门搜索...</span>
+            	<ul>
+                	
+                    #if($!config.hotSearch!="")
+                    #foreach($info in $CommUtil.splitByChar("$!config.hotSearch",","))
+                	<li><a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a></li>
+                    #end
+                    #end
+                </ul>
+            </dd>
+        </dl>
+    </div>  
+        <!--搜索历史 -->
+        <div class="head_search_history_up" id="head_search_history_up" style="display:none">
+    	<dl>
+        	<dt>
+            	<ul>
+                	<li class="head_search_history_top"><span>搜索历史</span><i ><a href="">清除全部</a></i></li>
+                </ul>
+            </dt>
+            <dd><span  class="head_search_history_hot">热门搜索...</span>
+            	<ul>
+                	
+                    #if($!config.hotSearch!="")
+                    #foreach($info in $CommUtil.splitByChar("$!config.hotSearch",","))
+                	<li><a href="javascript:void(0);" onclick="search_form('$info','goods');">$!info</a></li>
+                    #end
+                    #end
+                </ul>
+            </dd>
+        </dl>
+    </div>    	
+      </div>
+    </form>
+    <!--用户中心开始-->
+    <div class="top_user" id="top_user">
+      <span class="top_user_sp" id="top_user_sp"><a href="$!webPath/buyer/index.htm">用户中心</a><s></s></span>
+      <div class="top_user_hid" id="top_user_hid" style="display:none"> </div>
+    </div>
+    <div class="goodscar" id="goodscar">
+    
+    
+      <span class="goodscar_sp" id="goodscar_sp">
+      <span>
+      <i class="goodscar_img"></i>
+      <em class="goodscar_num"><b id="cart_goods_count_top">0</b></em><a href="$!webPath/goods_cart1.htm">去购物车结算</a>
+      </span>
+      </span>
+      
+
+      <div class="goodscar_con_box" id="goodscar_con_box" style="display:none" mark="none"> </div>
+    </div>
+    <!--购物车结束-->
+  </div>
+</div>
+<!--head-->
+<!--nav-->
+<div class="nav">
+<div class="nav_center">
+  <div class="nav_left">
+    <h2><a href="$!webPath/goods_class.htm"><span>全部商品分类<em><img src="$!webPath/resources/style/system/front/default/images/nav_top.gif" width="7" height="4" /></em></span></a>
+    </h2>
+  </div>
+  <ul id="navul">
+  #set($navs=$!navTools.queryNav(0,-1))
+  #foreach($nav in $navs)
+    #if($!CommUtil.indexOf("$!nav.url","http://")>=0)
+      #set($url="$!nav.url")
+    #else
+      #set($url="$!webPath/$!{nav.url}")
+    #end
+    <li #if($!mark&&$!mark==$!nav.url) class="this" #end><a href="$!url" id="$!nav.id" #if($!nav.new_win==1)target="_blank"#end original_url="$!nav.original_url"><span>$!{nav.title}</span></a></li>
+    #end
+  </ul>
+  </div>
+</div>
+<!--nav-->
+<div class="main">
+  <div class="errorpage">
+    <div class="error_page_mid"> <span class="error_left_a"></span> <span class="error_left_b"></span> <span class="error_right_a"> <b class="error_right_a_top"></b>
+      <div class="error_right_a_mid">
+        <ul>
+          <li class="error_ul_top">我们为您挑选了如此棒的商品，还在等什么？</li>
+          <li class="error_ul_mid">您可以：稍后再试或 <a href=""> 联系客服</a>。</li>
+          <li class="error_ul_bottom">将在<strong>3</strong>秒后自动转到<a href="$!webPath/index.htm" style="color:#F00"> 商城首页</a>，请稍候...</li>
+        </ul>
+      </div>
+      <b class="error_right_a_bottom"></b> </span> <span class="error_right_b"></span> </div>
+  </div>
+</div>
+$!httpInclude.include("/footer.htm")
+</body>
+</html>

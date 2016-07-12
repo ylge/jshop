@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="$!webPath/resources/style/system/manage/$!{config.websiteCss}/template.css"  rel="stylesheet" type="text/css" />
+<link href="$!webPath/resources/style/common/css/overlay.css" type="text/css" rel="stylesheet" />
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+<script src="$!webPath/resources/js/jquery.validate.min.js"></script>
+<script src="$!webPath/resources/js/jquery-ui-1.8.21.js"></script>
+<script src="$!webPath/resources/js/jquery.zh.cn.js" charset="utf-8"></script>
+<script src="$!webPath/resources/js/jquery.shop.common.js"></script>
+<script>
+function default_ec(id){
+	jQuery.ajax({type:'POST',url:'$!webPath/admin/ecc_default.htm',data:{"id":id},
+			success:function(data){				
+				 if(data=="true"){
+					window.location.href="$!webPath/admin/ecc_list.htm?currentPage=$!currentPage"
+				 }
+			}});	
+}
+
+function default_ec_cancle(id){
+	jQuery.ajax({type:'POST',url:'$!webPath/admin/ecc_default_cancle.htm',data:{"id":id},
+			success:function(data){				
+				 if(data=="true"){
+					window.location.href="$!webPath/admin/ecc_list.htm?currentPage=$!currentPage"
+				 }
+			}});	
+}
+function bind_default(id){
+	showDialog("msg_info","","恢复后不可撤销，是否继续?",1,"warning",3,function(){
+	   window.location.href="$!webPath/admin/ecc_bind_defalut_template.htm?id="+id;
+	});
+}
+</script>
+</head>
+<body>
+<div class="cont">
+  <h3 class="seth">常用物流</h3>
+  <div class="nav_list">
+  		<ul>
+        <li><a href="$!webPath/admin/ecc_set.htm"><b>常用物流配置</b></a> </li>
+        <li><a href="$!webPath/admin/ecc_list.htm" class="this"><b>常用物流列表</b></a></li>
+        </ul>
+  </div>
+  <FORM name="ListForm" id="ListForm"  action="$!webPath/admin/ecc_list.htm" method="post">
+  <div class="fshoptb">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="fshop_table">
+      <tr>
+        <th width="30%">物流名称</th>
+        <th width="15%" >物流代码</th>
+        <th  width="10%">物流模板</th>
+        <th  width="15%">默认物流</th>
+        <th><b class="form_btnb">操作</b></th>
+        </tr>
+	  #foreach($obj in $objs)
+      <tr>
+        <td align="center">$!obj.ecc_name</td>
+        <td align="center">$!obj.ecc_code</td>
+         #set($hight=100*$!{obj.ecc_template_heigh}/$!{obj.ecc_template_width})
+        <td align="center"><img src="$!imageWebServer/$!obj.ecc_template" alt="暂无物流模板" width="100" height="$!{hight}" /></td>
+        <td align="center">#if($!obj.ecc_default==1)是#else否#end</td>
+        <td align="center">
+         #if($!obj.ecc_default==0)
+         <a href="javascript:void(0);"  onclick="default_ec('$!obj.id')"   class="blue">设为默认</a>
+            |
+         #else
+         <a href="javascript:void(0);"  onclick="default_ec_cancle('$!obj.id')"  class="blue">取消默认</a>
+            |
+         #end
+         <a href="$!webPath/admin/ecc_print_view.htm?id=$!obj.id" target="_blank"   class="blue">打印测试</a>
+            |
+         #if($!obj.ecc_from_type==0)
+         <a href="$!webPath/admin/ecc_print_set.htm?id=$!obj.id"  class="blue">打印配置</a>
+            |
+         #end
+         #if($!obj.ecc_from_type==1)
+         <a href="javascript:void(0);" onclick="bind_default('$!obj.id');"  class="blue">绑定系统模板</a>
+            |
+         <a href="$!webPath/admin/ecc_design.htm?id=$!obj.id&currentPage=$!currentPage"  class="blue">自建模板设计</a>
+            |
+         #end
+         <a href="$!webPath/admin/ecc_create.htm?id=$!obj.id"  class="blue">自建模板</a>
+          </tr>
+      #end
+    </table>
+  </div>
+  <div class="operate_bar">
+    <div class="fenye">
+    	<input type="hidden" name="currentPage" id="currentPage" value="$!currentPage" />
+	  	$!gotoPageFormHTML
+    </div>   
+             
+ </div>
+ </FORM>
+</div>
+</body>
+</html>

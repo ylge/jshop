@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="no" />
+<meta name="format-detection" content="telephone=no,address=no" />
+<title>用户中心 - $!config.title</title>
+<link href="$!webPath/resources/style/system/front/wap/css/style.css" rel="stylesheet" type="text/css" />
+<script src="$!webPath/resources/js/wap/jquery-1.10.2.min.js"></script>
+</head>
+
+<body>
+<div class="user_bar"><a class="back" href=""><img src="$!webPath/resources/style/system/front/wap/images/back_black.png" width="30" height="30" /></a><span class="fl">收藏店铺</span></div>
+<div class="phone_main">
+	
+	<div class="collect_page">
+    	<ul>
+        #foreach($obj in $objs)
+        	<li>
+            #if($!obj.store_photo)
+            #set($store_logo="$!imageWebServer/$!{obj.store_photo}")
+            #else
+            #set($store_logo="$!imageWebServer/$!config.storeImage.path/$!config.storeImage.name")
+            #end
+            	<span class="img"><a href="javascript:void());"></a><b><img src="$!store_logo" width="135" height="50" /></b></span>
+                <div class="name"><a href="javascript:void());"><p>$!obj.store_name</p>
+                #set($pecent=$!{store.point.store_evaluate}/5*100)
+                <p><span class="stars"><i style="width:$!{pecent}%;"></i></span><span class="num">$!storeViewTools.queryStore_evaluate("$!obj.store_id")分</span></p></a></div>
+                <div class="del"><a href="$!webPath/wap/buyer/favorite_store_del.htm?id=$!obj.id"><img src="$!webPath/resources/style/system/front/wap/images/del.png" width="20" height="20" /></a></div>
+            </li>
+        #end  
+            
+        </ul>
+    </div>    
+    
+
+
+  
+</div>
+</body>
+</html>

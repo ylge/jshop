@@ -1,0 +1,7 @@
+#foreach($obj in $objs)
+<li><a href="$!webPath/wap/grouplife/view_goods.htm?$!obj.id"> <span class="left"><img src="$!imageWebServer/$!obj.group_acc.path/$!obj.group_acc.name" width="140" /></span> <span class="right">
+<h4>$!obj.gg_name </h4>
+<span class="price">¥$!obj.group_price</span>
+<div class="num"><s>¥$!obj.cost_price</s><span>$!obj.gg_rebate折</span><span class="purson">$!obj.groupInfos.size()人已买</span></div>
+</span> </a></li>
+#end

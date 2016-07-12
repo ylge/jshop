@@ -1,0 +1,23 @@
+﻿#if($!objs.size()>0)
+#if($!top)
+<div class="circle_main_box_left_evaluate_invitation">
+  <ul>
+    <li><i><a href="$!webPath/circle/invitation_detail_$!{top.id}.htm" target="_blank" style="color:#F00">
+    <em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_top.png" /></em>
+    #if($!top.invitaion_perfect==1) <strong><img src="$!webPath/resources/style/system/front/default/images/circle/circle_refined.png" /></strong>#end 【$!{top.type}】 $!top.title</a></i><span>$!CommUtil.formatLongDate($!top.addTime)</span><b><em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_up.png" title="有$!{top.praise_count}人回复"/></em>$!{top.reply_count}</b><b><em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_message.png" title="$!{top.praise_count}人觉得很赞" /></em>$!{top.praise_count}</b></li>
+  </ul>
+</div>
+#end
+
+#foreach($obj in $objs)
+<div class="circle_main_box_left_evaluate_invitation">
+  <ul>  #if($!obj.invitaion_perfect==1) #set($style="color:#0060DD") #else #set($style="")#end
+    <li><i><a href="$!webPath/circle/invitation_detail_$!{obj.id}.htm" target="_blank" style="$!style">#if($!obj.invitaion_perfect==1)<strong><img src="$!webPath/resources/style/system/front/default/images/circle/circle_refined.png" /></strong>#end 【$!obj.type】$!obj.title</a></i><span>$!CommUtil.formatLongDate($!obj.addTime)</span><b><em><img src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_up.png" title="有$!{obj.praise_count}人觉得很赞" /></em>$!{obj.praise_count}</b><b><em><img title="$!{obj.reply_count}人回复" src="$!webPath/resources/style/system/front/default/images/circle/circle_goos_message.png" /></em>$!{obj.reply_count}</b></li>
+  </ul>
+</div>
+#end
+<div class="fenye"><span>$!gotoPageAjaxHTML</span></div>
+#else  <div class="nothing" style="margin-left:184px">
+            <div class="nothing_left"><img src="$!webPath/resources/style/system/front/default/images/nothing.png"></div>
+            <div class="nothing_right">很遗憾，暂无任何相关数据。</div>
+          </div> #end 

@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title></title>
+<link rel="stylesheet" type="text/css" href="$!webPath/resources/style/app/css/style.css">
+<link rel="stylesheet" type="text/css" href="../../../../../resources/style/app/css/style.css">
+<script src="$!webPath/resources/js/jquery-1.6.2.js"></script>
+</head>
+<body style="background:#fff">
+<div class="main">
+  <div class="index" style="height:300px;">
+    <div style="height:280px;overflow:hidden; margin-left:auto; margin-right:auto; margin-top:10px;">
+      <div style="font-size:16px; color:#666666;margin-top:100px; padding-left:30%; float:left;">
+      <span style="float:left;">
+      <img src="$!webPath/resources/style/common/images/icon/error.png" />
+      </span>
+      <span style=" padding-top:10px; line-height:30px; float:left;">$!{op_title}！</span>
+      </div>
+    </div>
+  </div>
+<script>
+	  var count=1;
+	  window.setInterval(go,1000);
+	  function go(){
+	    count--;
+	    if(count==0) window.location.href="$!url";
+	  }
+	</script>
+</div>
+</body>
+</html>

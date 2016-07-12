@@ -1,0 +1,11 @@
+
+#foreach($obj in $consult_objs)
+	<ul>
+    	<li class="name">$!obj.consult_user_name<span class="gray">$!CommUtil.formatLongDate($!obj.addTime)</span></li>
+        <li class="q"><strong class="red">Q：</strong>$!obj.consult_content</li>
+        #if($!obj.consult_reply)
+        <li class="a"><strong class="orange">$!obj.reply_user_name：</strong>$!obj.consult_reply </li>
+        #end
+    </ul>
+#end    
+
